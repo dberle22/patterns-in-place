@@ -49,10 +49,10 @@ The name is locked: **Patterns in Place.** Treat it as a publication name, not a
 
 These are cheap, fast, and irreversible — do them before anything is published.
 
-- [ ] **GitHub organization:** `PatternsInPlace` (or `patternsinplace` lowercase if the camelcase version is taken)
-- [ ] **Medium publication:** create at medium.com/patterns-in-place
-- [ ] **LinkedIn page:** create the company page (separate from your personal profile)
-- [ ] **Substack handle:** reserve `patternsinplace.substack.com` as a defensive move even if you don't use it yet
+- [x] **GitHub organization:** `PatternsInPlace` (or `patternsinplace` lowercase if the camelcase version is taken). We will use my existing dberle22 account for now.
+- [x] **Medium publication:** create at medium.com/patterns-in-place
+- [ ] **LinkedIn page:** create the company page (separate from your personal profile) - Deferred.
+- [x] **Substack handle:** reserve `patternsinplace.substack.com` as a defensive move even if you don't use it yet
 - [ ] **Domain:** buy `patternsinplace.com`, `.org`, and `.co` from Namecheap or Porkbun (~$36 total)
 - [ ] **Twitter/X handle:** reserve `@patternsinplace`
 - [ ] **Email:** set up `hello@patternsinplace.com` via Google Workspace ($7/month) once the domain resolves
