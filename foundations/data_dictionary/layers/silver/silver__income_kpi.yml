@@ -1,0 +1,383 @@
+table_name: income_kpi
+schema: silver
+grain: One row per geo_level + geo_id + geo_name + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - geo_name
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=115976
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 8
+    top_values:
+      - value: zcta
+        count: 433172
+      - value: place
+        count: 397094
+      - value: tract
+        count: 135851
+      - value: county
+        count: 41870
+      - value: cbsa
+        count: 12085
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 115976
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 11
+    top_values:
+      - value: '1'
+        count: 39
+      - value: '2'
+        count: 26
+      - value: '3'
+        count: 26
+      - value: '4'
+        count: 26
+      - value: '01001'
+        count: 25
+    definition: Geographic identifier for the row
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 97125
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 66
+    top_values:
+      - value: Alexandria city, Virginia
+        count: 26
+      - value: Baltimore city, Maryland
+        count: 26
+      - value: Bristol city, Virginia
+        count: 26
+      - value: Buena Vista city, Virginia
+        count: 26
+      - value: Carson City, Nevada
+        count: 26
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 13
+    min_value: 2012
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2024'
+        count: 82276
+      - value: '2023'
+        count: 82271
+      - value: '2022'
+        count: 82134
+      - value: '2021'
+        count: 81848
+      - value: '2020'
+        count: 81194
+    definition: Observation year or period year for the row.
+    needs_confirmation: no
+  - name: median_hh_income
+    type: DOUBLE
+    null_pct: 6.0525
+    distinct_count: 122343
+    min_value: 2499.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 61792
+      - value: '46250.0'
+        count: 2140
+      - value: '48750.0'
+        count: 2115
+      - value: '41250.0'
+        count: 2063
+      - value: '51250.0'
+        count: 2020
+    definition: Median household income in the past 12 months.
+    needs_confirmation: no
+  - name: per_capita_income
+    type: DOUBLE
+    null_pct: 2.0314
+    distinct_count: 90038
+    min_value: 6.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 20739
+      - value: '22937.0'
+        count: 69
+      - value: '22485.0'
+        count: 68
+      - value: '23844.0'
+        count: 68
+      - value: '24771.0'
+        count: 66
+    definition: Per capita income in the past 12 months.
+    needs_confirmation: no
+  - name: pov_universe
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 79624
+    min_value: 0.0
+    max_value: 3.2707919e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 14548
+      - value: '61.0'
+        count: 616
+      - value: '74.0'
+        count: 614
+      - value: '115.0'
+        count: 610
+      - value: '69.0'
+        count: 604
+    definition: Total Poverty Universe, used as base for poverty rates.
+    needs_confirmation: no
+  - name: pov_below
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 29390
+    min_value: 0.0
+    max_value: 4.7755606e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 59343
+      - value: '10.0'
+        count: 4274
+      - value: '9.0'
+        count: 4232
+      - value: '8.0'
+        count: 4160
+      - value: '6.0'
+        count: 4060
+    definition: Total population below poverty level, used as numerator for poverty rates.
+    needs_confirmation: no
+  - name: pov_rate
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 617276
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 44795
+      - value: -nan
+        count: 14548
+      - value: '1.0'
+        count: 2172
+      - value: '0.16666666666666666'
+        count: 718
+      - value: '0.25'
+        count: 684
+    definition: Poverty Rate, dervied from pov_below and pov_universe. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: gini_index
+    type: DOUBLE
+    null_pct: 2.489
+    distinct_count: 13071
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 25411
+      - value: '0.4121'
+        count: 716
+      - value: '0.4077'
+        count: 714
+      - value: '0.4032'
+        count: 712
+      - value: '0.4083'
+        count: 707
+    definition: Ratio of Gini Index, a meaure of economic equality (0=perfect equality, 1=perfect inequality). 
+    needs_confirmation: no
+  - name: pct_hh_lt25k
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 474906
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 33590
+      - value: -nan
+        count: 15641
+      - value: '1.0'
+        count: 3651
+      - value: '0.3333333333333333'
+        count: 2423
+      - value: '0.25'
+        count: 2375
+    definition: Share of Households earning less than $25k Per Year.
+    needs_confirmation: no
+  - name: pct_hh_25k_50k
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 444993
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 27873
+      - value: -nan
+        count: 15641
+      - value: '1.0'
+        count: 3394
+      - value: '0.25'
+        count: 3064
+      - value: '0.3333333333333333'
+        count: 3058
+    definition: Share of Households earning between $25k and $50k Per Year.
+    needs_confirmation: no
+  - name: pct_hh_50k_100k
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 446204
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 22523
+      - value: -nan
+        count: 15641
+      - value: '1.0'
+        count: 4009
+      - value: '0.3333333333333333'
+        count: 3776
+      - value: '0.25'
+        count: 2582
+    definition: Share of Households earning between $50k and $100k Per Year.
+    needs_confirmation: no
+  - name: pct_hh_100k_plus
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 485883
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 52382
+      - value: -nan
+        count: 15641
+      - value: '1.0'
+        count: 2789
+      - value: '0.2'
+        count: 1627
+      - value: '0.25'
+        count: 1598
+    definition: Share of Households earning more than $100k Per Year.
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/gold/gold_economy_income.sql
+    details: 'Table write/create reference(s): scripts/etl/gold/gold_economy_income.sql:32:from
+      metro_deep_dive.silver.income_kpi  | scripts/etl/gold/gold_economy_gdp.sql:31:from
+      metro_deep_dive.silver.income_kpi  | scripts/etl/gold/gold_economy_wide.sql:35:from
+      metro_deep_dive.silver.income_kpi '
+  - step: downstream_usage_examples
+    script: notebooks/retail_opportunity_finder/tract_features.sql
+    details: 'Downstream reference(s): notebooks/retail_opportunity_finder/tract_features.sql:85:  FROM
+      metro_deep_dive.silver.income_kpi'
+kpi_definitions:
+  - kpi_name: median_hh_income
+    business_definition: Median household income in the past 12 months (in 2024 inflation-adjusted
+      dollars).
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: per_capita_income
+    business_definition: Per capita income in the past 12 months (in 2024 inflation-adjusted
+      dollars).
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pov_universe
+    business_definition: Total:.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pov_below
+    business_definition: Total:, Income in the past 12 months below poverty level:.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pov_rate
+    business_definition: Rate derived from ACS counts. (from silver.kpi_dictionary).
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: gini_index
+    business_definition: Ratio of gini indexE + mutate + pct hh lt25k + hh inc lt10kE
+      + hh inc 10k 15kE + hh inc 15k 20kE + hh inc 20k 25kE to hh inc totalE.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_hh_lt25k
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: households (topic-specific)
+    data_type: DOUBLE
+  - kpi_name: pct_hh_25k_50k
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: households (topic-specific)
+    data_type: DOUBLE
+  - kpi_name: pct_hh_50k_100k
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: households (topic-specific)
+    data_type: DOUBLE
+  - kpi_name: pct_hh_100k_plus
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: households (topic-specific)
+    data_type: DOUBLE

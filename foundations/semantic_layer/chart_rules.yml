@@ -1,0 +1,75 @@
+version: 1
+catalog_name: chart_rules
+description: Approved chart mappings from analytical intent and result shape to visual library chart types after question and template resolution.
+rules:
+  - rule_id: ranking_default
+    question_type: ranking
+    result_shape: one categorical geography dimension and one primary metric
+    approved_chart_types:
+      - bar
+    fallback_chart_types:
+      - heatmap_table
+    rationale: Bar charts are the default for ordered top-bottom comparisons across geographies.
+
+  - rule_id: trend_default
+    question_type: trend
+    result_shape: year on x-axis with one or more metric series
+    approved_chart_types:
+      - line
+    fallback_chart_types:
+      - slopegraph
+    rationale: Line charts best communicate temporal movement; slopegraph is acceptable for two-point comparisons.
+
+  - rule_id: comparison_selected
+    question_type: comparison
+    result_shape: small set of user-selected geographies and one or two metrics
+    approved_chart_types:
+      - bar
+      - slopegraph
+    fallback_chart_types:
+      - heatmap_table
+    rationale: Use bar for point-in-time comparisons and slopegraph when comparing change between two dates.
+
+  - rule_id: distribution_default
+    question_type: distribution
+    result_shape: one measure spread across many geographies at a common grain
+    approved_chart_types:
+      - boxplot
+    fallback_chart_types:
+      - heatmap_table
+    rationale: Boxplot is preferred for benchmarking a target against the distribution; heatmap_table is an acceptable fallback when a tabular scan is more readable than a compact summary.
+
+  - rule_id: benchmark_default
+    question_type: benchmark
+    result_shape: target geography versus benchmark set or reference value
+    approved_chart_types:
+      - bar
+    fallback_chart_types:
+      - strength_strip
+    rationale: Bar with a reference marker is the clearest benchmark starting point in MVP.
+
+  - rule_id: correlation_default
+    question_type: correlation
+    result_shape: two quantitative measures across many geographies
+    approved_chart_types:
+      - scatter
+    fallback_chart_types:
+      - hexbin
+    rationale: Scatter is the default relationship chart; hexbin is a fallback for very dense point clouds.
+
+selection_constraints:
+  - constraint_id: map_requires_geography_geometry
+    applies_to: [choropleth, highlight_context_map, proportional_symbol_map]
+    rule: Only use map charts when the result includes a supported geography level with geometry coverage.
+
+  - constraint_id: slopegraph_requires_two_time_points
+    applies_to: [slopegraph]
+    rule: Only use slopegraph when the result has exactly two comparable time points.
+
+  - constraint_id: boxplot_prefers_large_distribution
+    applies_to: [boxplot]
+    rule: Prefer boxplot when at least 8 comparison geographies exist at the same grain.
+
+  - constraint_id: scatter_requires_two_measures
+    applies_to: [scatter]
+    rule: Only use scatter when the result has exactly two primary measures and at least one geography dimension.

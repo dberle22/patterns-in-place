@@ -1,0 +1,106 @@
+version: 2
+catalog_name: join_catalog
+description: Non-standard join paths and join conventions for the canonical semantic layer.
+convention:
+  standard_grain_join:
+    keys: [geo_level, geo_id, year]
+    note: Any active Gold fact tables at the same canonical geography-year grain may be joined implicitly without a catalog entry.
+  canonical_geo_values:
+    values: [us, region, division, state, cbsa, county, place, zcta, tract]
+    note: Planner-facing joins normalize warehouse values such as `US` and `Region` to lower-case canonical names.
+
+non_standard_joins:
+  - join_id: benchmark_reference_to_population
+    join_category: fact_to_benchmark
+    left_table: population_demographics
+    right_table: benchmark_reference
+    join_type: left
+    join_keys:
+      - left: year
+        right: year
+      - left: geo_level
+        right: benchmark_level
+    grain_requirement: same year plus benchmark rows filtered to source_table = population_demographics and the requested metric_id
+    caveats:
+      - Benchmark rows are comparison rows, not one-to-one fact joins.
+      - A benchmark query must filter `benchmark_reference.source_table` and `benchmark_reference.metric_id` explicitly.
+      - Benchmarks are currently precomputed only for `us`, `region`, and `division`.
+    status: active
+
+  - join_id: benchmark_reference_to_housing
+    join_category: fact_to_benchmark
+    left_table: housing_core_wide
+    right_table: benchmark_reference
+    join_type: left
+    join_keys:
+      - left: year
+        right: year
+      - left: geo_level
+        right: benchmark_level
+    grain_requirement: same year plus benchmark rows filtered to source_table = housing_core_wide and the requested metric_id
+    caveats:
+      - Benchmark joins are only valid for metrics that have corresponding rows in `benchmark_reference`.
+      - Use the benchmark table to add comparison context, not to expand the base fact rowset.
+    status: active
+
+  - join_id: benchmark_reference_to_income
+    join_category: fact_to_benchmark
+    left_table: economics_income_wide
+    right_table: benchmark_reference
+    join_type: left
+    join_keys:
+      - left: year
+        right: year
+      - left: geo_level
+        right: benchmark_level
+    grain_requirement: same year plus benchmark rows filtered to source_table = economics_income_wide and the requested metric_id
+    caveats:
+      - Benchmarks are intentionally limited to a small set of aggregate comparison geographies.
+      - Do not treat benchmark_reference as a generic wide fact table.
+    status: active
+
+  - join_id: tx_isd_to_county_lookup
+    join_category: dimension_lookup
+    left_table: tx_isd_metrics
+    right_table: population_demographics
+    join_type: left
+    join_keys:
+      - left: county_number
+        right: geo_id
+    grain_requirement: only valid after normalizing Texas county numbers to 5-digit county GEOIDs
+    caveats:
+      - This path is documented for future education workflows only.
+      - tx_isd_metrics is not part of the default cross-market planner surface.
+      - County-number normalization is required before any semantic use.
+    status: planned
+
+  - join_id: points_to_places_spatial
+    join_category: spatial
+    left_table: points_catalog_stub
+    right_table: geography_catalog
+    join_type: spatial_left
+    join_keys:
+      - left: geometry_field
+        right: geometry
+    grain_requirement: point geometry must be spatially resolved to a supported geography before joining to core place tables
+    caveats:
+      - This is a design placeholder for points_catalog.yml, not an executable current join path.
+      - Weighted point-to-zcta or point-to-cbsa rollups remain disallowed without explicit methodology.
+    status: planned
+
+grain_compatibility_rules:
+  - rule_id: same_grain_required
+    description: Default fact-to-fact joins require identical canonical `geo_level`, `geo_id`, and `year` keys on both sides.
+    enforcement: required
+
+  - rule_id: no_implicit_rollups
+    description: The planner may not infer geography rollups or fall back from one grain to another without an approved geography path.
+    enforcement: required
+
+  - rule_id: benchmark_rows_are_not_fact_rows
+    description: Benchmark rows are support records for comparison queries and must be treated separately from primary geography fact rows.
+    enforcement: required
+
+  - rule_id: zcta_weighted_rollups_disallowed
+    description: Weighted geography crosswalks such as zcta-to-county or zcta-to-cbsa are excluded from default semantic joins.
+    enforcement: required

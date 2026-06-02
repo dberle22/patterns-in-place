@@ -1,0 +1,152 @@
+table_name: xwalk_cbsa_state
+schema: silver
+grain: One row per cbsa_code (inferred).
+primary_key: cbsa_code
+foreign_keys: []
+time_coverage:
+  type: range
+  column: vintage
+  min: '2023'
+  max: '2023'
+geo_coverage:
+  notes:
+    - distinct_state_fips=52
+    - distinct_cbsa_code=935
+columns:
+  - name: cbsa_code
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 935
+    min_value: ~
+    max_value: ~
+    min_length: 5
+    max_length: 5
+    top_values:
+      - value: '37980'
+        count: 4
+      - value: '47900'
+        count: 4
+      - value: '17140'
+        count: 3
+      - value: '26580'
+        count: 3
+      - value: '32820'
+        count: 3
+    definition: GEOID for Core Based Statistical Areas (CBSAs).
+    needs_confirmation: no
+  - name: cbsa_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 935
+    min_value: ~
+    max_value: ~
+    min_length: 7
+    max_length: 46
+    top_values:
+      - value: Philadelphia-Camden-Wilmington, PA-NJ-DE-MD
+        count: 4
+      - value: Washington-Arlington-Alexandria, DC-VA-MD-WV
+        count: 4
+      - value: Cincinnati, OH-KY-IN
+        count: 3
+      - value: Huntington-Ashland, WV-KY-OH
+        count: 3
+      - value: Memphis, TN-MS-AR
+        count: 3
+    definition: Name of Core Based Statistical Areas (CBSAs).
+    needs_confirmation: no
+  - name: state_fips
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 52
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: '48'
+        count: 67
+      - value: '39'
+        count: 44
+      - value: '18'
+        count: 40
+      - value: '13'
+        count: 39
+      - value: '37'
+        count: 39
+    definition: FIPS code for the state within a Core Based Statistical Area (CBSA).
+    needs_confirmation: no
+  - name: state_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 52
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 20
+    top_values:
+      - value: Texas
+        count: 67
+      - value: Ohio
+        count: 44
+      - value: Indiana
+        count: 40
+      - value: Georgia
+        count: 39
+      - value: North Carolina
+        count: 39
+    definition: Name of the state within a Core Based Statistical Area (CBSA).
+    needs_confirmation: no
+  - name: counties
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 18
+    min_value: 1
+    max_value: 40
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1'
+        count: 655
+      - value: '2'
+        count: 165
+      - value: '3'
+        count: 77
+      - value: '4'
+        count: 37
+      - value: '5'
+        count: 25
+    definition: Number of counties within a Core Based Statistical Area (CBSA).
+    needs_confirmation: no
+  - name: vintage
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: 2023
+    max_value: 2023
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2023'
+        count: 1002
+    definition: Year of the crosswalk data.
+    needs_confirmation: no
+  - name: source
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: ~
+    max_value: ~
+    min_length: 30
+    max_length: 30
+    top_values:
+      - value: DERIVED_FROM_CBSA_COUNTY_XWALK
+        count: 1002
+    definition: Crosswalk source identifier, indicating that the data was derived from a crosswalk of CBSA to county FIPS codes.
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/silver/geo_crosswalks_silver.R
+    details: 'Table write/create reference(s): scripts/etl/silver/geo_crosswalks_silver.R:201:DBI::dbWriteTable(con,
+      DBI::Id(schema="silver", table="xwalk_cbsa_state"),'
+kpi_definitions: []

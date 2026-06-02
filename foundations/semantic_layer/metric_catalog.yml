@@ -1,0 +1,1458 @@
+version: 2
+catalog_name: metric_catalog
+description: Curated queryable metrics exposed by the canonical patterns-foundations semantic layer.
+metrics:
+  - metric_id: pop_total
+    display_name: Total Population
+    description: Total resident population for the geography and year.
+    source_table: population_demographics
+    source_column: pop_total
+    formula: null
+    unit_format: integer
+    subject_areas: [population]
+    themes: [character, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: true
+    growth_windows: [1, 5, 10]
+    caveats: Use growth variants for change analysis instead of recomputing from sparse early-year rows.
+    status: active
+
+  - metric_id: pop_growth_1yr
+    display_name: Population Growth (1 Year)
+    description: One-year percentage change in total population.
+    source_table: population_demographics
+    source_column: pop_growth_1yr
+    formula: null
+    unit_format: percent
+    subject_areas: [population]
+    themes: [character, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Null in the first observed year for each geography.
+    status: active
+
+  - metric_id: pop_growth_5yr
+    display_name: Population Growth (5 Year)
+    description: Five-year percentage change in total population.
+    source_table: population_demographics
+    source_column: pop_growth_5yr
+    formula: null
+    unit_format: percent
+    subject_areas: [population]
+    themes: [character, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Strong default for growth rankings and momentum questions.
+    status: active
+
+  - metric_id: pop_growth_10yr
+    display_name: Population Growth (10 Year)
+    description: Ten-year percentage change in total population.
+    source_table: population_demographics
+    source_column: pop_growth_10yr
+    formula: null
+    unit_format: percent
+    subject_areas: [population]
+    themes: [character, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Prefer for long-cycle market context rather than short-run trend analysis.
+    status: active
+
+  - metric_id: median_age
+    display_name: Median Age
+    description: Median age of the resident population.
+    source_table: population_demographics
+    source_column: median_age
+    formula: null
+    unit_format: number_1dp
+    subject_areas: [population]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Smaller geographies can be noisy.
+    status: active
+
+  - metric_id: pct_age_under_18
+    display_name: Share Under 18
+    description: Share of residents younger than 18.
+    source_table: population_demographics
+    source_column: pct_age_under_18
+    formula: null
+    unit_format: percent
+    subject_areas: [population]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Interpret alongside total population size for small geographies.
+    status: active
+
+  - metric_id: pct_age_18_64
+    display_name: Share Age 18 to 64
+    description: Share of residents age 18 to 64.
+    source_table: population_demographics
+    source_column: pct_age_18_64
+    formula: null
+    unit_format: percent
+    subject_areas: [population]
+    themes: [character, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Useful as working-age context, not a labor-market measure by itself.
+    status: active
+
+  - metric_id: pct_age_over_64
+    display_name: Share Age 65+
+    description: Share of residents age 65 and older.
+    source_table: population_demographics
+    source_column: pct_age_over_64
+    formula: null
+    unit_format: percent
+    subject_areas: [population]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Best paired with median age and dependency metrics.
+    status: active
+
+  - metric_id: dependents_per_worker
+    display_name: Dependents Per Worker
+    description: Ratio of young and older dependents to core working-age residents.
+    source_table: population_demographics
+    source_column: dependents_per_worker
+    formula: null
+    unit_format: ratio
+    subject_areas: [population]
+    themes: [character, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Ratios can become unstable where the working-age denominator is very small.
+    status: active
+
+  - metric_id: aging_index
+    display_name: Aging Index
+    description: Ratio of older residents to younger residents.
+    source_table: population_demographics
+    source_column: aging_index
+    formula: null
+    unit_format: index
+    subject_areas: [population]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Useful directional signal, but not as intuitive as age shares for end users.
+    status: active
+
+  - metric_id: pct_white_nh
+    display_name: Non-Hispanic White Share
+    description: Share of residents who identify as non-Hispanic White.
+    source_table: population_demographics
+    source_column: pct_white_nh
+    formula: null
+    unit_format: percent
+    subject_areas: [race_ethnicity]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Use together with other race and ethnicity shares to avoid overinterpreting a single share.
+    status: active
+
+  - metric_id: pct_black_nh
+    display_name: Non-Hispanic Black Share
+    description: Share of residents who identify as non-Hispanic Black.
+    source_table: population_demographics
+    source_column: pct_black_nh
+    formula: null
+    unit_format: percent
+    subject_areas: [race_ethnicity]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Use with diversity and other composition measures.
+    status: active
+
+  - metric_id: pct_asian_nh
+    display_name: Non-Hispanic Asian Share
+    description: Share of residents who identify as non-Hispanic Asian.
+    source_table: population_demographics
+    source_column: pct_asian_nh
+    formula: null
+    unit_format: percent
+    subject_areas: [race_ethnicity]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Use with diversity and other composition measures.
+    status: active
+
+  - metric_id: pct_hispanic
+    display_name: Hispanic Share
+    description: Share of residents who identify as Hispanic or Latino.
+    source_table: population_demographics
+    source_column: pct_hispanic
+    formula: null
+    unit_format: percent
+    subject_areas: [race_ethnicity]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Ethnicity share can overlap analytically with race categories when discussing composition.
+    status: active
+
+  - metric_id: diversity_index
+    display_name: Diversity Index
+    description: Diversity index derived from race and ethnicity shares.
+    source_table: population_demographics
+    source_column: diversity_index
+    formula: 1 - sum(share_i^2)
+    unit_format: index
+    subject_areas: [race_ethnicity]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Not directly interpretable as a percentage.
+    status: active
+
+  - metric_id: pct_ba_plus
+    display_name: Share With Bachelor's Degree Or Higher
+    description: Share of adults age 25+ with a bachelor's degree or higher.
+    source_table: population_demographics
+    source_column: pct_ba_plus
+    formula: null
+    unit_format: percent
+    subject_areas: [education]
+    themes: [character, livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Education shares can be volatile in very small areas.
+    status: active
+
+  - metric_id: pct_grad_plus
+    display_name: Share With Graduate Degree
+    description: Share of adults age 25+ with a graduate or professional degree.
+    source_table: population_demographics
+    source_column: pct_grad_plus
+    formula: null
+    unit_format: percent
+    subject_areas: [education]
+    themes: [character, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Best used as a high-skill attainment signal rather than a general education proxy.
+    status: active
+
+  - metric_id: hu_total
+    display_name: Total Housing Units
+    description: Total housing units.
+    source_table: housing_core_wide
+    source_column: hu_total
+    formula: null
+    unit_format: integer
+    subject_areas: [housing]
+    themes: [livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: true
+    growth_windows: [1, 3, 5]
+    caveats: Use query-time growth calculations for windows not stored directly.
+    status: active
+
+  - metric_id: vacancy_rate
+    display_name: Vacancy Rate
+    description: Share of housing units that are vacant.
+    source_table: housing_core_wide
+    source_column: vacancy_rate
+    formula: null
+    unit_format: percent
+    subject_areas: [housing]
+    themes: [livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Best interpreted alongside stock size and tenure context.
+    status: active
+
+  - metric_id: owner_occ_rate
+    display_name: Owner Occupancy Rate
+    description: Share of occupied housing units that are owner occupied.
+    source_table: housing_core_wide
+    source_column: owner_occ_rate
+    formula: null
+    unit_format: percent
+    subject_areas: [housing]
+    themes: [character, livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Complementary to renter occupancy rate.
+    status: active
+
+  - metric_id: renter_occ_rate
+    display_name: Renter Occupancy Rate
+    description: Share of occupied housing units that are renter occupied.
+    source_table: housing_core_wide
+    source_column: renter_occ_rate
+    formula: null
+    unit_format: percent
+    subject_areas: [housing]
+    themes: [character, livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Complementary to owner occupancy rate.
+    status: active
+
+  - metric_id: median_gross_rent
+    display_name: Median Gross Rent
+    description: Median monthly gross rent.
+    source_table: housing_core_wide
+    source_column: median_gross_rent
+    formula: null
+    unit_format: currency
+    subject_areas: [housing]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: true
+    growth_windows: [1, 3, 5]
+    caveats: Nominal values are not inflation adjusted.
+    status: active
+
+  - metric_id: annualized_median_rent
+    display_name: Annualized Median Rent
+    description: Median monthly gross rent multiplied by 12.
+    source_table: housing_core_wide
+    source_column: annualized_median_rent
+    formula: median_gross_rent * 12
+    unit_format: currency
+    subject_areas: [housing]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Useful for affordability ratio calculations.
+    status: active
+
+  - metric_id: median_home_value
+    display_name: Median Home Value
+    description: Median owner-occupied home value.
+    source_table: housing_core_wide
+    source_column: median_home_value
+    formula: null
+    unit_format: currency
+    subject_areas: [housing]
+    themes: [livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: true
+    growth_windows: [1, 3, 5]
+    caveats: Not a repeat-sales price index; interpret differently from FHFA-style appreciation.
+    status: active
+
+  - metric_id: pct_rent_burden_30plus
+    display_name: Share Cost Burdened Renters
+    description: Share of renter households spending at least 30 percent of income on rent.
+    source_table: housing_core_wide
+    source_column: pct_rent_burden_30plus
+    formula: null
+    unit_format: percent
+    subject_areas: [affordability]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Should be interpreted with vacancy and income context.
+    status: active
+
+  - metric_id: pct_rent_burden_50plus
+    display_name: Share Severely Cost Burdened Renters
+    description: Share of renter households spending at least 50 percent of income on rent.
+    source_table: housing_core_wide
+    source_column: pct_rent_burden_50plus
+    formula: null
+    unit_format: percent
+    subject_areas: [affordability]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Represents the severe end of renter burden.
+    status: active
+
+  - metric_id: rent_to_income
+    display_name: Rent To Income Ratio
+    description: Annualized median rent divided by ACS income context.
+    source_table: housing_core_wide
+    source_column: rent_to_income
+    formula: annualized_median_rent / per_capita_income_proxy
+    unit_format: ratio
+    subject_areas: [affordability]
+    themes: [livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Nominal ratio; use the RPP-adjusted variant for cost-of-living-normalized comparisons.
+    status: active
+
+  - metric_id: value_to_income
+    display_name: Home Value To Income Ratio
+    description: Median home value divided by household income context.
+    source_table: housing_core_wide
+    source_column: value_to_income
+    formula: median_home_value / income_proxy
+    unit_format: ratio
+    subject_areas: [affordability]
+    themes: [livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Sensitive to local ownership mix and ACS income noise.
+    status: active
+
+  - metric_id: fmr_2br
+    display_name: FMR 2BR
+    description: HUD fair market rent for a two-bedroom unit.
+    source_table: housing_core_wide
+    source_column: fmr_2br
+    formula: null
+    unit_format: currency
+    subject_areas: [housing_benchmark]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Benchmark availability is sparser than ACS rent measures.
+    status: active
+
+  - metric_id: rent50_2br
+    display_name: Rent50 2BR
+    description: HUD 50th percentile rent for a two-bedroom unit.
+    source_table: housing_core_wide
+    source_column: rent50_2br
+    formula: null
+    unit_format: currency
+    subject_areas: [housing_benchmark]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Treat as benchmark context rather than a market-clearing estimate.
+    status: active
+
+  - metric_id: fmr_gap_2br_vs_median_rent
+    display_name: FMR Gap Vs Median Rent
+    description: Difference between HUD two-bedroom fair market rent and median gross rent.
+    source_table: housing_core_wide
+    source_column: fmr_gap_2br_vs_median_rent
+    formula: fmr_2br - median_gross_rent
+    unit_format: currency
+    subject_areas: [housing_benchmark]
+    themes: [livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Can be misleading where HUD benchmark coverage is sparse.
+    status: active
+
+  - metric_id: rent50_gap_2br_vs_median_rent
+    display_name: Rent50 Gap Vs Median Rent
+    description: Difference between HUD rent50 two-bedroom rent and median gross rent.
+    source_table: housing_core_wide
+    source_column: rent50_gap_2br_vs_median_rent
+    formula: rent50_2br - median_gross_rent
+    unit_format: currency
+    subject_areas: [housing_benchmark]
+    themes: [livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Use alongside the raw benchmark measures.
+    status: active
+
+  - metric_id: permits_per_1000_housing_units
+    display_name: Permits Per 1,000 Housing Units
+    description: Residential permits per 1,000 housing units.
+    source_table: housing_core_wide
+    source_column: permits_per_1000_housing_units
+    formula: null
+    unit_format: ratio
+    subject_areas: [housing_supply]
+    themes: [livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Only populated where building permit coverage exists.
+    status: active
+
+  - metric_id: permits_share_multifam_units
+    display_name: Multifamily Permit Share
+    description: Share of permitted units in multifamily structures.
+    source_table: housing_core_wide
+    source_column: permits_share_multifam_units
+    formula: null
+    unit_format: percent
+    subject_areas: [housing_supply]
+    themes: [livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: BPS coverage is uneven and can be noisy at small geographies.
+    status: active
+
+  - metric_id: pct_struct_multifam
+    display_name: Multifamily Housing Share
+    description: Share of housing stock in multifamily structures.
+    source_table: housing_core_wide
+    source_column: pct_struct_multifam
+    formula: null
+    unit_format: percent
+    subject_areas: [built_form]
+    themes: [livability, character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Stock composition, not new-construction mix.
+    status: active
+
+  - metric_id: median_hh_income
+    display_name: Median Household Income
+    description: Median household income.
+    source_table: economics_income_wide
+    source_column: median_hh_income
+    formula: null
+    unit_format: currency
+    subject_areas: [income]
+    themes: [character, livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: true
+    growth_windows: [1, 5, 10]
+    caveats: Household measure; do not compare directly to per-capita metrics without context.
+    status: active
+
+  - metric_id: acs_income_pc
+    display_name: ACS Per-Capita Income
+    description: ACS-derived per-capita income.
+    source_table: economics_income_wide
+    source_column: acs_income_pc
+    formula: null
+    unit_format: currency
+    subject_areas: [income]
+    themes: [livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Best used as contextual income level rather than a trend series.
+    status: active
+
+  - metric_id: calc_income_pc
+    display_name: BEA Per-Capita Income
+    description: BEA personal income divided by population.
+    source_table: economics_income_wide
+    source_column: calc_income_pc
+    formula: pi_total / pop_total
+    unit_format: currency
+    subject_areas: [income]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: true
+    growth_windows: [1, 5, 10]
+    caveats: Prefer this series over ACS per-capita income for income-growth analysis.
+    status: active
+
+  - metric_id: income_pc_growth_1yr
+    display_name: Per-Capita Income Growth (1 Year)
+    description: One-year percentage change in per-capita income.
+    source_table: economics_income_wide
+    source_column: income_pc_growth_1yr
+    formula: null
+    unit_format: percent
+    subject_areas: [income_growth]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: One-year growth can be noisy and cyclical.
+    status: active
+
+  - metric_id: income_pc_growth_5yr
+    display_name: Per-Capita Income Growth (5 Year)
+    description: Five-year percentage change in per-capita income.
+    source_table: economics_income_wide
+    source_column: income_pc_growth_5yr
+    formula: null
+    unit_format: percent
+    subject_areas: [income_growth]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Strong default for opportunity rankings.
+    status: active
+
+  - metric_id: income_pc_growth_10yr
+    display_name: Per-Capita Income Growth (10 Year)
+    description: Ten-year percentage change in per-capita income.
+    source_table: economics_income_wide
+    source_column: income_pc_growth_10yr
+    formula: null
+    unit_format: percent
+    subject_areas: [income_growth]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Better for long-cycle comparisons than near-term trend storytelling.
+    status: active
+
+  - metric_id: pi_total
+    display_name: Total Personal Income
+    description: Total personal income.
+    source_table: economics_income_wide
+    source_column: pi_total
+    formula: null
+    unit_format: currency
+    subject_areas: [income]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Scale-heavy measure; compare within common geography grain.
+    status: active
+
+  - metric_id: pi_wages_salary
+    display_name: Wages And Salary Income
+    description: Wages and salary disbursements.
+    source_table: economics_income_wide
+    source_column: pi_wages_salary
+    formula: null
+    unit_format: currency
+    subject_areas: [income]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: One component of the broader personal income total.
+    status: active
+
+  - metric_id: pi_wage_share
+    display_name: Wage Income Share
+    description: Share of personal income from wages and salaries.
+    source_table: economics_income_wide
+    source_column: pi_wage_share
+    formula: pi_wages_salary / pi_total
+    unit_format: percent
+    subject_areas: [income_structure]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Helpful for distinguishing wage-driven from transfer- or asset-driven income structures.
+    status: active
+
+  - metric_id: pov_rate
+    display_name: Poverty Rate
+    description: Poverty rate.
+    source_table: economics_income_wide
+    source_column: pov_rate
+    formula: null
+    unit_format: percent
+    subject_areas: [poverty]
+    themes: [livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Household hardship proxy, not a direct cost-of-living measure.
+    status: active
+
+  - metric_id: gini_index
+    display_name: Gini Index
+    description: Household income inequality index.
+    source_table: economics_income_wide
+    source_column: gini_index
+    formula: null
+    unit_format: index
+    subject_areas: [inequality]
+    themes: [character, livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Not directly comparable to currency levels.
+    status: active
+
+  - metric_id: rpp_real_pc_income
+    display_name: RPP-Adjusted Per-Capita Income
+    description: Regional-price-parity-adjusted real per-capita income.
+    source_table: affordability_wide
+    source_column: rpp_real_pc_income
+    formula: null
+    unit_format: currency
+    subject_areas: [affordability]
+    themes: [livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Null where BEA regional price parity inputs are unavailable.
+    status: active
+
+  - metric_id: rpp_all_items
+    display_name: Regional Price Parity Index
+    description: BEA regional price parity all-items index.
+    source_table: affordability_wide
+    source_column: rpp_all_items
+    formula: null
+    unit_format: index
+    subject_areas: [affordability]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Relative price index, not an affordability outcome by itself.
+    status: active
+
+  - metric_id: rpp_price_deflator
+    display_name: Regional Price Deflator
+    description: Price parity deflator used in affordability adjustments.
+    source_table: affordability_wide
+    source_column: rpp_price_deflator
+    formula: null
+    unit_format: index
+    subject_areas: [affordability]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Use only as supporting context for adjusted income ratios.
+    status: active
+
+  - metric_id: rent_to_rpp_income
+    display_name: Rent To RPP-Adjusted Income Ratio
+    description: Annualized median rent divided by RPP-adjusted income.
+    source_table: affordability_wide
+    source_column: rent_to_rpp_income
+    formula: annualized_median_rent / rpp_real_pc_income
+    unit_format: ratio
+    subject_areas: [affordability]
+    themes: [livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Best cross-market affordability ratio in the current Gold layer.
+    status: active
+
+  - metric_id: value_to_rpp_income
+    display_name: Home Value To RPP-Adjusted Income Ratio
+    description: Median home value divided by RPP-adjusted income.
+    source_table: affordability_wide
+    source_column: value_to_rpp_income
+    formula: median_home_value / rpp_real_pc_income
+    unit_format: ratio
+    subject_areas: [affordability]
+    themes: [livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Useful for normalized ownership affordability comparisons.
+    status: active
+
+  - metric_id: pct_same_house
+    display_name: Share In Same House
+    description: Share of residents living in the same house as one year earlier.
+    source_table: migration_wide
+    source_column: pct_same_house
+    formula: null
+    unit_format: percent
+    subject_areas: [migration]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: High values can mean rootedness or low mobility, depending on context.
+    status: active
+
+  - metric_id: pct_moved_diff_st
+    display_name: Share Moved From Different State
+    description: Share of residents who moved from a different state within the past year.
+    source_table: migration_wide
+    source_column: pct_moved_diff_st
+    formula: null
+    unit_format: percent
+    subject_areas: [migration]
+    themes: [character, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Interstate movers are a partial view of migration, not total net migration.
+    status: active
+
+  - metric_id: pct_moved_abroad
+    display_name: Share Moved From Abroad
+    description: Share of residents who moved from abroad within the past year.
+    source_table: migration_wide
+    source_column: pct_moved_abroad
+    formula: null
+    unit_format: percent
+    subject_areas: [migration]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Can be small in most geographies but analytically important in immigrant gateways.
+    status: active
+
+  - metric_id: mobility_rate
+    display_name: Mobility Rate
+    description: Share of residents who changed residence within the past year.
+    source_table: migration_wide
+    source_column: mobility_rate
+    formula: 1 - pct_same_house
+    unit_format: percent
+    subject_areas: [migration]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Blends local churn with longer-distance moves.
+    status: active
+
+  - metric_id: migration_churn
+    display_name: Migration Churn
+    description: Combined share of movers as a churn-style mobility indicator.
+    source_table: migration_wide
+    source_column: migration_churn
+    formula: null
+    unit_format: percent
+    subject_areas: [migration]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Use with subtype shares to distinguish local from longer-distance movement.
+    status: active
+
+  - metric_id: pct_foreign_born
+    display_name: Foreign-Born Share
+    description: Share of residents born outside the United States.
+    source_table: migration_wide
+    source_column: pct_foreign_born
+    formula: null
+    unit_format: percent
+    subject_areas: [nativity]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Native vs foreign-born composition differs from annual migration flows.
+    status: active
+
+  - metric_id: pct_non_citizen
+    display_name: Non-Citizen Share
+    description: Share of residents who are non-citizens.
+    source_table: migration_wide
+    source_column: pct_non_citizen
+    formula: null
+    unit_format: percent
+    subject_areas: [nativity]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Distinct from foreign-born share because some foreign-born residents are citizens.
+    status: active
+
+  - metric_id: irs_net_migration
+    display_name: IRS Net Migration
+    description: IRS-based net migration count.
+    source_table: migration_wide
+    source_column: irs_net_migration
+    formula: irs_inflow_total - irs_outflow_total
+    unit_format: integer
+    subject_areas: [migration]
+    themes: [opportunity, character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: IRS coverage is incomplete in some slices of the warehouse.
+    status: active
+
+  - metric_id: irs_net_migration_rate
+    display_name: IRS Net Migration Rate
+    description: IRS-based net migration rate.
+    source_table: migration_wide
+    source_column: irs_net_migration_rate
+    formula: null
+    unit_format: percent
+    subject_areas: [migration]
+    themes: [opportunity, character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Prefer for cross-geography comparison over raw IRS net migration counts.
+    status: active
+
+  - metric_id: irs_migration_churn
+    display_name: IRS Migration Churn
+    description: IRS-based migration churn rate.
+    source_table: migration_wide
+    source_column: irs_migration_churn
+    formula: null
+    unit_format: percent
+    subject_areas: [migration]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Null where IRS flow data is unavailable.
+    status: active
+
+  - metric_id: pct_commute_drive_alone
+    display_name: Drive-Alone Commute Share
+    description: Share of commuters who drive alone.
+    source_table: transport_built_form_wide
+    source_column: pct_commute_drive_alone
+    formula: null
+    unit_format: percent
+    subject_areas: [transport]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: High values can reflect both sprawl and limited transit access.
+    status: active
+
+  - metric_id: pct_commute_transit
+    display_name: Transit Commute Share
+    description: Share of commuters who use public transit.
+    source_table: transport_built_form_wide
+    source_column: pct_commute_transit
+    formula: null
+    unit_format: percent
+    subject_areas: [transport]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Small values are common outside large transit markets.
+    status: active
+
+  - metric_id: pct_commute_walk
+    display_name: Walk Commute Share
+    description: Share of commuters who walk to work.
+    source_table: transport_built_form_wide
+    source_column: pct_commute_walk
+    formula: null
+    unit_format: percent
+    subject_areas: [transport]
+    themes: [livability, character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Can be highly localized in dense urban cores and college towns.
+    status: active
+
+  - metric_id: pct_commute_wfh
+    display_name: Work-From-Home Share
+    description: Share of workers who work from home.
+    source_table: transport_built_form_wide
+    source_column: pct_commute_wfh
+    formula: null
+    unit_format: percent
+    subject_areas: [transport]
+    themes: [livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Reflects occupational mix as much as transport access.
+    status: active
+
+  - metric_id: pct_low_car_commute
+    display_name: Low-Car Commute Share
+    description: Combined low-car commute mode share.
+    source_table: transport_built_form_wide
+    source_column: pct_low_car_commute
+    formula: null
+    unit_format: percent
+    subject_areas: [transport]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Composite measure designed for higher-level mobility interpretation.
+    status: active
+
+  - metric_id: pct_hh_0_vehicles
+    display_name: Zero-Vehicle Household Share
+    description: Share of households with zero vehicles available.
+    source_table: transport_built_form_wide
+    source_column: pct_hh_0_vehicles
+    formula: null
+    unit_format: percent
+    subject_areas: [transport]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Can indicate either transit-rich accessibility or household constraint depending on context.
+    status: active
+
+  - metric_id: mean_travel_time
+    display_name: Mean Travel Time
+    description: Mean commute travel time in minutes.
+    source_table: transport_built_form_wide
+    source_column: mean_travel_time
+    formula: null
+    unit_format: number_1dp
+    subject_areas: [transport]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Sensitive to geography boundary effects and telework prevalence.
+    status: active
+
+  - metric_id: density_population
+    display_name: Population Density Input
+    description: Population density input measure.
+    source_table: transport_built_form_wide
+    source_column: density_population
+    formula: null
+    unit_format: density
+    subject_areas: [built_form]
+    themes: [livability, character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Underlying density fields can be null for some rows.
+    status: active
+
+  - metric_id: gross_density_sqmi
+    display_name: Gross Density Per Square Mile
+    description: Gross population density per square mile.
+    source_table: transport_built_form_wide
+    source_column: gross_density_sqmi
+    formula: null
+    unit_format: density
+    subject_areas: [built_form]
+    themes: [livability, character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Not population-weighted.
+    status: active
+
+  - metric_id: pop_weighted_density_sqmi
+    display_name: Population-Weighted Density
+    description: Population-weighted density per square mile.
+    source_table: transport_built_form_wide
+    source_column: pop_weighted_density_sqmi
+    formula: null
+    unit_format: density
+    subject_areas: [built_form]
+    themes: [livability, character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Better experience-oriented density signal than gross density when populated.
+    status: active
+
+  - metric_id: nominal_gdp_total
+    display_name: Nominal GDP
+    description: Nominal gross domestic product.
+    source_table: economics_gdp_wide
+    source_column: nominal_gdp_total
+    formula: null
+    unit_format: currency
+    subject_areas: [gdp]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: true
+    growth_windows: [5]
+    caveats: Scale-heavy measure; compare within common geography grain.
+    status: active
+
+  - metric_id: nominal_gdp_growth_5yr
+    display_name: Nominal GDP Growth (5 Year)
+    description: Five-year percentage change in nominal GDP.
+    source_table: economics_gdp_wide
+    source_column: nominal_gdp_growth_5yr
+    formula: null
+    unit_format: percent
+    subject_areas: [gdp_growth]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Includes both real growth and price effects.
+    status: active
+
+  - metric_id: nominal_gdp_pc
+    display_name: Nominal GDP Per Capita
+    description: Nominal GDP per capita.
+    source_table: economics_gdp_wide
+    source_column: nominal_gdp_pc
+    formula: null
+    unit_format: currency
+    subject_areas: [gdp]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Can swing sharply in small geographies.
+    status: active
+
+  - metric_id: real_gdp_total
+    display_name: Real GDP
+    description: Real gross domestic product.
+    source_table: economics_gdp_wide
+    source_column: real_gdp_total
+    formula: null
+    unit_format: currency
+    subject_areas: [gdp]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: true
+    growth_windows: [5]
+    caveats: Preferred over nominal GDP for cross-time productivity narratives.
+    status: active
+
+  - metric_id: real_gdp_growth_5yr
+    display_name: Real GDP Growth (5 Year)
+    description: Five-year percentage change in real GDP.
+    source_table: economics_gdp_wide
+    source_column: real_gdp_growth_5yr
+    formula: null
+    unit_format: percent
+    subject_areas: [gdp_growth]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Strong default economic-output momentum measure.
+    status: active
+
+  - metric_id: real_gdp_pc
+    display_name: Real GDP Per Capita
+    description: Real GDP per capita.
+    source_table: economics_gdp_wide
+    source_column: real_gdp_pc
+    formula: null
+    unit_format: currency
+    subject_areas: [gdp]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Not a household income proxy; reflects output intensity.
+    status: active
+
+  - metric_id: productivity_index
+    display_name: Productivity Index
+    description: Output-per-worker productivity index.
+    source_table: economics_gdp_wide
+    source_column: productivity_index
+    formula: real_gdp_total / employed
+    unit_format: index
+    subject_areas: [productivity]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Depends on the quality of both GDP and employment inputs.
+    status: active
+
+  - metric_id: productivity_growth_5yr
+    display_name: Productivity Growth (5 Year)
+    description: Five-year percentage change in productivity.
+    source_table: economics_gdp_wide
+    source_column: productivity_growth_5yr
+    formula: null
+    unit_format: percent
+    subject_areas: [productivity]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Best used directionally, not as a labor-market welfare measure by itself.
+    status: active
+
+  - metric_id: working_age_pop
+    display_name: Working-Age Population
+    description: Working-age population base.
+    source_table: economics_labor_wide
+    source_column: working_age_pop
+    formula: null
+    unit_format: integer
+    subject_areas: [labor]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Demographic context measure for labor-force calculations.
+    status: active
+
+  - metric_id: labor_force
+    display_name: Labor Force
+    description: Total labor force.
+    source_table: economics_labor_wide
+    source_column: labor_force
+    formula: null
+    unit_format: integer
+    subject_areas: [labor]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Scale-heavy; compare within common geography grain.
+    status: active
+
+  - metric_id: lfpr
+    display_name: Labor Force Participation Rate
+    description: Labor force participation rate.
+    source_table: economics_labor_wide
+    source_column: lfpr
+    formula: labor_force / working_age_pop
+    unit_format: percent
+    subject_areas: [labor]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: true
+    growth_windows: [5]
+    caveats: Can move for both economic and demographic reasons.
+    status: active
+
+  - metric_id: lfpr_growth_5yr
+    display_name: Labor Force Participation Growth (5 Year)
+    description: Five-year percentage change in labor force participation rate.
+    source_table: economics_labor_wide
+    source_column: lfpr_growth_5yr
+    formula: null
+    unit_format: percent
+    subject_areas: [labor]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Read together with unemployment and job-to-population context.
+    status: active
+
+  - metric_id: employed
+    display_name: Employed Population
+    description: Employed residents or workers in the labor series.
+    source_table: economics_labor_wide
+    source_column: employed
+    formula: null
+    unit_format: integer
+    subject_areas: [labor]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Definition follows the labor source series rather than a jobs-at-establishments concept.
+    status: active
+
+  - metric_id: jobs_to_pop_ratio
+    display_name: Jobs To Population Ratio
+    description: Employed population divided by total population.
+    source_table: economics_labor_wide
+    source_column: jobs_to_pop_ratio
+    formula: employed / pop_total
+    unit_format: percent
+    subject_areas: [labor]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Broad labor-market signal that is sensitive to age structure.
+    status: active
+
+  - metric_id: unemployed
+    display_name: Unemployed Population
+    description: Unemployed residents in the labor series.
+    source_table: economics_labor_wide
+    source_column: unemployed
+    formula: null
+    unit_format: integer
+    subject_areas: [labor]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Raw count should usually be paired with the rate measure.
+    status: active
+
+  - metric_id: pct_unemployment_rate
+    display_name: Unemployment Rate
+    description: Unemployment rate.
+    source_table: economics_labor_wide
+    source_column: pct_unemployment_rate
+    formula: unemployed / labor_force
+    unit_format: percent
+    subject_areas: [labor]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Short-run labor tightness measure, not a full job quality signal.
+    status: active
+
+  - metric_id: acs_ind_total_emp
+    display_name: Total Industry Employment
+    description: Total employed population in the ACS industry breakout.
+    source_table: economics_industry_wide
+    source_column: acs_ind_total_emp
+    formula: null
+    unit_format: integer
+    subject_areas: [industry]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Composition fields are often more useful than this raw total.
+    status: active
+
+  - metric_id: pct_acs_ind_manufacturing
+    display_name: Manufacturing Employment Share
+    description: Share of workers employed in manufacturing.
+    source_table: economics_industry_wide
+    source_column: pct_acs_ind_manufacturing
+    formula: null
+    unit_format: percent
+    subject_areas: [industry]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Industrial mix signal, not a performance measure by itself.
+    status: active
+
+  - metric_id: pct_acs_ind_professional
+    display_name: Professional Services Employment Share
+    description: Share of workers employed in professional services.
+    source_table: economics_industry_wide
+    source_column: pct_acs_ind_professional
+    formula: null
+    unit_format: percent
+    subject_areas: [industry]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Useful talent-economy proxy when read with education measures.
+    status: active
+
+  - metric_id: pct_acs_ind_educ_health
+    display_name: Education And Health Employment Share
+    description: Share of workers employed in education and health services.
+    source_table: economics_industry_wide
+    source_column: pct_acs_ind_educ_health
+    formula: null
+    unit_format: percent
+    subject_areas: [industry]
+    themes: [opportunity, livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Can indicate both eds-and-meds concentration and anchor institutions.
+    status: active
+
+  - metric_id: pct_acs_ind_arts_accomm_food
+    display_name: Arts, Accommodations, And Food Employment Share
+    description: Share of workers employed in arts, accommodations, and food services.
+    source_table: economics_industry_wide
+    source_column: pct_acs_ind_arts_accomm_food
+    formula: null
+    unit_format: percent
+    subject_areas: [industry]
+    themes: [character, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Can capture tourism and experience-economy orientation.
+    status: active
+
+  - metric_id: pct_real_gdp_manufacturing
+    display_name: Manufacturing GDP Share
+    description: Share of real GDP from manufacturing.
+    source_table: economics_industry_wide
+    source_column: pct_real_gdp_manufacturing
+    formula: null
+    unit_format: percent
+    subject_areas: [industry]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: GDP-share view can differ materially from employment-share view.
+    status: active
+
+  - metric_id: pct_real_gdp_professional
+    display_name: Professional Services GDP Share
+    description: Share of real GDP from professional services.
+    source_table: economics_industry_wide
+    source_column: pct_real_gdp_professional
+    formula: null
+    unit_format: percent
+    subject_areas: [industry]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Output-share complement to the employment-share measure.
+    status: active
+
+  - metric_id: pct_real_gdp_edu_health
+    display_name: Education And Health GDP Share
+    description: Share of real GDP from education and health.
+    source_table: economics_industry_wide
+    source_column: pct_real_gdp_edu_health
+    formula: null
+    unit_format: percent
+    subject_areas: [industry]
+    themes: [opportunity, livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Strong anchor-institution signal in university and healthcare markets.
+    status: active
+
+  - metric_id: industry_concentration_hhi
+    display_name: GDP Industry Concentration HHI
+    description: Sector concentration index based on GDP mix.
+    source_table: economics_industry_wide
+    source_column: industry_concentration_hhi
+    formula: sum(sector_share^2)
+    unit_format: index
+    subject_areas: [industry_diversification]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Higher values indicate concentration rather than diversification.
+    status: active
+
+  - metric_id: acs_industry_concentration_hhi
+    display_name: Employment Industry Concentration HHI
+    description: Sector concentration index based on ACS worker mix.
+    source_table: economics_industry_wide
+    source_column: acs_industry_concentration_hhi
+    formula: sum(employment_share^2)
+    unit_format: index
+    subject_areas: [industry_diversification]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Employment-based diversification lens that may differ from GDP concentration.
+    status: active

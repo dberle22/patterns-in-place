@@ -1,0 +1,72 @@
+# ── R ────────────────────────────────────────────────────────────────────────
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+renv/library/
+*.rds
+Rplots.pdf
+
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.coverage
+
+# ── Data files ───────────────────────────────────────────────────────────────
+data/raw/
+data/interim/
+data/processed/
+*.csv
+*.parquet
+*.xlsx
+*.zip
+
+# ── DuckDB ───────────────────────────────────────────────────────────────────
+*.duckdb
+*.duckdb.wal
+
+# ── Geo / binary outputs ─────────────────────────────────────────────────────
+*.gpkg
+*.shp
+*.dbf
+*.shx
+*.prj
+*.tif
+*.html
+!docs/**/*.html
+!**/README*.html
+
+# ── Secrets and local config ─────────────────────────────────────────────────
+.env
+.Renviron
+config/paths.R
+config/data_sources.yaml
+config/api_keys.yaml
+.streamlit/secrets.toml
+
+# ── Product output folders ───────────────────────────────────────────────────
+publisher/publisher/output/
+publisher/analysis/vacancy_rates/**/chart*.png
+publisher/analysis/vacancy_rates/**/result*.csv
+foundations/visual_library/charts/**/sample_output/
+foundations/data_dictionary/artifacts/
+exploration/**/outputs/
+exploration/**/cache/
+
+# ── OS / editor ──────────────────────────────────────────────────────────────
+.DS_Store
+.idea/
+.vscode/
+
+# ── Claude Code local settings ───────────────────────────────────────────────
+.claude/settings.local.json
+
+# ── Notes vault (Obsidian — not version controlled here) ─────────────────────
+notes/

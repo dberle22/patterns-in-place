@@ -1,0 +1,765 @@
+table_name: tx_isd_metrics
+schema: gold
+grain: One row per district_name (inferred).
+primary_key: district_name
+foreign_keys: []
+time_coverage:
+  type: unknown
+  column: ~
+  min: ~
+  max: ~
+geo_coverage:
+  notes: []
+columns:
+  - name: district_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 999
+    min_value: ~
+    max_value: ~
+    min_length: 7
+    max_length: 33
+    top_values:
+      - value: BIG SANDY ISD
+        count: 2
+      - value: CENTERVILLE ISD
+        count: 2
+      - value: CHAPEL HILL ISD
+        count: 2
+      - value: DAWSON ISD
+        count: 2
+      - value: EDGEWOOD ISD
+        count: 2
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: county_number
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 250
+    min_value: ~
+    max_value: ~
+    min_length: 3
+    max_length: 3
+    top_values:
+      - value: '101'
+        count: 19
+      - value: '161'
+        count: 18
+      - value: '220'
+        count: 16
+      - value: '015'
+        count: 15
+      - value: '108'
+        count: 15
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: county_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 250
+    min_value: ~
+    max_value: ~
+    min_length: 10
+    max_length: 20
+    top_values:
+      - value: HARRIS COUNTY
+        count: 19
+      - value: MCLENNAN COUNTY
+        count: 18
+      - value: TARRANT COUNTY
+        count: 16
+      - value: BEXAR COUNTY
+        count: 15
+      - value: HIDALGO COUNTY
+        count: 15
+    definition: County or county-equivalent name from source.
+    needs_confirmation: no
+  - name: esc_region_served
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 20
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: '07'
+        count: 94
+      - value: '10'
+        count: 80
+      - value: '12'
+        count: 77
+      - value: '11'
+        count: 76
+      - value: '16'
+        count: 60
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: district_city
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 904
+    min_value: ~
+    max_value: ~
+    min_length: 3
+    max_length: 22
+    top_values:
+      - value: SAN ANTONIO
+        count: 12
+      - value: CORPUS CHRISTI
+        count: 6
+      - value: FORT WORTH
+        count: 6
+      - value: HOUSTON
+        count: 6
+      - value: WACO
+        count: 6
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: district_zip
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1003
+    min_value: ~
+    max_value: ~
+    min_length: 5
+    max_length: 10
+    top_values:
+      - value: '75460'
+        count: 2
+      - value: '75647'
+        count: 2
+      - value: '76240'
+        count: 2
+      - value: '76401'
+        count: 2
+      - value: '77327'
+        count: 2
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: district_type
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: ~
+    max_value: ~
+    min_length: 11
+    max_length: 11
+    top_values:
+      - value: INDEPENDENT
+        count: 1010
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: nces_district_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1010
+    min_value: ~
+    max_value: ~
+    min_length: 7
+    max_length: 7
+    top_values:
+      - value: '4800001'
+        count: 1
+      - value: '4800002'
+        count: 1
+      - value: '4800003'
+        count: 1
+      - value: '4800005'
+        count: 1
+      - value: '4800006'
+        count: 1
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: district_number
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1010
+    min_value: ~
+    max_value: ~
+    min_length: 6
+    max_length: 6
+    top_values:
+      - value: 001902
+        count: 1
+      - value: 001903
+        count: 1
+      - value: 001904
+        count: 1
+      - value: 001906
+        count: 1
+      - value: 001907
+        count: 1
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: enrollment
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 863
+    min_value: 9.0
+    max_value: 176727.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '141.0'
+        count: 5
+      - value: '227.0'
+        count: 5
+      - value: '119.0'
+        count: 4
+      - value: '243.0'
+        count: 4
+      - value: '343.0'
+        count: 4
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: enrollment_pct_rank
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 863
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.057482656095143705'
+        count: 5
+      - value: '0.13974231912784935'
+        count: 5
+      - value: '0.030723488602576808'
+        count: 4
+      - value: '0.16154608523290387'
+        count: 4
+      - value: '0.22893954410307235'
+        count: 4
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: number_of_schools
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 70
+    min_value: 1
+    max_value: 274
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1'
+        count: 193
+      - value: '3'
+        count: 186
+      - value: '4'
+        count: 125
+      - value: '2'
+        count: 115
+      - value: '5'
+        count: 86
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: avg_school_enrollment
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 862
+    min_value: -1.0
+    max_value: 3075.25
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '141.0'
+        count: 6
+      - value: '119.0'
+        count: 4
+      - value: '163.0'
+        count: 4
+      - value: '116.0'
+        count: 3
+      - value: '129.0'
+        count: 3
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: title_1_allocations
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 983
+    min_value: 0.0
+    max_value: 1.6976089e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 17
+      - value: '21534.039622084958'
+        count: 3
+      - value: '104270.0865911482'
+        count: 2
+      - value: '107670.19811042478'
+        count: 2
+      - value: '20400.66911565943'
+        count: 2
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: allocations_per_student
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 988
+    min_value: 0.0
+    max_value: 2397.82
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 17
+      - value: '201.12'
+        count: 2
+      - value: '222.6'
+        count: 2
+      - value: '237.49'
+        count: 2
+      - value: '296.4'
+        count: 2
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: student_allocation_pct_rank
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 988
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 17
+      - value: '0.333994053518335'
+        count: 2
+      - value: '0.3865213082259663'
+        count: 2
+      - value: '0.42120911793855303'
+        count: 2
+      - value: '0.5609514370664024'
+        count: 2
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: economically_disadvantaged_percent
+    type: DOUBLE
+    null_pct: 12.5743
+    distinct_count: 819
+    min_value: 0.0054
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 127
+      - value: '0.3936'
+        count: 3
+      - value: '0.4919'
+        count: 3
+      - value: '0.6386'
+        count: 3
+      - value: '0.6522'
+        count: 3
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: economic_disadvantaged_pct_rank
+    type: DOUBLE
+    null_pct: 12.5743
+    distinct_count: 819
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 127
+      - value: '0.16666666666666666'
+        count: 3
+      - value: '0.3333333333333333'
+        count: 3
+      - value: '0.6349206349206349'
+        count: 3
+      - value: '0.6643990929705216'
+        count: 3
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: population
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 979
+    min_value: 53.0
+    max_value: 1480398.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1827.0'
+        count: 3
+      - value: '1003.0'
+        count: 2
+      - value: '10224.0'
+        count: 2
+      - value: '1070.0'
+        count: 2
+      - value: '1085.0'
+        count: 2
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: population_growth_5yr
+    type: DOUBLE
+    null_pct: 1.1881
+    distinct_count: 996
+    min_value: -0.7465619
+    max_value: 1.720339
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 12
+      - value: '0.0'
+        count: 3
+      - value: '-0.00013047088127149804'
+        count: 1
+      - value: '-0.00015137753557372085'
+        count: 1
+      - value: '-0.0004387339392040113'
+        count: 1
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: population_growth_pct_rank
+    type: DOUBLE
+    null_pct: 1.1881
+    distinct_count: 996
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 12
+      - value: '0.4242728184553661'
+        count: 3
+      - value: '0.0'
+        count: 1
+      - value: '0.0010030090270812437'
+        count: 1
+      - value: '0.0020060180541624875'
+        count: 1
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: pop_growth_quartile
+    type: BIGINT
+    null_pct: 1.1881
+    distinct_count: 4
+    min_value: 1.0
+    max_value: 4.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1'
+        count: 250
+      - value: '2'
+        count: 250
+      - value: '3'
+        count: 249
+      - value: '4'
+        count: 249
+      - value: ~
+        count: 12
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: median_age
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 297
+    min_value: 16.7
+    max_value: 68.1
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '35.8'
+        count: 13
+      - value: '36.2'
+        count: 12
+      - value: '36.4'
+        count: 11
+      - value: '36.8'
+        count: 11
+      - value: '38.3'
+        count: 11
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: median_income
+    type: DOUBLE
+    null_pct: 0.9901
+    distinct_count: 961
+    min_value: 19405.0
+    max_value: 250001.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 10
+      - value: '58750.0'
+        count: 4
+      - value: '78750.0'
+        count: 4
+      - value: '61250.0'
+        count: 3
+      - value: '76250.0'
+        count: 3
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: child_poverty_rate
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 951
+    min_value: 0.0
+    max_value: 0.6962025
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 54
+      - value: '0.15217391304347827'
+        count: 3
+      - value: '0.07142857142857142'
+        count: 2
+      - value: '0.1232876712328767'
+        count: 2
+      - value: '0.21428571428571427'
+        count: 2
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: child_poverty_pct_rank
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 951
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 54
+      - value: '0.48562933597621405'
+        count: 3
+      - value: '0.2309217046580773'
+        count: 2
+      - value: '0.39345887016848363'
+        count: 2
+      - value: '0.6778989098116948'
+        count: 2
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: no_higher_ed_share
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 1009
+    min_value: 0.0
+    max_value: 0.9093484
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.7454100367197063'
+        count: 2
+      - value: '0.0'
+        count: 1
+      - value: '0.08550790986316703'
+        count: 1
+      - value: '0.138840546080365'
+        count: 1
+      - value: '0.1404833836858006'
+        count: 1
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: households_w_children_share
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 1002
+    min_value: 0.0072464
+    max_value: 0.7225025
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.3333333333333333'
+        count: 3
+      - value: '0.16993464052287582'
+        count: 2
+      - value: '0.18421052631578946'
+        count: 2
+      - value: '0.2734741784037559'
+        count: 2
+      - value: '0.3380952380952381'
+        count: 2
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: hispanic_any_share
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 1009
+    min_value: 0.0
+    max_value: 0.9942645
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 2
+      - value: '0.002607561929595828'
+        count: 1
+      - value: '0.006032868733097566'
+        count: 1
+      - value: '0.008333333333333333'
+        count: 1
+      - value: '0.010138248847926268'
+        count: 1
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: diversity_index
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 1010
+    min_value: 0.0114052
+    max_value: 0.7644864
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.011405193404980363'
+        count: 1
+      - value: '0.02391090916467209'
+        count: 1
+      - value: '0.024341076784253457'
+        count: 1
+      - value: '0.024358933648274017'
+        count: 1
+      - value: '0.02904752999952387'
+        count: 1
+    definition: Diversity index, calculated as 1 - sum of squares of percent of races,
+      lower score means less diversity, higher score means more diversity.
+    needs_confirmation: no
+  - name: numerator
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 1009
+    min_value: 0.0
+    max_value: 0.9659187
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.4839444995044599'
+        count: 2
+      - value: '0.0'
+        count: 1
+      - value: '0.0002973240832507433'
+        count: 1
+      - value: '0.011000991080277502'
+        count: 1
+      - value: '0.019920713577799804'
+        count: 1
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: denom_weight
+    type: DECIMAL(16,2)
+    null_pct: 0.0
+    distinct_count: 2
+    min_value: 0.8
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.00'
+        count: 883
+      - value: '0.80'
+        count: 127
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: lead_score
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 1009
+    min_value: 0.0
+    max_value: 96.5918749
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '60.493062438057486'
+        count: 2
+      - value: '0.0'
+        count: 1
+      - value: '0.03716551040634291'
+        count: 1
+      - value: '1.3751238850346876'
+        count: 1
+      - value: '10.7817623250159'
+        count: 1
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: lead_score_growth_boost
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 1010
+    min_value: -1.7612351
+    max_value: 98.5918749
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '-1.7612350523294884'
+        count: 1
+      - value: '0.3613397787261583'
+        count: 1
+      - value: '1.0579781962338952'
+        count: 1
+      - value: '1.9813852200939834'
+        count: 1
+      - value: '10.491730884623422'
+        count: 1
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: lead_score_rank
+    type: BIGINT
+    null_pct: 0.0
+    distinct_count: 1009
+    min_value: 1.0
+    max_value: 1010.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '297'
+        count: 2
+      - value: '1'
+        count: 1
+      - value: '10'
+        count: 1
+      - value: '100'
+        count: 1
+      - value: '1000'
+        count: 1
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: lead_score_growth_boost_rank
+    type: BIGINT
+    null_pct: 0.0
+    distinct_count: 1010
+    min_value: 1.0
+    max_value: 1010.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1'
+        count: 1
+      - value: '10'
+        count: 1
+      - value: '100'
+        count: 1
+      - value: '1000'
+        count: 1
+      - value: '1001'
+        count: 1
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+lineage:
+  - step: write_target
+    script: scripts/etl/gold/gold_tx_school_district.sql
+    details: 'scripts/etl/gold/gold_tx_school_district.sql:5:create or replace table
+      metro_deep_dive.gold.tx_isd_metrics as '
+  - step: write_target
+    script: scripts/etl/gold/gold_tx_school_district.sql
+    details: 'scripts/etl/gold/gold_tx_school_district.sql:180:from metro_deep_dive.gold.tx_isd_metrics '
+kpi_definitions: []

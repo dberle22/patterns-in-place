@@ -1,0 +1,196 @@
+version: 2
+catalog_name: geography_catalog
+description: Canonical geography levels, hierarchy edges, and restricted rollup paths for the patterns-foundations semantic layer.
+geo_levels:
+  - geo_level: us
+    display_name: United States
+    plural_display_name: United States
+    id_shape: single literal row
+    hierarchy_rank: 1
+    supported_in_mvp: true
+    notes:
+      - Warehouse rows may appear as `US`; the semantic layer normalizes to `us`.
+
+  - geo_level: region
+    display_name: Census Region
+    plural_display_name: Census Regions
+    id_shape: small integer-like code
+    hierarchy_rank: 2
+    supported_in_mvp: true
+    notes:
+      - Warehouse rows may appear as `Region`; the semantic layer normalizes to `region`.
+
+  - geo_level: division
+    display_name: Census Division
+    plural_display_name: Census Divisions
+    id_shape: small integer-like code
+    hierarchy_rank: 3
+    supported_in_mvp: true
+    notes:
+      - Derived from Census division mappings in `silver.xwalk_state_region`.
+
+  - geo_level: state
+    display_name: State
+    plural_display_name: States
+    id_shape: 2-digit FIPS
+    hierarchy_rank: 4
+    supported_in_mvp: true
+    notes:
+      - Includes DC in the current crosswalk coverage.
+
+  - geo_level: cbsa
+    display_name: CBSA
+    plural_display_name: CBSAs
+    id_shape: 5-digit CBSA code
+    hierarchy_rank: 5
+    supported_in_mvp: true
+    notes:
+      - CBSA membership uses OMB county assignments.
+
+  - geo_level: county
+    display_name: County
+    plural_display_name: Counties
+    id_shape: 5-digit county GEOID
+    hierarchy_rank: 6
+    supported_in_mvp: true
+    notes:
+      - County-to-state mapping is exact and one-to-one.
+
+  - geo_level: place
+    display_name: Place
+    plural_display_name: Places
+    id_shape: Census place GEOID
+    hierarchy_rank: 7
+    supported_in_mvp: true
+    notes:
+      - Place parent relationships remain intentionally restricted in the current contract.
+
+  - geo_level: zcta
+    display_name: ZCTA
+    plural_display_name: ZCTAs
+    id_shape: 5-digit ZIP or ZCTA code
+    hierarchy_rank: 8
+    supported_in_mvp: true
+    notes:
+      - Crosswalks to county, CBSA, and tract are weighted and many-to-many.
+
+  - geo_level: tract
+    display_name: Census Tract
+    plural_display_name: Census Tracts
+    id_shape: 11-digit tract GEOID
+    hierarchy_rank: 9
+    supported_in_mvp: true
+    notes:
+      - Tract-to-county mapping is exact in the TIGER-based crosswalk.
+
+  - geo_level: tx_isd
+    display_name: Texas School District
+    plural_display_name: Texas School Districts
+    id_shape: NCES district identifier
+    hierarchy_rank: 10
+    supported_in_mvp: false
+    notes:
+      - Specialized education geography used by `gold.tx_isd_metrics`.
+      - Not part of the default national geography hierarchy.
+
+hierarchy_edges:
+  - child_geo_level: county
+    parent_geo_level: state
+    relationship_type: exact
+    source_table: silver.xwalk_county_state
+    valid_for_rollup: true
+
+  - child_geo_level: state
+    parent_geo_level: division
+    relationship_type: exact
+    source_table: silver.xwalk_state_region
+    valid_for_rollup: true
+
+  - child_geo_level: state
+    parent_geo_level: region
+    relationship_type: exact
+    source_table: silver.xwalk_state_region
+    valid_for_rollup: true
+
+  - child_geo_level: division
+    parent_geo_level: region
+    relationship_type: exact
+    source_table: silver.xwalk_state_region
+    valid_for_rollup: true
+
+  - child_geo_level: tract
+    parent_geo_level: county
+    relationship_type: exact
+    source_table: silver.xwalk_tract_county
+    valid_for_rollup: true
+
+  - child_geo_level: county
+    parent_geo_level: cbsa
+    relationship_type: exact_subset
+    source_table: silver.xwalk_cbsa_county
+    valid_for_rollup: true
+    caveat: Counties outside a CBSA have no parent CBSA row.
+
+  - child_geo_level: zcta
+    parent_geo_level: county
+    relationship_type: weighted_many_to_many
+    source_table: silver.xwalk_zcta_county
+    valid_for_rollup: false
+    caveat: Approximation only; not safe for default additive rollups.
+
+  - child_geo_level: zcta
+    parent_geo_level: cbsa
+    relationship_type: weighted_many_to_many
+    source_table: silver.xwalk_zcta_cbsa
+    valid_for_rollup: false
+    caveat: Many ZIPs span multiple CBSAs and some map to synthetic fallback codes.
+
+  - child_geo_level: zcta
+    parent_geo_level: tract
+    relationship_type: weighted_many_to_many
+    source_table: silver.xwalk_zcta_tract
+    valid_for_rollup: false
+    caveat: Use only with explicit weighting logic outside the default planner.
+
+valid_rollup_paths:
+  - path: [tract, county, state, division, region, us]
+    status: approved
+    notes: Exact rollup path for tract-based analyses.
+
+  - path: [county, state, division, region, us]
+    status: approved
+    notes: Exact rollup path for county-based analyses.
+
+  - path: [county, cbsa]
+    status: approved_with_subset_caveat
+    notes: Exact only for counties assigned to a CBSA.
+
+  - path: [state, division, region, us]
+    status: approved
+    notes: Exact Census hierarchy path.
+
+  - path: [cbsa]
+    status: terminal
+    notes: No exact parent hierarchy is currently approved above CBSA.
+
+invalid_or_restricted_rollups:
+  - path: [zcta, cbsa]
+    reason: Weighted many-to-many crosswalk; additive rollups require explicit weighting and bias controls.
+
+  - path: [zcta, county]
+    reason: Weighted many-to-many crosswalk; not safe for default SQL generation.
+
+  - path: [zcta, tract]
+    reason: Weighted many-to-many crosswalk; only allowed in future specialized workflows.
+
+  - path: [place, county]
+    reason: No approved place-to-county hierarchy is cataloged yet.
+
+  - path: [place, state]
+    reason: No approved place-to-state hierarchy is cataloged yet.
+
+  - path: [cbsa, state]
+    reason: CBSAs can cross state lines, so direct rollup is not exact.
+
+  - path: [tx_isd, county]
+    reason: No normalized district-to-county hierarchy is approved in the core semantic layer.

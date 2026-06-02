@@ -1,0 +1,213 @@
+table_name: bea_regional_metrics_ref
+schema: silver
+grain: One row per line_code (inferred).
+primary_key: line_code
+foreign_keys: []
+time_coverage:
+  type: range
+  column: vintage
+  min: '2025-12-09'
+  max: '2025-12-09'
+geo_coverage:
+  notes: []
+columns:
+- name: table
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 6
+  min_value: ~
+  max_value: ~
+  min_length: 5
+  max_length: 6
+  top_values:
+  - value: CAGDP2
+    count: 34
+  - value: CAGDP9
+    count: 34
+  - value: CAINC4
+    count: 20
+  - value: SARPP
+    count: 10
+  - value: MARPP
+    count: 8
+  definition: BEA source table identifier (for example, CAGDP2, CAGDP9, CAINC1, CAINC4,
+    MARPP).
+  needs_confirmation: no
+- name: line_code
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 50
+  min_value: ~
+  max_value: ~
+  min_length: 1
+  max_length: 2
+  top_values:
+  - value: '1'
+    count: 5
+  - value: '2'
+    count: 5
+  - value: '3'
+    count: 5
+  - value: '10'
+    count: 4
+  - value: '6'
+    count: 4
+  definition: 'Line code from BEA source tables, used to link to BEA datasets and metadata. Examples include: 1, 2, 3, 10, 6, etc.'
+  needs_confirmation: no
+- name: line_desc_clean
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 97
+  min_value: ~
+  max_value: ~
+  min_length: 10
+  max_length: 107
+  top_values:
+  - value: Employer contributions for government social insurance
+    count: 2
+  - value: Implicit regional price deflator
+    count: 2
+  - value: Per capita personal income
+    count: 2
+  - value: Personal income
+    count: 2
+  - value: Population
+    count: 2
+  definition: Cleaned description of the economic activity in the row (from BEA metadata).
+  needs_confirmation: no
+- name: metric_key
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 98
+  min_value: ~
+  max_value: ~
+  min_length: 7
+  max_length: 46
+  top_values:
+  - value: pi_per_capita
+    count: 2
+  - value: pi_total
+    count: 2
+  - value: population
+    count: 2
+  - value: rpp_all_items
+    count: 2
+  - value: rpp_goods
+    count: 2
+  definition: Metric key for the economic activity in the row (from BEA metadata).
+  needs_confirmation: no
+- name: metric_label
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 108
+  min_value: ~
+  max_value: ~
+  min_length: 19
+  max_length: 116
+  top_values:
+  - value: '[CAINC4] Employer contributions for government social insurance'
+    count: 2
+  - value: '[CAGDP2] Gross Domestic Product (GDP): Accommodation and food services
+      (72)'
+    count: 1
+  - value: '[CAGDP2] Gross Domestic Product (GDP): Administrative and support and
+      waste management and remediation services (56)'
+    count: 1
+  - value: '[CAGDP2] Gross Domestic Product (GDP): Agriculture, forestry, fishing
+      and hunting (11)'
+    count: 1
+  - value: '[CAGDP2] Gross Domestic Product (GDP): All industry total'
+    count: 1
+  definition: Metric label for the economic activity in the row, including BEA table code and line description (from BEA metadata).
+  needs_confirmation: no
+- name: include_in_wide
+  type: BOOLEAN
+  null_pct: 0.0
+  distinct_count: 2
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 5
+  top_values:
+  - value: 'false'
+    count: 94
+  - value: 'true'
+    count: 15
+  definition: Boolean flag indicating whether the metric should be included in wide-format tables (for example, silver.bea_regional_cagdp2_wide or silver.bea_regional_cagdp9_wide).
+  needs_confirmation: no
+- name: naics_raw
+  type: VARCHAR
+  null_pct: 44.9541
+  distinct_count: 30
+  min_value: ~
+  max_value: ~
+  min_length: 2
+  max_length: 15
+  top_values:
+  - value: ~
+    count: 49
+  - value: '11'
+    count: 2
+  - value: '11,21'
+    count: 2
+  - value: '21'
+    count: 2
+  - value: '22'
+    count: 2
+  definition: Raw NAICS code(s) associated with the metric, from BEA metadata. Needs confirmation.
+  needs_confirmation: no
+- name: is_aggregate
+  type: BOOLEAN
+  null_pct: 0.0
+  distinct_count: 2
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 5
+  top_values:
+  - value: 'false'
+    count: 83
+  - value: 'true'
+    count: 26
+  definition: Whether the metric is an aggregate (i.e., not a component of another metric).
+  needs_confirmation: no
+- name: topic
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 4
+  min_value: ~
+  max_value: ~
+  min_length: 3
+  max_length: 6
+  top_values:
+  - value: gdp
+    count: 68
+  - value: income
+    count: 23
+  - value: other
+    count: 10
+  - value: prices
+    count: 8
+  definition: Topic of the metric (e.g., gdp, income, prices).
+  needs_confirmation: no
+- name: vintage
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 1
+  min_value: ~
+  max_value: ~
+  min_length: 10
+  max_length: 10
+  top_values:
+  - value: '2025-12-09'
+    count: 109
+  definition: The vintage date of the BEA data (i.e., the date when the data was last updated).
+  needs_confirmation: no
+lineage:
+- step: write_target
+  script: scripts/etl/silver/bea_cainc4_silver.R
+  details: 'Table write/create reference(s): scripts/etl/silver/bea_cainc4_silver.R:44:line_codes_ref
+    <- dbGetQuery(con, "SELECT * FROM silver.bea_regional_metrics_ref") | scripts/etl/silver/bea_cagdp9_silver.R:44:line_codes_ref
+    <- dbGetQuery(con, "SELECT * FROM silver.bea_regional_metrics_ref") | scripts/etl/silver/bea_metric_dictionary.R:214:DBI::dbWriteTable(con,
+    DBI::Id(schema="silver", table="bea_regional_metrics_ref"),'
+kpi_definitions: []

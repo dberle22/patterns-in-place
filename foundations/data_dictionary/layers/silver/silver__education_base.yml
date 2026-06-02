@@ -1,0 +1,784 @@
+table_name: education_base
+schema: silver
+grain: One row per geo_level + geo_id + geo_name + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - geo_name
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=115976
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 8
+    top_values:
+      - value: zcta
+        count: 433172
+      - value: place
+        count: 397094
+      - value: tract
+        count: 135851
+      - value: county
+        count: 41870
+      - value: cbsa
+        count: 12085
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 115976
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 11
+    top_values:
+      - value: '1'
+        count: 39
+      - value: '2'
+        count: 26
+      - value: '3'
+        count: 26
+      - value: '4'
+        count: 26
+      - value: '01001'
+        count: 25
+    definition: Geographic identifier for the row
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 97125
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 66
+    top_values:
+      - value: Alexandria city, Virginia
+        count: 26
+      - value: Baltimore city, Maryland
+        count: 26
+      - value: Bristol city, Virginia
+        count: 26
+      - value: Buena Vista city, Virginia
+        count: 26
+      - value: Carson City, Nevada
+        count: 26
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 13
+    min_value: 2012
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2024'
+        count: 82276
+      - value: '2023'
+        count: 82271
+      - value: '2022'
+        count: 82134
+      - value: '2021'
+        count: 81848
+      - value: '2020'
+        count: 81194
+    definition: Observation year or period year for the row.
+    needs_confirmation: no
+  - name: edu_total_25pE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 63573
+    min_value: 0.0
+    max_value: 2.308073e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 11750
+      - value: '62.0'
+        count: 876
+      - value: '76.0'
+        count: 852
+      - value: '54.0'
+        count: 851
+      - value: '38.0'
+        count: 847
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_001]: Total: (estimate).'
+    needs_confirmation: no
+  - name: edu_no_schoolingE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 7960
+    min_value: 0.0
+    max_value: 4534710.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 326572
+      - value: '2.0'
+        count: 28603
+      - value: '3.0'
+        count: 23193
+      - value: '4.0'
+        count: 19194
+      - value: '1.0'
+        count: 19180
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_002]: Total:, No schooling completed (estimate).'
+    needs_confirmation: no
+  - name: edu_nurseryE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 1151
+    min_value: 0.0
+    max_value: 65861.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 942899
+      - value: '8.0'
+        count: 3709
+      - value: '9.0'
+        count: 3518
+      - value: '2.0'
+        count: 3455
+      - value: '7.0'
+        count: 3345
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_003]: Total:, Nursery school (estimate).'
+    needs_confirmation: no
+  - name: edu_kindergartenE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 1232
+    min_value: 0.0
+    max_value: 64338.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 939655
+      - value: '2.0'
+        count: 3872
+      - value: '9.0'
+        count: 3521
+      - value: '3.0'
+        count: 3513
+      - value: '8.0'
+        count: 3490
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_004]: Total:, Kindergarten (estimate).'
+    needs_confirmation: no
+  - name: edu_grade1E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 1911
+    min_value: 0.0
+    max_value: 145745.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 898346
+      - value: '2.0'
+        count: 5108
+      - value: '3.0'
+        count: 4878
+      - value: '4.0'
+        count: 4729
+      - value: '5.0'
+        count: 4303
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_005]: Total:, 1st grade (estimate).'
+    needs_confirmation: no
+  - name: edu_grade2E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 2607
+    min_value: 0.0
+    max_value: 319316.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 845732
+      - value: '3.0'
+        count: 6340
+      - value: '2.0'
+        count: 6088
+      - value: '4.0'
+        count: 5791
+      - value: '5.0'
+        count: 5443
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_006]: Total:, 2nd grade (estimate).'
+    needs_confirmation: no
+  - name: edu_grade3E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 3590
+    min_value: 0.0
+    max_value: 670157.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 743068
+      - value: '2.0'
+        count: 10201
+      - value: '3.0'
+        count: 10009
+      - value: '4.0'
+        count: 9253
+      - value: '5.0'
+        count: 8378
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_007]: Total:, 3rd grade (estimate).'
+    needs_confirmation: no
+  - name: edu_grade4E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 3280
+    min_value: 0.0
+    max_value: 548838.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 757801
+      - value: '2.0'
+        count: 9855
+      - value: '3.0'
+        count: 9583
+      - value: '4.0'
+        count: 9124
+      - value: '5.0'
+        count: 8255
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_008]: Total:, 4th grade (estimate).'
+    needs_confirmation: no
+  - name: edu_grade5E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 3771
+    min_value: 0.0
+    max_value: 761051.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 695904
+      - value: '2.0'
+        count: 11922
+      - value: '3.0'
+        count: 11610
+      - value: '4.0'
+        count: 10734
+      - value: '5.0'
+        count: 9558
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_009]: Total:, 5th grade (estimate).'
+    needs_confirmation: no
+  - name: edu_grade6E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 7071
+    min_value: 0.0
+    max_value: 2829818.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 531774
+      - value: '2.0'
+        count: 17410
+      - value: '3.0'
+        count: 15655
+      - value: '4.0'
+        count: 13459
+      - value: '5.0'
+        count: 12438
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_010]: Total:, 6th grade (estimate).'
+    needs_confirmation: no
+  - name: edu_grade7E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 4247
+    min_value: 0.0
+    max_value: 1119030.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 554897
+      - value: '2.0'
+        count: 19337
+      - value: '3.0'
+        count: 17200
+      - value: '4.0'
+        count: 15300
+      - value: '5.0'
+        count: 13922
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_011]: Total:, 7th grade (estimate).'
+    needs_confirmation: no
+  - name: edu_grade8E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 6780
+    min_value: 0.0
+    max_value: 3230578.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 283839
+      - value: '2.0'
+        count: 23857
+      - value: '3.0'
+        count: 20235
+      - value: '4.0'
+        count: 18822
+      - value: '5.0'
+        count: 17499
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_012]: Total:, 8th grade (estimate).'
+    needs_confirmation: no
+  - name: edu_grade9E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 7753
+    min_value: 0.0
+    max_value: 3638277.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 282390
+      - value: '2.0'
+        count: 24376
+      - value: '3.0'
+        count: 19654
+      - value: '4.0'
+        count: 18459
+      - value: '5.0'
+        count: 17358
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_013]: Total:, 9th grade (estimate).'
+    needs_confirmation: no
+  - name: edu_grade10E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 8310
+    min_value: 0.0
+    max_value: 4519562.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 210129
+      - value: '2.0'
+        count: 21285
+      - value: '3.0'
+        count: 18281
+      - value: '4.0'
+        count: 17180
+      - value: '5.0'
+        count: 16366
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_014]: Total:, 10th grade (estimate).'
+    needs_confirmation: no
+  - name: edu_grade11E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 8873
+    min_value: 0.0
+    max_value: 5004410.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 197768
+      - value: '2.0'
+        count: 20270
+      - value: '3.0'
+        count: 17258
+      - value: '4.0'
+        count: 16658
+      - value: '5.0'
+        count: 15910
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_015]: Total:, 11th grade (estimate).'
+    needs_confirmation: no
+  - name: edu_grade12_no_diplomaE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 8556
+    min_value: 0.0
+    max_value: 4494501.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 220655
+      - value: '2.0'
+        count: 26491
+      - value: '3.0'
+        count: 22431
+      - value: '4.0'
+        count: 20503
+      - value: '5.0'
+        count: 18422
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_016]: Total:, 12th grade, no diploma (estimate).'
+    needs_confirmation: no
+  - name: edu_hs_diplomaE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 29000
+    min_value: 0.0
+    max_value: 5.1011337e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 27815
+      - value: '9.0'
+        count: 2461
+      - value: '15.0'
+        count: 2460
+      - value: '19.0'
+        count: 2445
+      - value: '17.0'
+        count: 2436
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_017]: Total:, Regular high school diploma (estimate).'
+    needs_confirmation: no
+  - name: edu_ged_alt_credentialE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 12545
+    min_value: 0.0
+    max_value: 9083379.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 104286
+      - value: '2.0'
+        count: 11812
+      - value: '4.0'
+        count: 11738
+      - value: '6.0'
+        count: 11662
+      - value: '5.0'
+        count: 11520
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_018]: Total:, GED or alternative credential (estimate).'
+    needs_confirmation: no
+  - name: edu_some_college_lt1yrE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 15558
+    min_value: 0.0
+    max_value: 1.4727607e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 78064
+      - value: '8.0'
+        count: 9156
+      - value: '9.0'
+        count: 8990
+      - value: '7.0'
+        count: 8969
+      - value: '6.0'
+        count: 8954
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_019]: Total:, Some college, less than 1 year (estimate).'
+    needs_confirmation: no
+  - name: edu_some_college_ge1yrE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 22666
+    min_value: 0.0
+    max_value: 3.1493074e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 45093
+      - value: '9.0'
+        count: 5291
+      - value: '8.0'
+        count: 5258
+      - value: '10.0'
+        count: 5250
+      - value: '11.0'
+        count: 5137
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_020]: Total:, Some college, 1 or more years, no degree (estimate).'
+    needs_confirmation: no
+  - name: edu_associatesE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 17753
+    min_value: 0.0
+    max_value: 2.0322913e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 68319
+      - value: '6.0'
+        count: 7505
+      - value: '9.0'
+        count: 7441
+      - value: '7.0'
+        count: 7337
+      - value: '8.0'
+        count: 7321
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_021]: Total:, Associate''s degree (estimate).'
+    needs_confirmation: no
+  - name: edu_bachelorsE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 26841
+    min_value: 0.0
+    max_value: 4.9868171e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 60062
+      - value: '8.0'
+        count: 6690
+      - value: '7.0'
+        count: 6556
+      - value: '9.0'
+        count: 6516
+      - value: '5.0'
+        count: 6491
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_022]: Total:, Bachelor''s degree (estimate).'
+    needs_confirmation: no
+  - name: edu_mastersE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 17997
+    min_value: 0.0
+    max_value: 2.3264421e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 121033
+      - value: '2.0'
+        count: 14861
+      - value: '3.0'
+        count: 12919
+      - value: '4.0'
+        count: 12366
+      - value: '5.0'
+        count: 11709
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_023]: Total:, Master''s degree (estimate).'
+    needs_confirmation: no
+  - name: edu_professionalE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 9436
+    min_value: 0.0
+    max_value: 5354651.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 345066
+      - value: '2.0'
+        count: 22152
+      - value: '3.0'
+        count: 19483
+      - value: '4.0'
+        count: 16448
+      - value: '5.0'
+        count: 14585
+    definition: 'ACS 2024 Educational Attainment for the Population 25 Years and Over
+      [B15003_024]: Total:, Professional school degree (estimate).'
+    needs_confirmation: no
+  - name: edu_doctorateE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 8307
+    min_value: 0.0
+    max_value: 3875973.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 408900
+      - value: '2.0'
+        count: 21038
+      - value: '3.0'
+        count: 18976
+      - value: '4.0'
+        count: 16243
+      - value: '5.0'
+        count: 14346
+    definition: Rate derived from ACS counts. (from silver.kpi_dictionary).
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/silver/acs_edu_silver.R
+    details: 'Table write/create reference(s): scripts/etl/silver/acs_edu_silver.R:152:DBI::dbWriteTable(con,
+      DBI::Id(schema="silver", table="education_base"),'
+kpi_definitions:
+  - kpi_name: edu_total_25pE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_no_schoolingE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_nurseryE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_kindergartenE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_grade1E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_grade2E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_grade3E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_grade4E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_grade5E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_grade6E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_grade7E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_grade8E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_grade9E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_grade10E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_grade11E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_grade12_no_diplomaE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_hs_diplomaE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_ged_alt_credentialE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_some_college_lt1yrE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_some_college_ge1yrE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_associatesE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_bachelorsE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_mastersE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_professionalE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: edu_doctorateE
+    business_definition: Rate derived from ACS counts.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE

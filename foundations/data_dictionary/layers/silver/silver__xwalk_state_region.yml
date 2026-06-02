@@ -1,0 +1,122 @@
+table_name: xwalk_state_region
+schema: silver
+grain: One row per state_fips (inferred).
+primary_key: state_fips
+foreign_keys: []
+time_coverage:
+  type: unknown
+  column: ~
+  min: ~
+  max: ~
+geo_coverage:
+  notes: distinct_state_fips=51
+columns:
+  - name: state_fips
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 51
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: '01'
+        count: 1
+      - value: '02'
+        count: 1
+      - value: '04'
+        count: 1
+      - value: '05'
+        count: 1
+      - value: '06'
+        count: 1
+    definition: State FIPS code.
+    needs_confirmation: no
+  - name: state_abbr
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 51
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: AK
+        count: 1
+      - value: AL
+        count: 1
+      - value: AR
+        count: 1
+      - value: AZ
+        count: 1
+      - value: CA
+        count: 1
+    definition: State abbreviation.
+    needs_confirmation: no
+  - name: state_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 51
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 20
+    top_values:
+      - value: Alabama
+        count: 1
+      - value: Alaska
+        count: 1
+      - value: Arizona
+        count: 1
+      - value: Arkansas
+        count: 1
+      - value: California
+        count: 1
+    definition: Full name of the state.
+    needs_confirmation: no
+  - name: census_region
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 4
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 9
+    top_values:
+      - value: South
+        count: 17
+      - value: West
+        count: 13
+      - value: Midwest
+        count: 12
+      - value: Northeast
+        count: 9
+    definition: Census region of the state.
+    needs_confirmation: no
+  - name: census_division
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: ~
+    max_value: ~
+    min_length: 7
+    max_length: 18
+    top_values:
+      - value: South Atlantic
+        count: 9
+      - value: Mountain
+        count: 8
+      - value: West North Central
+        count: 7
+      - value: New England
+        count: 6
+      - value: East North Central
+        count: 5
+    definition: Census division of the state.
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/silver/geo_crosswalks_silver.R
+    details: 'Table write/create reference(s): scripts/etl/silver/geo_crosswalks_silver.R:261:DBI::dbWriteTable(con,
+      DBI::Id(schema="silver", table="xwalk_state_region"),'
+kpi_definitions: []

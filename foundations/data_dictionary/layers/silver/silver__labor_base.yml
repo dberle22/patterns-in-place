@@ -1,0 +1,1319 @@
+table_name: labor_base
+schema: silver
+grain: One row per geo_level + geo_id + geo_name + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - geo_name
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=115976
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 8
+    top_values:
+      - value: zcta
+        count: 433172
+      - value: place
+        count: 397094
+      - value: tract
+        count: 135851
+      - value: county
+        count: 41870
+      - value: cbsa
+        count: 12085
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 115976
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 11
+    top_values:
+      - value: '1'
+        count: 39
+      - value: '2'
+        count: 26
+      - value: '3'
+        count: 26
+      - value: '4'
+        count: 26
+      - value: '01001'
+        count: 25
+    definition: Geographic identifier for the row
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 97125
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 66
+    top_values:
+      - value: Alexandria city, Virginia
+        count: 26
+      - value: Baltimore city, Maryland
+        count: 26
+      - value: Bristol city, Virginia
+        count: 26
+      - value: Buena Vista city, Virginia
+        count: 26
+      - value: Carson City, Nevada
+        count: 26
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 13
+    min_value: 2012
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2024'
+        count: 82276
+      - value: '2023'
+        count: 82271
+      - value: '2022'
+        count: 82134
+      - value: '2021'
+        count: 81848
+      - value: '2020'
+        count: 81194
+    definition: Observation year or period year for the row.
+    needs_confirmation: no
+  - name: pop_16plusE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 70459
+    min_value: 0.0
+    max_value: 2.7018164e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 11027
+      - value: '65.0'
+        count: 746
+      - value: '80.0'
+        count: 741
+      - value: '77.0'
+        count: 739
+      - value: '47.0'
+        count: 734
+    definition: 'ACS 2024 Employment Status for the Population 16 Years and Over [B23025_001]:
+      Total: (estimate).'
+    needs_confirmation: no
+  - name: in_labor_forceE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 54423
+    min_value: 0.0
+    max_value: 1.7149328e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 17145
+      - value: '53.0'
+        count: 1241
+      - value: '49.0'
+        count: 1240
+      - value: '38.0'
+        count: 1237
+      - value: '46.0'
+        count: 1234
+    definition: 'ACS 2024 Employment Status for the Population 16 Years and Over [B23025_002]:
+      Total:, In labor force: (estimate).'
+    needs_confirmation: no
+  - name: in_lf_civilianE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 54223
+    min_value: 0.0
+    max_value: 1.7019952e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 17517
+      - value: '53.0'
+        count: 1253
+      - value: '38.0'
+        count: 1241
+      - value: '49.0'
+        count: 1239
+      - value: '30.0'
+        count: 1235
+    definition: 'ACS 2024 Employment Status for the Population 16 Years and Over [B23025_003]:
+      Total:, In labor force:, Civilian labor force: (estimate).'
+    needs_confirmation: no
+  - name: in_lf_armed_forcesE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 52125
+    min_value: 0.0
+    max_value: 1.6129716e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 18242
+      - value: '46.0'
+        count: 1392
+      - value: '27.0'
+        count: 1364
+      - value: '28.0'
+        count: 1363
+      - value: '41.0'
+        count: 1337
+    definition: 'ACS 2024 Employment Status for the Population 16 Years and Over [B23025_004]:
+      Total:, In labor force:, Civilian labor force:, Employed (estimate).'
+    needs_confirmation: no
+  - name: not_in_labor_forceE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 13916
+    min_value: 0.0
+    max_value: 1.5249189e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 128203
+      - value: '2.0'
+        count: 13467
+      - value: '3.0'
+        count: 12219
+      - value: '4.0'
+        count: 11942
+      - value: '5.0'
+        count: 11384
+    definition: 'ACS 2024 Employment Status for the Population 16 Years and Over [B23025_005]:
+      Total:, In labor force:, Civilian labor force:, Unemployed (estimate).'
+    needs_confirmation: no
+  - name: employedE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 39939
+    min_value: 0.0
+    max_value: 9.8688351e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 17315
+      - value: '35.0'
+        count: 1752
+      - value: '39.0'
+        count: 1740
+      - value: '28.0'
+        count: 1731
+      - value: '34.0'
+        count: 1718
+    definition: 'ACS 2024 Employment Status for the Population 16 Years and Over [B23025_007]:
+      Total:, Not in labor force (estimate).'
+    needs_confirmation: no
+  - name: occ_totalE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 52125
+    min_value: 0.0
+    max_value: 1.6129716e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 18242
+      - value: '46.0'
+        count: 1392
+      - value: '27.0'
+        count: 1364
+      - value: '28.0'
+        count: 1363
+      - value: '41.0'
+        count: 1337
+    definition: 'ACS 2024 Sex by Occupation for the Civilian Employed Population 16
+      Years and Over [C24010_001]: Total: (estimate).'
+    needs_confirmation: no
+  - name: occ_male_mgmt_business_sci_artsE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 21637
+    min_value: 0.0
+    max_value: 3.2610799e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 75799
+      - value: '2.0'
+        count: 8496
+      - value: '5.0'
+        count: 8379
+      - value: '7.0'
+        count: 8317
+      - value: '6.0'
+        count: 8293
+    definition: 'ACS 2024 Sex by Occupation for the Civilian Employed Population 16
+      Years and Over [C24010_003]: Total:, Male:, Management, business, science, and
+      arts occupations: (estimate).'
+    needs_confirmation: no
+  - name: occ_male_serviceE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 14353
+    min_value: 0.0
+    max_value: 1.1935283e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 115341
+      - value: '2.0'
+        count: 13466
+      - value: '4.0'
+        count: 12112
+      - value: '3.0'
+        count: 11783
+      - value: '6.0'
+        count: 11601
+    definition: 'ACS 2024 Sex by Occupation for the Civilian Employed Population 16
+      Years and Over [C24010_019]: Total:, Male:, Service occupations: (estimate).'
+    needs_confirmation: no
+  - name: occ_male_sales_officeE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 14789
+    min_value: 0.0
+    max_value: 1.3522354e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 122933
+      - value: '2.0'
+        count: 13578
+      - value: '3.0'
+        count: 12256
+      - value: '4.0'
+        count: 12026
+      - value: '5.0'
+        count: 11945
+    definition: 'ACS 2024 Sex by Occupation for the Civilian Employed Population 16
+      Years and Over [C24010_027]: Total:, Male:, Sales and office occupations: (estimate).'
+    needs_confirmation: no
+  - name: occ_male_nat_resources_const_maintE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 14853
+    min_value: 0.0
+    max_value: 1.3084961e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 76266
+      - value: '8.0'
+        count: 8458
+      - value: '9.0'
+        count: 8354
+      - value: '10.0'
+        count: 8223
+      - value: '6.0'
+        count: 7950
+    definition: 'ACS 2024 Sex by Occupation for the Civilian Employed Population 16
+      Years and Over [C24010_030]: Total:, Male:, Natural resources, construction,
+      and maintenance occupations: (estimate).'
+    needs_confirmation: no
+  - name: occ_male_prod_transp_materialE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 16183
+    min_value: 0.0
+    max_value: 1.586073e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 80666
+      - value: '9.0'
+        count: 7955
+      - value: '8.0'
+        count: 7908
+      - value: '6.0'
+        count: 7708
+      - value: '10.0'
+        count: 7697
+    definition: 'ACS 2024 Sex by Occupation for the Civilian Employed Population 16
+      Years and Over [C24010_034]: Total:, Male:, Production, transportation, and
+      material moving occupations: (estimate).'
+    needs_confirmation: no
+  - name: occ_female_mgmt_business_sci_artsE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 22480
+    min_value: 0.0
+    max_value: 3.617787e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 58473
+      - value: '9.0'
+        count: 6939
+      - value: '8.0'
+        count: 6893
+      - value: '6.0'
+        count: 6809
+      - value: '5.0'
+        count: 6728
+    definition: 'ACS 2024 Sex by Occupation for the Civilian Employed Population 16
+      Years and Over [C24010_039]: Total:, Female:, Management, business, science,
+      and arts occupations: (estimate).'
+    needs_confirmation: no
+  - name: occ_female_serviceE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 16246
+    min_value: 0.0
+    max_value: 1.5554218e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 83230
+      - value: '8.0'
+        count: 8681
+      - value: '6.0'
+        count: 8563
+      - value: '9.0'
+        count: 8543
+      - value: '7.0'
+        count: 8504
+    definition: 'ACS 2024 Sex by Occupation for the Civilian Employed Population 16
+      Years and Over [C24010_055]: Total:, Female:, Service occupations: (estimate).'
+    needs_confirmation: no
+  - name: occ_female_sales_officeE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 18838
+    min_value: 0.0
+    max_value: 2.2225028e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 66497
+      - value: '8.0'
+        count: 7530
+      - value: '9.0'
+        count: 7407
+      - value: '6.0'
+        count: 7325
+      - value: '10.0'
+        count: 7314
+    definition: 'ACS 2024 Sex by Occupation for the Civilian Employed Population 16
+      Years and Over [C24010_063]: Total:, Female:, Sales and office occupations:
+      (estimate).'
+    needs_confirmation: no
+  - name: occ_female_nat_resources_const_maintE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 3707
+    min_value: 0.0
+    max_value: 713167.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 565565
+      - value: '2.0'
+        count: 20380
+      - value: '3.0'
+        count: 19248
+      - value: '4.0'
+        count: 16251
+      - value: '5.0'
+        count: 14904
+    definition: 'ACS 2024 Sex by Occupation for the Civilian Employed Population 16
+      Years and Over [C24010_066]: Total:, Female:, Natural resources, construction,
+      and maintenance occupations: (estimate).'
+    needs_confirmation: no
+  - name: occ_female_prod_transp_materialE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 9212
+    min_value: 0.0
+    max_value: 5109590.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 204849
+      - value: '2.0'
+        count: 18699
+      - value: '3.0'
+        count: 16903
+      - value: '4.0'
+        count: 16601
+      - value: '5.0'
+        count: 15412
+    definition: 'ACS 2024 Sex by Occupation for the Civilian Employed Population 16
+      Years and Over [C24010_070]: Total:, Female:, Production, transportation, and
+      material moving occupations: (estimate).'
+    needs_confirmation: no
+  - name: ind_totalE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 52125
+    min_value: 0.0
+    max_value: 1.6129716e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 18242
+      - value: '46.0'
+        count: 1392
+      - value: '27.0'
+        count: 1364
+      - value: '28.0'
+        count: 1363
+      - value: '41.0'
+        count: 1337
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_001]: Total: (estimate).'
+    needs_confirmation: no
+  - name: ind_male_ag_miningE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 5798
+    min_value: 0.0
+    max_value: 2319970.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 326842
+      - value: '2.0'
+        count: 18562
+      - value: '3.0'
+        count: 16389
+      - value: '4.0'
+        count: 16259
+      - value: '6.0'
+        count: 15802
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_003]: Total:, Male:, Agriculture, forestry, fishing and
+      hunting, and mining: (estimate).'
+    needs_confirmation: no
+  - name: ind_male_constructionE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 12496
+    min_value: 0.0
+    max_value: 9914382.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 116058
+      - value: '4.0'
+        count: 11584
+      - value: '2.0'
+        count: 11412
+      - value: '6.0'
+        count: 11412
+      - value: '5.0'
+        count: 11323
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_006]: Total:, Male:, Construction (estimate).'
+    needs_confirmation: no
+  - name: ind_male_manufacturingE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 13984
+    min_value: 0.0
+    max_value: 1.1277067e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 130060
+      - value: '2.0'
+        count: 10078
+      - value: '6.0'
+        count: 9915
+      - value: '4.0'
+        count: 9811
+      - value: '5.0'
+        count: 9740
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_007]: Total:, Male:, Manufacturing (estimate).'
+    needs_confirmation: no
+  - name: ind_male_wholesaleE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 7412
+    min_value: 0.0
+    max_value: 2838306.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 300931
+      - value: '2.0'
+        count: 23874
+      - value: '3.0'
+        count: 20258
+      - value: '4.0'
+        count: 18337
+      - value: '5.0'
+        count: 17173
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_008]: Total:, Male:, Wholesale trade (estimate).'
+    needs_confirmation: no
+  - name: ind_male_retailE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 12648
+    min_value: 0.0
+    max_value: 9117233.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 140642
+      - value: '2.0'
+        count: 14745
+      - value: '4.0'
+        count: 13290
+      - value: '3.0'
+        count: 13160
+      - value: '5.0'
+        count: 12951
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_009]: Total:, Male:, Retail trade (estimate).'
+    needs_confirmation: no
+  - name: ind_male_transport_utilE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 10369
+    min_value: 0.0
+    max_value: 7115521.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 157949
+      - value: '2.0'
+        count: 16475
+      - value: '3.0'
+        count: 15074
+      - value: '4.0'
+        count: 15066
+      - value: '5.0'
+        count: 14747
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_010]: Total:, Male:, Transportation and warehousing,
+      and utilities: (estimate).'
+    needs_confirmation: no
+  - name: ind_male_informationE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 6184
+    min_value: 0.0
+    max_value: 1879235.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 463221
+      - value: '2.0'
+        count: 21461
+      - value: '3.0'
+        count: 19433
+      - value: '4.0'
+        count: 16328
+      - value: '5.0'
+        count: 14475
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_013]: Total:, Male:, Information (estimate).'
+    needs_confirmation: no
+  - name: ind_male_finance_realE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 9205
+    min_value: 0.0
+    max_value: 5059484.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 314338
+      - value: '2.0'
+        count: 22842
+      - value: '3.0'
+        count: 19831
+      - value: '4.0'
+        count: 17144
+      - value: '5.0'
+        count: 15675
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_014]: Total:, Male:, Finance and insurance, and real
+      estate, and rental and leasing: (estimate).'
+    needs_confirmation: no
+  - name: ind_male_professionalE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 13135
+    min_value: 0.0
+    max_value: 1.1554698e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 182233
+      - value: '2.0'
+        count: 20450
+      - value: '3.0'
+        count: 16833
+      - value: '4.0'
+        count: 15785
+      - value: '5.0'
+        count: 14559
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_017]: Total:, Male:, Professional, scientific, and management,
+      and administrative, and waste management services: (estimate).'
+    needs_confirmation: no
+  - name: ind_male_educ_healthE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 13040
+    min_value: 0.0
+    max_value: 9957612.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 153898
+      - value: '2.0'
+        count: 17994
+      - value: '3.0'
+        count: 14802
+      - value: '4.0'
+        count: 14597
+      - value: '5.0'
+        count: 13682
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_021]: Total:, Male:, Educational services, and health
+      care and social assistance: (estimate).'
+    needs_confirmation: no
+  - name: ind_male_arts_accomm_foodE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 11426
+    min_value: 0.0
+    max_value: 7269634.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 213452
+      - value: '2.0'
+        count: 20473
+      - value: '3.0'
+        count: 17524
+      - value: '4.0'
+        count: 16087
+      - value: '5.0'
+        count: 14785
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_024]: Total:, Male:, Arts, entertainment, and recreation,
+      and accommodation and food services: (estimate).'
+    needs_confirmation: no
+  - name: ind_male_otherE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 8104
+    min_value: 0.0
+    max_value: 3548671.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 228256
+      - value: '2.0'
+        count: 23933
+      - value: '3.0'
+        count: 20067
+      - value: '4.0'
+        count: 18851
+      - value: '5.0'
+        count: 17442
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_027]: Total:, Male:, Other services, except public administration
+      (estimate).'
+    needs_confirmation: no
+  - name: ind_male_public_adminE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 8922
+    min_value: 0.0
+    max_value: 4151356.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 227090
+      - value: '2.0'
+        count: 22862
+      - value: '3.0'
+        count: 19618
+      - value: '4.0'
+        count: 17598
+      - value: '5.0'
+        count: 16792
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_028]: Total:, Male:, Public administration (estimate).'
+    needs_confirmation: no
+  - name: ind_female_ag_miningE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 3227
+    min_value: 0.0
+    max_value: 557221.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 610820
+      - value: '2.0'
+        count: 19539
+      - value: '3.0'
+        count: 18120
+      - value: '4.0'
+        count: 15577
+      - value: '5.0'
+        count: 14971
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_030]: Total:, Female:, Agriculture, forestry, fishing
+      and hunting, and mining: (estimate).'
+    needs_confirmation: no
+  - name: ind_female_constructionE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 4661
+    min_value: 0.0
+    max_value: 1252658.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 489633
+      - value: '2.0'
+        count: 21979
+      - value: '3.0'
+        count: 20004
+      - value: '4.0'
+        count: 16766
+      - value: '5.0'
+        count: 15360
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_033]: Total:, Female:, Construction (estimate).'
+    needs_confirmation: no
+  - name: ind_female_manufacturingE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 9040
+    min_value: 0.0
+    max_value: 4687740.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 232467
+      - value: '2.0'
+        count: 19062
+      - value: '3.0'
+        count: 16548
+      - value: '4.0'
+        count: 15860
+      - value: '5.0'
+        count: 15359
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_034]: Total:, Female:, Manufacturing (estimate).'
+    needs_confirmation: no
+  - name: ind_female_wholesaleE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 5008
+    min_value: 0.0
+    max_value: 1206753.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 486366
+      - value: '2.0'
+        count: 22885
+      - value: '3.0'
+        count: 20622
+      - value: '4.0'
+        count: 16773
+      - value: '5.0'
+        count: 15656
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_035]: Total:, Female:, Wholesale trade (estimate).'
+    needs_confirmation: no
+  - name: ind_female_retailE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 12396
+    min_value: 0.0
+    max_value: 8455763.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 127976
+      - value: '2.0'
+        count: 13466
+      - value: '4.0'
+        count: 12618
+      - value: '3.0'
+        count: 12589
+      - value: '5.0'
+        count: 12317
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_036]: Total:, Female:, Retail trade (estimate).'
+    needs_confirmation: no
+  - name: ind_female_transport_utilE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 6389
+    min_value: 0.0
+    max_value: 2453246.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 338656
+      - value: '2.0'
+        count: 28476
+      - value: '3.0'
+        count: 24707
+      - value: '4.0'
+        count: 21595
+      - value: '5.0'
+        count: 19751
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_037]: Total:, Female:, Transportation and warehousing,
+      and utilities: (estimate).'
+    needs_confirmation: no
+  - name: ind_female_informationE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 5239
+    min_value: 0.0
+    max_value: 1349388.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 483559
+      - value: '2.0'
+        count: 23598
+      - value: '3.0'
+        count: 21178
+      - value: '4.0'
+        count: 17765
+      - value: '5.0'
+        count: 16023
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_040]: Total:, Female:, Information (estimate).'
+    needs_confirmation: no
+  - name: ind_female_finance_realE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 10039
+    min_value: 0.0
+    max_value: 5723675.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 214686
+      - value: '2.0'
+        count: 21398
+      - value: '3.0'
+        count: 18124
+      - value: '4.0'
+        count: 17080
+      - value: '5.0'
+        count: 15802
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_041]: Total:, Female:, Finance and insurance, and real
+      estate, and rental and leasing: (estimate).'
+    needs_confirmation: no
+  - name: ind_female_professionalE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 11334
+    min_value: 0.0
+    max_value: 8727752.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 200335
+      - value: '2.0'
+        count: 22310
+      - value: '3.0'
+        count: 18709
+      - value: '4.0'
+        count: 17021
+      - value: '5.0'
+        count: 15581
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_044]: Total:, Female:, Professional, scientific, and
+      management, and administrative, and waste management services: (estimate).'
+    needs_confirmation: no
+  - name: ind_female_educ_healthE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 20957
+    min_value: 0.0
+    max_value: 2.7956051e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 58465
+      - value: '8.0'
+        count: 6532
+      - value: '9.0'
+        count: 6433
+      - value: '6.0'
+        count: 6279
+      - value: '10.0'
+        count: 6244
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_048]: Total:, Female:, Educational services, and health
+      care and social assistance: (estimate).'
+    needs_confirmation: no
+  - name: ind_female_arts_accomm_foodE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 11730
+    min_value: 0.0
+    max_value: 7692665.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 162200
+      - value: '2.0'
+        count: 17352
+      - value: '3.0'
+        count: 15505
+      - value: '4.0'
+        count: 14665
+      - value: '5.0'
+        count: 14053
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_051]: Total:, Female:, Arts, entertainment, and recreation,
+      and accommodation and food services: (estimate).'
+    needs_confirmation: no
+  - name: ind_female_otherE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 8647
+    min_value: 0.0
+    max_value: 4042521.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 233826
+      - value: '2.0'
+        count: 24911
+      - value: '3.0'
+        count: 20238
+      - value: '4.0'
+        count: 18633
+      - value: '5.0'
+        count: 17170
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_054]: Total:, Female:, Other services, except public
+      administration (estimate).'
+    needs_confirmation: no
+  - name: ind_female_public_adminE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 8022
+    min_value: 0.0
+    max_value: 3472887.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 242209
+      - value: '2.0'
+        count: 25029
+      - value: '3.0'
+        count: 21238
+      - value: '4.0'
+        count: 19986
+      - value: '5.0'
+        count: 18382
+    definition: 'ACS 2024 Sex by Industry for the Civilian Employed Population 16
+      Years and Over [C24030_055]: Total:, Female:, Public administration (estimate).'
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/silver/acs_labor_silver.R
+    details: 'Table write/create reference(s): scripts/etl/silver/acs_labor_silver.R:267:DBI::dbWriteTable(con,
+      DBI::Id(schema="silver", table="labor_base"),'
+kpi_definitions:
+  - kpi_name: pop_16plusE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: in_labor_forceE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: in_lf_civilianE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: in_lf_armed_forcesE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: not_in_labor_forceE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: employedE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_totalE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_male_mgmt_business_sci_artsE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_male_serviceE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_male_sales_officeE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_male_nat_resources_const_maintE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_male_prod_transp_materialE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_female_mgmt_business_sci_artsE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_female_serviceE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_female_sales_officeE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_female_nat_resources_const_maintE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_female_prod_transp_materialE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_totalE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_male_ag_miningE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_male_constructionE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_male_manufacturingE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_male_wholesaleE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_male_retailE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_male_transport_utilE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_male_informationE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_male_finance_realE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_male_professionalE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_male_educ_healthE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_male_arts_accomm_foodE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_male_otherE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_male_public_adminE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_female_ag_miningE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_female_constructionE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_female_manufacturingE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_female_wholesaleE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_female_retailE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_female_transport_utilE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_female_informationE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_female_finance_realE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_female_professionalE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_female_educ_healthE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_female_arts_accomm_foodE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_female_otherE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_female_public_adminE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE

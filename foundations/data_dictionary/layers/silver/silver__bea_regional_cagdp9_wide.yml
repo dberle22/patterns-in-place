@@ -1,0 +1,835 @@
+table_name: bea_regional_cagdp9_wide
+schema: silver
+grain: One row per geo_level + geo_id + period (inferred).
+primary_key:
+- geo_level
+- geo_id
+- period
+foreign_keys: []
+time_coverage:
+  type: range
+  column: period
+  min: '2010'
+  max: '2023'
+geo_coverage:
+  notes:
+  - distinct_geo_levels=3
+  - distinct_geo_id=4089
+columns:
+- name: geo_level
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 3
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 6
+  top_values:
+  - value: county
+    count: 43652
+  - value: cbsa
+    count: 12782
+  - value: state
+    count: 840
+  definition: Geographic level (US, region, division, state, county, place, zcta,
+    tract, cbsa)
+  needs_confirmation: no
+- name: geo_id
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 4089
+  min_value: ~
+  max_value: ~
+  min_length: 5
+  max_length: 5
+  top_values:
+  - value: '32000'
+    count: 28
+  - value: '45000'
+    count: 28
+  - value: '00000'
+    count: 14
+  - value: '01000'
+    count: 14
+  - value: '01001'
+    count: 14
+  definition: Geographic identifier for the row
+  needs_confirmation: no
+- name: geo_name
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 3976
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 48
+  top_values:
+  - value: Alamosa, CO
+    count: 28
+  - value: Alpena, MI
+    count: 28
+  - value: Andrews, TX
+    count: 28
+  - value: Ashland, OH
+    count: 28
+  - value: Atchison, KS
+    count: 28
+  definition: Geographic name (from ACS NAME)
+  needs_confirmation: no
+- name: period
+  type: INTEGER
+  null_pct: 0.0
+  distinct_count: 14
+  min_value: 2010
+  max_value: 2023
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '2010'
+    count: 4091
+  - value: '2011'
+    count: 4091
+  - value: '2012'
+    count: 4091
+  - value: '2013'
+    count: 4091
+  - value: '2014'
+    count: 4091
+  definition: Time period for the observation (usually calendar year).
+  needs_confirmation: no
+- name: table
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 1
+  min_value: ~
+  max_value: ~
+  min_length: 6
+  max_length: 6
+  top_values:
+  - value: CAGDP9
+    count: 57274
+  definition: BEA source table identifier (for example, CAGDP2, CAGDP9, CAINC1, CAINC4,
+    MARPP).
+  needs_confirmation: no
+- name: real_gdp_total
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 48677
+  min_value: 0.0
+  max_value: 2.2671096e+13
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 66
+  - value: '1291355000.0'
+    count: 5
+  - value: '1047702000.0'
+    count: 4
+  - value: '1162632000.0'
+    count: 4
+  - value: '1232928000.0'
+    count: 4
+  definition: Total Real GDP for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_utilities
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 28589
+  min_value: 0.0
+  max_value: 3.42977e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 9110
+  - value: '2000.0'
+    count: 28
+  - value: '1000.0'
+    count: 27
+  - value: '82000.0'
+    count: 22
+  - value: '4000.0'
+    count: 16
+  definition: Real GDP for Utilities for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_construction
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 39390
+  min_value: 0.0
+  max_value: 8.87608e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 4795
+  - value: '5940000.0'
+    count: 8
+  - value: '10986000.0'
+    count: 6
+  - value: '15007000.0'
+    count: 6
+  - value: '56503000.0'
+    count: 6
+  definition: Real GDP for Construction for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_manufacturing_all
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 41803
+  min_value: 0.0
+  max_value: 2.317923e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 4905
+  - value: '10000.0'
+    count: 6
+  - value: '8000.0'
+    count: 6
+  - value: '92000.0'
+    count: 6
+  - value: '10166000.0'
+    count: 5
+  definition: Real GDP for Manufacturing (all sectors) for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_durable_manufacturing
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 36815
+  min_value: 0.0
+  max_value: 1.293473e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 8416
+  - value: '6000.0'
+    count: 19
+  - value: '8000.0'
+    count: 18
+  - value: '23000.0'
+    count: 17
+  - value: '7000.0'
+    count: 17
+  definition: Real GDP for Durable Manufacturing for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_private
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 48639
+  min_value: 0.0
+  max_value: 2.0092919e+13
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 66
+  - value: '1021736000.0'
+    count: 4
+  - value: '1395335000.0'
+    count: 4
+  - value: '1888236000.0'
+    count: 4
+  - value: '1970947000.0'
+    count: 4
+  definition: Real GDP for Private Sector for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_nondurable_manufacturing
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 35776
+  min_value: 0.0
+  max_value: 1.036519e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 8122
+  - value: '1000.0'
+    count: 18
+  - value: '2000.0'
+    count: 16
+  - value: '5000.0'
+    count: 15
+  - value: '108000.0'
+    count: 13
+  definition: Real GDP for Nondurable Manufacturing for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_agriculture
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 32902
+  min_value: 0.0
+  max_value: 1.92667e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 8852
+  - value: '2486000.0'
+    count: 10
+  - value: '2528000.0'
+    count: 9
+  - value: '5359000.0'
+    count: 9
+  - value: '2228000.0'
+    count: 8
+  definition: Real GDP for Agriculture for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_wholesale_trade
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 34529
+  min_value: 0.0
+  max_value: 1.205512e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 11255
+  - value: '5000.0'
+    count: 10
+  - value: '12859000.0'
+    count: 6
+  - value: '2000.0'
+    count: 6
+  - value: '26245000.0'
+    count: 6
+  definition: Real GDP for Wholesale Trade for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_retail_trade
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 43415
+  min_value: 0.0
+  max_value: 1.317653e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 1177
+  - value: '127270000.0'
+    count: 6
+  - value: '100899000.0'
+    count: 5
+  - value: '106466000.0'
+    count: 5
+  - value: '11740000.0'
+    count: 5
+  definition: Real GDP for Retail Trade for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_transportation
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 30295
+  min_value: 0.0
+  max_value: 7.06954e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 16203
+  - value: '33334000.0'
+    count: 7
+  - value: '11350000.0'
+    count: 6
+  - value: '11528000.0'
+    count: 6
+  - value: '27792000.0'
+    count: 6
+  definition: Real GDP for Transportation for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_information
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 30599
+  min_value: 0.0
+  max_value: 1.605851e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 9231
+  - value: '21000.0'
+    count: 18
+  - value: '1000.0'
+    count: 17
+  - value: '2000.0'
+    count: 14
+  - value: '4000.0'
+    count: 14
+  definition: Real GDP for Information sector for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_finance_real_estate_all
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 44346
+  min_value: 0.0
+  max_value: 4.676163e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 3212
+  - value: '133025000.0'
+    count: 6
+  - value: '158049000.0'
+    count: 5
+  - value: '213742000.0'
+    count: 5
+  - value: '105518000.0'
+    count: 4
+  definition: Real GDP for Finance, Insurance and Real Estate (Composite Sectors) for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_finance_insurance
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 37563
+  min_value: 0.0
+  max_value: 1.62502e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 6318
+  - value: '30661000.0'
+    count: 6
+  - value: '41371000.0'
+    count: 6
+  - value: '52917000.0'
+    count: 6
+  - value: '80128000.0'
+    count: 6
+  definition: Real GDP for Finance and Insurance for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_real_estate
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 40582
+  min_value: 0.0
+  max_value: 3.108447e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 6784
+  - value: '184420000.0'
+    count: 6
+  - value: '139043000.0'
+    count: 5
+  - value: '147494000.0'
+    count: 5
+  - value: '175504000.0'
+    count: 5
+  definition: Real GDP for Real Estate for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_professional_all
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 37363
+  min_value: 0.0
+  max_value: 3.391773e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 7546
+  - value: '3186000.0'
+    count: 7
+  - value: '61478000.0'
+    count: 7
+  - value: '20461000.0'
+    count: 6
+  - value: '35481000.0'
+    count: 6
+  definition: Real GDP for Professional, Scientific and Management Services (Composite) for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_mining
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 24979
+  min_value: 0.0
+  max_value: 3.36302e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 10982
+  - value: '28000.0'
+    count: 27
+  - value: '6000.0'
+    count: 24
+  - value: '15000.0'
+    count: 23
+  - value: '52000.0'
+    count: 23
+  definition: Real GDP for Mining for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_professional_scientific
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 30885
+  min_value: 0.0
+  max_value: 2.116154e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 13519
+  - value: '2456000.0'
+    count: 7
+  - value: '3690000.0'
+    count: 7
+  - value: '4983000.0'
+    count: 7
+  - value: '1064000.0'
+    count: 6
+  definition: Real GDP for Professional and Scientific Services for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_professional_management
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 17982
+  min_value: 0.0
+  max_value: 5.36475e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 29872
+  - value: '9530000.0'
+    count: 12
+  - value: '2307000.0'
+    count: 10
+  - value: '2538000.0'
+    count: 9
+  - value: '2446000.0'
+    count: 8
+  definition: Real GDP for Professional and Management Services for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_professional_admin_support
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 31223
+  min_value: 0.0
+  max_value: 7.4833e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 12487
+  - value: '1612000.0'
+    count: 7
+  - value: '2128000.0'
+    count: 7
+  - value: '46000.0'
+    count: 7
+  - value: '65000.0'
+    count: 7
+  definition: Real GDP for Administrative and Support Services for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_education_all
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 40771
+  min_value: 0.0
+  max_value: 2.021153e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 4518
+  - value: '174647000.0'
+    count: 6
+  - value: '176000.0'
+    count: 6
+  - value: '12100000.0'
+    count: 5
+  - value: '123207000.0'
+    count: 5
+  definition: Real GDP for Educational and Health Services (All) for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_education
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 21047
+  min_value: 0.0
+  max_value: 2.63315e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 16647
+  - value: '19000.0'
+    count: 79
+  - value: '32000.0'
+    count: 77
+  - value: '41000.0'
+    count: 74
+  - value: '26000.0'
+    count: 68
+  definition: Real GDP for Educational Services for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_health
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 30287
+  min_value: 0.0
+  max_value: 1.758316e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 17713
+  - value: '59645000.0'
+    count: 6
+  - value: '14746000.0'
+    count: 5
+  - value: '21698000.0'
+    count: 5
+  - value: '4943000.0'
+    count: 5
+  definition: Real GDP for Health Care and Social Assistance for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_arts_food_all
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 37981
+  min_value: 0.0
+  max_value: 8.89845e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 3865
+  - value: '31608000.0'
+    count: 8
+  - value: '29101000.0'
+    count: 7
+  - value: '6179000.0'
+    count: 7
+  - value: '6332000.0'
+    count: 7
+  definition: Real GDP for Arts, Entertainment, Recreation, Accommodation and Food Services (Composite) for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_arts_entertainment
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 23405
+  min_value: 0.0
+  max_value: 2.43996e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 10211
+  - value: '3000.0'
+    count: 32
+  - value: '11000.0'
+    count: 31
+  - value: '13000.0'
+    count: 29
+  - value: '19000.0'
+    count: 28
+  definition: Real GDP for Arts, Entertainment and Recreation for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_accomodation_food
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 33981
+  min_value: 0.0
+  max_value: 6.47819e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 10011
+  - value: '19665000.0'
+    count: 7
+  - value: '109620000.0'
+    count: 6
+  - value: '16334000.0'
+    count: 6
+  - value: '20361000.0'
+    count: 6
+  definition: Real GDP for Accommodation and Food Services for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_other
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 36560
+  min_value: 0.0
+  max_value: 4.49026e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 4748
+  - value: '4758000.0'
+    count: 8
+  - value: '17880000.0'
+    count: 7
+  - value: '23550000.0'
+    count: 7
+  - value: '28627000.0'
+    count: 7
+  definition: Real GDP for Other Services for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_gov_enterprises
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 46758
+  min_value: 0.0
+  max_value: 2.582255e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 66
+  - value: '118272000.0'
+    count: 5
+  - value: '182999000.0'
+    count: 5
+  - value: '217825000.0'
+    count: 5
+  - value: '408821000.0'
+    count: 5
+  definition: Real GDP for Government Enterprises for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_natural_resources_all
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 35213
+  min_value: 0.0
+  max_value: 5.3393692e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 10674
+  - value: '11237000.0'
+    count: 6
+  - value: '13982000.0'
+    count: 6
+  - value: '14675000.0'
+    count: 6
+  - value: '18161000.0'
+    count: 6
+  definition: Real GDP for Natural Resources (Composite Industries) for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_trade_all
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 36600
+  min_value: 0.0
+  max_value: 2.4847339e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 11359
+  - value: '118164000.0'
+    count: 5
+  - value: '141981000.0'
+    count: 5
+  - value: '52212000.0'
+    count: 5
+  - value: '102816000.0'
+    count: 4
+  definition: Real GDP for Trade (Composite Industries) for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_transport_utilities_all
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 26593
+  min_value: 0.0
+  max_value: 1.0481868e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 22610
+  - value: '16658000.0'
+    count: 6
+  - value: '104358000.0'
+    count: 4
+  - value: '115820000.0'
+    count: 4
+  - value: '122539000.0'
+    count: 4
+  definition: Real GDP for Transportation and Utilities (Composite Industries) for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_manufacturing_info_all
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 38385
+  min_value: 0.0
+  max_value: 3.8848216e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 8876
+  - value: '141305000.0'
+    count: 5
+  - value: '102106000.0'
+    count: 4
+  - value: '106205000.0'
+    count: 4
+  - value: '109276000.0'
+    count: 4
+  definition: Real GDP Manufacturing and Information (Composite Industries) for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_private_goods_producing_industries
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 41804
+  min_value: 0.0
+  max_value: 3.678839e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 7282
+  - value: '126209000.0'
+    count: 4
+  - value: '165593000.0'
+    count: 4
+  - value: '178982000.0'
+    count: 4
+  - value: '213515000.0'
+    count: 4
+  definition: Real GDP for Private Goods Producing Industries for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+- name: real_gdp_private_services_providing_industries
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 42165
+  min_value: 0.0
+  max_value: 1.6416728e+13
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 7282
+  - value: '1117267000.0'
+    count: 4
+  - value: '1573503000.0'
+    count: 4
+  - value: '1793678000.0'
+    count: 4
+  - value: '2565248000.0'
+    count: 4
+  definition: Real GDP for Private Services Providing Industries for the geographic unit and time period, from BEA CAGDP9 table.
+  needs_confirmation: no
+lineage:
+- step: write_target
+  script: scripts/etl/gold/gold_economy_industry.sql
+  details: 'Table write/create reference(s): scripts/etl/gold/gold_economy_industry.sql:54:from
+    metro_deep_dive.silver.bea_regional_cagdp9_wide | scripts/etl/gold/gold_economy_industry.sql:142:from
+    metro_deep_dive.silver.bea_regional_cagdp9_wide | scripts/etl/gold/gold_economy_gdp.sql:117:from
+    metro_deep_dive.silver.bea_regional_cagdp9_wide'
+kpi_definitions: []

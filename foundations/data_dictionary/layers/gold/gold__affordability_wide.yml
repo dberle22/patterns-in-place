@@ -1,0 +1,64 @@
+table_name: affordability_wide
+schema: gold
+grain: One row per geo_level + geo_id + year.
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=115976
+quality_notes:
+  - Live key check on 2026-04-10 found zero duplicates on geo_level + geo_id + year.
+  - RPP coverage currently lands mainly for cbsa rows and a subset of county rows.
+  - State-level RPP fields are currently missing because of a state geo_id alignment issue with MARPP.
+sources:
+  - gold.housing_core_wide
+  - gold.economics_income_wide
+  - silver.bea_regional_marpp_wide
+  - silver.xwalk_cbsa_county
+  - silver.xwalk_county_state
+columns:
+  - { name: geo_level, type: VARCHAR, definition: Geographic level for the row. }
+  - { name: geo_id, type: VARCHAR, definition: Geographic identifier for the row. }
+  - { name: geo_name, type: VARCHAR, definition: Geographic display name for the row. }
+  - { name: year, type: INTEGER, definition: Observation year. }
+  - { name: pop_total, type: DOUBLE, definition: Total population from the housing core mart. }
+  - { name: hu_total, type: DOUBLE, definition: Total housing units from the housing core mart. }
+  - { name: median_gross_rent, type: DOUBLE, definition: ACS median gross monthly rent. }
+  - { name: annualized_median_rent, type: DOUBLE, definition: Annualized ACS median gross rent. }
+  - { name: median_home_value, type: DOUBLE, definition: ACS median home value. }
+  - { name: median_hh_income, type: DOUBLE, definition: ACS median household income. }
+  - { name: acs_income_pc, type: DOUBLE, definition: ACS per capita income from the economics income mart. }
+  - { name: calc_income_pc, type: DOUBLE, definition: BEA-based per capita income from the economics income mart. }
+  - { name: income_pc_growth_1yr, type: DOUBLE, definition: One-year growth in BEA-based per capita income. }
+  - { name: income_pc_growth_5yr, type: DOUBLE, definition: Five-year growth in BEA-based per capita income. }
+  - { name: income_pc_cagr_5yr, type: DOUBLE, definition: Five-year CAGR in BEA-based per capita income. }
+  - { name: income_pc_growth_10yr, type: DOUBLE, definition: Ten-year growth in BEA-based per capita income. }
+  - { name: income_pc_cagr_10yr, type: DOUBLE, definition: Ten-year CAGR in BEA-based per capita income. }
+  - { name: pi_wage_share, type: DOUBLE, definition: Share of personal income sourced from wages and salaries. }
+  - { name: rpp_real_pc_income, type: DOUBLE, definition: RPP-adjusted real per capita income where MARPP coverage is available. }
+  - { name: rpp_all_items, type: DOUBLE, definition: MARPP all-items regional price parity index. }
+  - { name: rpp_price_deflator, type: DOUBLE, definition: MARPP price deflator. }
+  - { name: rent_to_income, type: DOUBLE, definition: Annualized median rent divided by median household income. }
+  - { name: value_to_income, type: DOUBLE, definition: Median home value divided by median household income. }
+  - { name: pct_rent_burden_30plus, type: DOUBLE, definition: Share of renters spending 30 percent or more of income on rent. }
+  - { name: pct_rent_burden_50plus, type: DOUBLE, definition: Share of renters spending 50 percent or more of income on rent. }
+  - { name: fmr_2br, type: DOUBLE, definition: HUD fair market rent for 2-bedroom units. }
+  - { name: rent50_2br, type: DOUBLE, definition: HUD 50th percentile rent for 2-bedroom units. }
+  - { name: fmr_gap_2br_vs_median_rent, type: DOUBLE, definition: Difference between HUD 2-bedroom fair market rent and ACS median gross rent. }
+  - { name: rent50_gap_2br_vs_median_rent, type: DOUBLE, definition: Difference between HUD 2-bedroom median rent and ACS median gross rent. }
+  - { name: vacancy_rate, type: DOUBLE, definition: Housing vacancy rate. }
+  - { name: owner_occ_rate, type: DOUBLE, definition: Owner-occupancy rate. }
+  - { name: renter_occ_rate, type: DOUBLE, definition: Renter-occupancy rate. }
+  - { name: permits_per_1000_housing_units, type: DOUBLE, definition: Permitted units per 1,000 housing units. }
+  - { name: permits_per_1000_population, type: DOUBLE, definition: Permitted units per 1,000 residents. }
+  - { name: rent_to_rpp_income, type: DOUBLE, definition: Annualized median rent divided by RPP-adjusted real per capita income. }
+  - { name: value_to_rpp_income, type: DOUBLE, definition: Median home value divided by RPP-adjusted real per capita income. }

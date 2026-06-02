@@ -1,0 +1,615 @@
+table_name: bps_wide
+schema: silver
+grain: One row per geo_level + geo_id + period (inferred).
+primary_key:
+- geo_level
+- geo_id
+- period
+foreign_keys: []
+time_coverage:
+  type: range
+  column: period
+  min: '1980'
+  max: '2024'
+geo_coverage:
+  notes:
+  - distinct_geo_levels=6
+  - distinct_geo_id=18057
+columns:
+- name: geo_level
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 6
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 8
+  top_values:
+  - value: Place
+    count: 857644
+  - value: County
+    count: 106162
+  - value: CBSA
+    count: 32075
+  - value: State
+    count: 2335
+  - value: Division
+    count: 405
+  definition: Geographic level (US, region, division, state, county, place, zcta,
+    tract, cbsa)
+  needs_confirmation: no
+- name: geo_id
+  type: VARCHAR
+  null_pct: 0.0035
+  distinct_count: 18057
+  min_value: ~
+  max_value: ~
+  min_length: 1
+  max_length: 7
+  top_values:
+  - value: 42NA
+    count: 65695
+  - value: 36NA
+    count: 40280
+  - value: 55NA
+    count: 29139
+  - value: 26NA
+    count: 27552
+  - value: 39NA
+    count: 26340
+  definition: Geographic identifier for the row
+  needs_confirmation: no
+- name: geo_name
+  type: VARCHAR
+  null_pct: 0.0035
+  distinct_count: 21928
+  min_value: ~
+  max_value: ~
+  min_length: 3
+  max_length: 58
+  top_values:
+  - value: Washington township
+    count: 1388
+  - value: Jackson township
+    count: 1222
+  - value: Washington County
+    count: 1130
+  - value: Franklin township
+    count: 1030
+  - value: Franklin County
+    count: 1025
+  definition: Geographic name (from ACS NAME)
+  needs_confirmation: no
+- name: period
+  type: INTEGER
+  null_pct: 0.0
+  distinct_count: 45
+  min_value: 1980
+  max_value: 2024
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '2013'
+    count: 24536
+  - value: '2014'
+    count: 24497
+  - value: '2022'
+    count: 24155
+  - value: '2015'
+    count: 24142
+  - value: '2017'
+    count: 24139
+  definition: Time period for the observation (usually calendar year).
+  needs_confirmation: no
+- name: total_bldgs
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 8791
+  min_value: 0.0
+  max_value: 846071.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 230817
+  - value: '1.0'
+    count: 81903
+  - value: '2.0'
+    count: 59407
+  - value: '3.0'
+    count: 45222
+  - value: '4.0'
+    count: 36346
+  definition: Total Buildings in the geography and time period.
+  needs_confirmation: no
+- name: total_units
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 10366
+  min_value: 0.0
+  max_value: 1039044.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 230814
+  - value: '1.0'
+    count: 77465
+  - value: '2.0'
+    count: 56303
+  - value: '3.0'
+    count: 42461
+  - value: '4.0'
+    count: 34629
+  definition: Total Units in the geography and time period.
+  needs_confirmation: no
+- name: total_value
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 411653
+  min_value: 0.0
+  max_value: 1.7670518e+10
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 230760
+  - value: '100000.0'
+    count: 4040
+  - value: '200000.0'
+    count: 3865
+  - value: '150000.0'
+    count: 3813
+  - value: '50000.0'
+    count: 2949
+  definition: Total Value of all units in the geography and time period.
+  needs_confirmation: no
+- name: bldgs_1_unit
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 8602
+  min_value: 0.0
+  max_value: 826793.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 239225
+  - value: '1.0'
+    count: 83693
+  - value: '2.0'
+    count: 60267
+  - value: '3.0'
+    count: 45549
+  - value: '4.0'
+    count: 36593
+  definition: Number of buildings with 1 unit in the geography and time period.
+  needs_confirmation: no
+- name: bldgs_2_units
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 1298
+  min_value: 0.0
+  max_value: 16090.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 834822
+  - value: '1.0'
+    count: 50825
+  - value: '2.0'
+    count: 25842
+  - value: '3.0'
+    count: 15441
+  - value: '4.0'
+    count: 10594
+  definition: Number of buildings with 2 units in the geography and time period.
+  needs_confirmation: no
+- name: bldgs_3_4_units
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 979
+  min_value: 0.0
+  max_value: 10566.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 886690
+  - value: '1.0'
+    count: 37954
+  - value: '2.0'
+    count: 17098
+  - value: '3.0'
+    count: 10121
+  - value: '4.0'
+    count: 7208
+  definition: Number of buildings with 3-4 units in the geography and time period.
+  needs_confirmation: no
+- name: bldgs_5_units
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 1445
+  min_value: 0.0
+  max_value: 25284.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 852404
+  - value: '1.0'
+    count: 39215
+  - value: '2.0'
+    count: 18117
+  - value: '3.0'
+    count: 11343
+  - value: '4.0'
+    count: 8892
+  definition: Number of Buildings with 5+ units in the geography and time period.
+  needs_confirmation: no
+- name: units_1_unit
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 8602
+  min_value: 0.0
+  max_value: 826793.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 239225
+  - value: '1.0'
+    count: 83693
+  - value: '2.0'
+    count: 60267
+  - value: '3.0'
+    count: 45549
+  - value: '4.0'
+    count: 36593
+  definition: Count of Units in 1 Unit buildings. Directly from BPS Survey
+  needs_confirmation: no
+- name: units_2_units
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 1302
+  min_value: 0.0
+  max_value: 32180.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 834822
+  - value: '2.0'
+    count: 50824
+  - value: '4.0'
+    count: 25843
+  - value: '6.0'
+    count: 15441
+  - value: '8.0'
+    count: 10594
+  definition: Count of Units in 2 Unit buildings. Directly from BPS Survey
+  needs_confirmation: no
+- name: units_3_4_units
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 1799
+  min_value: 0.0
+  max_value: 40042.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 886615
+  - value: '4.0'
+    count: 24237
+  - value: '3.0'
+    count: 13757
+  - value: '8.0'
+    count: 9282
+  - value: '12.0'
+    count: 5895
+  definition: Count of Units in 3-4 Unit buildings. Directly from BPS Survey
+  needs_confirmation: no
+- name: units_5_units
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 5966
+  min_value: 0.0
+  max_value: 348020.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 852404
+  - value: '6.0'
+    count: 5600
+  - value: '5.0'
+    count: 5329
+  - value: '8.0'
+    count: 5192
+  - value: '24.0'
+    count: 4648
+  definition: Count of Units in 5+ Unit buildings. Directly from BPS Survey
+  needs_confirmation: no
+- name: value_1_unit
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 397739
+  min_value: 0.0
+  max_value: 1.5718555e+10
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 238782
+  - value: '100000.0'
+    count: 4124
+  - value: '200000.0'
+    count: 3896
+  - value: '150000.0'
+    count: 3867
+  - value: '50000.0'
+    count: 3087
+  definition: Total value of 1 Unit buildings in the geography and time period.
+  needs_confirmation: no
+- name: value_2_units
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 61225
+  min_value: 0.0
+  max_value: 7.9579661e+08
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 834717
+  - value: '100000.0'
+    count: 1966
+  - value: '200000.0'
+    count: 1851
+  - value: '150000.0'
+    count: 1694
+  - value: '60000.0'
+    count: 1516
+  definition: Total value of 2 Unit buildings in the geography and time period.
+  needs_confirmation: no
+- name: value_3_4_units
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 46132
+  min_value: 0.0
+  max_value: 5.8462257e+08
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 887611
+  - value: '200000.0'
+    count: 1348
+  - value: '300000.0'
+    count: 1161
+  - value: '100000.0'
+    count: 1159
+  - value: '150000.0'
+    count: 1108
+  definition: Total value of 3-4 Unit buildings in the geography and time period.
+  needs_confirmation: no
+- name: value_5_units
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 76546
+  min_value: 0.0
+  max_value: 8.5730745e+09
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 852064
+  - value: '400000.0'
+    count: 881
+  - value: '500000.0'
+    count: 880
+  - value: '300000.0'
+    count: 867
+  - value: '600000.0'
+    count: 797
+  definition: Total value of 5+ Unit buildings in the geography and time period.
+  needs_confirmation: no
+- name: units_multifam
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 6396
+  min_value: 0.0
+  max_value: 419894.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 746854
+  - value: '2.0'
+    count: 29731
+  - value: '4.0'
+    count: 20554
+  - value: '6.0'
+    count: 11424
+  - value: '8.0'
+    count: 10369
+  definition: Count of Multifamily Units (2+ units). Sum of units in 2 Unit, 3-4 Unit, and 5+ Unit buildings. Directly from BPS Survey
+  needs_confirmation: no
+- name: bldgs_multifam
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 2082
+  min_value: 0.0
+  max_value: 51766.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 746885
+  - value: '1.0'
+    count: 62437
+  - value: '2.0'
+    count: 31970
+  - value: '3.0'
+    count: 20394
+  - value: '4.0'
+    count: 15398
+  definition: Count of Multifamily Buildings (2+ units). Sum of 2 Unit, 3-4 Unit, and 5+ Unit buildings. Directly from BPS Survey
+  needs_confirmation: no
+- name: value_multifam
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 118685
+  min_value: 0.0
+  max_value: 8.8869517e+09
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 747441
+  - value: '200000.0'
+    count: 2087
+  - value: '100000.0'
+    count: 1928
+  - value: '150000.0'
+    count: 1844
+  - value: '300000.0'
+    count: 1664
+  definition: Total value of Multifamily buildings (2+ units) in the geography and time period.
+  needs_confirmation: no
+- name: avg_units_per_bldg
+  type: DOUBLE
+  null_pct: 23.1094
+  distinct_count: 61891
+  min_value: 1.0
+  max_value: 583.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '1.0'
+    count: 516043
+  - value: ~
+    count: 230817
+  - value: '2.0'
+    count: 4929
+  - value: '1.5'
+    count: 3944
+  - value: '1.3333333333333333'
+    count: 3190
+  definition: Average Units per Building (calculated as total_units / total_bldgs)
+  needs_confirmation: no
+- name: avg_units_per_mf_bldg
+  type: DOUBLE
+  null_pct: 74.7782
+  distinct_count: 24854
+  min_value: 1.0
+  max_value: 676.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: ~
+    count: 746885
+  - value: '2.0'
+    count: 62537
+  - value: '4.0'
+    count: 16505
+  - value: '3.0'
+    count: 10899
+  - value: '5.0'
+    count: 6671
+  definition: Average Units per Multifamily Building (calculated as total_multifam_units / total_multifam_bldgs)
+  needs_confirmation: no
+- name: share_multifam_units
+  type: DOUBLE
+  null_pct: 23.1091
+  distinct_count: 60583
+  min_value: 0.0
+  max_value: 1.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 516040
+  - value: ~
+    count: 230814
+  - value: '1.0'
+    count: 8411
+  - value: '0.6666666666666666'
+    count: 4142
+  - value: '0.5'
+    count: 3956
+  definition: Share of total units that are in Multifamily buildings (2+ units) in the geography and time period.
+  needs_confirmation: no
+- name: share_units_5_plus
+  type: DOUBLE
+  null_pct: 23.1091
+  distinct_count: 54781
+  min_value: 0.0
+  max_value: 1.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 621590
+  - value: ~
+    count: 230814
+  - value: '1.0'
+    count: 2885
+  - value: '0.5'
+    count: 871
+  - value: '0.6666666666666666'
+    count: 841
+  definition: Share of total units that are in 5+ Unit buildings in the geography and time period.
+  needs_confirmation: no
+- name: share_units_1_unit
+  type: DOUBLE
+  null_pct: 23.1091
+  distinct_count: 60583
+  min_value: 0.0
+  max_value: 1.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '1.0'
+    count: 516040
+  - value: ~
+    count: 230814
+  - value: '0.0'
+    count: 8411
+  - value: '0.3333333333333333'
+    count: 4142
+  - value: '0.5'
+    count: 3956
+  definition: Share of total units that are in 1 Unit buildings in the geography and time period.
+  needs_confirmation: no
+- name: structure_mix
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 3
+  min_value: ~
+  max_value: ~
+  min_length: 15
+  max_length: 21
+  top_values:
+  - value: mostly_single_family
+    count: 917120
+  - value: mostly_large_multifam
+    count: 47855
+  - value: mostly_multifam
+    count: 33826
+  definition: Metadata column categorizing the structure mix of the geography and time period, based on share of units in 1 Unit, 2-4 Unit, and 5+ Unit buildings.
+  needs_confirmation: no
+lineage:
+- step: write_target
+  script: scripts/etl/gold/gold_housing_core.sql
+  details: 'Table write/create reference(s): scripts/etl/gold/gold_housing_core.sql:71:FROM
+    metro_deep_dive.silver.bps_wide bw  | scripts/etl/silver/bps_silver.R:415:DBI::dbWriteTable(con,
+    DBI::Id(schema="silver", table="bps_wide"),'
+- step: downstream_usage_examples
+  script: notebooks/retail_opportunity_finder/tract_features.sql
+  details: 'Downstream reference(s): notebooks/retail_opportunity_finder/tract_features.sql:43:  FROM
+    metro_deep_dive.silver.bps_wide | notebooks/retail_opportunity_finder/cbsa_features.sql:88:  FROM
+    metro_deep_dive.silver.bps_wide'
+kpi_definitions: []

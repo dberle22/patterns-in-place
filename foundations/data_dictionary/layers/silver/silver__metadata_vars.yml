@@ -1,0 +1,186 @@
+table_name: metadata_vars
+schema: silver
+grain: One row per table_name (inferred).
+primary_key:
+- table_name
+foreign_keys: []
+time_coverage:
+  type: unknown
+  column: ~
+  min: ~
+  max: ~
+geo_coverage:
+  notes: []
+columns:
+- name: table_schema
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 1
+  min_value: ~
+  max_value: ~
+  min_length: 6
+  max_length: 6
+  top_values:
+  - value: silver
+    count: 468
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: table_name
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 16
+  min_value: ~
+  max_value: ~
+  min_length: 7
+  max_length: 14
+  top_values:
+  - value: age_base
+    count: 54
+  - value: labor_kpi
+    count: 53
+  - value: labor_base
+    count: 48
+  - value: housing_base
+    count: 38
+  - value: housing_kpi
+    count: 37
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: column_name
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 407
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 37
+  top_values:
+  - value: geo_id
+    count: 16
+  - value: geo_level
+    count: 16
+  - value: geo_name
+    count: 16
+  - value: year
+    count: 16
+  - value: occ_totalE
+    count: 2
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: ordinal_position
+  type: INTEGER
+  null_pct: 0.0
+  distinct_count: 54
+  min_value: 1
+  max_value: 54
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '1'
+    count: 16
+  - value: '10'
+    count: 16
+  - value: '11'
+    count: 16
+  - value: '12'
+    count: 16
+  - value: '13'
+    count: 16
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: data_type
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 3
+  min_value: ~
+  max_value: ~
+  min_length: 6
+  max_length: 7
+  top_values:
+  - value: DOUBLE
+    count: 404
+  - value: VARCHAR
+    count: 48
+  - value: INTEGER
+    count: 16
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: topic
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 8
+  min_value: ~
+  max_value: ~
+  min_length: 3
+  max_length: 9
+  top_values:
+  - value: labor
+    count: 101
+  - value: age
+    count: 84
+  - value: housing
+    count: 75
+  - value: transport
+    count: 53
+  - value: education
+    count: 43
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: is_key
+  type: BOOLEAN
+  null_pct: 0.0
+  distinct_count: 2
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 5
+  top_values:
+  - value: 'false'
+    count: 404
+  - value: 'true'
+    count: 64
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: is_measure
+  type: BOOLEAN
+  null_pct: 0.0
+  distinct_count: 2
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 5
+  top_values:
+  - value: 'true'
+    count: 404
+  - value: 'false'
+    count: 64
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: description
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 12
+  min_value: ~
+  max_value: ~
+  min_length: 23
+  max_length: 80
+  top_values:
+  - value: Metric from labor ACS table
+    count: 93
+  - value: Metric from age ACS table
+    count: 76
+  - value: Metric from housing ACS table
+    count: 67
+  - value: Metric from transport ACS table
+    count: 45
+  - value: Metric from education ACS table
+    count: 35
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+lineage:
+- step: write_target
+  script: scripts/etl/silver/acs_metadata_silver.R
+  details: 'Table write/create reference(s): scripts/etl/silver/acs_metadata_silver.R:152:  DBI::Id(schema
+    = "silver", table = "metadata_vars"), | scripts/etl/silver/acs_metadata_silver.R:160:  FROM
+    silver.metadata_vars'
+kpi_definitions: []

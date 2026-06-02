@@ -1,0 +1,394 @@
+table_name: bea_regional_cainc4_wide
+schema: silver
+grain: One row per geo_level + geo_id + period (inferred).
+primary_key:
+- geo_level
+- geo_id
+- period
+foreign_keys: []
+time_coverage:
+  type: range
+  column: period
+  min: '2000'
+  max: '2023'
+geo_coverage:
+  notes:
+  - distinct_geo_levels=3
+  - distinct_geo_id=3585
+columns:
+- name: geo_level
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 3
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 6
+  top_values:
+  - value: county
+    count: 75360
+  - value: cbsa
+    count: 9240
+  - value: state
+    count: 1440
+  definition: Geographic level (US, region, division, state, county, place, zcta,
+    tract, cbsa)
+  needs_confirmation: no
+- name: geo_id
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 3585
+  min_value: ~
+  max_value: ~
+  min_length: 5
+  max_length: 5
+  top_values:
+  - value: '00000'
+    count: 24
+  - value: 00998
+    count: 24
+  - value: '01000'
+    count: 24
+  - value: '01001'
+    count: 24
+  - value: '01003'
+    count: 24
+  definition: Geographic identifier for the row
+  needs_confirmation: no
+- name: geo_name
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 3585
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 78
+  top_values:
+  - value: Abbeville, SC
+    count: 24
+  - value: Abilene, TX (Metropolitan Statistical Area)
+    count: 24
+  - value: Acadia, LA
+    count: 24
+  - value: Accomack, VA
+    count: 24
+  - value: Ada, ID
+    count: 24
+  definition: Geographic name (from ACS NAME)
+  needs_confirmation: no
+- name: period
+  type: INTEGER
+  null_pct: 0.0
+  distinct_count: 24
+  min_value: 2000
+  max_value: 2023
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '2000'
+    count: 3585
+  - value: '2001'
+    count: 3585
+  - value: '2002'
+    count: 3585
+  - value: '2003'
+    count: 3585
+  - value: '2004'
+    count: 3585
+  definition: Time period for the observation (usually calendar year).
+  needs_confirmation: no
+- name: table
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 1
+  min_value: ~
+  max_value: ~
+  min_length: 6
+  max_length: 6
+  top_values:
+  - value: CAINC4
+    count: 86040
+  definition: BEA source table identifier (for example, CAGDP2, CAGDP9, CAINC1, CAINC4,
+    MARPP).
+  needs_confirmation: no
+- name: pi_wages_salary
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 78890
+  min_value: 0.0
+  max_value: 1.1716967e+13
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 663
+  - value: '26705000.0'
+    count: 5
+  - value: '2027908000.0'
+    count: 4
+  - value: '208158000.0'
+    count: 4
+  - value: '21995000.0'
+    count: 4
+  definition: Total Personal Income component for wages and salary disbursements (from BEA CAINC4 table).
+  needs_confirmation: no
+- name: pi_supplements_wages_salary
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 72393
+  min_value: 0.0
+  max_value: 2.452724e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 663
+  - value: '13902000.0'
+    count: 6
+  - value: '25089000.0'
+    count: 6
+  - value: '11323000.0'
+    count: 5
+  - value: '13270000.0'
+    count: 5
+  definition: Total Personal Income component for supplements to wages and salary disbursements (from BEA CAINC4 table).
+  needs_confirmation: no
+- name: pi_proprietors
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 71141
+  min_value: -6.315931e+09
+  max_value: 1.94553e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 663
+  - value: '19776000.0'
+    count: 7
+  - value: '26649000.0'
+    count: 6
+  - value: '27114000.0'
+    count: 6
+  - value: '28372000.0'
+    count: 6
+  definition: Total Personal Income component for proprietors' income (from BEA CAINC4 table).
+  needs_confirmation: no
+- name: pi_dividends_interest_rent
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 75725
+  min_value: 0.0
+  max_value: 4.806534e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 663
+  - value: '41783000.0'
+    count: 5
+  - value: '71603000.0'
+    count: 5
+  - value: '96472000.0'
+    count: 5
+  - value: '16462000.0'
+    count: 4
+  definition: Total Personal Income component for dividends, interest, and rent (from BEA CAINC4 table).
+  needs_confirmation: no
+- name: pi_transfer_receipts
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 77776
+  min_value: 0.0
+  max_value: 4.653728e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 663
+  - value: '228959000.0'
+    count: 5
+  - value: '101602000.0'
+    count: 4
+  - value: '11347000.0'
+    count: 4
+  - value: '2338267000.0'
+    count: 4
+  definition: Total Personal Income component for transfer receipts (from BEA CAINC4 table).
+  needs_confirmation: no
+- name: pi_net_earnings_residence
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 80015
+  min_value: 0.0
+  max_value: 1.4305741e+13
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 663
+  - value: '100373000.0'
+    count: 3
+  - value: '102240000.0'
+    count: 3
+  - value: '109087000.0'
+    count: 3
+  - value: '123341000.0'
+    count: 3
+  definition: Total Personal Income component for net earnings by place of residence (from BEA CAINC4 table).
+  needs_confirmation: no
+- name: pi_residence_adjustment
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 74482
+  min_value: -2.6318124e+11
+  max_value: 7.9800665e+10
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 715
+  - value: '9165000.0'
+    count: 8
+  - value: '3966000.0'
+    count: 6
+  - value: '6483000.0'
+    count: 6
+  - value: '7651000.0'
+    count: 6
+  definition: Total Personal Income component for residence adjustment (from BEA CAINC4 table).
+  needs_confirmation: no
+- name: pi_earnings_workplace
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 79866
+  min_value: 0.0
+  max_value: 1.6115221e+13
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 663
+  - value: '121650000.0'
+    count: 4
+  - value: '133801000.0'
+    count: 4
+  - value: '134364000.0'
+    count: 4
+  - value: '42265000.0'
+    count: 4
+  definition: Total Personal Income component for earnings by place of work (from BEA CAINC4 table).
+  needs_confirmation: no
+- name: pi_employer_pension_insurance
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 69376
+  min_value: 0.0
+  max_value: 1.633075e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 663
+  - value: '17124000.0'
+    count: 7
+  - value: '13165000.0'
+    count: 6
+  - value: '17374000.0'
+    count: 6
+  - value: '17605000.0'
+    count: 6
+  definition: Total Personal Income component for employer pension and insurance (from BEA CAINC4 table).
+  needs_confirmation: no
+- name: pi_employer_social_insurance
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 58207
+  min_value: 0.0
+  max_value: 8.19649e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 663
+  - value: '3906000.0'
+    count: 10
+  - value: '1689000.0'
+    count: 9
+  - value: '3188000.0'
+    count: 9
+  - value: '3423000.0'
+    count: 9
+  definition: Total Personal Income component for employer contributions for government social insurance (from BEA CAINC4 table).
+  needs_confirmation: no
+- name: pi_nonfarm
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 80737
+  min_value: 0.0
+  max_value: 2.3279071e+13
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 663
+  - value: '4971132000.0'
+    count: 4
+  - value: '111457000.0'
+    count: 3
+  - value: '1261469000.0'
+    count: 3
+  - value: '1662775000.0'
+    count: 3
+  definition: Total Personal Income component for nonfarm earnings (from BEA CAINC4 table).
+  needs_confirmation: no
+- name: pi_farm_proprietors
+  type: DOUBLE
+  null_pct: 12.4128
+  distinct_count: 39061
+  min_value: -3.16596e+08
+  max_value: 1.920804e+09
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: ~
+    count: 10680
+  - value: '0.0'
+    count: 2168
+  - value: '-4000.0'
+    count: 18
+  - value: '-50000.0'
+    count: 18
+  - value: '-39000.0'
+    count: 17
+  definition: Total Personal Income component for farm proprietors (from BEA CAINC4 table).
+  needs_confirmation: no
+- name: pi_nonfarm_proprietors
+  type: DOUBLE
+  null_pct: 12.4128
+  distinct_count: 61625
+  min_value: -6.305398e+09
+  max_value: 6.9799913e+10
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: ~
+    count: 10680
+  - value: '0.0'
+    count: 663
+  - value: '13371000.0'
+    count: 6
+  - value: '13376000.0'
+    count: 6
+  - value: '18651000.0'
+    count: 6
+  definition: Total Personal Income component for nonfarm proprietors (from BEA CAINC4 table).
+  needs_confirmation: no
+lineage:
+- step: write_target
+  script: scripts/etl/silver/bea_cainc4_silver.R
+  details: 'Table write/create reference(s): scripts/etl/silver/bea_cainc4_silver.R:161:DBI::dbWriteTable(con,
+    DBI::Id(schema="silver", table="bea_regional_cainc4_wide"), | scripts/etl/gold/gold_economy_income.sql:71:from
+    metro_deep_dive.silver.bea_regional_cainc4_wide | scripts/etl/gold/gold_economy_wide.sql:74:from
+    metro_deep_dive.silver.bea_regional_cainc4_wide'
+kpi_definitions: []

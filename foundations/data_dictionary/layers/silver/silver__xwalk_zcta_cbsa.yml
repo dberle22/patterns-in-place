@@ -1,0 +1,194 @@
+table_name: xwalk_zcta_cbsa
+schema: silver
+grain: One row per zip_geoid (inferred).
+primary_key: zip_geoid
+foreign_keys: []
+time_coverage:
+  type: range
+  column: vintage
+  min: '2025'
+  max: '2025'
+geo_coverage:
+  notes: distinct_zip_geoid=39482
+columns:
+  - name: zip_geoid
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 39482
+    min_value: ~
+    max_value: ~
+    min_length: 5
+    max_length: 5
+    top_values:
+      - value: '37144'
+        count: 5
+      - value: '47240'
+        count: 5
+      - value: 03280
+        count: 4
+      - value: '17021'
+        count: 4
+      - value: '17814'
+        count: 4
+    definition: ZIP Code, represented as a 5-digit string. Note that some ZIP Codes
+      have leading zeros, which are preserved in the geoid (e.g. '03280').
+    needs_confirmation: no
+  - name: cbsa_geoid
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 936
+    min_value: ~
+    max_value: ~
+    min_length: 5
+    max_length: 5
+    top_values:
+      - value: '99999'
+        count: 11192
+      - value: '35620'
+        count: 1072
+      - value: '47900'
+        count: 683
+      - value: '31080'
+        count: 632
+      - value: '37980'
+        count: 489
+    definition: CBSA (Core Based Statistical Area) GEOID. Note that some ZIP Codes
+      are not assigned to a CBSA, and in those cases the geoid is '99999'.
+    needs_confirmation: no
+  - name: zip_pref_city
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 18498
+    min_value: ~
+    max_value: ~
+    min_length: 3
+    max_length: 27
+    top_values:
+      - value: WASHINGTON
+        count: 262
+      - value: HOUSTON
+        count: 178
+      - value: NEW YORK
+        count: 127
+      - value: SPRINGFIELD
+        count: 105
+      - value: MIAMI
+        count: 99
+    definition: Preferred city name for the ZIP Code.
+    needs_confirmation: no
+  - name: zip_pref_state
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 54
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: TX
+        count: 2894
+      - value: CA
+        count: 2602
+      - value: PA
+        count: 2397
+      - value: NY
+        count: 2394
+      - value: IL
+        count: 1960
+    definition: State abbreviation for the ZIP Code.
+    needs_confirmation: no
+  - name: rel_weight_pop
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 14192
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.0'
+        count: 28858
+      - value: '0.0'
+        count: 3705
+      - value: '0.007042253521126761'
+        count: 7
+      - value: '0.0033112582781456954'
+        count: 6
+      - value: '0.045454545454545456'
+        count: 6
+    definition: Relative weight of the ZIP Code's population within the CBSA.
+    needs_confirmation: no
+  - name: rel_weight_bus
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 3844
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.0'
+        count: 32103
+      - value: '0.0'
+        count: 7079
+      - value: '0.5'
+        count: 131
+      - value: '0.25'
+        count: 84
+      - value: '0.6666666666666666'
+        count: 82
+    definition: Relative weight of the ZIP Code's business count within the CBSA.
+    needs_confirmation: no
+  - name: rel_weight_hu
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 14367
+    min_value: 2.7079723e-05
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.0'
+        count: 32443
+      - value: '0.01282051282051282'
+        count: 7
+      - value: '0.014705882352941176'
+        count: 6
+      - value: '0.04878048780487805'
+        count: 6
+      - value: '0.06666666666666667'
+        count: 6
+    definition: Relative weight of the ZIP Code's housing units within the CBSA.
+    needs_confirmation: no
+  - name: vintage
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: 2025
+    max_value: 2025
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2025'
+        count: 47633
+    definition: Year of the crosswalk data.
+    needs_confirmation: no
+  - name: source
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: ~
+    max_value: ~
+    min_length: 19
+    max_length: 19
+    top_values:
+      - value: HUD_ZIP_CBSA_2025Q1
+        count: 47633
+    definition: Source of the crosswalk data.
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/silver/geo_crosswalks_silver.R
+    details: 'Table write/create reference(s): scripts/etl/silver/geo_crosswalks_silver.R:143:DBI::dbWriteTable(con,
+      DBI::Id(schema="silver", table="xwalk_zcta_cbsa"),'
+kpi_definitions: []

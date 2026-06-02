@@ -1,0 +1,859 @@
+table_name: age_kpi
+schema: silver
+grain: One row per geo_level + geo_id + geo_name + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - geo_name
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=115976
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 8
+    top_values:
+      - value: zcta
+        count: 433172
+      - value: place
+        count: 397094
+      - value: tract
+        count: 135851
+      - value: county
+        count: 41870
+      - value: cbsa
+        count: 12085
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 115976
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 11
+    top_values:
+      - value: '1'
+        count: 39
+      - value: '2'
+        count: 26
+      - value: '3'
+        count: 26
+      - value: '4'
+        count: 26
+      - value: '01001'
+        count: 25
+    definition: Geographic identifier for the row
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 97125
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 66
+    top_values:
+      - value: Alexandria city, Virginia
+        count: 26
+      - value: Baltimore city, Maryland
+        count: 26
+      - value: Bristol city, Virginia
+        count: 26
+      - value: Buena Vista city, Virginia
+        count: 26
+      - value: Carson City, Nevada
+        count: 26
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 13
+    min_value: 2012
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2024'
+        count: 82276
+      - value: '2023'
+        count: 82271
+      - value: '2022'
+        count: 82134
+      - value: '2021'
+        count: 81848
+      - value: '2020'
+        count: 81194
+    definition: Observation year or period year for the row.
+    needs_confirmation: no
+  - name: pop_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 80593
+    min_value: 0.0
+    max_value: 3.349225e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 11017
+      - value: '74.0'
+        count: 610
+      - value: '115.0'
+        count: 607
+      - value: '61.0'
+        count: 603
+      - value: '64.0'
+        count: 602
+    definition: Total population (all ages).
+    needs_confirmation: no
+  - name: median_age
+    type: DOUBLE
+    null_pct: 1.7624
+    distinct_count: 5492
+    min_value: 0.0
+    max_value: 105.1
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 17993
+      - value: '40.5'
+        count: 5948
+      - value: '40.8'
+        count: 5846
+      - value: '40.3'
+        count: 5768
+      - value: '40.6'
+        count: 5615
+    definition: Median age of the population (years).
+    needs_confirmation: no
+  - name: age_0_4
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 18281
+    min_value: 0.0
+    max_value: 2.0137884e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 99942
+      - value: '8.0'
+        count: 6958
+      - value: '4.0'
+        count: 6920
+      - value: '6.0'
+        count: 6853
+      - value: '10.0'
+        count: 6794
+    definition: Population ages 0 to 4.
+    needs_confirmation: no
+  - name: age_5_14
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 26354
+    min_value: 0.0
+    max_value: 4.1921255e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 63240
+      - value: '9.0'
+        count: 4087
+      - value: '8.0'
+        count: 4031
+      - value: '12.0'
+        count: 4015
+      - value: '10.0'
+        count: 4010
+    definition: Population ages 5 to 14.
+    needs_confirmation: no
+  - name: age_15_17
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 14740
+    min_value: 0.0
+    max_value: 1.3192298e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 104795
+      - value: '6.0'
+        count: 9490
+      - value: '2.0'
+        count: 9233
+      - value: '4.0'
+        count: 9127
+      - value: '8.0'
+        count: 9001
+    definition: Population ages 15 to 17.
+    needs_confirmation: no
+  - name: age_18_24
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 24431
+    min_value: 0.0
+    max_value: 3.1368674e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 75273
+      - value: '6.0'
+        count: 5799
+      - value: '8.0'
+        count: 5719
+      - value: '9.0'
+        count: 5686
+      - value: '11.0'
+        count: 5648
+    definition: Population ages 18 to 24.
+    needs_confirmation: no
+  - name: age_25_34
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 27333
+    min_value: 0.0
+    max_value: 4.580654e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 57934
+      - value: '8.0'
+        count: 4404
+      - value: '9.0'
+        count: 4403
+      - value: '10.0'
+        count: 4388
+      - value: '13.0'
+        count: 4327
+    definition: Population ages 25 to 34.
+    needs_confirmation: no
+  - name: age_35_44
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 26051
+    min_value: 0.0
+    max_value: 4.4237292e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 52919
+      - value: '10.0'
+        count: 4535
+      - value: '12.0'
+        count: 4332
+      - value: '9.0'
+        count: 4327
+      - value: '11.0'
+        count: 4289
+    definition: Population ages 35 to 44.
+    needs_confirmation: no
+  - name: age_45_54
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 25948
+    min_value: 0.0
+    max_value: 4.4646979e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 42724
+      - value: '9.0'
+        count: 3935
+      - value: '13.0'
+        count: 3880
+      - value: '10.0'
+        count: 3875
+      - value: '14.0'
+        count: 3831
+    definition: Population ages 45 to 54.
+    needs_confirmation: no
+  - name: age_55_64
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 25241
+    min_value: 0.0
+    max_value: 4.2829413e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 34730
+      - value: '16.0'
+        count: 3653
+      - value: '9.0'
+        count: 3623
+      - value: '12.0'
+        count: 3616
+      - value: '14.0'
+        count: 3596
+    definition: Population ages 55 to 64.
+    needs_confirmation: no
+  - name: age_65_74
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 21376
+    min_value: 0.0
+    max_value: 3.4092907e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 42026
+      - value: '10.0'
+        count: 4961
+      - value: '9.0'
+        count: 4931
+      - value: '8.0'
+        count: 4898
+      - value: '16.0'
+        count: 4708
+    definition: Population ages 65 to 74.
+    needs_confirmation: no
+  - name: age_75_84
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 15654
+    min_value: 0.0
+    max_value: 1.710868e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 71196
+      - value: '8.0'
+        count: 8179
+      - value: '10.0'
+        count: 8085
+      - value: '9.0'
+        count: 8076
+      - value: '7.0'
+        count: 7858
+    definition: Population ages 75 to 84.
+    needs_confirmation: no
+  - name: age_85p
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 10469
+    min_value: 0.0
+    max_value: 6621816.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 157162
+      - value: '2.0'
+        count: 18137
+      - value: '4.0'
+        count: 15374
+      - value: '3.0'
+        count: 15332
+      - value: '6.0'
+        count: 14473
+    definition: Population ages 85 and older.
+    needs_confirmation: no
+  - name: age_25_54
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 47706
+    min_value: 0.0
+    max_value: 1.3078763e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 22503
+      - value: '32.0'
+        count: 1662
+      - value: '19.0'
+        count: 1646
+      - value: '18.0'
+        count: 1637
+      - value: '45.0'
+        count: 1637
+    definition: Population ages 25 to 54.
+    needs_confirmation: no
+  - name: pct_age_0_4
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 513048
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 88925
+      - value: -nan
+        count: 11017
+      - value: '0.0625'
+        count: 680
+      - value: '0.07142857142857142'
+        count: 676
+      - value: '0.058823529411764705'
+        count: 675
+    definition: Share of total population ages 0 to 4 (0 to 1).
+    needs_confirmation: no
+  - name: pct_age_5_14
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 562848
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 52223
+      - value: -nan
+        count: 11017
+      - value: '0.14285714285714285'
+        count: 1022
+      - value: '0.125'
+        count: 974
+      - value: '0.1111111111111111'
+        count: 943
+    definition: Share of total population ages 5 to 14 (0 to 1).
+    needs_confirmation: no
+  - name: pct_age_15_17
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 479966
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 93778
+      - value: -nan
+        count: 11017
+      - value: '0.04'
+        count: 681
+      - value: '0.041666666666666664'
+        count: 668
+      - value: '0.05263157894736842'
+        count: 655
+    definition: Share of total population ages 15 to 17 (0 to 1).
+    needs_confirmation: no
+  - name: pct_age_18_24
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 542973
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 64256
+      - value: -nan
+        count: 11017
+      - value: '0.07692307692307693'
+        count: 797
+      - value: '0.07142857142857142'
+        count: 786
+      - value: '0.08333333333333333'
+        count: 755
+    definition: Share of total population ages 18 to 24 (0 to 1).
+    needs_confirmation: no
+  - name: pct_age_25_34
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 565502
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 46917
+      - value: -nan
+        count: 11017
+      - value: '0.1111111111111111'
+        count: 1029
+      - value: '0.125'
+        count: 1004
+      - value: '0.14285714285714285'
+        count: 943
+    definition: Share of total population ages 25 to 34 (0 to 1).
+    needs_confirmation: no
+  - name: pct_age_35_44
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 548915
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 41902
+      - value: -nan
+        count: 11017
+      - value: '0.1111111111111111'
+        count: 1182
+      - value: '0.125'
+        count: 1159
+      - value: '0.1'
+        count: 1040
+    definition: Share of total population ages 35 to 44 (0 to 1).
+    needs_confirmation: no
+  - name: pct_age_45_54
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 558238
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 31707
+      - value: -nan
+        count: 11017
+      - value: '0.14285714285714285'
+        count: 1218
+      - value: '0.16666666666666666'
+        count: 1207
+      - value: '0.125'
+        count: 1140
+    definition: Share of total population ages 45 to 54 (0 to 1).
+    needs_confirmation: no
+  - name: pct_age_55_64
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 568699
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 23713
+      - value: -nan
+        count: 11017
+      - value: '1.0'
+        count: 1456
+      - value: '0.16666666666666666'
+        count: 1305
+      - value: '0.14285714285714285'
+        count: 1254
+    definition: Share of total population ages 55 to 64 (0 to 1).
+    needs_confirmation: no
+  - name: pct_age_65_74
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 565755
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 31009
+      - value: -nan
+        count: 11017
+      - value: '1.0'
+        count: 1548
+      - value: '0.1'
+        count: 1036
+      - value: '0.1111111111111111'
+        count: 1011
+    definition: Share of total population ages 65 to 74 (0 to 1).
+    needs_confirmation: no
+  - name: pct_age_75_84
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 521545
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 60179
+      - value: -nan
+        count: 11017
+      - value: '0.07692307692307693'
+        count: 739
+      - value: '0.0625'
+        count: 738
+      - value: '0.08333333333333333'
+        count: 719
+    definition: Share of total population ages 75 to 84 (0 to 1).
+    needs_confirmation: no
+  - name: pct_age_85p
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 453972
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 146145
+      - value: -nan
+        count: 11017
+      - value: '0.027777777777777776'
+        count: 442
+      - value: '0.02564102564102564'
+        count: 414
+      - value: '0.03225806451612903'
+        count: 401
+    definition: Share of total population ages 85 and older (0 to 1).
+    needs_confirmation: no
+  - name: pct_age_25_54
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 603886
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 11486
+      - value: -nan
+        count: 11017
+      - value: '0.3333333333333333'
+        count: 2431
+      - value: '1.0'
+        count: 1510
+      - value: '0.4'
+        count: 1262
+    definition: Share of total population ages 25 to 54 (0 to 1).
+    needs_confirmation: no
+  - name: aging_index
+    type: DOUBLE
+    null_pct: 9.7893
+    distinct_count: 386143
+    min_value: 0.0
+    max_value: 2811.2666667
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 99942
+      - value: '0.0'
+        count: 5859
+      - value: '2.0'
+        count: 2834
+      - value: '3.0'
+        count: 2660
+      - value: '4.0'
+        count: 2217
+    definition: Ratio of population ages 65+ to population ages 0 to 4.
+    needs_confirmation: no
+  - name: youth_dependency
+    type: DOUBLE
+    null_pct: 2.2042
+    distinct_count: 499204
+    min_value: 0.0
+    max_value: 26.0833333
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 31661
+      - value: ~
+        count: 22503
+      - value: '0.5'
+        count: 3586
+      - value: '0.3333333333333333'
+        count: 1999
+      - value: '1.0'
+        count: 1699
+    definition: Ratio of population ages 0 to 14 to population ages 25 to 54 (prime
+      working age population).
+    needs_confirmation: no
+  - name: old_age_dependency
+    type: DOUBLE
+    null_pct: 2.2042
+    distinct_count: 541788
+    min_value: 0.0
+    max_value: 426.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 22503
+      - value: '0.0'
+        count: 17048
+      - value: '0.5'
+        count: 2444
+      - value: '1.0'
+        count: 2153
+      - value: '0.3333333333333333'
+        count: 1602
+    definition: Ratio of population ages 65+ to population ages 25 to 54.
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/gold/gold_economy_industry.sql
+    details: 'Table write/create reference(s): scripts/etl/gold/gold_economy_industry.sql:12:from
+      metro_deep_dive.silver.age_kpi  | scripts/etl/gold/gold_population_wide.sql:61:FROM
+      metro_deep_dive.silver.age_kpi  | scripts/etl/gold/gold_economy_income.sql:16:from
+      metro_deep_dive.silver.age_kpi '
+  - step: downstream_usage_examples
+    script: notebooks/national_analyses/real_personal_income/real_personal_income_base.sql
+    details: 'Downstream reference(s): notebooks/national_analyses/real_personal_income/real_personal_income_base.sql:7:from
+      metro_deep_dive.silver.age_kpi  | notebooks/national_analyses/real_personal_income/real_personal_income_analysis.Rmd:43:from
+      metro_deep_dive.silver.age_kpi  | notebooks/national_analyses/real_personal_income/real_personal_income_analysis.nb.html:1878:from
+      metro_deep_dive.silver.age_kpi '
+kpi_definitions:
+  - kpi_name: pop_total
+    business_definition: Total population (all ages).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: age_0_4
+    business_definition: Population ages 0 to 4.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: age_5_14
+    business_definition: Population ages 5 to 14.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: age_15_24
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: age_25_34
+    business_definition: Population ages 25 to 34.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: age_35_44
+    business_definition: Population ages 35 to 44.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: age_45_54
+    business_definition: Population ages 45 to 54.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: age_55_64
+    business_definition: Population ages 55 to 64.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: age_65_74
+    business_definition: Population ages 65 to 74.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: age_75_84
+    business_definition: Population ages 75 to 84.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: age_85p
+    business_definition: Population ages 85 and older.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: age_25_54
+    business_definition: Population ages 25 to 54.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_age_0_4
+    business_definition: Share of total population ages 0 to 4 (0 to 1).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_age_5_14
+    business_definition: Share of total population ages 5 to 14 (0 to 1).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_age_15_24
+    business_definition: Share / percentage; denominator defined in KPI logic.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_age_25_34
+    business_definition: Share of total population ages 25 to 34 (0 to 1).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_age_35_44
+    business_definition: Share of total population ages 35 to 44 (0 to 1).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_age_45_54
+    business_definition: Share of total population ages 45 to 54 (0 to 1).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_age_55_64
+    business_definition: Share of total population ages 55 to 64 (0 to 1).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_age_65_74
+    business_definition: Share of total population ages 65 to 74 (0 to 1).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_age_75_84
+    business_definition: Share of total population ages 75 to 84 (0 to 1).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_age_85p
+    business_definition: Share of total population ages 85 and older (0 to 1).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_age_25_54
+    business_definition: Share of total population ages 25 to 54 (0 to 1).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: aging_index
+    business_definition: Ratio of population ages 65+ to population ages 0 to 4.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: youth_dependency
+    business_definition: Ratio of population ages 0 to 14 to population ages 25 to
+      54 (prime working age population).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: old_age_dependency
+    business_definition: Ratio of population ages 65+ to population ages 25 to 54.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE

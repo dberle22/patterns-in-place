@@ -1,0 +1,130 @@
+table_name: bea_regional_line_codes
+schema: silver
+grain: One row per line_code (inferred).
+primary_key:
+- line_code
+foreign_keys: []
+time_coverage:
+  type: unknown
+  column: ~
+  min: ~
+  max: ~
+geo_coverage:
+  notes: []
+columns:
+- name: param_value
+  type: VARCHAR
+  null_pct: 100.0
+  distinct_count: 0
+  min_value: ~
+  max_value: ~
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: ~
+    count: 6057
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: line_code
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 393
+  min_value: ~
+  max_value: ~
+  min_length: 1
+  max_length: 4
+  top_values:
+  - value: '10'
+    count: 95
+  - value: '6'
+    count: 82
+  - value: '3'
+    count: 81
+  - value: '11'
+    count: 73
+  - value: '1'
+    count: 71
+  definition: Description of the economic activity in the row (from BEA metadata).
+  needs_confirmation: no
+- name: line_desc
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 6044
+  min_value: ~
+  max_value: ~
+  min_length: 17
+  max_length: 163
+  top_values:
+  - value: '[CAINC4] Employer contributions for government social insurance'
+    count: 2
+  - value: '[CAINC5N] Employer contributions for government social insurance'
+    count: 2
+  - value: '[CAINC5S] Employer contributions for government social insurance'
+    count: 2
+  - value: '[SAINC35] Earned Income Tax Credit (EITC)'
+    count: 2
+  - value: '[SAINC4] Employer contributions for government social insurance'
+    count: 2
+  definition: Description of the economic activity in the row (from BEA metadata).
+  needs_confirmation: no
+- name: table_name_ref
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 101
+  min_value: ~
+  max_value: ~
+  min_length: 5
+  max_length: 13
+  top_values:
+  - value: CAINC5N
+    count: 237
+  - value: SAINC5N
+    count: 237
+  - value: SAINC6N
+    count: 225
+  - value: CAINC6N
+    count: 224
+  - value: SAINC7N
+    count: 220
+  definition: BEA table name reference (e.g., CAINC5N, SAINC5N, etc.).
+  needs_confirmation: no
+- name: line_desc_clean
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 3962
+  min_value: ~
+  max_value: ~
+  min_length: 7
+  max_length: 154
+  top_values:
+  - value: Employer contributions for government social insurance
+    count: 30
+  - value: Wages and salaries
+    count: 20
+  - value: Employer contributions for employee pension and insurance funds
+    count: 19
+  - value: Supplements to wages and salaries
+    count: 19
+  - value: Personal income
+    count: 18
+  definition: Cleaned description of the economic activity in the row (from BEA metadata).
+  needs_confirmation: no
+- name: dataset
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 1
+  min_value: ~
+  max_value: ~
+  min_length: 8
+  max_length: 8
+  top_values:
+  - value: Regional
+    count: 6057
+  definition: The BEA dataset that the line code belongs to (in this case, all rows belong to the "Regional" dataset).
+  needs_confirmation: no
+lineage:
+- step: write_target
+  script: scripts/etl/staging/get_bea.R
+  details: 'Table write/create reference(s): scripts/etl/staging/get_bea.R:84:DBI::dbWriteTable(con,
+    DBI::Id(schema="silver", table="bea_regional_line_codes"),'
+kpi_definitions: []

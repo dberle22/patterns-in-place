@@ -1,0 +1,157 @@
+version: 1
+updated_on: 2026-04-16
+output_format_default: png
+
+charts:
+  - chart_id: line-single-series
+    chart_type: line
+    family: daily-drivers
+    priority: 1
+    status: scaffolded
+    input_contract_id: line-v1
+    output_filename: line-single-series.png
+    question_coverage_file: visual_library/charts/line/question_coverage.md
+
+  - chart_id: line-multi-series
+    chart_type: line
+    family: daily-drivers
+    priority: 2
+    status: scaffolded
+    input_contract_id: line-v1
+    output_filename: line-multi-series.png
+    question_coverage_file: visual_library/charts/line/question_coverage.md
+
+  - chart_id: scatter-basic
+    chart_type: scatter
+    family: daily-drivers
+    priority: 3
+    status: scaffolded
+    input_contract_id: scatter-v1
+    output_filename: scatter-basic.png
+    question_coverage_file: visual_library/charts/scatter/question_coverage.md
+
+  - chart_id: bar-basic
+    chart_type: bar
+    family: daily-drivers
+    priority: 4
+    status: validated
+    input_contract_id: bar-v1
+    output_filename: bar-basic.png
+    question_coverage_file: visual_library/charts/bar/question_coverage.md
+
+  - chart_id: choropleth-basic
+    chart_type: choropleth
+    family: daily-drivers
+    priority: 5
+    status: scaffolded
+    input_contract_id: choropleth-v1
+    output_filename: choropleth-basic.png
+    question_coverage_file: visual_library/charts/choropleth/question_coverage.md
+
+  - chart_id: hexbin-basic
+    chart_type: hexbin
+    family: daily-drivers
+    priority: 6
+    status: scaffolded
+    input_contract_id: hexbin-v1
+    output_filename: hexbin-basic.png
+    question_coverage_file: visual_library/charts/hexbin/question_coverage.md
+
+  - chart_id: strength-strip-basic
+    chart_type: strength_strip
+    family: story-upgraders
+    priority: 7
+    status: scaffolded
+    input_contract_id: strength-strip-v1
+    output_filename: strength-strip-basic.png
+    question_coverage_file: visual_library/charts/strength_strip/question_coverage.md
+
+  - chart_id: correlation-heatmap-basic
+    chart_type: correlation_heatmap
+    family: story-upgraders
+    priority: 8
+    status: scaffolded
+    input_contract_id: correlation-heatmap-v1
+    output_filename: correlation-heatmap-basic.png
+    question_coverage_file: visual_library/charts/correlation_heatmap/question_coverage.md
+
+  - chart_id: highlight-context-map-basic
+    chart_type: highlight_context_map
+    family: story-upgraders
+    priority: 9
+    status: scaffolded
+    input_contract_id: highlight-context-map-v1
+    output_filename: highlight-context-map-basic.png
+    question_coverage_file: visual_library/charts/highlight_context_map/question_coverage.md
+
+  - chart_id: slopegraph-basic
+    chart_type: slopegraph
+    family: story-upgraders
+    priority: 10
+    status: scaffolded
+    input_contract_id: slopegraph-v1
+    output_filename: slopegraph-basic.png
+    question_coverage_file: visual_library/charts/slopegraph/question_coverage.md
+
+  - chart_id: heatmap-table-basic
+    chart_type: heatmap_table
+    family: story-upgraders
+    priority: 11
+    status: scaffolded
+    input_contract_id: heatmap-table-v1
+    output_filename: heatmap-table-basic.png
+    question_coverage_file: visual_library/charts/heatmap_table/question_coverage.md
+
+  - chart_id: age-pyramid-basic
+    chart_type: age_pyramid
+    family: deep-dive-specialists
+    priority: 12
+    status: scaffolded
+    input_contract_id: age-pyramid-v1
+    output_filename: age-pyramid-basic.png
+    question_coverage_file: visual_library/charts/age_pyramid/question_coverage.md
+
+  - chart_id: bump-chart-basic
+    chart_type: bump_chart
+    family: deep-dive-specialists
+    priority: 13
+    status: scaffolded
+    input_contract_id: bump-chart-v1
+    output_filename: bump-chart-basic.png
+    question_coverage_file: visual_library/charts/bump_chart/question_coverage.md
+
+  - chart_id: waterfall-basic
+    chart_type: waterfall
+    family: deep-dive-specialists
+    priority: 14
+    status: scaffolded
+    input_contract_id: waterfall-v1
+    output_filename: waterfall-basic.png
+    question_coverage_file: visual_library/charts/waterfall/question_coverage.md
+
+  - chart_id: bivariate-choropleth-basic
+    chart_type: bivariate_choropleth
+    family: deep-dive-specialists
+    priority: 15
+    status: scaffolded
+    input_contract_id: bivariate-choropleth-v1
+    output_filename: bivariate-choropleth-basic.png
+    question_coverage_file: visual_library/charts/bivariate_choropleth/question_coverage.md
+
+  - chart_id: proportional-symbol-map-basic
+    chart_type: proportional_symbol_map
+    family: deep-dive-specialists
+    priority: 16
+    status: scaffolded
+    input_contract_id: proportional-symbol-map-v1
+    output_filename: proportional-symbol-map-basic.png
+    question_coverage_file: visual_library/charts/proportional_symbol_map/question_coverage.md
+
+  - chart_id: boxplot-basic
+    chart_type: boxplot
+    family: story-upgraders
+    priority: 17
+    status: validated
+    input_contract_id: boxplot-v1
+    output_filename: boxplot-basic.png
+    question_coverage_file: visual_library/charts/boxplot/question_coverage.md

@@ -1,0 +1,987 @@
+table_name: housing_kpi
+schema: silver
+grain: One row per geo_level + geo_id + geo_name + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - geo_name
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=115976
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 8
+    top_values:
+      - value: zcta
+        count: 433172
+      - value: place
+        count: 397094
+      - value: tract
+        count: 135851
+      - value: county
+        count: 41870
+      - value: cbsa
+        count: 12085
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 115976
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 11
+    top_values:
+      - value: '1'
+        count: 39
+      - value: '2'
+        count: 26
+      - value: '3'
+        count: 26
+      - value: '4'
+        count: 26
+      - value: '01001'
+        count: 25
+    definition: Geographic identifier for the row
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 97125
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 66
+    top_values:
+      - value: Alexandria city, Virginia
+        count: 26
+      - value: Baltimore city, Maryland
+        count: 26
+      - value: Bristol city, Virginia
+        count: 26
+      - value: Buena Vista city, Virginia
+        count: 26
+      - value: Carson City, Nevada
+        count: 26
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 13
+    min_value: 2012
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2024'
+        count: 82276
+      - value: '2023'
+        count: 82271
+      - value: '2022'
+        count: 82134
+      - value: '2021'
+        count: 81848
+      - value: '2020'
+        count: 81194
+    definition: Observation year or period year for the row.
+    needs_confirmation: no
+  - name: hu_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 48279
+    min_value: 0.0
+    max_value: 1.4377536e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 12518
+      - value: '46.0'
+        count: 1194
+      - value: '50.0'
+        count: 1174
+      - value: '71.0'
+        count: 1166
+      - value: '52.0'
+        count: 1159
+    definition: Total Housing Units.
+    needs_confirmation: no
+  - name: occ_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 48279
+    min_value: 0.0
+    max_value: 1.4377536e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 12518
+      - value: '46.0'
+        count: 1194
+      - value: '50.0'
+        count: 1174
+      - value: '71.0'
+        count: 1166
+      - value: '52.0'
+        count: 1159
+    definition: Total Housing Units used in Occupied Metrics.
+    needs_confirmation: no
+  - name: occ_occupied
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 45115
+    min_value: 0.0
+    max_value: 1.292275e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 15641
+      - value: '33.0'
+        count: 1475
+      - value: '32.0'
+        count: 1463
+      - value: '39.0'
+        count: 1453
+      - value: '43.0'
+        count: 1445
+    definition: Total Housing Units Occupied.
+    needs_confirmation: no
+  - name: occ_vacant
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 17020
+    min_value: 0.0
+    max_value: 1.6672938e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 67178
+      - value: '9.0'
+        count: 6089
+      - value: '14.0'
+        count: 5988
+      - value: '13.0'
+        count: 5927
+      - value: '15.0'
+        count: 5907
+    definition: Total Housing Units Vacant.
+    needs_confirmation: no
+  - name: vacancy_rate
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 489853
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 54660
+      - value: -nan
+        count: 12518
+      - value: '1.0'
+        count: 3123
+      - value: '0.2'
+        count: 1392
+      - value: '0.25'
+        count: 1260
+    definition: Housing Vacancy Rates Derived from ACS counts. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: occupancy_rate
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 489853
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.0'
+        count: 54660
+      - value: -nan
+        count: 12518
+      - value: '0.0'
+        count: 3123
+      - value: '0.8'
+        count: 1392
+      - value: '0.75'
+        count: 1260
+    definition: Housing Occupancy Rate derived from ACS counts. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: tenure_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 45115
+    min_value: 0.0
+    max_value: 1.292275e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 15641
+      - value: '33.0'
+        count: 1475
+      - value: '32.0'
+        count: 1463
+      - value: '39.0'
+        count: 1453
+      - value: '43.0'
+        count: 1445
+    definition: Total Units used in Tenure as base.
+    needs_confirmation: no
+  - name: owner_occupied
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 35573
+    min_value: 0.0
+    max_value: 8.4210142e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 22036
+      - value: '25.0'
+        count: 1920
+      - value: '26.0'
+        count: 1879
+      - value: '27.0'
+        count: 1854
+      - value: '17.0'
+        count: 1851
+    definition: Total Housing Units Owner occupied.
+    needs_confirmation: no
+  - name: renter_occupied
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 27966
+    min_value: 0.0
+    max_value: 4.5017354e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 59306
+      - value: '9.0'
+        count: 6033
+      - value: '8.0'
+        count: 5878
+      - value: '10.0'
+        count: 5806
+      - value: '7.0'
+        count: 5801
+    definition: Total Housing Units Renter occupied.
+    needs_confirmation: no
+  - name: owner_occ_rate
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 491434
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.0'
+        count: 43665
+      - value: -nan
+        count: 15641
+      - value: '0.0'
+        count: 6395
+      - value: '0.75'
+        count: 2069
+      - value: '0.8'
+        count: 1924
+    definition: Rate of Owner Occupied Housing Units derived from ACS counts. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: renter_occ_rate
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 491434
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 43665
+      - value: -nan
+        count: 15641
+      - value: '1.0'
+        count: 6395
+      - value: '0.25'
+        count: 2069
+      - value: '0.2'
+        count: 1924
+    definition: Rate of Renter Occupied Housing Units derived from ACS counts. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: median_gross_rent
+    type: DOUBLE
+    null_pct: 17.7859
+    distinct_count: 7772
+    min_value: 99.0
+    max_value: 3501.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 181582
+      - value: '675.0'
+        count: 3799
+      - value: '625.0'
+        count: 3687
+      - value: '725.0'
+        count: 3579
+      - value: '775.0'
+        count: 3366
+    definition: Median gross rent (monthly dollar figures, multiply by 12 for yearly rent).
+    needs_confirmation: no
+  - name: median_home_value
+    type: DOUBLE
+    null_pct: 6.8108
+    distinct_count: 18205
+    min_value: 9999.0
+    max_value: 2000001.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 69534
+      - value: '85000.0'
+        count: 1928
+      - value: '112500.0'
+        count: 1924
+      - value: '75000.0'
+        count: 1878
+      - value: '95000.0'
+        count: 1737
+    definition: Median Home Value (dollars).
+    needs_confirmation: no
+  - name: median_owner_costs_mortgage
+    type: DOUBLE
+    null_pct: 10.0527
+    distinct_count: 8122
+    min_value: 99.0
+    max_value: 4001.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 102631
+      - value: '4001.0'
+        count: 9584
+      - value: '1125.0'
+        count: 4185
+      - value: '950.0'
+        count: 4175
+      - value: '850.0'
+        count: 3548
+    definition: Median selected monthly owner costs (dollars) --, Housing units with
+      a mortgage (dollars).
+    needs_confirmation: no
+  - name: median_owner_costs_no_mortgage
+    type: DOUBLE
+    null_pct: 8.1629
+    distinct_count: 5842
+    min_value: 99.0
+    max_value: 1501.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 83338
+      - value: '1501.0'
+        count: 8670
+      - value: '1001.0'
+        count: 6039
+      - value: '375.0'
+        count: 5993
+      - value: '450.0'
+        count: 5319
+    definition: Median selected monthly owner costs (dollars) --, Housing units without
+      a mortgage (dollars).
+    needs_confirmation: no
+  - name: rent_burden_total
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 27966
+    min_value: 0.0
+    max_value: 4.5017354e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 59283
+      - value: '9.0'
+        count: 6033
+      - value: '8.0'
+        count: 5877
+      - value: '10.0'
+        count: 5804
+      - value: '7.0'
+        count: 5801
+    definition: Total base for Rent Burden metrics.
+    needs_confirmation: no
+  - name: rent_burden_30plus
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 19315
+    min_value: 0.0
+    max_value: 2.1422415e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 142921
+      - value: '2.0'
+        count: 12978
+      - value: '4.0'
+        count: 11276
+      - value: '3.0'
+        count: 11044
+      - value: '5.0'
+        count: 10797
+    definition: Population count for rent burden 30plus, meaning renter spends 30% or more of income on rent.
+    needs_confirmation: no
+  - name: rent_burden_50plus
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 14027
+    min_value: 0.0
+    max_value: 1.0852194e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 217364
+      - value: '2.0'
+        count: 18637
+      - value: '3.0'
+        count: 15279
+      - value: '4.0'
+        count: 14894
+      - value: '5.0'
+        count: 13847
+    definition: Population count for rent burden 50plus, meaning renter spends 50% or more of income on rent.
+    needs_confirmation: yes
+  - name: pct_rent_burden_30plus
+    type: DOUBLE
+    null_pct: 7.7844
+    distinct_count: 265882
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 79473
+      - value: '0.0'
+        count: 63518
+      - value: '1.0'
+        count: 33514
+      - value: '0.5'
+        count: 9481
+      - value: '0.3333333333333333'
+        count: 6279
+    definition: Share of renters spending 30% or more of income on rent; denominator defined in KPI logic. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_rent_burden_50plus
+    type: DOUBLE
+    null_pct: 7.7844
+    distinct_count: 251044
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 137961
+      - value: ~
+        count: 79473
+      - value: '1.0'
+        count: 12922
+      - value: '0.3333333333333333'
+        count: 4686
+      - value: '0.25'
+        count: 4453
+    definition: Share of renters spending 50% or more of income on rent; denominator defined in KPI logic. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: struct_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 48279
+    min_value: 0.0
+    max_value: 1.4377536e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 12518
+      - value: '46.0'
+        count: 1194
+      - value: '50.0'
+        count: 1174
+      - value: '71.0'
+        count: 1166
+      - value: '52.0'
+        count: 1159
+    definition: Total number of structures, used as base in structure metrics.
+    needs_confirmation: no
+  - name: struct_1_unit
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 39239
+    min_value: 0.0
+    max_value: 9.7030544e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 16152
+      - value: '39.0'
+        count: 1502
+      - value: '43.0'
+        count: 1487
+      - value: '49.0'
+        count: 1472
+      - value: '48.0'
+        count: 1465
+    definition: Total count for 1 unit structures, including detached and attached.
+    needs_confirmation: no
+  - name: struct_sf_det
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 37660
+    min_value: 0.0
+    max_value: 8.8075458e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 17114
+      - value: '39.0'
+        count: 1548
+      - value: '48.0'
+        count: 1530
+      - value: '43.0'
+        count: 1518
+      - value: '45.0'
+        count: 1516
+    definition: Total count for single family detached structures.
+    needs_confirmation: no
+  - name: struct_small_mf
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 14790
+    min_value: 0.0
+    max_value: 1.1031346e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 283163
+      - value: '2.0'
+        count: 11365
+      - value: '4.0'
+        count: 10206
+      - value: '5.0'
+        count: 9739
+      - value: '3.0'
+        count: 9608
+    definition: Total count for small multifamily structures, defined as 2-4 units.
+    needs_confirmation: no
+  - name: struct_mid_mf
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 15751
+    min_value: 0.0
+    max_value: 1.2625154e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 386411
+      - value: '2.0'
+        count: 8300
+      - value: '3.0'
+        count: 8228
+      - value: '4.0'
+        count: 8195
+      - value: '5.0'
+        count: 8077
+    definition: Total count for mid-size multifamily structures, defined as 5-19 units.
+    needs_confirmation: no
+  - name: struct_large_mf
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 16162
+    min_value: 0.0
+    max_value: 1.4859547e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 508544
+      - value: '3.0'
+        count: 8680
+      - value: '2.0'
+        count: 8316
+      - value: '4.0'
+        count: 7240
+      - value: '6.0'
+        count: 6757
+    definition: Total count for large multifamily structures, defined as 20 or more units.
+    needs_confirmation: no
+  - name: struct_mobile
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 11835
+    min_value: 0.0
+    max_value: 8583843.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 204491
+      - value: '9.0'
+        count: 11188
+      - value: '8.0'
+        count: 11171
+      - value: '10.0'
+        count: 10724
+      - value: '7.0'
+        count: 10578
+    definition: Total count of mobile homes or trailers.
+    needs_confirmation: no
+  - name: pct_struct_1_unit
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 525556
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.0'
+        count: 55027
+      - value: -nan
+        count: 12518
+      - value: '0.0'
+        count: 3634
+      - value: '0.75'
+        count: 1363
+      - value: '0.6666666666666666'
+        count: 1272
+    definition: Share of 1 unit structures out of total structures.
+    needs_confirmation: no
+  - name: pct_struct_sf_det
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 534108
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.0'
+        count: 44541
+      - value: -nan
+        count: 12518
+      - value: '0.0'
+        count: 4596
+      - value: '0.75'
+        count: 1412
+      - value: '0.8'
+        count: 1371
+    definition: Share of 1 unit dettached structures out of total structures.
+    needs_confirmation: no
+  - name: pct_struct_small_mf
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 398117
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 270645
+      - value: -nan
+        count: 12518
+      - value: '0.058823529411764705'
+        count: 451
+      - value: '0.09090909090909091'
+        count: 418
+      - value: '0.05263157894736842'
+        count: 408
+    definition: Share of small multifamily structures out of total structures.
+    needs_confirmation: no
+  - name: pct_struct_mid_mf
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 386198
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 373893
+      - value: -nan
+        count: 12518
+      - value: '1.0'
+        count: 241
+      - value: '0.047619047619047616'
+        count: 237
+      - value: '0.0625'
+        count: 235
+    definition: Share of mid-size multifamily structures out of total structures.
+    needs_confirmation: no
+  - name: pct_struct_large_mf
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 344904
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 496026
+      - value: -nan
+        count: 12518
+      - value: '1.0'
+        count: 419
+      - value: '0.01818181818181818'
+        count: 109
+      - value: '0.034482758620689655'
+        count: 105
+    definition: Share of large multifamily structures out of total structures.
+    needs_confirmation: no
+  - name: pct_struct_mobile
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 421125
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 191973
+      - value: -nan
+        count: 12518
+      - value: '1.0'
+        count: 1726
+      - value: '0.2'
+        count: 991
+      - value: '0.3333333333333333'
+        count: 927
+    definition: Share of mobile homes or trailers out of total structures.
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/gold/gold_housing_core.sql
+    details: 'Table write/create reference(s): scripts/etl/gold/gold_housing_core.sql:43:from
+      metro_deep_dive.silver.housing_kpi  | scripts/etl/silver/acs_housing_silver.R:213:DBI::dbWriteTable(con,
+      DBI::Id(schema="silver", table="housing_kpi"),'
+  - step: downstream_usage_examples
+    script: notebooks/retail_opportunity_finder/tract_features.sql
+    details: 'Downstream reference(s): notebooks/retail_opportunity_finder/tract_features.sql:94:  FROM
+      metro_deep_dive.silver.housing_kpi | notebooks/retail_opportunity_finder/cbsa_features.sql:58:  FROM
+      metro_deep_dive.silver.housing_kpi'
+kpi_definitions:
+  - kpi_name: hu_total
+    business_definition: Total.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_total
+    business_definition: Total:.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_occupied
+    business_definition: Total:, Occupied.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_vacant
+    business_definition: Total:, Vacant.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: vacancy_rate
+    business_definition: Rate derived from ACS counts. (from silver.kpi_dictionary).
+    source: ACS Housing (B2500x)
+    denominator_hint: hu_total
+    data_type: DOUBLE
+  - kpi_name: occupancy_rate
+    business_definition: Rate derived from ACS counts. (from silver.kpi_dictionary).
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: tenure_total
+    business_definition: Total:.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: owner_occupied
+    business_definition: Total:, Owner occupied.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: renter_occupied
+    business_definition: Total:, Renter occupied.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: owner_occ_rate
+    business_definition: Rate derived from ACS counts. (from silver.kpi_dictionary).
+    source: ACS Housing (B2500x)
+    denominator_hint: tenure_total
+    data_type: DOUBLE
+  - kpi_name: renter_occ_rate
+    business_definition: Rate derived from ACS counts. (from silver.kpi_dictionary).
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: median_gross_rent
+    business_definition: Median gross rent.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: median_home_value
+    business_definition: Median value (dollars).
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: median_owner_costs_mortgage
+    business_definition: Median selected monthly owner costs (dollars) --, Housing
+      units with a mortgage (dollars).
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: median_owner_costs_no_mortgage
+    business_definition: Median selected monthly owner costs (dollars) --, Housing
+      units without a mortgage (dollars).
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: rent_burden_total
+    business_definition: Total:.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: rent_burden_30plus
+    business_definition: Population count for rent burden 30plus.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: rent_burden_50plus
+    business_definition: Business metric for rent burden 50plus.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_rent_burden_30plus
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS Housing (B2500x)
+    denominator_hint: rent_burden_total - not_computed
+    data_type: DOUBLE
+  - kpi_name: pct_rent_burden_50plus
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: struct_total
+    business_definition: Total:.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: struct_1_unit
+    business_definition: Population count for struct 1 unit.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: struct_sf_det
+    business_definition: Total:, 1, detached.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: struct_small_mf
+    business_definition: Population count for struct small mf.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: struct_mid_mf
+    business_definition: Population count for struct mid mf.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: struct_large_mf
+    business_definition: Population count for struct large mf.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: struct_mobile
+    business_definition: Ratio of struct mobileE + mutate + pct struct 1 unit + struct
+      1 unit to struct total.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_struct_1_unit
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_struct_sf_det
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_struct_small_mf
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_struct_mid_mf
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_struct_large_mf
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_struct_mobile
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE

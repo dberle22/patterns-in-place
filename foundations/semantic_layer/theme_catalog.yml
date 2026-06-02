@@ -1,0 +1,162 @@
+version: 1
+catalog_name: theme_catalog
+description: Theme and topic mappings that connect queryable metrics to the Character, Livability, and Opportunity intelligence frames.
+themes:
+  - theme_id: character
+    display_name: Character
+    description: Who lives in a place, how rooted or diverse it is, and what makes it distinct.
+    topics:
+      - topic_id: demographic_profile
+        display_name: Demographic Profile
+        metrics:
+          - median_age
+          - pct_age_under_18
+          - pct_age_18_64
+          - pct_age_over_64
+          - dependents_per_worker
+          - aging_index
+      - topic_id: race_ethnicity
+        display_name: Race And Ethnicity
+        metrics:
+          - pct_white_nh
+          - pct_black_nh
+          - pct_asian_nh
+          - pct_hispanic
+          - diversity_index
+      - topic_id: education_attainment
+        display_name: Education Attainment
+        metrics:
+          - pct_ba_plus
+          - pct_grad_plus
+      - topic_id: rootedness_and_mobility
+        display_name: Rootedness And Mobility
+        metrics:
+          - pct_same_house
+          - mobility_rate
+          - migration_churn
+          - pct_moved_diff_st
+          - pct_moved_abroad
+          - pct_foreign_born
+          - pct_non_citizen
+      - topic_id: built_form_context
+        display_name: Built Form Context
+        metrics:
+          - owner_occ_rate
+          - renter_occ_rate
+          - pct_struct_multifam
+          - gross_density_sqmi
+          - pop_weighted_density_sqmi
+
+  - theme_id: livability
+    display_name: Livability
+    description: Whether day-to-day living conditions, affordability, mobility, and basic services support quality of life.
+    topics:
+      - topic_id: affordability
+        display_name: Affordability
+        metrics:
+          - median_gross_rent
+          - annualized_median_rent
+          - median_home_value
+          - pct_rent_burden_30plus
+          - pct_rent_burden_50plus
+          - rent_to_income
+          - value_to_income
+          - rent_to_rpp_income
+          - value_to_rpp_income
+          - rpp_real_pc_income
+          - rpp_all_items
+      - topic_id: housing_supply
+        display_name: Housing Supply
+        metrics:
+          - hu_total
+          - vacancy_rate
+          - permits_per_1000_housing_units
+          - permits_share_multifam_units
+          - fmr_gap_2br_vs_median_rent
+          - rent50_gap_2br_vs_median_rent
+      - topic_id: mobility
+        display_name: Mobility
+        metrics:
+          - pct_commute_drive_alone
+          - pct_commute_transit
+          - pct_commute_walk
+          - pct_commute_wfh
+          - pct_low_car_commute
+          - pct_hh_0_vehicles
+          - mean_travel_time
+      - topic_id: built_environment
+        display_name: Built Environment
+        metrics:
+          - density_population
+          - gross_density_sqmi
+          - pop_weighted_density_sqmi
+          - pct_struct_multifam
+      - topic_id: education_and_equity_context
+        display_name: Education And Equity Context
+        metrics:
+          - pct_ba_plus
+          - pov_rate
+          - gini_index
+
+  - theme_id: opportunity
+    display_name: Opportunity
+    description: Economic prospects for residents, investors, and businesses.
+    topics:
+      - topic_id: income_and_wages
+        display_name: Income And Wages
+        metrics:
+          - median_hh_income
+          - acs_income_pc
+          - calc_income_pc
+          - income_pc_growth_1yr
+          - income_pc_growth_5yr
+          - income_pc_growth_10yr
+          - pi_total
+          - pi_wages_salary
+          - pi_wage_share
+      - topic_id: labor_market
+        display_name: Labor Market
+        metrics:
+          - working_age_pop
+          - labor_force
+          - lfpr
+          - lfpr_growth_5yr
+          - employed
+          - jobs_to_pop_ratio
+          - unemployed
+          - pct_unemployment_rate
+      - topic_id: economic_output
+        display_name: Economic Output
+        metrics:
+          - nominal_gdp_total
+          - nominal_gdp_growth_5yr
+          - nominal_gdp_pc
+          - real_gdp_total
+          - real_gdp_growth_5yr
+          - real_gdp_pc
+          - productivity_index
+          - productivity_growth_5yr
+      - topic_id: industry_mix
+        display_name: Industry Mix
+        metrics:
+          - acs_ind_total_emp
+          - pct_acs_ind_manufacturing
+          - pct_acs_ind_professional
+          - pct_acs_ind_educ_health
+          - pct_acs_ind_arts_accomm_food
+          - pct_real_gdp_manufacturing
+          - pct_real_gdp_professional
+          - pct_real_gdp_edu_health
+          - industry_concentration_hhi
+          - acs_industry_concentration_hhi
+      - topic_id: growth_and_momentum
+        display_name: Growth And Momentum
+        metrics:
+          - pop_growth_5yr
+          - pop_growth_10yr
+          - irs_net_migration
+          - irs_net_migration_rate
+          - rent_to_income
+          - value_to_income
+          - rent_to_rpp_income
+          - value_to_rpp_income

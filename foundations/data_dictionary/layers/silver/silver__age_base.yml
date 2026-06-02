@@ -1,0 +1,1434 @@
+table_name: age_base
+schema: silver
+grain: One row per geo_level + geo_id + geo_name + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - geo_name
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=115976
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 8
+    top_values:
+      - value: zcta
+        count: 433172
+      - value: place
+        count: 397094
+      - value: tract
+        count: 135851
+      - value: county
+        count: 41870
+      - value: cbsa
+        count: 12085
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 115976
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 11
+    top_values:
+      - value: '1'
+        count: 39
+      - value: '2'
+        count: 26
+      - value: '3'
+        count: 26
+      - value: '4'
+        count: 26
+      - value: '01001'
+        count: 25
+    definition: Geographic identifier for the row
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 97125
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 66
+    top_values:
+      - value: Alexandria city, Virginia
+        count: 26
+      - value: Baltimore city, Maryland
+        count: 26
+      - value: Bristol city, Virginia
+        count: 26
+      - value: Buena Vista city, Virginia
+        count: 26
+      - value: Carson City, Nevada
+        count: 26
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 13
+    min_value: 2012
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2024'
+        count: 82276
+      - value: '2023'
+        count: 82271
+      - value: '2022'
+        count: 82134
+      - value: '2021'
+        count: 81848
+      - value: '2020'
+        count: 81194
+    definition: Observation year or period year for the row.
+    needs_confirmation: no
+  - name: pop_totalE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 80593
+    min_value: 0.0
+    max_value: 3.349225e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 11017
+      - value: '74.0'
+        count: 610
+      - value: '115.0'
+        count: 607
+      - value: '61.0'
+        count: 603
+      - value: '64.0'
+        count: 602
+    definition: 'ACS 2024 Sex by Age [B01001_001]: Total: (estimate).'
+    needs_confirmation: no
+  - name: median_age.E
+    type: DOUBLE
+    null_pct: 1.7624
+    distinct_count: 5492
+    min_value: 0.0
+    max_value: 105.1
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 17993
+      - value: '40.5'
+        count: 5948
+      - value: '40.8'
+        count: 5846
+      - value: '40.3'
+        count: 5768
+      - value: '40.6'
+        count: 5615
+    definition: 'ACS 2024 Median Age by Sex [B01002_001]: Total (estimate).'
+    needs_confirmation: no
+  - name: pop_male_totalE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 53318
+    min_value: 0.0
+    max_value: 1.6580802e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 12980
+      - value: '62.0'
+        count: 1151
+      - value: '44.0'
+        count: 1138
+      - value: '55.0'
+        count: 1135
+      - value: '32.0'
+        count: 1133
+    definition: 'ACS 2024 Sex by Age [B01001_002]: Total:, Male: (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_under5E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 13301
+    min_value: 0.0
+    max_value: 1.0291124e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 143218
+      - value: '2.0'
+        count: 11221
+      - value: '4.0'
+        count: 10812
+      - value: '5.0'
+        count: 10631
+      - value: '6.0'
+        count: 10600
+    definition: 'ACS 2024 Sex by Age [B01001_003]: Total:, Male:, Under 5 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_5_9E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 13473
+    min_value: 0.0
+    max_value: 1.0476978e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 132439
+      - value: '2.0'
+        count: 10853
+      - value: '4.0'
+        count: 10712
+      - value: '6.0'
+        count: 10581
+      - value: '5.0'
+        count: 10309
+    definition: 'ACS 2024 Sex by Age [B01001_004]: Total:, Male:, 5 to 9 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_10_14E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 13686
+    min_value: 0.0
+    max_value: 1.1101231e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 124397
+      - value: '2.0'
+        count: 10732
+      - value: '4.0'
+        count: 10658
+      - value: '6.0'
+        count: 10307
+      - value: '5.0'
+        count: 9955
+    definition: 'ACS 2024 Sex by Age [B01001_005]: Total:, Male:, 10 to 14 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_15_17E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 10805
+    min_value: 0.0
+    max_value: 6756663.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 160440
+      - value: '2.0'
+        count: 15127
+      - value: '4.0'
+        count: 13788
+      - value: '3.0'
+        count: 13701
+      - value: '6.0'
+        count: 13322
+    definition: 'ACS 2024 Sex by Age [B01001_006]: Total:, Male:, 15 to 17 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_18_19E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 9725
+    min_value: 0.0
+    max_value: 4641564.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 231605
+      - value: '2.0'
+        count: 20553
+      - value: '3.0'
+        count: 18489
+      - value: '4.0'
+        count: 17240
+      - value: '5.0'
+        count: 15902
+    definition: 'ACS 2024 Sex by Age [B01001_007]: Total:, Male:, 18 and 19 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_20E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 7248
+    min_value: 0.0
+    max_value: 2454800.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 380108
+      - value: '2.0'
+        count: 19279
+      - value: '3.0'
+        count: 19205
+      - value: '4.0'
+        count: 16721
+      - value: '5.0'
+        count: 15173
+    definition: 'ACS 2024 Sex by Age [B01001_008]: Total:, Male:, 20 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_21E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 7195
+    min_value: 0.0
+    max_value: 2400843.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 383328
+      - value: '2.0'
+        count: 19649
+      - value: '3.0'
+        count: 19010
+      - value: '4.0'
+        count: 16803
+      - value: '5.0'
+        count: 15329
+    definition: 'ACS 2024 Sex by Age [B01001_009]: Total:, Male:, 21 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_22_24E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 11494
+    min_value: 0.0
+    max_value: 6799319.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 193290
+      - value: '2.0'
+        count: 16858
+      - value: '3.0'
+        count: 15309
+      - value: '4.0'
+        count: 14742
+      - value: '5.0'
+        count: 13530
+    definition: 'ACS 2024 Sex by Age [B01001_010]: Total:, Male:, 22 to 24 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_25_29E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 14162
+    min_value: 0.0
+    max_value: 1.1850355e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 133909
+      - value: '2.0'
+        count: 12170
+      - value: '4.0'
+        count: 11630
+      - value: '3.0'
+        count: 11377
+      - value: '5.0'
+        count: 11213
+    definition: 'ACS 2024 Sex by Age [B01001_011]: Total:, Male:, 25 to 29 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_30_34E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 13816
+    min_value: 0.0
+    max_value: 1.1829461e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 125924
+      - value: '2.0'
+        count: 12273
+      - value: '4.0'
+        count: 11800
+      - value: '3.0'
+        count: 11515
+      - value: '5.0'
+        count: 11437
+    definition: 'ACS 2024 Sex by Age [B01001_012]: Total:, Male:, 30 to 34 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_35_39E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 13437
+    min_value: 0.0
+    max_value: 1.1367389e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 123256
+      - value: '2.0'
+        count: 12613
+      - value: '5.0'
+        count: 11667
+      - value: '4.0'
+        count: 11624
+      - value: '3.0'
+        count: 11447
+    definition: 'ACS 2024 Sex by Age [B01001_013]: Total:, Male:, 35 to 39 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_40_44E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 13250
+    min_value: 0.0
+    max_value: 1.0914858e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 117490
+      - value: '2.0'
+        count: 12409
+      - value: '4.0'
+        count: 11764
+      - value: '5.0'
+        count: 11692
+      - value: '6.0'
+        count: 11398
+    definition: 'ACS 2024 Sex by Age [B01001_014]: Total:, Male:, 40 to 44 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_45_49E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 13253
+    min_value: 0.0
+    max_value: 1.1079384e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 108852
+      - value: '2.0'
+        count: 11838
+      - value: '6.0'
+        count: 11244
+      - value: '4.0'
+        count: 11016
+      - value: '3.0'
+        count: 10913
+    definition: 'ACS 2024 Sex by Age [B01001_015]: Total:, Male:, 45 to 49 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_50_54E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 13406
+    min_value: 0.0
+    max_value: 1.1051409e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 94838
+      - value: '6.0'
+        count: 11011
+      - value: '7.0'
+        count: 10758
+      - value: '5.0'
+        count: 10653
+      - value: '4.0'
+        count: 10636
+    definition: 'ACS 2024 Sex by Age [B01001_016]: Total:, Male:, 50 to 54 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_55_59E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 13209
+    min_value: 0.0
+    max_value: 1.0781599e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 85918
+      - value: '6.0'
+        count: 10758
+      - value: '8.0'
+        count: 10698
+      - value: '9.0'
+        count: 10566
+      - value: '5.0'
+        count: 10546
+    definition: 'ACS 2024 Sex by Age [B01001_017]: Total:, Male:, 55 to 59 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_60_61E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 8592
+    min_value: 0.0
+    max_value: 4304343.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 164725
+      - value: '2.0'
+        count: 22182
+      - value: '3.0'
+        count: 19048
+      - value: '4.0'
+        count: 18583
+      - value: '5.0'
+        count: 17455
+    definition: 'ACS 2024 Sex by Age [B01001_018]: Total:, Male:, 60 and 61 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_62_64E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 9859
+    min_value: 0.0
+    max_value: 6138005.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 125314
+      - value: '2.0'
+        count: 17774
+      - value: '4.0'
+        count: 16099
+      - value: '3.0'
+        count: 15730
+      - value: '5.0'
+        count: 15222
+    definition: 'ACS 2024 Sex by Age [B01001_019]: Total:, Male:, 62 to 64 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_65_66E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 7892
+    min_value: 0.0
+    max_value: 3767554.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 176876
+      - value: '2.0'
+        count: 24224
+      - value: '3.0'
+        count: 20740
+      - value: '4.0'
+        count: 19832
+      - value: '5.0'
+        count: 18620
+    definition: 'ACS 2024 Sex by Age [B01001_020]: Total:, Male:, 65 and 66 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_67_69E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 8868
+    min_value: 0.0
+    max_value: 5119378.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 144249
+      - value: '2.0'
+        count: 20602
+      - value: '3.0'
+        count: 18018
+      - value: '4.0'
+        count: 17875
+      - value: '5.0'
+        count: 16678
+    definition: 'ACS 2024 Sex by Age [B01001_021]: Total:, Male:, 67 to 69 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_70_74E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 10073
+    min_value: 0.0
+    max_value: 7171219.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 114306
+      - value: '2.0'
+        count: 16287
+      - value: '4.0'
+        count: 15538
+      - value: '3.0'
+        count: 15149
+      - value: '5.0'
+        count: 14963
+    definition: 'ACS 2024 Sex by Age [B01001_022]: Total:, Male:, 70 to 74 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_75_79E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 8370
+    min_value: 0.0
+    max_value: 4746871.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 154195
+      - value: '2.0'
+        count: 21712
+      - value: '3.0'
+        count: 18705
+      - value: '4.0'
+        count: 18408
+      - value: '5.0'
+        count: 17382
+    definition: 'ACS 2024 Sex by Age [B01001_023]: Total:, Male:, 75 to 79 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_80_84E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 6878
+    min_value: 0.0
+    max_value: 2836327.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 219797
+      - value: '2.0'
+        count: 27430
+      - value: '3.0'
+        count: 22386
+      - value: '4.0'
+        count: 21068
+      - value: '6.0'
+        count: 19146
+    definition: 'ACS 2024 Sex by Age [B01001_024]: Total:, Male:, 80 to 84 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_male_85_plusE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 6405
+    min_value: 0.0
+    max_value: 2364441.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 278295
+      - value: '2.0'
+        count: 28726
+      - value: '3.0'
+        count: 23321
+      - value: '4.0'
+        count: 21092
+      - value: '5.0'
+        count: 18970
+    definition: 'ACS 2024 Sex by Age [B01001_025]: Total:, Male:, 85 years and over
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_female_totalE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 54213
+    min_value: 0.0
+    max_value: 1.6911448e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 13706
+      - value: '49.0'
+        count: 1212
+      - value: '43.0'
+        count: 1209
+      - value: '56.0'
+        count: 1203
+      - value: '31.0'
+        count: 1168
+    definition: 'ACS 2024 Sex by Age [B01001_026]: Total:, Female: (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_under5E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 13066
+    min_value: 0.0
+    max_value: 9846760.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 147463
+      - value: '2.0'
+        count: 11783
+      - value: '4.0'
+        count: 11517
+      - value: '6.0'
+        count: 10917
+      - value: '5.0'
+        count: 10844
+    definition: 'ACS 2024 Sex by Age [B01001_027]: Total:, Female:, Under 5 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_5_9E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 13266
+    min_value: 0.0
+    max_value: 1.0031835e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 136264
+      - value: '2.0'
+        count: 11460
+      - value: '4.0'
+        count: 11096
+      - value: '6.0'
+        count: 10776
+      - value: '5.0'
+        count: 10555
+    definition: 'ACS 2024 Sex by Age [B01001_028]: Total:, Female:, 5 to 9 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_10_14E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 13364
+    min_value: 0.0
+    max_value: 1.0572886e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 129090
+      - value: '2.0'
+        count: 11188
+      - value: '4.0'
+        count: 10783
+      - value: '6.0'
+        count: 10528
+      - value: '5.0'
+        count: 10273
+    definition: 'ACS 2024 Sex by Age [B01001_029]: Total:, Female:, 10 to 14 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_15_17E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 10554
+    min_value: 0.0
+    max_value: 6435635.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 166672
+      - value: '2.0'
+        count: 15811
+      - value: '4.0'
+        count: 14408
+      - value: '3.0'
+        count: 14178
+      - value: '6.0'
+        count: 13704
+    definition: 'ACS 2024 Sex by Age [B01001_030]: Total:, Female:, 15 to 17 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_18_19E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 9726
+    min_value: 0.0
+    max_value: 4424350.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 256063
+      - value: '2.0'
+        count: 20999
+      - value: '3.0'
+        count: 19323
+      - value: '4.0'
+        count: 17676
+      - value: '5.0'
+        count: 16376
+    definition: 'ACS 2024 Sex by Age [B01001_031]: Total:, Female:, 18 and 19 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_20E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 7141
+    min_value: 0.0
+    max_value: 2335348.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 405040
+      - value: '2.0'
+        count: 18951
+      - value: '3.0'
+        count: 18842
+      - value: '4.0'
+        count: 16840
+      - value: '5.0'
+        count: 15000
+    definition: 'ACS 2024 Sex by Age [B01001_032]: Total:, Female:, 20 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_21E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 7111
+    min_value: 0.0
+    max_value: 2283357.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 403686
+      - value: '2.0'
+        count: 19556
+      - value: '3.0'
+        count: 18804
+      - value: '4.0'
+        count: 16548
+      - value: '5.0'
+        count: 15135
+    definition: 'ACS 2024 Sex by Age [B01001_033]: Total:, Female:, 21 years (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_22_24E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 11175
+    min_value: 0.0
+    max_value: 6467461.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 200589
+      - value: '2.0'
+        count: 16877
+      - value: '3.0'
+        count: 15391
+      - value: '4.0'
+        count: 14867
+      - value: '6.0'
+        count: 13671
+    definition: 'ACS 2024 Sex by Age [B01001_034]: Total:, Female:, 22 to 24 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_25_29E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 13908
+    min_value: 0.0
+    max_value: 1.14118e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 135576
+      - value: '2.0'
+        count: 12746
+      - value: '4.0'
+        count: 11935
+      - value: '6.0'
+        count: 11727
+      - value: '3.0'
+        count: 11633
+    definition: 'ACS 2024 Sex by Age [B01001_035]: Total:, Female:, 25 to 29 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_30_34E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 13677
+    min_value: 0.0
+    max_value: 1.1590116e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 126996
+      - value: '2.0'
+        count: 12563
+      - value: '4.0'
+        count: 11645
+      - value: '5.0'
+        count: 11618
+      - value: '3.0'
+        count: 11435
+    definition: 'ACS 2024 Sex by Age [B01001_036]: Total:, Female:, 30 to 34 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_35_39E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 13389
+    min_value: 0.0
+    max_value: 1.1174476e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 123534
+      - value: '2.0'
+        count: 12896
+      - value: '4.0'
+        count: 11747
+      - value: '5.0'
+        count: 11473
+      - value: '3.0'
+        count: 11418
+    definition: 'ACS 2024 Sex by Age [B01001_037]: Total:, Female:, 35 to 39 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_40_44E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 13317
+    min_value: 0.0
+    max_value: 1.0780569e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 117924
+      - value: '2.0'
+        count: 12707
+      - value: '4.0'
+        count: 11876
+      - value: '3.0'
+        count: 11475
+      - value: '6.0'
+        count: 11432
+    definition: 'ACS 2024 Sex by Age [B01001_038]: Total:, Female:, 40 to 44 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_45_49E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 13390
+    min_value: 0.0
+    max_value: 1.1352936e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 108061
+      - value: '2.0'
+        count: 11831
+      - value: '4.0'
+        count: 11522
+      - value: '3.0'
+        count: 11106
+      - value: '5.0'
+        count: 10960
+    definition: 'ACS 2024 Sex by Age [B01001_039]: Total:, Female:, 45 to 49 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_50_54E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 13645
+    min_value: 0.0
+    max_value: 1.1475456e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 93680
+      - value: '6.0'
+        count: 10851
+      - value: '2.0'
+        count: 10837
+      - value: '4.0'
+        count: 10776
+      - value: '5.0'
+        count: 10640
+    definition: 'ACS 2024 Sex by Age [B01001_040]: Total:, Female:, 50 to 54 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_55_59E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 13589
+    min_value: 0.0
+    max_value: 1.1202165e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 84223
+      - value: '6.0'
+        count: 11044
+      - value: '7.0'
+        count: 10990
+      - value: '8.0'
+        count: 10645
+      - value: '4.0'
+        count: 10530
+    definition: 'ACS 2024 Sex by Age [B01001_041]: Total:, Female:, 55 to 59 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_60_61E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 8870
+    min_value: 0.0
+    max_value: 4492270.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 159856
+      - value: '2.0'
+        count: 22201
+      - value: '3.0'
+        count: 18911
+      - value: '4.0'
+        count: 18558
+      - value: '5.0'
+        count: 17196
+    definition: 'ACS 2024 Sex by Age [B01001_042]: Total:, Female:, 60 and 61 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_62_64E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 10320
+    min_value: 0.0
+    max_value: 6528522.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 122587
+      - value: '2.0'
+        count: 17360
+      - value: '4.0'
+        count: 15954
+      - value: '3.0'
+        count: 15708
+      - value: '5.0'
+        count: 15353
+    definition: 'ACS 2024 Sex by Age [B01001_043]: Total:, Female:, 62 to 64 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_65_66E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 8288
+    min_value: 0.0
+    max_value: 4112705.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 170127
+      - value: '2.0'
+        count: 24204
+      - value: '3.0'
+        count: 20458
+      - value: '4.0'
+        count: 19416
+      - value: '5.0'
+        count: 18055
+    definition: 'ACS 2024 Sex by Age [B01001_044]: Total:, Female:, 65 and 66 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_67_69E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 9411
+    min_value: 0.0
+    max_value: 5713148.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 138698
+      - value: '2.0'
+        count: 20026
+      - value: '3.0'
+        count: 17605
+      - value: '4.0'
+        count: 17371
+      - value: '5.0'
+        count: 16066
+    definition: 'ACS 2024 Sex by Age [B01001_045]: Total:, Female:, 67 to 69 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_70_74E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 10836
+    min_value: 0.0
+    max_value: 8208903.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 111400
+      - value: '2.0'
+        count: 15216
+      - value: '4.0'
+        count: 14261
+      - value: '3.0'
+        count: 14182
+      - value: '5.0'
+        count: 13912
+    definition: 'ACS 2024 Sex by Age [B01001_046]: Total:, Female:, 70 to 74 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_75_79E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 9326
+    min_value: 0.0
+    max_value: 5750350.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 141296
+      - value: '2.0'
+        count: 19316
+      - value: '4.0'
+        count: 17126
+      - value: '3.0'
+        count: 16911
+      - value: '5.0'
+        count: 15984
+    definition: 'ACS 2024 Sex by Age [B01001_047]: Total:, Female:, 75 to 79 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_80_84E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 8090
+    min_value: 0.0
+    max_value: 3775132.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 186236
+      - value: '2.0'
+        count: 24077
+      - value: '3.0'
+        count: 19876
+      - value: '4.0'
+        count: 19125
+      - value: '5.0'
+        count: 17735
+    definition: 'ACS 2024 Sex by Age [B01001_048]: Total:, Female:, 80 to 84 years
+      (estimate).'
+    needs_confirmation: no
+  - name: pop_age_female_85_plusE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 8608
+    min_value: 0.0
+    max_value: 4262925.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 206103
+      - value: '2.0'
+        count: 24026
+      - value: '3.0'
+        count: 19148
+      - value: '4.0'
+        count: 18478
+      - value: '5.0'
+        count: 16505
+    definition: 'ACS 2024 Sex by Age [B01001_049]: Total:, Female:, 85 years and over
+      (estimate).'
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/silver/acs_age_silver.R
+    details: 'Table write/create reference(s): scripts/etl/silver/acs_age_silver.R:202:DBI::dbWriteTable(con,
+      DBI::Id(schema="silver", table="age_base"),'
+kpi_definitions:
+  - kpi_name: pop_totalE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: median_age.E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_male_totalE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_under5E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_5_9E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_10_14E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_15_17E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_18_19E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_20E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_21E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_22_24E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_25_29E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_30_34E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_35_39E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_40_44E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_45_49E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_50_54E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_55_59E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_60_61E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_62_64E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_65_66E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_67_69E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_70_74E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_75_79E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_80_84E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_male_85_plusE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_female_totalE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_under5E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_5_9E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_10_14E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_15_17E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_18_19E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_20E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_21E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_22_24E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_25_29E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_30_34E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_35_39E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_40_44E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_45_49E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_50_54E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_55_59E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_60_61E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_62_64E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_65_66E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_67_69E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_70_74E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_75_79E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_80_84E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pop_age_female_85_plusE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE

@@ -1,0 +1,196 @@
+table_name: xwalk_zcta_county
+schema: silver
+grain: One row per county_geoid (inferred).
+primary_key: county_geoid
+foreign_keys: []
+time_coverage:
+  type: range
+  column: vintage
+  min: '2025'
+  max: '2025'
+geo_coverage:
+  notes:
+    - distinct_county_geoid=3229
+    - distinct_zip_geoid=39485
+columns:
+  - name: zip_geoid
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 39485
+    min_value: ~
+    max_value: ~
+    min_length: 5
+    max_length: 5
+    top_values:
+      - value: 00926
+        count: 7
+      - value: '40361'
+        count: 7
+      - value: '30534'
+        count: 6
+      - value: '39573'
+        count: 6
+      - value: '40351'
+        count: 6
+    definition: ZIP Code GEOID, represented as a 5-digit string. Note that some ZIP
+      Codes have leading zeros, which are preserved in the geoid (e.g. '00926').
+    needs_confirmation: no
+  - name: county_geoid
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 3229
+    min_value: ~
+    max_value: ~
+    min_length: 5
+    max_length: 5
+    top_values:
+      - value: '06037'
+        count: 491
+      - value: '48201'
+        count: 229
+      - value: '17031'
+        count: 228
+      - value: '11001'
+        count: 221
+      - value: '04013'
+        count: 195
+    definition: County GEOID, represented as a 5-digit string combining state FIPS
+      and county FIPS (e.g. '06037' for Los Angeles County, CA).
+    needs_confirmation: no
+  - name: zip_pref_city
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 18501
+    min_value: ~
+    max_value: ~
+    min_length: 3
+    max_length: 27
+    top_values:
+      - value: WASHINGTON
+        count: 264
+      - value: HOUSTON
+        count: 187
+      - value: NEW YORK
+        count: 128
+      - value: ATLANTA
+        count: 112
+      - value: SPRINGFIELD
+        count: 107
+    definition: Preferred city name for the ZIP Code.
+    needs_confirmation: no
+  - name: zip_pref_state
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 55
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: TX
+        count: 3407
+      - value: CA
+        count: 2653
+      - value: PA
+        count: 2563
+      - value: NY
+        count: 2522
+      - value: IL
+        count: 2275
+    definition: State abbreviation for the ZIP Code.
+    needs_confirmation: no
+  - name: rel_weight_pop
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 23775
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.0'
+        count: 24650
+      - value: '0.0'
+        count: 3864
+      - value: '0.5'
+        count: 11
+      - value: '0.8571428571428571'
+        count: 11
+      - value: '0.14285714285714285'
+        count: 10
+    definition: Relative weight of the ZIP Code's population within the county.
+    needs_confirmation: no
+  - name: rel_weight_bus
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 7018
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.0'
+        count: 29290
+      - value: '0.0'
+        count: 10335
+      - value: '0.5'
+        count: 229
+      - value: '0.3333333333333333'
+        count: 145
+      - value: '0.25'
+        count: 138
+    definition: Relative weight of the ZIP Code's business count within the county.
+    needs_confirmation: no
+  - name: rel_weight_hu
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 24283
+    min_value: 2.7079723e-05
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.0'
+        count: 28118
+      - value: '0.5'
+        count: 11
+      - value: '0.014705882352941176'
+        count: 9
+      - value: '0.02564102564102564'
+        count: 9
+      - value: '0.027777777777777776'
+        count: 9
+    definition: Relative weight of the ZIP Code's housing units within the county.
+    needs_confirmation: no
+  - name: vintage
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: 2025
+    max_value: 2025
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2025'
+        count: 54559
+    definition: Year of the crosswalk data.
+    needs_confirmation: no
+  - name: source
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: ~
+    max_value: ~
+    min_length: 21
+    max_length: 21
+    top_values:
+      - value: HUD_ZIP_COUNTY_2025Q1
+        count: 54559
+    definition: Source of the crosswalk data.
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/silver/geo_crosswalks_silver.R
+    details: 'Table write/create reference(s): scripts/etl/silver/geo_crosswalks_silver.R:120:DBI::dbWriteTable(con,
+      DBI::Id(schema="silver", table="xwalk_zcta_county"),'
+kpi_definitions: []

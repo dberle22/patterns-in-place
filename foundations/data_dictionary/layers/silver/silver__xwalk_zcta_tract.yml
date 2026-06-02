@@ -1,0 +1,197 @@
+table_name: xwalk_zcta_tract
+schema: silver
+grain: One row per zip_geoid (inferred).
+primary_key: zip_geoid
+foreign_keys: []
+time_coverage:
+  type: range
+  column: vintage
+  min: '2025'
+  max: '2025'
+geo_coverage:
+  notes:
+    - distinct_zip_geoid=39367
+    - distinct_tract_geoid=84933
+columns:
+  - name: zip_geoid
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 39367
+    min_value: ~
+    max_value: ~
+    min_length: 5
+    max_length: 5
+    top_values:
+      - value: 00926
+        count: 64
+      - value: 00959
+        count: 54
+      - value: '60647'
+        count: 53
+      - value: 00957
+        count: 52
+      - value: '11236'
+        count: 48
+    definition: ZIP Code GEOID, represented as a 5-digit string. Note that some ZIP
+      Codes have leading zeros, which are preserved in the geoid (e.g. '00926').
+    needs_confirmation: no
+  - name: tract_geoid
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 84933
+    min_value: ~
+    max_value: ~
+    min_length: 11
+    max_length: 11
+    top_values:
+      - value: '11001980000'
+        count: 46
+      - value: '11001010700'
+        count: 30
+      - value: '11001010202'
+        count: 27
+      - value: '54011000600'
+        count: 25
+      - value: '11001005802'
+        count: 24
+    definition: Census Tract GEOID, represented as an 11-digit string combining state
+      FIPS, county FIPS, and tract code (e.g. '11001000100' for Census Tract 1 in
+      Washington, D.C.).
+    needs_confirmation: no
+  - name: zip_pref_city
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 18479
+    min_value: ~
+    max_value: ~
+    min_length: 3
+    max_length: 27
+    top_values:
+      - value: HOUSTON
+        count: 1444
+      - value: LOS ANGELES
+        count: 1206
+      - value: CHICAGO
+        count: 1179
+      - value: BROOKLYN
+        count: 1153
+      - value: MIAMI
+        count: 893
+    definition: Preferred city name for the ZIP Code.
+    needs_confirmation: no
+  - name: zip_pref_state
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 54
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: CA
+        count: 16068
+      - value: TX
+        count: 13839
+      - value: NY
+        count: 11310
+      - value: FL
+        count: 9166
+      - value: PA
+        count: 8912
+    definition: Preferred state abbreviation for the ZIP Code.
+    needs_confirmation: no
+  - name: rel_weight_pop
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 155149
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 11105
+      - value: '1.0'
+        count: 9692
+      - value: '0.5'
+        count: 39
+      - value: '0.3333333333333333'
+        count: 30
+      - value: '0.09090909090909091'
+        count: 26
+    definition: Relative weight of the ZIP Code's population within the tract.
+    needs_confirmation: no
+  - name: rel_weight_bus
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 75588
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 31508
+      - value: '1.0'
+        count: 14017
+      - value: '0.5'
+        count: 689
+      - value: '0.3333333333333333'
+        count: 434
+      - value: '0.25'
+        count: 391
+    definition: Relative weight of the ZIP Code's business count within the tract.
+    needs_confirmation: no
+  - name: rel_weight_hu
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 162415
+    min_value: 1.6992642e-05
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.0'
+        count: 12769
+      - value: '0.5'
+        count: 105
+      - value: '0.3333333333333333'
+        count: 55
+      - value: '0.6666666666666666'
+        count: 41
+      - value: '0.25'
+        count: 38
+    definition: Relative weight of the ZIP Code's housing units within the tract.
+    needs_confirmation: no
+  - name: vintage
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: 2025
+    max_value: 2025
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2025'
+        count: 189302
+    definition: Year of the crosswalk data.
+    needs_confirmation: no
+  - name: source
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: ~
+    max_value: ~
+    min_length: 20
+    max_length: 20
+    top_values:
+      - value: HUD_ZIP_TRACT_2025Q1
+        count: 189302
+    definition: Source of the crosswalk data.
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/silver/geo_crosswalks_silver.R
+    details: 'Table write/create reference(s): scripts/etl/silver/geo_crosswalks_silver.R:166:DBI::dbWriteTable(con,
+      DBI::Id(schema="silver", table="xwalk_zcta_tract"),'
+kpi_definitions: []

@@ -1,0 +1,339 @@
+table_name: economics_labor_wide
+schema: gold
+grain: One row per geo_level + geo_id + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2023'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=3
+    - distinct_geo_id=4221
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 3
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 6
+    top_values:
+      - value: county
+        count: 38648
+      - value: cbsa
+        count: 11150
+      - value: state
+        count: 624
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 4221
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 5
+    top_values:
+      - value: '01'
+        count: 12
+      - value: '01001'
+        count: 12
+      - value: '01003'
+        count: 12
+      - value: '01005'
+        count: 12
+      - value: '01007'
+        count: 12
+    definition: Geographic identifier for the row
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 4222
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 59
+    top_values:
+      - value: Abbeville County, South Carolina
+        count: 12
+      - value: Aberdeen, SD
+        count: 12
+      - value: Aberdeen, WA
+        count: 12
+      - value: Abilene, TX
+        count: 12
+      - value: Acadia Parish, Louisiana
+        count: 12
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 12
+    min_value: 2012
+    max_value: 2023
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2022'
+        count: 4209
+      - value: '2023'
+        count: 4209
+      - value: '2012'
+        count: 4201
+      - value: '2013'
+        count: 4201
+      - value: '2020'
+        count: 4201
+    definition: Observation year or period year for the row.
+    needs_confirmation: no
+  - name: pop_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 35702
+    min_value: 43.0
+    max_value: 3.9455353e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '25477.0'
+        count: 8
+      - value: '3389.0'
+        count: 7
+      - value: '14335.0'
+        count: 6
+      - value: '16211.0'
+        count: 6
+      - value: '16511.0'
+        count: 6
+    definition: Total population (all ages).
+    needs_confirmation: no
+  - name: working_age_pop
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 34061
+    min_value: 37.0
+    max_value: 3.0431073e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '21747.0'
+        count: 8
+      - value: '12292.0'
+        count: 7
+      - value: '13684.0'
+        count: 7
+      - value: '18968.0'
+        count: 7
+      - value: '25771.0'
+        count: 7
+    definition: Population of working age (16+), used as denominator for labor force participation rate.
+    needs_confirmation: no
+  - name: labor_force
+    type: DOUBLE
+    null_pct: 0.353
+    distinct_count: 29937
+    min_value: 0.0
+    max_value: 1.9471001e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 178
+      - value: '0.0'
+        count: 11
+      - value: '2411.0'
+        count: 9
+      - value: '3502.0'
+        count: 9
+      - value: '3953.0'
+        count: 9
+    definition: Total Labor Force (employed + unemployed), used as numerator for labor force participation rate.
+    needs_confirmation: no
+  - name: lfpr
+    type: DOUBLE
+    null_pct: 0.353
+    distinct_count: 43112
+    min_value: 0.0
+    max_value: 4.4285714
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 178
+      - value: '0.0'
+        count: 11
+      - value: '0.6666666666666666'
+        count: 5
+      - value: '0.55'
+        count: 4
+      - value: '0.7155966420827244'
+        count: 4
+    definition: Labor Force Participation Rate, share of population 16+ in labor force.
+      Ratio of in labor force to pop 16plus.
+    needs_confirmation: no
+  - name: lfpr_growth_5yr
+    type: DOUBLE
+    null_pct: 41.9956
+    distinct_count: 25138
+    min_value: -1.0
+    max_value: 6.3809524
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 21175
+      - value: '-1.0'
+        count: 11
+      - value: '-0.00010886011528372146'
+        count: 2
+      - value: '-0.00012137095340048361'
+        count: 2
+      - value: '-0.000128185589388605'
+        count: 2
+    definition: 5-year growth rate in labor force participation rate.
+    needs_confirmation: no
+  - name: lfpr_cagr_5yr
+    type: DOUBLE
+    null_pct: 41.9956
+    distinct_count: 25138
+    min_value: -1.0
+    max_value: 0.4914973
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 21175
+      - value: '-1.0'
+        count: 11
+      - value: '-0.00012799295947241163'
+        count: 2
+      - value: '-0.0001326351003696491'
+        count: 2
+      - value: '-0.00013381142043999983'
+        count: 2
+    definition: 5-year compound annual growth rate (CAGR) in labor force participation rate.
+    needs_confirmation: no
+  - name: employed
+    type: DOUBLE
+    null_pct: 0.353
+    distinct_count: 29353
+    min_value: 0.0
+    max_value: 1.8621929e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 178
+      - value: '0.0'
+        count: 11
+      - value: '2693.0'
+        count: 10
+      - value: '4535.0'
+        count: 10
+      - value: '3928.0'
+        count: 9
+    definition: Total Employed Persons, used as numerator for employment-population
+      ratio and unemployment rate in ACS.
+    needs_confirmation: no
+  - name: jobs_to_pop_ratio
+    type: DOUBLE
+    null_pct: 0.353
+    distinct_count: 43129
+    min_value: 0.0
+    max_value: 3.962963
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 178
+      - value: '0.0'
+        count: 11
+      - value: '0.5'
+        count: 8
+      - value: '0.3333333333333333'
+        count: 3
+      - value: '0.3652448657187994'
+        count: 3
+    definition: Ratio of employed to population (i.e., number of people with a job divided by total population).
+    needs_confirmation: no
+  - name: unemployed
+    type: DOUBLE
+    null_pct: 0.353
+    distinct_count: 10061
+    min_value: 0.0
+    max_value: 1920778.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 178
+      - value: '23.0'
+        count: 72
+      - value: '30.0'
+        count: 70
+      - value: '49.0'
+        count: 68
+      - value: '38.0'
+        count: 67
+    definition: Total Unemployed Persons, used as numerator for unemployment rate
+      in ACS.
+    needs_confirmation: no
+  - name: pct_unemployment_rate
+    type: DOUBLE
+    null_pct: 0.353
+    distinct_count: 11991
+    min_value: 0.0107011
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.035'
+        count: 873
+      - value: '0.036000000000000004'
+        count: 845
+      - value: '0.034'
+        count: 839
+      - value: '0.040999999999999995'
+        count: 835
+      - value: '0.037000000000000005'
+        count: 831
+    definition: Percentage of the labor force that is unemployed.
+    needs_confirmation: no
+  - name: unemployment_rate_change_1yr
+    type: DOUBLE
+    null_pct: 8.8572
+    distinct_count: 11478
+    min_value: -0.107
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 4466
+      - value: '0.0'
+        count: 1624
+      - value: '-0.0020000000000000018'
+        count: 1544
+      - value: '-0.0010000000000000009'
+        count: 1258
+      - value: '-0.0030000000000000027'
+        count: 1116
+    definition: Unemployment rate change from previous year.
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/gold/gold_economy_labor.sql
+    details: 'scripts/etl/gold/gold_economy_labor.sql:4:create or replace table metro_deep_dive.gold.economics_labor_wide
+      as '
+kpi_definitions: []

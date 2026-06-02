@@ -1,0 +1,202 @@
+table_name: hud_rent50_wide
+schema: silver
+grain: One row per geo_level + geo_id + period (inferred).
+primary_key:
+- geo_level
+- geo_id
+- period
+foreign_keys: []
+time_coverage:
+  type: range
+  column: period
+  min: '2023'
+  max: '2023'
+geo_coverage:
+  notes:
+  - distinct_geo_levels=3
+  - distinct_geo_id=4212
+columns:
+- name: geo_level
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 3
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 6
+  top_values:
+  - value: County
+    count: 4764
+  - value: CBSA
+    count: 929
+  - value: State
+    count: 56
+  definition: Geographic level (US, region, division, state, county, place, zcta,
+    tract, cbsa)
+  needs_confirmation: no
+- name: geo_id
+  type: VARCHAR
+  null_pct: 0.0174
+  distinct_count: 4212
+  min_value: ~
+  max_value: ~
+  min_length: 2
+  max_length: 5
+  top_values:
+  - value: '23003'
+    count: 71
+  - value: '23019'
+    count: 67
+  - value: '25027'
+    count: 60
+  - value: '25017'
+    count: 54
+  - value: '23029'
+    count: 48
+  definition: Geographic identifier for the row
+  needs_confirmation: no
+- name: geo_name
+  type: VARCHAR
+  null_pct: 0.0174
+  distinct_count: 4211
+  min_value: ~
+  max_value: ~
+  min_length: 2
+  max_length: 46
+  top_values:
+  - value: Aroostook County, ME
+    count: 71
+  - value: Penobscot County, ME
+    count: 67
+  - value: Worcester County, MA
+    count: 60
+  - value: Middlesex County, MA
+    count: 54
+  - value: Washington County, ME
+    count: 48
+  definition: Geographic name (from ACS NAME)
+  needs_confirmation: no
+- name: period
+  type: INTEGER
+  null_pct: 0.0
+  distinct_count: 1
+  min_value: 2023
+  max_value: 2023
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '2023'
+    count: 5749
+  definition: Time period for the observation (usually calendar year).
+  needs_confirmation: no
+- name: rent50_0br
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 879
+  min_value: 405.0
+  max_value: 2443.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '2181.0'
+    count: 114
+  - value: '579.0'
+    count: 104
+  - value: '661.0'
+    count: 80
+  - value: '590.0'
+    count: 78
+  - value: '596.0'
+    count: 65
+  definition: 50th percentile (median) rent for 0-bedroom units.
+  needs_confirmation: no
+- name: rent50_1br
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 909
+  min_value: 421.0
+  max_value: 3000.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '666.0'
+    count: 164
+  - value: '2368.0'
+    count: 114
+  - value: '706.0'
+    count: 84
+  - value: '776.0'
+    count: 66
+  - value: '804.0'
+    count: 64
+  definition: 50th percentile (median) rent for 1-bedroom units.
+  needs_confirmation: no
+- name: rent50_2br
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 927
+  min_value: 475.0
+  max_value: 3590.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '877.0'
+    count: 425
+  - value: '2838.0'
+    count: 114
+  - value: '815.0'
+    count: 96
+  - value: '883.0'
+    count: 82
+  - value: '845.0'
+    count: 78
+  definition: 50th percentile (median) rent for 2-bedroom units.
+  needs_confirmation: no
+- name: rent50_3br
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 1129
+  min_value: 630.0
+  max_value: 4406.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '3454.0'
+    count: 114
+  - value: '1246.0'
+    count: 97
+  - value: '1172.0'
+    count: 91
+  - value: '1267.0'
+    count: 76
+  - value: '1067.0'
+    count: 69
+  definition: 50th percentile (median) rent for 3-bedroom units.
+  needs_confirmation: no
+- name: rent50_4br
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 1224
+  min_value: 638.0
+  max_value: 4823.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '3812.0'
+    count: 114
+  - value: '1329.0'
+    count: 77
+  - value: '1494.0'
+    count: 70
+  - value: '1421.0'
+    count: 58
+  - value: '1322.0'
+    count: 54
+  definition: 50th percentile (median) rent for 4-bedroom units.
+  needs_confirmation: no
+lineage:
+- step: write_target
+  script: scripts/etl/silver/hud_fmr_silver.R
+  details: 'Table write/create reference(s): scripts/etl/silver/hud_fmr_silver.R:165:DBI::dbWriteTable(con,
+    DBI::Id(schema="silver", table="hud_rent50_wide"),'
+kpi_definitions: []

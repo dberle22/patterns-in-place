@@ -1,0 +1,1179 @@
+table_name: social_infra_kpi
+schema: silver
+grain: One row per geo_level + geo_id + geo_name + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - geo_name
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2015'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=165557
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 8
+    top_values:
+      - value: tract
+        count: 787324
+      - value: zcta
+        count: 333812
+      - value: place
+        count: 308527
+      - value: county
+        count: 32208
+      - value: cbsa
+        count: 9301
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: 'no'
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 165557
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 11
+    top_values:
+      - value: '1'
+        count: 30
+      - value: '01001'
+        count: 20
+      - value: '01003'
+        count: 20
+      - value: '01005'
+        count: 20
+      - value: '01007'
+        count: 20
+    definition: Geographic identifier for the row
+    needs_confirmation: 'no'
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 251094
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 81
+    top_values:
+      - value: Alexandria city, Virginia
+        count: 20
+      - value: Baltimore city, Maryland
+        count: 20
+      - value: Bristol city, Virginia
+        count: 20
+      - value: Buena Vista city, Virginia
+        count: 20
+      - value: Carson City, Nevada
+        count: 20
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: 'no'
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 10
+    min_value: 2015
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2024'
+        count: 154726
+      - value: '2023'
+        count: 154720
+      - value: '2022'
+        count: 154598
+      - value: '2021'
+        count: 154311
+      - value: '2020'
+        count: 153657
+    definition: Observation year or period year for the row.
+    needs_confirmation: 'no'
+  - name: hh_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 40598
+    min_value: 0.0
+    max_value: 1.292275e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 20641
+      - value: '32.0'
+        count: 1214
+      - value: '43.0'
+        count: 1176
+      - value: '33.0'
+        count: 1170
+      - value: '45.0'
+        count: 1163
+    definition: Total households.
+    needs_confirmation: 'no'
+  - name: hh_family
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 32194
+    min_value: 0.0
+    max_value: 8.2990528e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 25850
+      - value: '17.0'
+        count: 1791
+      - value: '16.0'
+        count: 1788
+      - value: '15.0'
+        count: 1751
+      - value: '19.0'
+        count: 1746
+    definition: Family households.
+    needs_confirmation: 'no'
+  - name: hh_married
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 27245
+    min_value: 0.0
+    max_value: 6.0637388e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 29945
+      - value: '17.0'
+        count: 2370
+      - value: '13.0'
+        count: 2329
+      - value: '15.0'
+        count: 2329
+      - value: '16.0'
+        count: 2323
+    definition: Married-couple family households.
+    needs_confirmation: 'no'
+  - name: hh_other_family
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 16890
+    min_value: 0.0
+    max_value: 2.235314e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 69103
+      - value: '6.0'
+        count: 6088
+      - value: '8.0'
+        count: 6067
+      - value: '9.0'
+        count: 6042
+      - value: '7.0'
+        count: 6019
+    definition: Other family households excluding married-couple families.
+    needs_confirmation: 'no'
+  - name: hh_nonfamily
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 23574
+    min_value: 0.0
+    max_value: 4.6236968e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 37068
+      - value: '10.0'
+        count: 3389
+      - value: '16.0'
+        count: 3349
+      - value: '9.0'
+        count: 3343
+      - value: '15.0'
+        count: 3306
+    definition: Nonfamily households.
+    needs_confirmation: 'no'
+  - name: hh_nonfam_alone
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 20960
+    min_value: 0.0
+    max_value: 3.7140836e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 41311
+      - value: '9.0'
+        count: 3958
+      - value: '10.0'
+        count: 3918
+      - value: '11.0'
+        count: 3871
+      - value: '13.0'
+        count: 3857
+    definition: Nonfamily households with one person living alone.
+    needs_confirmation: 'no'
+  - name: hh_nonfam_not_alone
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 11135
+    min_value: 0.0
+    max_value: 9096132.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 146205
+      - value: '2.0'
+        count: 14089
+      - value: '6.0'
+        count: 13756
+      - value: '8.0'
+        count: 13670
+      - value: '5.0'
+        count: 13393
+    definition: Nonfamily households with two or more people.
+    needs_confirmation: 'no'
+  - name: single_households
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 20960
+    min_value: 0.0
+    max_value: 3.7140836e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 41311
+      - value: '9.0'
+        count: 3958
+      - value: '10.0'
+        count: 3918
+      - value: '11.0'
+        count: 3871
+      - value: '13.0'
+        count: 3857
+    definition: Households with one person living alone.
+    needs_confirmation: 'no'
+  - name: pct_hh_family
+    type: DOUBLE
+    null_pct: 1.4024
+    distinct_count: 657164
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 20641
+      - value: '1.0'
+        count: 16427
+      - value: '0.0'
+        count: 5209
+      - value: '0.6666666666666666'
+        count: 3283
+      - value: '0.5'
+        count: 2560
+    definition: Share of households that are family households.
+    needs_confirmation: 'no'
+  - name: pct_hh_married
+    type: DOUBLE
+    null_pct: 1.4024
+    distinct_count: 699718
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 20641
+      - value: '0.0'
+        count: 9304
+      - value: '1.0'
+        count: 9151
+      - value: '0.5'
+        count: 4373
+      - value: '0.6666666666666666'
+        count: 1863
+    definition: Share of households that are married-couple family households.
+    needs_confirmation: 'no'
+  - name: pct_hh_other_family
+    type: DOUBLE
+    null_pct: 1.4024
+    distinct_count: 579947
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 48462
+      - value: ~
+        count: 20641
+      - value: '0.16666666666666666'
+        count: 1813
+      - value: '0.2'
+        count: 1710
+      - value: '0.14285714285714285'
+        count: 1689
+    definition: Share of households that are other family households.
+    needs_confirmation: 'no'
+  - name: pct_hh_nonfamily
+    type: DOUBLE
+    null_pct: 1.4024
+    distinct_count: 657164
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 20641
+      - value: '0.0'
+        count: 16427
+      - value: '1.0'
+        count: 5209
+      - value: '0.3333333333333333'
+        count: 3283
+      - value: '0.5'
+        count: 2560
+    definition: Share of households that are nonfamily households.
+    needs_confirmation: 'no'
+  - name: pct_single_households
+    type: DOUBLE
+    null_pct: 1.4024
+    distinct_count: 625029
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 20670
+      - value: ~
+        count: 20641
+      - value: '1.0'
+        count: 3836
+      - value: '0.3333333333333333'
+        count: 3020
+      - value: '0.25'
+        count: 2736
+    definition: Share of households with one person living alone.
+    needs_confirmation: 'no'
+  - name: pct_nonfamily_alone
+    type: DOUBLE
+    null_pct: 2.5185
+    distinct_count: 280781
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.0'
+        count: 109137
+      - value: ~
+        count: 37068
+      - value: '0.0'
+        count: 4243
+      - value: '0.8'
+        count: 3893
+      - value: '0.8333333333333334'
+        count: 3722
+    definition: Share of nonfamily households that are one-person households.
+    needs_confirmation: 'no'
+  - name: pct_nonfamily_not_alone
+    type: DOUBLE
+    null_pct: 2.5185
+    distinct_count: 280781
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 109137
+      - value: ~
+        count: 37068
+      - value: '1.0'
+        count: 4243
+      - value: '0.2'
+        count: 3893
+      - value: '0.16666666666666666'
+        count: 3722
+    definition: Share of nonfamily households with two or more people.
+    needs_confirmation: 'no'
+  - name: ins_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 72360
+    min_value: 0.0
+    max_value: 3.2998075e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 17427
+      - value: '44.0'
+        count: 490
+      - value: '64.0'
+        count: 489
+      - value: '61.0'
+        count: 486
+      - value: '69.0'
+        count: 480
+    definition: Total civilian noninstitutionalized population in the health insurance
+      coverage universe.
+    needs_confirmation: 'no'
+  - name: ins_insured
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 68197
+    min_value: 0.0
+    max_value: 3.0224584e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 17906
+      - value: '76.0'
+        count: 551
+      - value: '93.0'
+        count: 547
+      - value: '50.0'
+        count: 545
+      - value: '94.0'
+        count: 542
+    definition: Population with at least one form of health insurance coverage.
+    needs_confirmation: 'no'
+  - name: ins_uninsured
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 20920
+    min_value: 0.0
+    max_value: 4.0446231e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 69364
+      - value: '9.0'
+        count: 5173
+      - value: '11.0'
+        count: 5158
+      - value: '10.0'
+        count: 5141
+      - value: '8.0'
+        count: 5073
+    definition: Population without health insurance coverage.
+    needs_confirmation: 'no'
+  - name: pct_health_insured
+    type: DOUBLE
+    null_pct: 1.184
+    distinct_count: 872859
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.0'
+        count: 51937
+      - value: ~
+        count: 17427
+      - value: '0.9'
+        count: 588
+      - value: '0.8888888888888888'
+        count: 563
+      - value: '0.8571428571428571'
+        count: 562
+    definition: Share of the health insurance universe with insurance coverage.
+    needs_confirmation: 'no'
+  - name: pct_health_uninsured
+    type: DOUBLE
+    null_pct: 1.184
+    distinct_count: 872859
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 51937
+      - value: ~
+        count: 17427
+      - value: '0.1'
+        count: 588
+      - value: '0.1111111111111111'
+        count: 563
+      - value: '0.14285714285714285'
+        count: 562
+    definition: Share of the health insurance universe without health insurance coverage.
+    needs_confirmation: 'no'
+  - name: ins_u19_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 32449
+    min_value: 0.0
+    max_value: 7.8612964e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 44590
+      - value: '12.0'
+        count: 2001
+      - value: '14.0'
+        count: 1978
+      - value: '8.0'
+        count: 1971
+      - value: '10.0'
+        count: 1959
+    definition: Total population under age 19 in the health insurance coverage universe.
+    needs_confirmation: 'no'
+  - name: ins_u19_covered
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 31458
+    min_value: 0.0
+    max_value: 7.4444233e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 46502
+      - value: '14.0'
+        count: 2087
+      - value: '12.0'
+        count: 2083
+      - value: '10.0'
+        count: 2080
+      - value: '9.0'
+        count: 2079
+    definition: Population under age 19 with at least one form of health insurance
+      coverage.
+    needs_confirmation: 'no'
+  - name: ins_u19_uncovered
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 7760
+    min_value: 0.0
+    max_value: 4756380.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 456681
+      - value: '8.0'
+        count: 17608
+      - value: '9.0'
+        count: 17533
+      - value: '10.0'
+        count: 17365
+      - value: '6.0'
+        count: 17283
+    definition: Population under age 19 without health insurance coverage.
+    needs_confirmation: 'no'
+  - name: pct_u19_covered
+    type: DOUBLE
+    null_pct: 3.0296
+    distinct_count: 321354
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.0'
+        count: 412091
+      - value: ~
+        count: 44590
+      - value: '0.0'
+        count: 1912
+      - value: '0.9'
+        count: 863
+      - value: '0.875'
+        count: 842
+    definition: Share of the under-19 insurance universe with insurance coverage.
+    needs_confirmation: 'no'
+  - name: pct_u19_uncovered
+    type: DOUBLE
+    null_pct: 3.0296
+    distinct_count: 321354
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 412091
+      - value: ~
+        count: 44590
+      - value: '1.0'
+        count: 1912
+      - value: '0.1'
+        count: 863
+      - value: '0.125'
+        count: 842
+    definition: Share of the under-19 insurance universe without health insurance
+      coverage.
+    needs_confirmation: 'no'
+  - name: ins_19_34_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 31449
+    min_value: 0.0
+    max_value: 7.2771471e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 43408
+      - value: '14.0'
+        count: 2451
+      - value: '13.0'
+        count: 2393
+      - value: '16.0'
+        count: 2383
+      - value: '12.0'
+        count: 2382
+    definition: Total population ages 19 to 34 in the health insurance coverage universe.
+    needs_confirmation: 'no'
+  - name: ins_19_34_covered
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 28597
+    min_value: 0.0
+    max_value: 6.0145366e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 48968
+      - value: '9.0'
+        count: 2975
+      - value: '12.0'
+        count: 2889
+      - value: '11.0'
+        count: 2853
+      - value: '14.0'
+        count: 2820
+    definition: Population ages 19 to 34 with at least one form of health insurance
+      coverage.
+    needs_confirmation: 'no'
+  - name: ins_19_34_uncovered
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 12954
+    min_value: 0.0
+    max_value: 1.6531269e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 170218
+      - value: '9.0'
+        count: 11307
+      - value: '10.0'
+        count: 11175
+      - value: '8.0'
+        count: 11076
+      - value: '7.0'
+        count: 11058
+    definition: Population ages 19 to 34 without health insurance coverage.
+    needs_confirmation: 'no'
+  - name: pct_19_34_covered
+    type: DOUBLE
+    null_pct: 2.9492
+    distinct_count: 413696
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.0'
+        count: 126810
+      - value: ~
+        count: 43408
+      - value: '0.0'
+        count: 5560
+      - value: '0.75'
+        count: 2285
+      - value: '0.6666666666666666'
+        count: 2261
+    definition: Share of the ages 19 to 34 insurance universe with insurance coverage.
+    needs_confirmation: 'no'
+  - name: pct_19_34_uncovered
+    type: DOUBLE
+    null_pct: 2.9492
+    distinct_count: 413696
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 126810
+      - value: ~
+        count: 43408
+      - value: '1.0'
+        count: 5560
+      - value: '0.25'
+        count: 2285
+      - value: '0.3333333333333333'
+        count: 2261
+    definition: Share of the ages 19 to 34 insurance universe without health insurance
+      coverage.
+    needs_confirmation: 'no'
+  - name: ins_35_64_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 41153
+    min_value: 0.0
+    max_value: 1.2563791e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 24487
+      - value: '34.0'
+        count: 1221
+      - value: '27.0'
+        count: 1206
+      - value: '22.0'
+        count: 1184
+      - value: '18.0'
+        count: 1175
+    definition: Total population ages 35 to 64 in the health insurance coverage universe.
+    needs_confirmation: 'no'
+  - name: ins_35_64_covered
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 38305
+    min_value: 0.0
+    max_value: 1.1265234e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 26556
+      - value: '18.0'
+        count: 1432
+      - value: '16.0'
+        count: 1385
+      - value: '22.0'
+        count: 1365
+      - value: '30.0'
+        count: 1362
+    definition: Population ages 35 to 64 with at least one form of health insurance
+      coverage.
+    needs_confirmation: 'no'
+  - name: ins_35_64_uncovered
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 14009
+    min_value: 0.0
+    max_value: 1.8744797e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 108093
+      - value: '9.0'
+        count: 9309
+      - value: '8.0'
+        count: 9263
+      - value: '10.0'
+        count: 9088
+      - value: '12.0'
+        count: 8992
+    definition: Population ages 35 to 64 without health insurance coverage.
+    needs_confirmation: 'no'
+  - name: pct_35_64_covered
+    type: DOUBLE
+    null_pct: 1.6637
+    distinct_count: 557071
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.0'
+        count: 83606
+      - value: ~
+        count: 24487
+      - value: '0.0'
+        count: 2069
+      - value: '0.8333333333333334'
+        count: 1306
+      - value: '0.8571428571428571'
+        count: 1297
+    definition: Share of the ages 35 to 64 insurance universe with insurance coverage.
+    needs_confirmation: 'no'
+  - name: pct_35_64_uncovered
+    type: DOUBLE
+    null_pct: 1.6637
+    distinct_count: 557071
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 83606
+      - value: ~
+        count: 24487
+      - value: '1.0'
+        count: 2069
+      - value: '0.16666666666666666'
+        count: 1306
+      - value: '0.14285714285714285'
+        count: 1297
+    definition: Share of the ages 35 to 64 insurance universe without health insurance
+      coverage.
+    needs_confirmation: 'no'
+  - name: ins_65u_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 25137
+    min_value: 0.0
+    max_value: 5.6239699e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 34929
+      - value: '9.0'
+        count: 2436
+      - value: '15.0'
+        count: 2418
+      - value: '17.0'
+        count: 2409
+      - value: '16.0'
+        count: 2401
+    definition: Total population age 65 and older in the health insurance coverage
+      universe.
+    needs_confirmation: 'no'
+  - name: ins_65u_covered
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 25001
+    min_value: 0.0
+    max_value: 5.5764121e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 35128
+      - value: '9.0'
+        count: 2467
+      - value: '15.0'
+        count: 2421
+      - value: '17.0'
+        count: 2410
+      - value: '19.0'
+        count: 2407
+    definition: Population age 65 and older with at least one form of health insurance
+      coverage.
+    needs_confirmation: 'no'
+  - name: ins_65u_uncovered
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 2704
+    min_value: 0.0
+    max_value: 475578.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 1105800
+      - value: '8.0'
+        count: 13795
+      - value: '9.0'
+        count: 13462
+      - value: '2.0'
+        count: 13431
+      - value: '7.0'
+        count: 12429
+    definition: Population age 65 and older without health insurance coverage.
+    needs_confirmation: 'no'
+  - name: pct_65u_covered
+    type: DOUBLE
+    null_pct: 2.3732
+    distinct_count: 129771
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.0'
+        count: 1070871
+      - value: ~
+        count: 34929
+      - value: '0.9545454545454546'
+        count: 272
+      - value: '0.9583333333333334'
+        count: 269
+      - value: '0.975'
+        count: 269
+    definition: Share of the age 65 and older insurance universe with insurance coverage.
+    needs_confirmation: 'no'
+  - name: pct_65u_uncovered
+    type: DOUBLE
+    null_pct: 2.3732
+    distinct_count: 129771
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 1070871
+      - value: ~
+        count: 34929
+      - value: '0.045454545454545456'
+        count: 272
+      - value: '0.025'
+        count: 269
+      - value: '0.041666666666666664'
+        count: 269
+    definition: Share of the age 65 and older insurance universe without health insurance
+      coverage.
+    needs_confirmation: 'no'
+lineage:
+  - step: write_target
+    script: scripts/etl/silver/acs_social_infra_silver.R
+    details: 'Table write/create reference(s): scripts/etl/silver/acs_social_infra_silver.R:225-235
+      writes silver.social_infra_kpi from staging.acs_social_infra_* with CBSA rebasing
+      from county data via silver.xwalk_cbsa_county.'
+kpi_definitions:
+  - kpi_name: hh_total
+    business_definition: Total households.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_family
+    business_definition: Family households.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_married
+    business_definition: Married-couple family households.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_other_family
+    business_definition: Other family households excluding married-couple families.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_nonfamily
+    business_definition: Nonfamily households.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_nonfam_alone
+    business_definition: Nonfamily households with one person living alone.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_nonfam_not_alone
+    business_definition: Nonfamily households with two or more people.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: single_households
+    business_definition: Households with one person living alone.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_hh_family
+    business_definition: Share of households that are family households.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: hh_total
+    data_type: DOUBLE
+  - kpi_name: pct_hh_married
+    business_definition: Share of households that are married-couple family households.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: hh_total
+    data_type: DOUBLE
+  - kpi_name: pct_hh_other_family
+    business_definition: Share of households that are other family households.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: hh_total
+    data_type: DOUBLE
+  - kpi_name: pct_hh_nonfamily
+    business_definition: Share of households that are nonfamily households.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: hh_total
+    data_type: DOUBLE
+  - kpi_name: pct_single_households
+    business_definition: Share of households with one person living alone.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: hh_total
+    data_type: DOUBLE
+  - kpi_name: pct_nonfamily_alone
+    business_definition: Share of nonfamily households that are one-person households.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: hh_nonfamily
+    data_type: DOUBLE
+  - kpi_name: pct_nonfamily_not_alone
+    business_definition: Share of nonfamily households with two or more people.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: hh_nonfamily
+    data_type: DOUBLE
+  - kpi_name: ins_total
+    business_definition: Total civilian noninstitutionalized population in the health
+      insurance coverage universe.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ins_insured
+    business_definition: Population with at least one form of health insurance coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ins_uninsured
+    business_definition: Population without health insurance coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_health_insured
+    business_definition: Share of the health insurance universe with insurance coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ins_total
+    data_type: DOUBLE
+  - kpi_name: pct_health_uninsured
+    business_definition: Share of the health insurance universe without health insurance
+      coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ins_total
+    data_type: DOUBLE
+  - kpi_name: ins_u19_total
+    business_definition: Total population under age 19 in the health insurance coverage
+      universe.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ins_u19_covered
+    business_definition: Population under age 19 with at least one form of health
+      insurance coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ins_u19_uncovered
+    business_definition: Population under age 19 without health insurance coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_u19_covered
+    business_definition: Share of the under-19 insurance universe with insurance coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ins_u19_total
+    data_type: DOUBLE
+  - kpi_name: pct_u19_uncovered
+    business_definition: Share of the under-19 insurance universe without health insurance
+      coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ins_u19_total
+    data_type: DOUBLE
+  - kpi_name: ins_19_34_total
+    business_definition: Total population ages 19 to 34 in the health insurance coverage
+      universe.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ins_19_34_covered
+    business_definition: Population ages 19 to 34 with at least one form of health
+      insurance coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ins_19_34_uncovered
+    business_definition: Population ages 19 to 34 without health insurance coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_19_34_covered
+    business_definition: Share of the ages 19 to 34 insurance universe with insurance
+      coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ins_19_34_total
+    data_type: DOUBLE
+  - kpi_name: pct_19_34_uncovered
+    business_definition: Share of the ages 19 to 34 insurance universe without health
+      insurance coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ins_19_34_total
+    data_type: DOUBLE
+  - kpi_name: ins_35_64_total
+    business_definition: Total population ages 35 to 64 in the health insurance coverage
+      universe.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ins_35_64_covered
+    business_definition: Population ages 35 to 64 with at least one form of health
+      insurance coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ins_35_64_uncovered
+    business_definition: Population ages 35 to 64 without health insurance coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_35_64_covered
+    business_definition: Share of the ages 35 to 64 insurance universe with insurance
+      coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ins_35_64_total
+    data_type: DOUBLE
+  - kpi_name: pct_35_64_uncovered
+    business_definition: Share of the ages 35 to 64 insurance universe without health
+      insurance coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ins_35_64_total
+    data_type: DOUBLE
+  - kpi_name: ins_65u_total
+    business_definition: Total population age 65 and older in the health insurance
+      coverage universe.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ins_65u_covered
+    business_definition: Population age 65 and older with at least one form of health
+      insurance coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ins_65u_uncovered
+    business_definition: Population age 65 and older without health insurance coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_65u_covered
+    business_definition: Share of the age 65 and older insurance universe with insurance
+      coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ins_65u_total
+    data_type: DOUBLE
+  - kpi_name: pct_65u_uncovered
+    business_definition: Share of the age 65 and older insurance universe without
+      health insurance coverage.
+    source: ACS Social Infrastructure (B11001/B27010)
+    denominator_hint: ins_65u_total
+    data_type: DOUBLE
+

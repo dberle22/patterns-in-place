@@ -1,0 +1,337 @@
+table_name: bea_regional_marpp_wide
+schema: silver
+grain: One row per geo_level + geo_id + period (inferred).
+primary_key:
+- geo_level
+- geo_id
+- period
+foreign_keys: []
+time_coverage:
+  type: range
+  column: period
+  min: '2008'
+  max: '2023'
+geo_coverage:
+  notes:
+  - distinct_geo_levels=2
+  - distinct_geo_id=436
+columns:
+- name: geo_level
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 2
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 5
+  top_values:
+  - value: cbsa
+    count: 6144
+  - value: state
+    count: 832
+  definition: Geographic level (US, region, division, state, county, place, zcta,
+    tract, cbsa)
+  needs_confirmation: no
+- name: geo_id
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 436
+  min_value: ~
+  max_value: ~
+  min_length: 5
+  max_length: 5
+  top_values:
+  - value: '00000'
+    count: 16
+  - value: '01000'
+    count: 16
+  - value: '02000'
+    count: 16
+  - value: '04000'
+    count: 16
+  - value: '05000'
+    count: 16
+  definition: Geographic identifier for the row
+  needs_confirmation: no
+- name: geo_name
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 436
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 78
+  top_values:
+  - value: Abilene, TX (Metropolitan Statistical Area)
+    count: 16
+  - value: Akron, OH (Metropolitan Statistical Area)
+    count: 16
+  - value: Alabama
+    count: 16
+  - value: Alaska
+    count: 16
+  - value: Albany, GA (Metropolitan Statistical Area)
+    count: 16
+  definition: Geographic name (from ACS NAME)
+  needs_confirmation: no
+- name: period
+  type: INTEGER
+  null_pct: 0.0
+  distinct_count: 16
+  min_value: 2008
+  max_value: 2023
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '2008'
+    count: 436
+  - value: '2009'
+    count: 436
+  - value: '2010'
+    count: 436
+  - value: '2011'
+    count: 436
+  - value: '2012'
+    count: 436
+  definition: Time period for the observation (usually calendar year).
+  needs_confirmation: no
+- name: table
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 2
+  min_value: ~
+  max_value: ~
+  min_length: 5
+  max_length: 5
+  top_values:
+  - value: MARPP
+    count: 6144
+  - value: SARPP
+    count: 832
+  definition: BEA source table identifier (for example, CAGDP2, CAGDP9, CAINC1, CAINC4,
+    MARPP).
+  needs_confirmation: no
+- name: rpp_real_personal_income
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 6883
+  min_value: 0.0
+  max_value: 1.964172e+13
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 20
+  - value: '4493600000.0'
+    count: 3
+  - value: '7074800000.0'
+    count: 3
+  - value: '10054700000.0'
+    count: 2
+  - value: '11261400000.0'
+    count: 2
+  definition: Regional Price Parities (RPP) real personal income, in chained 2012 dollars. RPPs are price indices that measure the differences in price levels across regions, and are used to adjust nominal personal income to reflect differences in purchasing power across regions.
+  needs_confirmation: no
+- name: rpp_real_pc_income
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 6130
+  min_value: 0.0
+  max_value: 129989.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 20
+  - value: '41060.0'
+    count: 4
+  - value: '42768.0'
+    count: 4
+  - value: '46715.0'
+    count: 4
+  - value: '47569.0'
+    count: 4
+  definition: Regional Price Parities (RPP) real per capita income, in chained 2012 dollars. RPPs are price indices that measure the differences in price levels across regions, and are used to adjust nominal personal income to reflect differences in purchasing power across regions.
+  needs_confirmation: no
+- name: rpp_all_items
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 5859
+  min_value: 0.0
+  max_value: 122.74
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 20
+  - value: '100.0'
+    count: 16
+  - value: '92.94'
+    count: 5
+  - value: '95.232'
+    count: 5
+  - value: '95.33'
+    count: 5
+  definition: Regional Price Parities (RPP) all items price index, in chained 2012 dollars. RPPs are price indices that measure the differences in price levels across regions, and are used to adjust nominal personal income to reflect differences in purchasing power across regions.
+  needs_confirmation: no
+- name: rpp_goods
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 3047
+  min_value: 0.0
+  max_value: 117.799
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '94.361'
+    count: 25
+  - value: '96.177'
+    count: 24
+  - value: '96.206'
+    count: 24
+  - value: '104.493'
+    count: 23
+  - value: '104.56'
+    count: 23
+  definition: Regional Price Parities (RPP) goods price index, in chained 2012 dollars. RPPs are price indices that measure the differences in price levels across regions, and are used to adjust nominal personal income to reflect differences in purchasing power across regions.
+  needs_confirmation: no
+- name: rpp_services_rents
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 6629
+  min_value: 0.0
+  max_value: 246.696
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 20
+  - value: '101.48'
+    count: 3
+  - value: '62.815'
+    count: 3
+  - value: '66.015'
+    count: 3
+  - value: '66.607'
+    count: 3
+  definition: Regional Price Parities (RPP) services and rents price index, in chained 2012 dollars. RPPs are price indices that measure the differences in price levels across regions, and are used to adjust nominal personal income to reflect differences in purchasing power across regions.
+  needs_confirmation: no
+- name: rpp_services_utilities
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 6372
+  min_value: 0.0
+  max_value: 265.981
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 20
+  - value: '103.509'
+    count: 4
+  - value: '89.077'
+    count: 4
+  - value: '89.152'
+    count: 4
+  - value: '90.525'
+    count: 4
+  definition: Regional Price Parities (RPP) services and utilities price index, in chained 2012 dollars. RPPs are price indices that measure the differences in price levels across regions, and are used to adjust nominal personal income to reflect differences in purchasing power across regions.
+  needs_confirmation: no
+- name: rpp_services_other
+  type: DOUBLE
+  null_pct: 11.9266
+  distinct_count: 2645
+  min_value: 0.0
+  max_value: 111.307
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: ~
+    count: 832
+  - value: '95.902'
+    count: 32
+  - value: '104.294'
+    count: 24
+  - value: '95.265'
+    count: 23
+  - value: '97.839'
+    count: 23
+  definition: Regional Price Parities (RPP) other services price index, in chained 2012 dollars. RPPs are price indices that measure the differences in price levels across regions, and are used to adjust nominal personal income to reflect differences in purchasing power across regions.
+  needs_confirmation: no
+- name: rpp_price_deflator
+  type: DOUBLE
+  null_pct: 11.9266
+  distinct_count: 5559
+  min_value: 0.0
+  max_value: 142.45
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: ~
+    count: 832
+  - value: '0.0'
+    count: 20
+  - value: '89.335'
+    count: 4
+  - value: '96.673'
+    count: 4
+  - value: '100.206'
+    count: 3
+  definition: Regional Price Parities (RPP) price deflator index, in chained 2012 dollars. RPPs are price indices that measure the differences in price levels across regions, and are used to adjust nominal personal income to reflect differences in purchasing power across regions.
+  needs_confirmation: no
+- name: rpp_real_consumption
+  type: DOUBLE
+  null_pct: 88.0734
+  distinct_count: 831
+  min_value: 2.1817e+10
+  max_value: 1.5621697e+13
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: ~
+    count: 6144
+  - value: '45151600000.0'
+    count: 2
+  - value: '1013265900000.0'
+    count: 1
+  - value: '102073700000.0'
+    count: 1
+  - value: '102529100000.0'
+    count: 1
+  definition: Regional Price Parities (RPP) real consumption, in chained 2012 dollars. RPPs are price indices that measure the differences in price levels across regions, and are used to adjust nominal personal income to reflect differences in purchasing power across regions.
+  needs_confirmation: no
+- name: rpp_real_pc_consumption
+  type: DOUBLE
+  null_pct: 88.0734
+  distinct_count: 806
+  min_value: 29978.0
+  max_value: 68937.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: ~
+    count: 6144
+  - value: '34043.0'
+    count: 2
+  - value: '34563.0'
+    count: 2
+  - value: '34595.0'
+    count: 2
+  - value: '34783.0'
+    count: 2
+  definition: Regional Price Parities (RPP) real per capita consumption, in chained 2012 dollars. RPPs are price indices that measure the differences in price levels across regions, and are used to adjust nominal personal income to reflect differences in purchasing power across regions.
+  needs_confirmation: no
+lineage:
+- step: write_target
+  script: scripts/etl/gold/gold_economy_wide.sql
+  details: 'Table write/create reference(s): scripts/etl/gold/gold_economy_wide.sql:270:left
+    join metro_deep_dive.silver.bea_regional_marpp_wide rpp  | scripts/etl/gold/gold_economy_wide.sql:281:from
+    metro_deep_dive.silver.bea_regional_marpp_wide | scripts/etl/silver/bea_marpp_silver.R:90:DBI::dbWriteTable(con,
+    DBI::Id(schema="silver", table="bea_regional_marpp_wide"),'
+- step: downstream_usage_examples
+  script: notebooks/national_analyses/real_personal_income/real_personal_income_analysis.Rmd
+  details: 'Downstream reference(s): notebooks/national_analyses/real_personal_income/real_personal_income_analysis.Rmd:108:from
+    metro_deep_dive.silver.bea_regional_marpp_wide  | notebooks/national_analyses/real_personal_income/real_personal_income_analysis.Rmd:120:from
+    metro_deep_dive.silver.bea_regional_marpp_wide  | notebooks/national_analyses/real_personal_income/real_personal_income_base.sql:72:from
+    metro_deep_dive.silver.bea_regional_marpp_wide '
+kpi_definitions: []

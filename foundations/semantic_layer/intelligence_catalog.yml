@@ -1,0 +1,166 @@
+version: 1
+catalog_name: intelligence_catalog
+description: Placeholder intelligence definitions seeded from the Character, Livability, and Opportunity notes. These entries are scaffolds for deeper methodology work, not finalized scoring specifications.
+scores:
+  - score_id: character_profile_archetype
+    display_name: Character Profile Archetype
+    theme: character
+    output_type: profile_label
+    description: Placeholder Character output intended to become an interpretable archetype rather than a single numeric score.
+    methodology: Placeholder hybrid clustering and rule-based labeling approach using demographic, diversity, migration, and built-form signals.
+    inputs:
+      - metric_id: median_age
+        weight: 0.10
+      - metric_id: diversity_index
+        weight: 0.20
+      - metric_id: pct_ba_plus
+        weight: 0.10
+      - metric_id: pct_same_house
+        weight: 0.15
+      - metric_id: pct_foreign_born
+        weight: 0.15
+      - metric_id: pct_struct_multifam
+        weight: 0.15
+      - metric_id: pop_weighted_density_sqmi
+        weight: 0.15
+    output_range: labeled archetype set
+    valid_geo_levels: [tract, zcta, place, cbsa]
+    status: placeholder
+
+  - score_id: livability_affordability_subscore
+    display_name: Livability Affordability Subscore
+    theme: livability
+    output_type: score
+    description: Placeholder affordability subscore based on burden, rent-to-income, vacancy, and benchmark-rent context.
+    methodology: Placeholder weighted blend to be replaced by deeper scoring and normalization analysis.
+    inputs:
+      - metric_id: pct_rent_burden_30plus
+        weight: 0.30
+      - metric_id: pct_rent_burden_50plus
+        weight: 0.15
+      - metric_id: rent_to_income
+        weight: 0.20
+      - metric_id: rent_to_rpp_income
+        weight: 0.20
+      - metric_id: vacancy_rate
+        weight: 0.10
+      - metric_id: permits_per_1000_housing_units
+        weight: 0.05
+    output_range: 0-100 placeholder
+    valid_geo_levels: [tract, zcta, place, cbsa, county, state]
+    status: placeholder
+
+  - score_id: livability_mobility_subscore
+    display_name: Livability Mobility Subscore
+    theme: livability
+    output_type: score
+    description: Placeholder mobility subscore based on commute mix, travel time, and vehicle access.
+    methodology: Placeholder weighted blend to be refined through deeper livability methodology work.
+    inputs:
+      - metric_id: pct_low_car_commute
+        weight: 0.30
+      - metric_id: pct_commute_transit
+        weight: 0.20
+      - metric_id: pct_commute_walk
+        weight: 0.15
+      - metric_id: pct_hh_0_vehicles
+        weight: 0.10
+      - metric_id: mean_travel_time
+        weight: -0.15
+      - metric_id: pct_commute_drive_alone
+        weight: -0.10
+    output_range: 0-100 placeholder
+    valid_geo_levels: [tract, zcta, place, cbsa, county, state]
+    status: placeholder
+
+  - score_id: livability_score
+    display_name: Livability Score
+    theme: livability
+    output_type: score
+    description: Placeholder top-level livability rollup seeded from provisional affordability and mobility subscore components.
+    methodology: Placeholder rollup pending fuller health, safety, services, and weighting analysis.
+    inputs:
+      - metric_id: pct_rent_burden_30plus
+        weight: 0.25
+      - metric_id: rent_to_rpp_income
+        weight: 0.20
+      - metric_id: pct_low_car_commute
+        weight: 0.20
+      - metric_id: mean_travel_time
+        weight: -0.15
+      - metric_id: vacancy_rate
+        weight: 0.10
+      - metric_id: pct_hh_0_vehicles
+        weight: 0.10
+    output_range: 0-100 placeholder
+    valid_geo_levels: [tract, zcta, place, cbsa, county, state]
+    status: placeholder
+
+  - score_id: resident_opportunity_score
+    display_name: Resident Opportunity Score
+    theme: opportunity
+    output_type: score
+    description: Placeholder resident-opportunity score focused on labor market and income trajectory.
+    methodology: Placeholder weighted blend pending deeper opportunity methodology work.
+    inputs:
+      - metric_id: income_pc_growth_5yr
+        weight: 0.25
+      - metric_id: calc_income_pc
+        weight: 0.15
+      - metric_id: lfpr
+        weight: 0.15
+      - metric_id: lfpr_growth_5yr
+        weight: 0.10
+      - metric_id: pct_unemployment_rate
+        weight: -0.20
+      - metric_id: jobs_to_pop_ratio
+        weight: 0.10
+      - metric_id: productivity_growth_5yr
+        weight: 0.05
+    output_range: 0-100 placeholder
+    valid_geo_levels: [place, cbsa, county, state]
+    status: placeholder
+
+  - score_id: market_opportunity_score
+    display_name: Market Opportunity Score
+    theme: opportunity
+    output_type: score
+    description: Placeholder investor-market score for future FHFA, Opportunity Zone, and valuation methodology work.
+    methodology: Placeholder blend of appreciation, undervaluation, migration, and benchmarked affordability signals.
+    inputs:
+      - metric_id: pop_growth_5yr
+        weight: 0.20
+      - metric_id: irs_net_migration_rate
+        weight: 0.20
+      - metric_id: value_to_income
+        weight: -0.20
+      - metric_id: value_to_rpp_income
+        weight: -0.20
+      - metric_id: real_gdp_growth_5yr
+        weight: 0.20
+    output_range: 0-100 placeholder
+    valid_geo_levels: [zcta, place, cbsa, county, state]
+    status: placeholder
+
+  - score_id: business_opportunity_score
+    display_name: Business Opportunity Score
+    theme: opportunity
+    output_type: score
+    description: Placeholder business-opportunity score based on labor pool depth, diversification, and output mix.
+    methodology: Placeholder weighted structure pending deeper commercial and business-location analysis.
+    inputs:
+      - metric_id: labor_force
+        weight: 0.20
+      - metric_id: pct_ba_plus
+        weight: 0.15
+      - metric_id: industry_concentration_hhi
+        weight: -0.20
+      - metric_id: acs_industry_concentration_hhi
+        weight: -0.15
+      - metric_id: pct_real_gdp_professional
+        weight: 0.15
+      - metric_id: pct_real_gdp_edu_health
+        weight: 0.15
+    output_range: 0-100 placeholder
+    valid_geo_levels: [place, cbsa, county, state]
+    status: placeholder

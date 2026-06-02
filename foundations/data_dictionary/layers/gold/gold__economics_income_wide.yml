@@ -1,0 +1,404 @@
+table_name: economics_income_wide
+schema: gold
+grain: One row per geo_level + geo_id + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2023'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=3
+    - distinct_geo_id=4221
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 3
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 6
+    top_values:
+      - value: county
+        count: 38648
+      - value: cbsa
+        count: 11150
+      - value: state
+        count: 624
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 4221
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 5
+    top_values:
+      - value: '01'
+        count: 12
+      - value: '01001'
+        count: 12
+      - value: '01003'
+        count: 12
+      - value: '01005'
+        count: 12
+      - value: '01007'
+        count: 12
+    definition: Geographic identifier for the row
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 4222
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 59
+    top_values:
+      - value: Abbeville County, South Carolina
+        count: 12
+      - value: Aberdeen, SD
+        count: 12
+      - value: Aberdeen, WA
+        count: 12
+      - value: Abilene, TX
+        count: 12
+      - value: Acadia Parish, Louisiana
+        count: 12
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 12
+    min_value: 2012
+    max_value: 2023
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2022'
+        count: 4209
+      - value: '2023'
+        count: 4209
+      - value: '2012'
+        count: 4201
+      - value: '2013'
+        count: 4201
+      - value: '2020'
+        count: 4201
+    definition: Observation year or period year for the row.
+    needs_confirmation: no
+  - name: pop_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 35702
+    min_value: 43.0
+    max_value: 3.9455353e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '25477.0'
+        count: 8
+      - value: '3389.0'
+        count: 7
+      - value: '14335.0'
+        count: 6
+      - value: '16211.0'
+        count: 6
+      - value: '16511.0'
+        count: 6
+    definition: Total population (all ages).
+    needs_confirmation: no
+  - name: median_hh_income
+    type: DOUBLE
+    null_pct: 0.0139
+    distinct_count: 31076
+    min_value: 10499.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '48750.0'
+        count: 24
+      - value: '47500.0'
+        count: 20
+      - value: '51250.0'
+        count: 18
+      - value: '55000.0'
+        count: 18
+      - value: '50000.0'
+        count: 16
+    definition: Median household income in the past 12 months.
+    needs_confirmation: no
+  - name: acs_income_pc
+    type: DOUBLE
+    null_pct: 0.002
+    distinct_count: 24931
+    min_value: 5663.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '21716.0'
+        count: 13
+      - value: '22589.0'
+        count: 13
+      - value: '23895.0'
+        count: 13
+      - value: '24864.0'
+        count: 12
+      - value: '21109.0'
+        count: 11
+    definition: Per capita income calculated from ACS data as total income divided by total population.
+    needs_confirmation: no
+  - name: pov_rate
+    type: DOUBLE
+    null_pct: 0.002
+    distinct_count: 43244
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.1'
+        count: 7
+      - value: '0.1111111111111111'
+        count: 6
+      - value: '0.16666666666666666'
+        count: 4
+      - value: '0.05128205128205128'
+        count: 3
+      - value: '0.07547169811320754'
+        count: 3
+    definition: Poverty Rate, dervied from pov_below and pov_universe. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: gini_index
+    type: DOUBLE
+    null_pct: 0.002
+    distinct_count: 7358
+    min_value: 0.0824
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.4401'
+        count: 73
+      - value: '0.4291'
+        count: 72
+      - value: '0.4434'
+        count: 71
+      - value: '0.4439'
+        count: 71
+      - value: '0.4286'
+        count: 70
+    definition: Ratio of Gini Index, a meaure of economic equality (0=perfect equality,
+      1=perfect inequality).
+    needs_confirmation: no
+  - name: pi_total
+    type: DOUBLE
+    null_pct: 4.7916
+    distinct_count: 40797
+    min_value: 1899000.0
+    max_value: 1.7850295e+12
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 2416
+      - value: '1148796000.0'
+        count: 4
+      - value: '1295315000.0'
+        count: 4
+      - value: '2049858000.0'
+        count: 4
+      - value: '2626563000.0'
+        count: 4
+    definition: Total Personal Income (PI) in current dollars, from BEA regional data.
+    needs_confirmation: no
+  - name: calc_income_pc
+    type: DOUBLE
+    null_pct: 4.7916
+    distinct_count: 41021
+    min_value: 5462.2932196
+    max_value: 469206.3960956
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 2416
+      - value: '100136.09954304376'
+        count: 2
+      - value: '100162.93746414228'
+        count: 2
+      - value: '101283.17448680352'
+        count: 2
+      - value: '101436.26774999069'
+        count: 2
+    definition: Per capita income calculated from BEA data as total personal income divided by total population.
+    needs_confirmation: no
+  - name: income_pc_growth_1yr
+    type: DOUBLE
+    null_pct: 12.7325
+    distinct_count: 37600
+    min_value: -0.3994802
+    max_value: 1.668498
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 6420
+      - value: '-0.0001637248831747089'
+        count: 2
+      - value: '-0.00016717833333474574'
+        count: 2
+      - value: '-0.00022681130625706815'
+        count: 2
+      - value: '-0.00024762434264891884'
+        count: 2
+    definition: 1-year per capita income growth rate (i.e., the percentage change in per capita income from the previous year).
+    needs_confirmation: no
+  - name: income_pc_growth_5yr
+    type: DOUBLE
+    null_pct: 44.4925
+    distinct_count: 23914
+    min_value: -0.4960392
+    max_value: 10.8340128
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 22434
+      - value: '-0.0007341448860337595'
+        count: 2
+      - value: '-0.001203074428835366'
+        count: 2
+      - value: '-0.003120363183548495'
+        count: 2
+      - value: '-0.003277103487806'
+        count: 2
+    definition: 5-year per capita income growth rate (i.e., the percentage change in per capita income over 5 years).
+    needs_confirmation: no
+  - name: income_pc_cagr_5yr
+    type: DOUBLE
+    null_pct: 44.4925
+    distinct_count: 23914
+    min_value: -0.1280745
+    max_value: 0.6391791
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 22434
+      - value: '-0.00014687211370634223'
+        count: 2
+      - value: '-0.00024073076046715602'
+        count: 2
+      - value: '-0.0006248530315473566'
+        count: 2
+      - value: '-0.0006562815433468483'
+        count: 2
+    definition: 5-year per capita income compound annual growth rate (CAGR).
+    needs_confirmation: no
+  - name: income_pc_growth_10yr
+    type: DOUBLE
+    null_pct: 84.1696
+    distinct_count: 6818
+    min_value: -0.4028209
+    max_value: 7.1505763
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 42440
+      - value: '-0.04109279445095245'
+        count: 2
+      - value: '-0.08132703657943609'
+        count: 2
+      - value: '-0.15179582742610864'
+        count: 2
+      - value: '-0.17648823954399873'
+        count: 2
+    definition: 10-year per capita income growth rate (i.e., the percentage change in per capita income over 10 years).
+    needs_confirmation: no
+  - name: income_pc_cagr_10yr
+    type: DOUBLE
+    null_pct: 84.1696
+    distinct_count: 6818
+    min_value: -0.0502475
+    max_value: 0.2334423
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 42440
+      - value: '-0.004187305731515378'
+        count: 2
+      - value: '-0.008446633167005335'
+        count: 2
+      - value: '-0.016328609317201592'
+        count: 2
+      - value: '-0.0192304347718929'
+        count: 2
+    definition: 10-year per capita income compound annual growth rate (CAGR).
+    needs_confirmation: no
+  - name: pi_wages_salary
+    type: DOUBLE
+    null_pct: 17.6034
+    distinct_count: 39235
+    min_value: 823000.0
+    max_value: 9.6713705e+11
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 8876
+      - value: '208158000.0'
+        count: 4
+      - value: '113541000.0'
+        count: 3
+      - value: '11481000.0'
+        count: 3
+      - value: '161140000.0'
+        count: 3
+    definition: Personal Income from Wages and Salaries, from BEA regional data.
+    needs_confirmation: no
+  - name: pi_wage_share
+    type: DOUBLE
+    null_pct: 17.6907
+    distinct_count: 39894
+    min_value: 0.0673574
+    max_value: 8.0698739
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 8920
+      - value: '0.19686943960018466'
+        count: 2
+      - value: '0.19739961855332705'
+        count: 2
+      - value: '0.20343434031821442'
+        count: 2
+      - value: '0.2045612824028012'
+        count: 2
+    definition: Share of total personal income that is from Wages and Salaries.
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/gold/gold_economy_income.sql
+    details: 'scripts/etl/gold/gold_economy_income.sql:7:create or replace table metro_deep_dive.gold.economics_income_wide
+      as '
+  - step: write_target
+    script: scripts/etl/gold/gold_housing_core.sql
+    details: scripts/etl/gold/gold_housing_core.sql:58:DESCRIBE metro_deep_dive.gold.economics_income_wide;
+      -- Contains Incomes
+kpi_definitions: []

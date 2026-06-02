@@ -1,0 +1,130 @@
+version: 1
+catalog_name: query_templates
+description: Named SQL execution templates used by the planner after question-level intent has been resolved in question_catalog.
+templates:
+  - template_id: ranking
+    question_types: [ranking]
+    description: Top or bottom N geographies by a single metric for a chosen year.
+    required_slots:
+      - metric_id
+      - source_table
+      - geo_level
+      - year
+      - sort_direction
+      - limit
+    optional_slots:
+      - geo_filters
+      - subject_area
+      - benchmark_filter
+    result_shape:
+      dimensions: [geo_name]
+      measures: [metric]
+      time_series: false
+    sql_pattern_notes:
+      - Filter to one geo_level and one year.
+      - Apply optional geography filters before sorting.
+      - Order by the metric and limit results.
+
+  - template_id: trend
+    question_types: [trend]
+    description: One metric over time for one or more selected geographies.
+    required_slots:
+      - metric_id
+      - source_table
+      - geo_level
+      - start_year
+      - end_year
+    optional_slots:
+      - geo_ids
+      - geo_filters
+      - benchmark_geo_ids
+    result_shape:
+      dimensions: [geo_name, year]
+      measures: [metric]
+      time_series: true
+    sql_pattern_notes:
+      - Keep the metric in a single value column for chart compatibility.
+      - Limit the number of series when multiple geographies are selected.
+
+  - template_id: compare_selected
+    question_types: [comparison]
+    description: Compare a user-specified set of geographies on one metric at a chosen year.
+    required_slots:
+      - metric_id
+      - source_table
+      - geo_level
+      - geo_ids
+      - year
+    optional_slots:
+      - benchmark_geo_ids
+      - sort_direction
+    result_shape:
+      dimensions: [geo_name]
+      measures: [metric]
+      time_series: false
+    sql_pattern_notes:
+      - Use an IN filter on selected geo_ids.
+      - Preserve user-selected order when helpful for the frontend.
+
+  - template_id: distribution
+    question_types: [distribution]
+    description: Distribution of one metric across all geographies at a given grain and year.
+    required_slots:
+      - metric_id
+      - source_table
+      - geo_level
+      - year
+    optional_slots:
+      - geo_filters
+      - target_geo_id
+    result_shape:
+      dimensions: [geo_name]
+      measures: [metric]
+      time_series: false
+    sql_pattern_notes:
+      - Return one row per geography with no ranking limit by default.
+      - Allow an optional target geography flag for benchmark highlighting.
+
+  - template_id: benchmark
+    question_types: [benchmark]
+    description: Compare a target geography to a benchmark geography or peer set.
+    required_slots:
+      - metric_id
+      - source_table
+      - target_geo_id
+      - target_geo_level
+      - year
+      - benchmark_type
+    optional_slots:
+      - benchmark_geo_ids
+      - peer_group_id
+      - comparison_label
+    result_shape:
+      dimensions: [comparison_group]
+      measures: [metric]
+      time_series: false
+    sql_pattern_notes:
+      - Benchmark rows may be computed with a CTE rather than read from stored benchmark tables.
+      - Approved benchmark types for MVP are us, region, division, state, and peers when a peer set is supplied.
+
+  - template_id: growth
+    question_types: [ranking, benchmark, comparison, trend]
+    description: Compute point-in-time growth over a requested N-year window using base metric levels.
+    required_slots:
+      - base_metric_id
+      - source_table
+      - geo_level
+      - end_year
+      - window_years
+    optional_slots:
+      - geo_filters
+      - geo_ids
+      - sort_direction
+      - limit
+    result_shape:
+      dimensions: [geo_name]
+      measures: [growth_metric]
+      time_series: false
+    sql_pattern_notes:
+      - Use LAG or a self-join/CTE to fetch prior-year values.
+      - Validate requested window_years against the metric catalog before SQL generation.

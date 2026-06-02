@@ -1,0 +1,206 @@
+table_name: bea_regional_cagdp2_long
+schema: silver
+grain: One row per geo_level + geo_id + period + metric_key (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - period
+  - metric_key
+foreign_keys: []
+time_coverage:
+  type: range
+  column: period
+  min: '2001'
+  max: '2023'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=3
+    - distinct_geo_id=4089
+columns:
+  - name: table
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: ~
+    max_value: ~
+    min_length: 6
+    max_length: 6
+    top_values:
+      - value: CAGDP2
+        count: 1618792
+    definition: BEA source table identifier (for example, CAGDP2, CAGDP9, CAINC1,
+      CAINC4, MARPP).
+    needs_confirmation: no
+  - name: code
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 28
+    min_value: ~
+    max_value: ~
+    min_length: 8
+    max_length: 9
+    top_values:
+      - value: CAGDP2-1
+        count: 57814
+      - value: CAGDP2-10
+        count: 57814
+      - value: CAGDP2-11
+        count: 57814
+      - value: CAGDP2-12
+        count: 57814
+      - value: CAGDP2-13
+        count: 57814
+    definition: 'BEA Table Code, used to link to BEA datasets and metadata. Examples include: CAGDP2-1, CAGDP2-10, CAINC1-1, etc.'
+    needs_confirmation: no
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 3
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 6
+    top_values:
+      - value: county
+        count: 1222256
+      - value: cbsa
+        count: 357896
+      - value: state
+        count: 38640
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 4089
+    min_value: ~
+    max_value: ~
+    min_length: 5
+    max_length: 5
+    top_values:
+      - value: '32000'
+        count: 1036
+      - value: '45000'
+        count: 1036
+      - value: '00000'
+        count: 644
+      - value: '01000'
+        count: 644
+      - value: '02000'
+        count: 644
+    definition: Geographic identifier for the row
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 3976
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 48
+    top_values:
+      - value: Alamosa, CO
+        count: 784
+      - value: Alpena, MI
+        count: 784
+      - value: Andrews, TX
+        count: 784
+      - value: Ashland, OH
+        count: 784
+      - value: Atchison, KS
+        count: 784
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: no
+  - name: period
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 23
+    min_value: 2001
+    max_value: 2023
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2010'
+        count: 114548
+      - value: '2011'
+        count: 114548
+      - value: '2012'
+        count: 114548
+      - value: '2013'
+        count: 114548
+      - value: '2014'
+        count: 114548
+    definition: Time period for the observation (usually calendar year).
+    needs_confirmation: no
+  - name: line_desc_clean
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 28
+    min_value: ~
+    max_value: ~
+    min_length: 44
+    max_length: 107
+    top_values:
+      - value: 'Gross Domestic Product (GDP): Accommodation and food services (72)'
+        count: 57814
+      - value: 'Gross Domestic Product (GDP): Administrative and support and waste
+          management and remediation services (56)'
+        count: 57814
+      - value: 'Gross Domestic Product (GDP): All industry total'
+        count: 57814
+      - value: 'Gross Domestic Product (GDP): Arts, entertainment, and recreation
+          (71)'
+        count: 57814
+      - value: 'Gross Domestic Product (GDP): Construction (23)'
+        count: 57814
+    definition: Description of the economic activity in the row (from BEA metadata).
+    needs_confirmation: no
+  - name: metric_key
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 28
+    min_value: ~
+    max_value: ~
+    min_length: 9
+    max_length: 41
+    top_values:
+      - value: gdp_accomodation_food
+        count: 57814
+      - value: gdp_arts_entertainment
+        count: 57814
+      - value: gdp_construction
+        count: 57814
+      - value: gdp_durable_manufacturing
+        count: 57814
+      - value: gdp_education_all
+        count: 57814
+    definition: Key for the economic activity in the row (from BEA metadata).
+    needs_confirmation: no
+  - name: value
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 582415
+    min_value: 0.0
+    max_value: 2.7720709e+13
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 257676
+      - value: '1000.0'
+        count: 114
+      - value: '4000.0'
+        count: 110
+      - value: '18000.0'
+        count: 103
+      - value: '2000.0'
+        count: 103
+    definition: Numeric value for the metric in long-format records.
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/silver/bea_cagdp2_silver.R
+    details: 'Table write/create reference(s): scripts/etl/silver/bea_cagdp2_silver.R:154:DBI::dbWriteTable(con,
+      DBI::Id(schema="silver", table="bea_regional_cagdp2_long"),'
+kpi_definitions: []

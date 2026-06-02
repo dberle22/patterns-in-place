@@ -1,0 +1,191 @@
+table_name: bls_laus_wide
+schema: silver
+grain: One row per geo_level + geo_id + period (inferred).
+primary_key:
+- geo_level
+- geo_id
+- period
+foreign_keys: []
+time_coverage:
+  type: range
+  column: period
+  min: '2010'
+  max: '2024'
+geo_coverage:
+  notes:
+  - distinct_geo_levels=3
+  - distinct_geo_id=4209
+columns:
+- name: geo_level
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 3
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 6
+  top_values:
+  - value: county
+    count: 48305
+  - value: CBSA
+    count: 14040
+  - value: State
+    count: 780
+  definition: Geographic level (US, region, division, state, county, place, zcta,
+    tract, cbsa)
+  needs_confirmation: no
+- name: geo_id
+  type: VARCHAR
+  null_pct: 0.0238
+  distinct_count: 4209
+  min_value: ~
+  max_value: ~
+  min_length: 2
+  max_length: 5
+  top_values:
+  - value: '01'
+    count: 15
+  - value: '01001'
+    count: 15
+  - value: '01003'
+    count: 15
+  - value: '01005'
+    count: 15
+  - value: '01007'
+    count: 15
+  definition: Geographic identifier for the row
+  needs_confirmation: no
+- name: geo_name
+  type: VARCHAR
+  null_pct: 0.0238
+  distinct_count: 4208
+  min_value: ~
+  max_value: ~
+  min_length: 2
+  max_length: 50
+  top_values:
+  - value: Carson City, NV
+    count: 30
+  - value: AK
+    count: 15
+  - value: AL
+    count: 15
+  - value: AR
+    count: 15
+  - value: AZ
+    count: 15
+  definition: Geographic name (from ACS NAME)
+  needs_confirmation: no
+- name: period
+  type: INTEGER
+  null_pct: 0.0
+  distinct_count: 15
+  min_value: 2010
+  max_value: 2024
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '2020'
+    count: 4209
+  - value: '2021'
+    count: 4209
+  - value: '2022'
+    count: 4209
+  - value: '2023'
+    count: 4209
+  - value: '2024'
+    count: 4209
+  definition: Time period for the observation (usually calendar year).
+  needs_confirmation: no
+- name: labor_force
+  type: DOUBLE
+  null_pct: 0.1236
+  distinct_count: 35271
+  min_value: 0.0
+  max_value: 1.9644057e+07
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: ~
+    count: 78
+  - value: '0.0'
+    count: 11
+  - value: '1032.0'
+    count: 10
+  - value: '19238.0'
+    count: 10
+  - value: '3953.0'
+    count: 10
+  definition: Population in Labor Force (employed + unemployed).
+  needs_confirmation: no
+- name: employed
+  type: DOUBLE
+  null_pct: 0.1236
+  distinct_count: 34503
+  min_value: 0.0
+  max_value: 1.8621929e+07
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: ~
+    count: 78
+  - value: '0.0'
+    count: 11
+  - value: '1993.0'
+    count: 10
+  - value: '2193.0'
+    count: 10
+  - value: '2693.0'
+    count: 10
+  definition: Population Employed.
+  needs_confirmation: no
+- name: unemployed
+  type: DOUBLE
+  null_pct: 0.1236
+  distinct_count: 11898
+  min_value: 0.0
+  max_value: 2267409.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '23.0'
+    count: 79
+  - value: '30.0'
+    count: 78
+  - value: ~
+    count: 78
+  - value: '38.0'
+    count: 75
+  - value: '20.0'
+    count: 74
+  definition: Population Unemployed.
+  needs_confirmation: no
+- name: unemployment_rate_percent
+  type: DOUBLE
+  null_pct: 0.1236
+  distinct_count: 15056
+  min_value: 1.0701107
+  max_value: ~
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '3.5'
+    count: 1032
+  - value: '3.7'
+    count: 1009
+  - value: '3.6'
+    count: 1008
+  - value: '3.4'
+    count: 991
+  - value: '4.1'
+    count: 983
+  definition: Unemployment Rate (calculated as unemployed / labor_force * 100)
+  needs_confirmation: no
+lineage:
+- step: write_target
+  script: scripts/etl/gold/gold_economy_gdp.sql
+  details: 'Table write/create reference(s): scripts/etl/gold/gold_economy_gdp.sql:130:from
+    metro_deep_dive.silver.bls_laus_wide | scripts/etl/gold/gold_economy_wide.sql:172:from
+    metro_deep_dive.silver.bls_laus_wide | scripts/etl/gold/gold_economy_labor.sql:27:from
+    metro_deep_dive.silver.bls_laus_wide'
+kpi_definitions: []

@@ -1,0 +1,709 @@
+table_name: bea_regional_cagdp2_wide
+schema: silver
+grain: One row per geo_level + geo_id + period (inferred).
+primary_key:
+- geo_level
+- geo_id
+- period
+foreign_keys: []
+time_coverage:
+  type: range
+  column: period
+  min: '2001'
+  max: '2023'
+geo_coverage:
+  notes:
+  - distinct_geo_levels=3
+  - distinct_geo_id=4089
+columns:
+- name: geo_level
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 3
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 6
+  top_values:
+  - value: county
+    count: 43652
+  - value: cbsa
+    count: 12782
+  - value: state
+    count: 1380
+  definition: Geographic level (US, region, division, state, county, place, zcta,
+    tract, cbsa)
+  needs_confirmation: no
+- name: geo_id
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 4089
+  min_value: ~
+  max_value: ~
+  min_length: 5
+  max_length: 5
+  top_values:
+  - value: '32000'
+    count: 37
+  - value: '45000'
+    count: 37
+  - value: '00000'
+    count: 23
+  - value: '01000'
+    count: 23
+  - value: '02000'
+    count: 23
+  definition: Geographic identifier for the row
+  needs_confirmation: no
+- name: geo_name
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 3976
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 48
+  top_values:
+  - value: Alamosa, CO
+    count: 28
+  - value: Alpena, MI
+    count: 28
+  - value: Andrews, TX
+    count: 28
+  - value: Ashland, OH
+    count: 28
+  - value: Atchison, KS
+    count: 28
+  definition: Geographic name (from ACS NAME)
+  needs_confirmation: no
+- name: period
+  type: INTEGER
+  null_pct: 0.0
+  distinct_count: 23
+  min_value: 2001
+  max_value: 2023
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '2010'
+    count: 4091
+  - value: '2011'
+    count: 4091
+  - value: '2012'
+    count: 4091
+  - value: '2013'
+    count: 4091
+  - value: '2014'
+    count: 4091
+  definition: Time period for the observation (usually calendar year).
+  needs_confirmation: no
+- name: table
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 1
+  min_value: ~
+  max_value: ~
+  min_length: 6
+  max_length: 6
+  top_values:
+  - value: CAGDP2
+    count: 57814
+  definition: BEA source table identifier (for example, CAGDP2, CAGDP9, CAINC1, CAINC4,
+    MARPP).
+  needs_confirmation: no
+- name: gdp_total
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 49263
+  min_value: 0.0
+  max_value: 2.7720709e+13
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 66
+  - value: '2502608000.0'
+    count: 4
+  - value: '851888000.0'
+    count: 4
+  - value: '9628476000.0'
+    count: 4
+  - value: '1055378000.0'
+    count: 3
+  definition: Total GDP for the geography and time period.
+  needs_confirmation: no
+- name: gdp_utilities
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 29474
+  min_value: 0.0
+  max_value: 4.46515e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 9110
+  - value: '1000.0'
+    count: 28
+  - value: '2000.0'
+    count: 25
+  - value: '32000.0'
+    count: 18
+  - value: '75000.0'
+    count: 17
+  definition: GDP from Utilities sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_construction
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 40046
+  min_value: 0.0
+  max_value: 1.220566e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 4795
+  - value: '14330000.0'
+    count: 7
+  - value: '23978000.0'
+    count: 6
+  - value: '31309000.0'
+    count: 6
+  - value: '33736000.0'
+    count: 6
+  definition: GDP from Construction sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_manufacturing_all
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 42350
+  min_value: 0.0
+  max_value: 2.840447e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 4905
+  - value: '8000.0'
+    count: 7
+  - value: '5000.0'
+    count: 6
+  - value: '1083000.0'
+    count: 5
+  - value: '11000.0'
+    count: 5
+  definition: GDP from Manufacturing sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_durable_manufacturing
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 37382
+  min_value: 0.0
+  max_value: 1.51194e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 8416
+  - value: '6000.0'
+    count: 21
+  - value: '14000.0'
+    count: 18
+  - value: '4000.0'
+    count: 17
+  - value: '58000.0'
+    count: 17
+  definition: GDP from Durable Manufacturing sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_private
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 49224
+  min_value: 0.0
+  max_value: 2.4615614e+13
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 66
+  - value: '1073669000.0'
+    count: 4
+  - value: '1125102000.0'
+    count: 4
+  - value: '1166129000.0'
+    count: 4
+  - value: '1263812000.0'
+    count: 4
+  definition: GDP from Private sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_nondurable_manufacturing
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 36386
+  min_value: 0.0
+  max_value: 1.328506e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 8122
+  - value: '1000.0'
+    count: 18
+  - value: '2000.0'
+    count: 17
+  - value: '5000.0'
+    count: 16
+  - value: '110000.0'
+    count: 13
+  definition: GDP from Nondurable Manufacturing sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_wholesale_trade
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 35181
+  min_value: 0.0
+  max_value: 1.653014e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 11255
+  - value: '10000.0'
+    count: 7
+  - value: '5000.0'
+    count: 7
+  - value: '10607000.0'
+    count: 6
+  - value: '12407000.0'
+    count: 6
+  definition: GDP from Wholesale Trade sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_retail_trade
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 44178
+  min_value: 0.0
+  max_value: 1.77238e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 1177
+  - value: '59502000.0'
+    count: 7
+  - value: '106515000.0'
+    count: 5
+  - value: '23396000.0'
+    count: 5
+  - value: '2356000.0'
+    count: 5
+  definition: GDP from Retail Trade sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_transportation
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 31017
+  min_value: 0.0
+  max_value: 9.43734e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 16203
+  - value: '11725000.0'
+    count: 6
+  - value: '14043000.0'
+    count: 6
+  - value: '19227000.0'
+    count: 6
+  - value: '8748000.0'
+    count: 6
+  definition: GDP from Transportation sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_information
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 31267
+  min_value: 0.0
+  max_value: 1.477938e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 9231
+  - value: '1000.0'
+    count: 17
+  - value: '10000.0'
+    count: 16
+  - value: '18000.0'
+    count: 14
+  - value: '2000.0'
+    count: 14
+  definition: GDP from Information sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_finance_insurance
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 37886
+  min_value: 0.0
+  max_value: 2.015595e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 6318
+  - value: '18423000.0'
+    count: 7
+  - value: '40318000.0'
+    count: 7
+  - value: '100385000.0'
+    count: 6
+  - value: '2000.0'
+    count: 6
+  definition: GDP from Financial and Insurance sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_real_estate
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 41134
+  min_value: 0.0
+  max_value: 3.796022e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 6784
+  - value: '166591000.0'
+    count: 5
+  - value: '60446000.0'
+    count: 5
+  - value: '100251000.0'
+    count: 4
+  - value: '100274000.0'
+    count: 4
+  definition: GDP from Real Estate sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_professional_scientific
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 31332
+  min_value: 0.0
+  max_value: 2.221972e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 13519
+  - value: '21247000.0'
+    count: 8
+  - value: '3720000.0'
+    count: 8
+  - value: '3777000.0'
+    count: 8
+  - value: '12504000.0'
+    count: 7
+  definition: GDP from Professional Scientific sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_professional_management
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 18496
+  min_value: 0.0
+  max_value: 5.03129e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 29872
+  - value: '2314000.0'
+    count: 12
+  - value: '2224000.0'
+    count: 10
+  - value: '2640000.0'
+    count: 10
+  - value: '3893000.0'
+    count: 8
+  definition: GDP from Professional Management sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_professional_admin_support
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 31691
+  min_value: 0.0
+  max_value: 8.86601e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 12487
+  - value: '101000.0'
+    count: 7
+  - value: '102000.0'
+    count: 7
+  - value: '1803000.0'
+    count: 7
+  - value: '1941000.0'
+    count: 7
+  definition: GDP from Professional Admin Support sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_education_all
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 41420
+  min_value: 0.0
+  max_value: 2.350905e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 4518
+  - value: '1118000.0'
+    count: 5
+  - value: '1205000.0'
+    count: 5
+  - value: '124444000.0'
+    count: 5
+  - value: '15753000.0'
+    count: 5
+  definition: GDP from Education sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_health
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 30870
+  min_value: 0.0
+  max_value: 2.038867e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 17713
+  - value: '4217000.0'
+    count: 5
+  - value: '59000.0'
+    count: 5
+  - value: '100000.0'
+    count: 4
+  - value: '100507000.0'
+    count: 4
+  definition: GDP from Health sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_arts_entertainment
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 23922
+  min_value: 0.0
+  max_value: 2.99724e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 10211
+  - value: '18000.0'
+    count: 35
+  - value: '4000.0'
+    count: 34
+  - value: '11000.0'
+    count: 33
+  - value: '15000.0'
+    count: 31
+  definition: GDP from Arts and Entertainment sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_accomodation_food
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 34486
+  min_value: 0.0
+  max_value: 9.1175e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 10011
+  - value: '1757000.0'
+    count: 7
+  - value: '22835000.0'
+    count: 7
+  - value: '1700000.0'
+    count: 6
+  - value: '18219000.0'
+    count: 6
+  definition: GDP from Accommodation and Food sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_other
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 37291
+  min_value: 0.0
+  max_value: 5.89391e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 4748
+  - value: '16096000.0'
+    count: 7
+  - value: '32488000.0'
+    count: 7
+  - value: '4501000.0'
+    count: 7
+  - value: '8493000.0'
+    count: 7
+  definition: GDP from Other sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_gov_enterprises
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 47271
+  min_value: 0.0
+  max_value: 3.105093e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 66
+  - value: '243122000.0'
+    count: 6
+  - value: '142179000.0'
+    count: 5
+  - value: '224036000.0'
+    count: 5
+  - value: '102684000.0'
+    count: 4
+  definition: GDP from Government Enterprises sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_natural_resources_all
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 36174
+  min_value: 0.0
+  max_value: 7.50558e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 10674
+  - value: '8950000.0'
+    count: 8
+  - value: '23306000.0'
+    count: 7
+  - value: '10358000.0'
+    count: 6
+  - value: '14629000.0'
+    count: 6
+  definition: GDP from Natural Resources (composite) sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_trade_all
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 37225
+  min_value: 0.0
+  max_value: 3.425394e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 11359
+  - value: '100033000.0'
+    count: 5
+  - value: '109225000.0'
+    count: 5
+  - value: '40383000.0'
+    count: 5
+  - value: '52843000.0'
+    count: 5
+  definition: GDP from Trade (composite) sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_transport_utilities_all
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 27120
+  min_value: 0.0
+  max_value: 1.390249e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 22610
+  - value: '138896000.0'
+    count: 6
+  - value: '28702000.0'
+    count: 6
+  - value: '10318000.0'
+    count: 5
+  - value: '11978000.0'
+    count: 5
+  definition: GDP from Transport and Utilities (composite) sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_manufacturing_info_all
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 38898
+  min_value: 0.0
+  max_value: 4.318385e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 8876
+  - value: '10086000.0'
+    count: 5
+  - value: '10186000.0'
+    count: 4
+  - value: '104837000.0'
+    count: 4
+  - value: '1075000.0'
+    count: 4
+  definition: GDP from Manufacturing and Information (composite) sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_private_goods_producing_industries
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 42384
+  min_value: 0.0
+  max_value: 4.746944e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 7282
+  - value: '409152000.0'
+    count: 5
+  - value: '140159000.0'
+    count: 4
+  - value: '150497000.0'
+    count: 4
+  - value: '159444000.0'
+    count: 4
+  definition: GDP from Private Goods Producing Industries sector for the geography and time period.
+  needs_confirmation: no
+- name: gdp_private_services_providing_industries
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 42719
+  min_value: 0.0
+  max_value: 1.9868671e+13
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 7282
+  - value: '1428569000.0'
+    count: 4
+  - value: '2957115000.0'
+    count: 4
+  - value: '442437000.0'
+    count: 4
+  - value: '505882000.0'
+    count: 4
+  definition: GDP from Private Services Providing Industries sector for the geography and time period.
+  needs_confirmation: no
+lineage:
+- step: write_target
+  script: scripts/etl/gold/gold_economy_gdp.sql
+  details: 'Table write/create reference(s): scripts/etl/gold/gold_economy_gdp.sql:75:from
+    metro_deep_dive.silver.bea_regional_cagdp2_wide | scripts/etl/gold/gold_economy_wide.sql:117:from
+    metro_deep_dive.silver.bea_regional_cagdp2_wide | scripts/etl/silver/bea_cagdp2_silver.R:157:DBI::dbWriteTable(con,
+    DBI::Id(schema="silver", table="bea_regional_cagdp2_wide"),'
+kpi_definitions: []

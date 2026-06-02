@@ -1,0 +1,155 @@
+version: 1
+catalog_name: question_catalog
+description: Seed business-question patterns layered above query templates and chart rules.
+questions:
+  - question_id: metros_highest_rent_to_income
+    pattern: Which metros have the highest rent-to-income ratios in {year}?
+    intent_type: ranking
+    themes: [livability, opportunity]
+    required_metrics: [rent_to_income]
+    required_tables: [housing_core_wide]
+    valid_geo_levels: [cbsa]
+    default_template: ranking
+    default_chart: ranking_default
+    notes: Seeded from `publisher/question_queue.yaml` q001.
+
+  - question_id: states_highest_household_income
+    pattern: Which states have the highest median household income in {year}?
+    intent_type: ranking
+    themes: [opportunity]
+    required_metrics: [median_hh_income]
+    required_tables: [economics_income_wide]
+    valid_geo_levels: [state]
+    default_template: ranking
+    default_chart: ranking_default
+    notes: Seeded from question queue q002 and question library state-income examples.
+
+  - question_id: metros_highest_cost_burden
+    pattern: Which metros have the highest share of cost-burdened renters in {year}?
+    intent_type: ranking
+    themes: [livability]
+    required_metrics: [pct_rent_burden_30plus]
+    required_tables: [housing_core_wide]
+    valid_geo_levels: [cbsa]
+    default_template: ranking
+    default_chart: ranking_default
+    notes: Seeded from question queue q003.
+
+  - question_id: metros_rent_trend
+    pattern: How has median gross rent changed in selected metros since {start_year}?
+    intent_type: trend
+    themes: [livability]
+    required_metrics: [median_gross_rent]
+    required_tables: [housing_core_wide]
+    valid_geo_levels: [cbsa]
+    default_template: trend
+    default_chart: trend_default
+    notes: Seeded from question queue q004 and question library trend examples.
+
+  - question_id: metros_income_trend
+    pattern: How has median household income or per-capita income trended in selected metros since {start_year}?
+    intent_type: trend
+    themes: [opportunity]
+    required_metrics: [median_hh_income, calc_income_pc]
+    required_tables: [economics_income_wide]
+    valid_geo_levels: [cbsa, state, county]
+    default_template: trend
+    default_chart: trend_default
+    notes: Combines question queue q005 with question library metro income trend cases.
+
+  - question_id: national_vacancy_trend
+    pattern: How has the vacancy rate trended nationally since {start_year}?
+    intent_type: trend
+    themes: [livability]
+    required_metrics: [vacancy_rate]
+    required_tables: [housing_core_wide]
+    valid_geo_levels: [us]
+    default_template: trend
+    default_chart: trend_default
+    notes: Seeded from question queue q006; normalize user term `national` to `us`.
+
+  - question_id: compare_selected_geographies
+    pattern: Compare selected geographies on a single metric in a given year.
+    intent_type: comparison
+    themes: [character, livability, opportunity]
+    required_metrics: [median_gross_rent, median_hh_income, pop_total]
+    required_tables: [housing_core_wide, economics_income_wide, population_demographics]
+    valid_geo_levels: [state, cbsa, county, place]
+    default_template: compare_selected
+    default_chart: comparison_selected
+    notes: Seeded from question queue q007 and question library compare-selected examples.
+
+  - question_id: metric_distribution_by_grain
+    pattern: How is a metric distributed across geographies at a common grain in {year}?
+    intent_type: distribution
+    themes: [character, livability, opportunity]
+    required_metrics: [rent_to_income, median_age, median_home_value]
+    required_tables: [housing_core_wide, population_demographics]
+    valid_geo_levels: [state, cbsa, county]
+    default_template: distribution
+    default_chart: distribution_default
+    notes: Seeded from question queue q009-q010 and question library distribution examples.
+
+  - question_id: target_vs_benchmark
+    pattern: How does a target geography compare to a benchmark geography or benchmark set in {year}?
+    intent_type: benchmark
+    themes: [character, livability, opportunity]
+    required_metrics: [pct_rent_burden_30plus, median_gross_rent, median_hh_income]
+    required_tables: [housing_core_wide, economics_income_wide, benchmark_reference]
+    valid_geo_levels: [state, cbsa, county, place]
+    default_template: benchmark
+    default_chart: benchmark_default
+    notes: Seeded from question queue q011-q012 and question library benchmark examples.
+
+  - question_id: population_growth_ranking
+    pattern: Which geographies have had the fastest population growth over the last {window_years} years?
+    intent_type: ranking
+    themes: [character, opportunity]
+    required_metrics: [pop_total, pop_growth_5yr, pop_growth_10yr]
+    required_tables: [population_demographics]
+    valid_geo_levels: [cbsa, county, state, place]
+    default_template: growth
+    default_chart: ranking_default
+    notes: Seeded from question queue q013 and comparison follow-up q008.
+
+  - question_id: income_growth_ranking
+    pattern: Which geographies have seen the fastest per-capita income growth over the last {window_years} years?
+    intent_type: ranking
+    themes: [opportunity]
+    required_metrics: [income_pc_growth_5yr, income_pc_growth_10yr]
+    required_tables: [economics_income_wide]
+    valid_geo_levels: [cbsa, county, state]
+    default_template: growth
+    default_chart: ranking_default
+    notes: Seeded from question queue q014 and question library income-growth ranking example.
+
+  - question_id: diversity_ranking
+    pattern: Which metros are the most racially and ethnically diverse in {year}?
+    intent_type: ranking
+    themes: [character]
+    required_metrics: [diversity_index]
+    required_tables: [population_demographics]
+    valid_geo_levels: [cbsa, county, place]
+    default_template: ranking
+    default_chart: ranking_default
+    notes: Seeded from question queue q015.
+
+  - question_id: character_profile_summary
+    pattern: What is the Character of {geography}?
+    intent_type: summary
+    themes: [character]
+    required_metrics:
+      - median_age
+      - diversity_index
+      - pct_ba_plus
+      - pct_same_house
+      - pct_foreign_born
+      - pct_struct_multifam
+    required_tables:
+      - population_demographics
+      - migration_wide
+      - housing_core_wide
+    valid_geo_levels: [tract, zcta, place, cbsa]
+    default_template: trend
+    default_chart: benchmark_default
+    notes: High-level theme question placeholder until Character archetype outputs are fully implemented in the planner.

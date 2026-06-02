@@ -1,0 +1,63 @@
+version: 1
+catalog_name: points_catalog
+description: Schema-first stub for point-based semantic assets such as POI and parcel datasets.
+point_sets:
+  - catalog_id: public_poi
+    display_name: Public POI
+    description: General-purpose public points of interest used for commercial, cultural, and amenity context.
+    grain: one row per point of interest
+    geometry_field: point_geometry
+    category_taxonomy: planned_poi_taxonomy
+    spatial_joins:
+      - target_geo_level: tract
+        method: point_in_polygon
+      - target_geo_level: zcta
+        method: derived_from_tract_or_explicit_crosswalk
+    sources:
+      - source_id: Google_Maps_or_equivalent
+      - source_id: OSM
+    owner_notes:
+      - Candidate future home is a shared POI pipeline rather than a chatbot-only asset.
+      - Theme usage likely spans Character, Livability, and Opportunity once taxonomy is formalized.
+    status: planned
+
+  - catalog_id: curated_poi
+    display_name: Curated POI
+    description: Curated and hand-labeled POI collections for restaurants, arts, nightlife, and other experience signals.
+    grain: one row per curated point
+    geometry_field: point_geometry
+    category_taxonomy: curated_theme_taxonomy
+    spatial_joins:
+      - target_geo_level: tract
+        method: point_in_polygon
+      - target_geo_level: place
+        method: point_in_polygon
+    sources:
+      - source_id: web_scrapes
+      - source_id: manual_curation
+      - source_id: partner_poi_pipeline
+    owner_notes:
+      - This is the most likely first source for Character cultural-expression signals.
+      - Final taxonomy and duplication rules remain intentionally unresolved in this round.
+    status: planned
+
+  - catalog_id: parcels
+    display_name: Parcels
+    description: Parcel-level point or centroid layer used for land, zoning, and opportunity workflows.
+    grain: one row per parcel
+    geometry_field: parcel_geometry_or_centroid
+    category_taxonomy: parcel_land_use_taxonomy
+    spatial_joins:
+      - target_geo_level: tract
+        method: polygon_within_or_centroid_in_polygon
+      - target_geo_level: county
+        method: polygon_within
+      - target_geo_level: place
+        method: polygon_within_when_supported
+    sources:
+      - source_id: county_assessor
+      - source_id: parcel_standardization_pipeline
+    owner_notes:
+      - Parcel semantics should stay separate from place-level Gold marts until spatial join rules are finalized.
+      - Zoning, opportunity-zone, and land-use enrichments are expected future additions.
+    status: planned

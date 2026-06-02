@@ -1,0 +1,741 @@
+table_name: population_demographics
+schema: gold
+grain: One row per geo_level + geo_id + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=115976
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 8
+    top_values:
+      - value: zcta
+        count: 433172
+      - value: place
+        count: 397094
+      - value: tract
+        count: 135851
+      - value: county
+        count: 41870
+      - value: cbsa
+        count: 12085
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 115976
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 11
+    top_values:
+      - value: '1'
+        count: 39
+      - value: '2'
+        count: 26
+      - value: '3'
+        count: 26
+      - value: '4'
+        count: 26
+      - value: '01001'
+        count: 25
+    definition: Geographic identifier for the row
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 97125
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 66
+    top_values:
+      - value: Alexandria city, Virginia
+        count: 26
+      - value: Baltimore city, Maryland
+        count: 26
+      - value: Bristol city, Virginia
+        count: 26
+      - value: Buena Vista city, Virginia
+        count: 26
+      - value: Carson City, Nevada
+        count: 26
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 13
+    min_value: 2012
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2024'
+        count: 82276
+      - value: '2023'
+        count: 82271
+      - value: '2022'
+        count: 82134
+      - value: '2021'
+        count: 81848
+      - value: '2020'
+        count: 81194
+    definition: Observation year or period year for the row.
+    needs_confirmation: no
+  - name: pop_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 80593
+    min_value: 0.0
+    max_value: 3.349225e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 11017
+      - value: '74.0'
+        count: 610
+      - value: '115.0'
+        count: 607
+      - value: '61.0'
+        count: 603
+      - value: '64.0'
+        count: 602
+    definition: Total population (all ages).
+    needs_confirmation: no
+  - name: pop_growth_1yr
+    type: DOUBLE
+    null_pct: 12.4866
+    distinct_count: 571936
+    min_value: -1.0
+    max_value: 402.5
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 127479
+      - value: '0.0'
+        count: 5701
+      - value: '-1.0'
+        count: 1409
+      - value: '-0.14285714285714285'
+        count: 378
+      - value: '-0.2'
+        count: 373
+    definition: 1-year population growth rate (i.e., the percentage change in population from the previous year).
+    needs_confirmation: no
+  - name: pop_growth_3yr
+    type: DOUBLE
+    null_pct: 28.8685
+    distinct_count: 520706
+    min_value: -1.0
+    max_value: 1089.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 294727
+      - value: '-1.0'
+        count: 2554
+      - value: '0.0'
+        count: 2164
+      - value: '-0.3333333333333333'
+        count: 316
+      - value: '-0.25'
+        count: 313
+    definition: 3-year population growth rate (i.e., the percentage change in population over 3 years).
+    needs_confirmation: no
+  - name: pop_growth_5yr
+    type: DOUBLE
+    null_pct: 45.1145
+    distinct_count: 427209
+    min_value: -1.0
+    max_value: 1556.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 460587
+      - value: '-1.0'
+        count: 2606
+      - value: '0.0'
+        count: 1158
+      - value: '-0.3333333333333333'
+        count: 226
+      - value: '-0.5'
+        count: 206
+    definition: 5-year population growth rate (i.e., the percentage change in population over 5 years).
+    needs_confirmation: no
+  - name: pop_growth_10yr
+    type: DOUBLE
+    null_pct: 81.7148
+    distinct_count: 158448
+    min_value: -1.0
+    max_value: 423.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 834251
+      - value: '-1.0'
+        count: 1056
+      - value: '0.0'
+        count: 336
+      - value: '-0.5'
+        count: 80
+      - value: '-0.3333333333333333'
+        count: 77
+    definition: 10-year compound annual growth rate (CAGR) in population.
+    needs_confirmation: no
+  - name: pop_cagr_3yr
+    type: DOUBLE
+    null_pct: 28.8685
+    distinct_count: 520706
+    min_value: -1.0
+    max_value: 3.0502824
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 294727
+      - value: '-1.0'
+        count: 2554
+      - value: '0.0'
+        count: 2164
+      - value: '-0.07789208851827223'
+        count: 316
+      - value: '-0.05591248870509802'
+        count: 313
+    definition: 3-year compound annual growth rate (CAGR) in population.
+    needs_confirmation: no
+  - name: pop_cagr_5yr
+    type: DOUBLE
+    null_pct: 45.1145
+    distinct_count: 427209
+    min_value: -1.0
+    max_value: 3.3496842
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 460587
+      - value: '-1.0'
+        count: 2606
+      - value: '0.0'
+        count: 1158
+      - value: '-0.07789208851827223'
+        count: 226
+      - value: '-0.12944943670387588'
+        count: 206
+    definition: 5-year compound annual growth rate (CAGR) in population.
+    needs_confirmation: no
+  - name: pop_cagr_10yr
+    type: DOUBLE
+    null_pct: 81.7148
+    distinct_count: 157517
+    min_value: -1.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 834251
+      - value: '-1.0'
+        count: 794
+      - value: inf
+        count: 401
+      - value: '0.0'
+        count: 346
+      - value: -nan
+        count: 262
+    definition: 10-year compound annual growth rate (CAGR) in population.
+    needs_confirmation: no
+  - name: median_age
+    type: DOUBLE
+    null_pct: 1.7624
+    distinct_count: 5492
+    min_value: 0.0
+    max_value: 105.1
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 17993
+      - value: '40.5'
+        count: 5948
+      - value: '40.8'
+        count: 5846
+      - value: '40.3'
+        count: 5768
+      - value: '40.6'
+        count: 5615
+    definition: Median age of the population.
+    needs_confirmation: no
+  - name: pct_age_under_18
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 601926
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 33984
+      - value: -nan
+        count: 11017
+      - value: '0.25'
+        count: 1448
+      - value: '0.2'
+        count: 1318
+      - value: '0.16666666666666666'
+        count: 957
+    definition: Percent of population that is under age 18.
+    needs_confirmation: no
+  - name: pct_age_18_64
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 607480
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: -nan
+        count: 11017
+      - value: '1.0'
+        count: 7291
+      - value: '0.0'
+        count: 3902
+      - value: '0.5'
+        count: 2440
+      - value: '0.6666666666666666'
+        count: 1519
+    definition: Percent of population that is 18 to 64 years old.
+    needs_confirmation: no
+  - name: pct_age_over_64
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 611443
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 19532
+      - value: -nan
+        count: 11017
+      - value: '1.0'
+        count: 3808
+      - value: '0.2'
+        count: 1211
+      - value: '0.25'
+        count: 1197
+    definition: Percent of population that is over age 64.
+    needs_confirmation: no
+  - name: dependents_per_worker
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 567895
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: -nan
+        count: 13006
+      - value: inf
+        count: 9497
+      - value: '0.0'
+        count: 5302
+      - value: '1.0'
+        count: 3859
+      - value: '2.0'
+        count: 1379
+    definition: Number of dependents (ages 0-17 and ages 65+) per worker (ages 18-64).
+    needs_confirmation: no
+  - name: youth_dependency
+    type: DOUBLE
+    null_pct: 2.2042
+    distinct_count: 499204
+    min_value: 0.0
+    max_value: 26.0833333
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 31661
+      - value: ~
+        count: 22503
+      - value: '0.5'
+        count: 3586
+      - value: '0.3333333333333333'
+        count: 1999
+      - value: '1.0'
+        count: 1699
+    definition: Ratio of population ages 0 to 14 to population ages 25 to 54 (prime working age population).
+    needs_confirmation: no
+  - name: old_age_dependency
+    type: DOUBLE
+    null_pct: 2.2042
+    distinct_count: 541788
+    min_value: 0.0
+    max_value: 426.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 22503
+      - value: '0.0'
+        count: 17048
+      - value: '0.5'
+        count: 2444
+      - value: '1.0'
+        count: 2153
+      - value: '0.3333333333333333'
+        count: 1602
+    definition: Ratio of population ages 65+ to population ages 25 to 54 (prime working age population).
+    needs_confirmation: no
+  - name: aging_index
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 483880
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 32540
+      - value: -nan
+        count: 21043
+      - value: inf
+        count: 9506
+      - value: '1.0'
+        count: 3592
+      - value: '0.5'
+        count: 1832
+    definition: Ratio of population ages 65+ to population ages 0 to 14 (child dependency ratio).
+    needs_confirmation: no
+  - name: pct_white_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 651344
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.0'
+        count: 70841
+      - value: -nan
+        count: 11017
+      - value: '0.0'
+        count: 10691
+      - value: '0.9'
+        count: 383
+      - value: '0.8333333333333334'
+        count: 363
+    definition: Percent of population that is White alone, Not Hispanic or Latino.
+      Share / percentage; denominator is race_total. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_black_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 517321
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 315831
+      - value: -nan
+        count: 11017
+      - value: '1.0'
+        count: 1106
+      - value: '0.012987012987012988'
+        count: 94
+      - value: '0.015151515151515152'
+        count: 93
+    definition: Percent of population that is Black or African American alone, Not
+      Hispanic or Latino. Share / percentage; denominator is race_total. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_aian_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 291020
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 550069
+      - value: -nan
+        count: 11017
+      - value: '1.0'
+        count: 1206
+      - value: '0.007751937984496124'
+        count: 86
+      - value: '0.0125'
+        count: 85
+    definition: Percent of population that is American Indian and Alaska Native alone,
+      Not Hispanic or Latino. Share / percentage; denominator is race_total. (from
+      silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_asian_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 398671
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 425654
+      - value: -nan
+        count: 11017
+      - value: '0.012658227848101266'
+        count: 108
+      - value: '0.0136986301369863'
+        count: 100
+      - value: '0.015151515151515152'
+        count: 99
+    definition: Percent of population that is Asian alone, Not Hispanic or Latino.
+      Share / percentage; denominator is race_total. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_nhpi_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 129237
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 851755
+      - value: -nan
+        count: 11017
+      - value: '0.003787878787878788'
+        count: 22
+      - value: '0.0032679738562091504'
+        count: 20
+      - value: '0.004524886877828055'
+        count: 18
+    definition: Percent of population that is Native Hawaiian and Other Pacific Islander
+      alone, Not Hispanic or Latino. Share / percentage; denominator is race_total.
+      (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_other_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 229053
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 704607
+      - value: -nan
+        count: 11017
+      - value: '0.009174311926605505'
+        count: 47
+      - value: '0.006211180124223602'
+        count: 38
+      - value: '0.0037174721189591076'
+        count: 36
+    definition: Percent of population that is Some other race alone, Not Hispanic
+      or Latino. Share / percentage; denominator is race_total. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_two_plus_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 460891
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 217400
+      - value: -nan
+        count: 11017
+      - value: '0.03125'
+        count: 264
+      - value: '0.038461538461538464'
+        count: 256
+      - value: '0.024390243902439025'
+        count: 249
+    definition: Percent of population that is Two or more races, Not Hispanic or Latino.
+      Share / percentage; denominator is race_total. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_hispanic
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 562059
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 179489
+      - value: -nan
+        count: 11017
+      - value: '1.0'
+        count: 5431
+      - value: '0.043478260869565216'
+        count: 230
+      - value: '0.05263157894736842'
+        count: 218
+    definition: Percent of population that is Hispanic or Latino. Share / percentage;
+      denominator is race_total. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: diversity_index
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 840718
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 78740
+      - value: -nan
+        count: 11017
+      - value: '0.4444444444444444'
+        count: 216
+      - value: '0.375'
+        count: 190
+      - value: '0.31999999999999984'
+        count: 165
+    definition: Diversity index, calculated as 1 - sum of squares of percent of races,
+      lower score means less diversity, higher score means more diversity.
+    needs_confirmation: no
+  - name: pct_hs_or_less
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 641733
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: -nan
+        count: 11750
+      - value: '0.0'
+        count: 8892
+      - value: '1.0'
+        count: 7464
+      - value: '0.5'
+        count: 2973
+      - value: '0.6666666666666666'
+        count: 915
+    definition: Percent of population age 25+ with high school education or less. Share / percentage;
+      denominator is education_total. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_ba
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 544390
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 48312
+      - value: -nan
+        count: 11750
+      - value: '0.125'
+        count: 1100
+      - value: '0.1111111111111111'
+        count: 1008
+      - value: '0.16666666666666666'
+        count: 984
+    definition: Percent of population age 25+ with Bachelor's degree or higher. Share / percentage;
+      denominator is education_total. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_ba_plus
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 611757
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 34980
+      - value: -nan
+        count: 11750
+      - value: '1.0'
+        count: 1985
+      - value: '0.14285714285714285'
+        count: 1103
+      - value: '0.125'
+        count: 1011
+    definition: Percent of population age 25+ with Graduate degree or higher. Share / percentage;
+      denominator is education_total. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_grad_plus
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 506098
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 93456
+      - value: -nan
+        count: 11750
+      - value: '0.05555555555555555'
+        count: 662
+      - value: '0.058823529411764705'
+        count: 643
+      - value: '0.06666666666666667'
+        count: 641
+    definition: Percent of population age 25+ with Graduate degree or higher. Share / percentage;
+      denominator is education_total. (from silver.kpi_dictionary).
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/gold/gold_population_wide.sql
+    details: 'scripts/etl/gold/gold_population_wide.sql:6:create or replace table
+      metro_deep_dive.gold.population_demographics as '
+  - step: write_target
+    script: scripts/etl/gold/gold_housing_core.sql
+    details: 'scripts/etl/gold/gold_housing_core.sql:49:from metro_deep_dive.gold.population_demographics
+      pd '
+  - step: write_target
+    script: scripts/etl/gold/gold_housing_core.sql
+    details: scripts/etl/gold/gold_housing_core.sql:56:DESCRIBE metro_deep_dive.gold.population_demographics;
+      -- Contains year, pop, growth
+kpi_definitions: []

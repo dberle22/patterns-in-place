@@ -1,0 +1,214 @@
+table_name: xwalk_cbsa_county
+schema: silver
+grain: "One row per CBSA-county relationship for a given vintage (observed vintage: 2023)."
+primary_key:
+  - cbsa_code
+  - county_geoid
+foreign_keys:
+  - column: county_geoid
+    references: silver.xwalk_county_state.county_geoid
+    status: inferred
+  - column: cbsa_code
+    references: geo.cbsas.cbsa_code
+    status: inferred
+time_coverage:
+  type: snapshot
+  vintage_column: vintage
+  min: 2023
+  max: 2023
+geo_coverage:
+  geo_unit: county within CBSA
+  distinct_cbsa: 935
+  distinct_counties: 1915
+  distinct_state_fips: 52
+  notes:
+    - "Table includes counties assigned to CBSAs/micropolitan areas only (not all US counties)."
+columns:
+  - name: cbsa_code
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 935
+    min_length: 5
+    max_length: 5
+    top_values:
+      - { value: "41980", count: 40 }
+      - { value: "12060", count: 29 }
+      - { value: "47900", count: 23 }
+      - { value: "35620", count: 22 }
+      - { value: "47260", count: 18 }
+    definition: "5-digit CBSA code from OMB source."
+    needs_confirmation: false
+  - name: cbsa_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 935
+    min_length: 7
+    max_length: 46
+    top_values:
+      - { value: "San Juan-Bayamon-Caguas, PR", count: 40 }
+      - { value: "Atlanta-Sandy Springs-Roswell, GA", count: 29 }
+      - { value: "Washington-Arlington-Alexandria, DC-VA-MD-WV", count: 23 }
+      - { value: "New York-Newark-Jersey City, NY-NJ", count: 22 }
+      - { value: "Virginia Beach-Chesapeake-Norfolk, VA-NC", count: 18 }
+    definition: "CBSA title from source file."
+    needs_confirmation: false
+  - name: csa_code
+    type: VARCHAR
+    null_pct: 29.9739
+    distinct_count: 184
+    min_length: 3
+    max_length: 3
+    top_values:
+      - { value: null, count: 574 }
+      - { value: "490", count: 50 }
+      - { value: "122", count: 42 }
+      - { value: "548", count: 42 }
+      - { value: "408", count: 30 }
+    definition: "3-digit Combined Statistical Area code where applicable."
+    needs_confirmation: false
+  - name: csa_name
+    type: VARCHAR
+    null_pct: 29.9739
+    distinct_count: 184
+    min_length: 15
+    max_length: 51
+    top_values:
+      - { value: null, count: 574 }
+      - { value: "San Juan-Bayamon, PR", count: 50 }
+      - { value: "Atlanta--Athens-Clarke County--Sandy Springs, GA-AL", count: 42 }
+      - { value: "Washington-Baltimore-Arlington, DC-MD-VA-WV-PA", count: 42 }
+      - { value: "New York-Newark, NY-NJ-CT-PA", count: 30 }
+    definition: "Combined Statistical Area name where applicable."
+    needs_confirmation: false
+  - name: cbsa_type
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 2
+    min_length: 29
+    max_length: 29
+    top_values:
+      - { value: "Metropolitan Statistical Area", count: 1252 }
+      - { value: "Micropolitan Statistical Area", count: 663 }
+    definition: "OMB CBSA type classification."
+    needs_confirmation: false
+  - name: county_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1314
+    min_length: 10
+    max_length: 46
+    top_values:
+      - { value: "Jefferson County", count: 20 }
+      - { value: "Washington County", count: 20 }
+      - { value: "Franklin County", count: 14 }
+      - { value: "Madison County", count: 14 }
+      - { value: "Lincoln County", count: 12 }
+    definition: "County or county-equivalent name from source."
+    needs_confirmation: false
+  - name: state_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 52
+    min_length: 4
+    max_length: 20
+    top_values:
+      - { value: "Texas", count: 133 }
+      - { value: "Georgia", count: 106 }
+      - { value: "Virginia", count: 86 }
+      - { value: "North Carolina", count: 71 }
+      - { value: "Puerto Rico", count: 71 }
+    definition: "State/territory name from source."
+    needs_confirmation: false
+  - name: state_fips
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 52
+    min_length: 2
+    max_length: 2
+    top_values:
+      - { value: "48", count: 133 }
+      - { value: "13", count: 106 }
+      - { value: "51", count: 86 }
+      - { value: "37", count: 71 }
+      - { value: "72", count: 71 }
+    definition: "2-digit state FIPS code from source."
+    needs_confirmation: false
+  - name: county_fips
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 244
+    min_length: 3
+    max_length: 3
+    top_values:
+      - { value: "005", count: 35 }
+      - { value: "013", count: 33 }
+      - { value: "003", count: 32 }
+      - { value: "015", count: 32 }
+      - { value: "019", count: 32 }
+    definition: "3-digit county FIPS code (within state)."
+    needs_confirmation: false
+  - name: county_flag
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 2
+    min_length: 7
+    max_length: 8
+    top_values:
+      - { value: "Central", count: 1325 }
+      - { value: "Outlying", count: 590 }
+    definition: "County role in CBSA as provided by OMB source."
+    needs_confirmation: false
+  - name: county_geoid
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1915
+    min_length: 5
+    max_length: 5
+    top_values:
+      - { value: "01001", count: 1 }
+      - { value: "01003", count: 1 }
+      - { value: "01005", count: 1 }
+      - { value: "01007", count: 1 }
+      - { value: "01009", count: 1 }
+    definition: "5-digit county GEOID derived as zero-padded state_fips + county_fips."
+    needs_confirmation: false
+  - name: vintage
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: 2023
+    max_value: 2023
+    top_values:
+      - { value: 2023, count: 1915 }
+    definition: "Reference year assigned by ETL."
+    needs_confirmation: false
+  - name: source
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1
+    min_length: 8
+    max_length: 8
+    top_values:
+      - { value: "OMB_2023", count: 1915 }
+    definition: "Provenance label assigned by ETL."
+    needs_confirmation: false
+lineage:
+  - step: read_source
+    script: scripts/etl/silver/geo_crosswalks_silver.R:25
+    details: "Reads OMB CBSA-county workbook: data/demographics/raw/crosswalks/cbsa_county_xwalk_census.xlsx (skip=2)."
+  - step: transform_columns
+    script: scripts/etl/silver/geo_crosswalks_silver.R:28
+    details: "Selects/renames CBSA, CSA, county, and state fields; filters rows with non-null cbsa_name."
+  - step: derive_keys
+    script: scripts/etl/silver/geo_crosswalks_silver.R:45
+    details: "Derives county_geoid from state_fips + county_fips; adds vintage=2023 and source='OMB_2023'."
+  - step: write_target
+    script: scripts/etl/silver/geo_crosswalks_silver.R:50
+    details: "Writes to silver.xwalk_cbsa_county with overwrite=TRUE."
+  - step: documented_contract
+    script: documents/database_design/XWALK_README.md:66
+    details: "Design doc mirrors source and transform intent for CBSA-county crosswalk."
+kpi_definitions: []
+notes:
+  - "silver metadata seed tables exist but currently have no xwalk_cbsa_county rows."
+  - "County_geoid is unique in current snapshot; treat as observed property, not guaranteed across future vintages."

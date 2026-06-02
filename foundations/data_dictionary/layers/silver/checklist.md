@@ -1,0 +1,55 @@
+# Silver Layer Coverage Checklist
+
+Schema: `silver`
+Table count: 50
+
+- [x] `acs_tx_school_metrics`
+- [x] `age_base`
+- [x] `age_kpi`
+- [x] `bea_regional_cagdp2_long`
+- [x] `bea_regional_cagdp2_wide`
+- [x] `bea_regional_cagdp9_long`
+- [x] `bea_regional_cagdp9_wide`
+- [x] `bea_regional_cainc1_long`
+- [x] `bea_regional_cainc1_wide`
+- [x] `bea_regional_cainc4_long`
+- [x] `bea_regional_cainc4_wide`
+- [x] `bea_regional_line_codes`
+- [x] `bea_regional_marpp_long`
+- [x] `bea_regional_marpp_wide`
+- [x] `bea_regional_metrics_clean`
+- [x] `bea_regional_metrics_ref`
+- [x] `bea_regional_tables`
+- [x] `bls_laus_wide`
+- [x] `bps_wide`
+- [x] `education_base`
+- [x] `education_kpi`
+- [x] `housing_base`
+- [x] `housing_kpi`
+- [x] `hud_fmr_wide`
+- [x] `hud_rent50_wide`
+- [x] `income_base`
+- [x] `income_kpi`
+- [x] `kpi_dictionary`
+- [x] `labor_base`
+- [x] `labor_kpi`
+- [x] `metadata_topics`
+- [x] `metadata_vars`
+- [x] `migration_base`
+- [x] `migration_kpi`
+- [x] `race_base`
+- [x] `race_kpi`
+- [x] `social_infra_base`
+- [x] `social_infra_kpi`
+- [x] `transport_base`
+- [x] `transport_kpi`
+- [x] `tx_tea_district_metrics`
+- [x] `xwalk_cbsa_county`
+- [x] `xwalk_cbsa_primary_city`
+- [x] `xwalk_cbsa_state`
+- [x] `xwalk_county_state`
+- [x] `xwalk_state_region`
+- [x] `xwalk_tract_county`
+- [x] `xwalk_zcta_cbsa`
+- [x] `xwalk_zcta_county`
+- [x] `xwalk_zcta_tract`

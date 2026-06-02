@@ -1,0 +1,591 @@
+table_name: race_kpi
+schema: silver
+grain: One row per geo_level + geo_id + geo_name + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - geo_name
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=115976
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 8
+    top_values:
+      - value: zcta
+        count: 433172
+      - value: place
+        count: 397094
+      - value: tract
+        count: 135851
+      - value: county
+        count: 41870
+      - value: cbsa
+        count: 12085
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 115976
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 11
+    top_values:
+      - value: '1'
+        count: 39
+      - value: '2'
+        count: 26
+      - value: '3'
+        count: 26
+      - value: '4'
+        count: 26
+      - value: '01001'
+        count: 25
+    definition: Geographic identifier for the row
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 97125
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 66
+    top_values:
+      - value: Alexandria city, Virginia
+        count: 26
+      - value: Baltimore city, Maryland
+        count: 26
+      - value: Bristol city, Virginia
+        count: 26
+      - value: Buena Vista city, Virginia
+        count: 26
+      - value: Carson City, Nevada
+        count: 26
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 13
+    min_value: 2012
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2024'
+        count: 82276
+      - value: '2023'
+        count: 82271
+      - value: '2022'
+        count: 82134
+      - value: '2021'
+        count: 81848
+      - value: '2020'
+        count: 81194
+    definition: Observation year or period year for the row.
+    needs_confirmation: no
+  - name: race_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 80593
+    min_value: 0.0
+    max_value: 3.349225e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 11017
+      - value: '74.0'
+        count: 610
+      - value: '115.0'
+        count: 607
+      - value: '61.0'
+        count: 603
+      - value: '64.0'
+        count: 602
+    definition: Total Population, base for Race KPIs.
+    needs_confirmation: no
+  - name: race_white_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 60752
+    min_value: 0.0
+    max_value: 1.9736267e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 21708
+      - value: '10.0'
+        count: 945
+      - value: '9.0'
+        count: 934
+      - value: '14.0'
+        count: 914
+      - value: '16.0'
+        count: 914
+    definition: Population count, White alone, Not Hispanic or Latino.
+    needs_confirmation: no
+  - name: race_black_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 29524
+    min_value: 0.0
+    max_value: 4.0196302e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 326848
+      - value: '2.0'
+        count: 13278
+      - value: '1.0'
+        count: 11953
+      - value: '3.0'
+        count: 11022
+      - value: '4.0'
+        count: 10083
+    definition: Population count, Black or African American alone, Not Hispanic or Latino.
+    needs_confirmation: no
+  - name: race_aian_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 6670
+    min_value: 0.0
+    max_value: 2160378.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 561086
+      - value: '2.0'
+        count: 15941
+      - value: '1.0'
+        count: 15412
+      - value: '3.0'
+        count: 15052
+      - value: '4.0'
+        count: 14321
+    definition: Population count, American Indian and Alaska Native alone, Not Hispanic or Latino.
+    needs_confirmation: no
+  - name: race_asian_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 19094
+    min_value: 0.0
+    max_value: 1.9678814e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 436671
+      - value: '2.0'
+        count: 13764
+      - value: '3.0'
+        count: 12663
+      - value: '4.0'
+        count: 11921
+      - value: '1.0'
+        count: 11610
+    definition: Population count, Asian alone, Not Hispanic or Latino.
+    needs_confirmation: no
+  - name: race_nhpi_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 3737
+    min_value: 0.0
+    max_value: 566450.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 862772
+      - value: '5.0'
+        count: 4944
+      - value: '6.0'
+        count: 4887
+      - value: '4.0'
+        count: 4828
+      - value: '3.0'
+        count: 4814
+    definition: Population count, Native Hawaiian and Other Pacific Islander alone, Not Hispanic or Latino.
+    needs_confirmation: no
+  - name: race_other_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 4723
+    min_value: 0.0
+    max_value: 1868910.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 715624
+      - value: '3.0'
+        count: 7067
+      - value: '2.0'
+        count: 6764
+      - value: '8.0'
+        count: 6750
+      - value: '4.0'
+        count: 6629
+    definition: Population count, Some other race, not Hispanic or Latino.
+    needs_confirmation: no
+  - name: race_two_plus_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 12942
+    min_value: 0.0
+    max_value: 1.4240018e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 228417
+      - value: '2.0'
+        count: 15031
+      - value: '3.0'
+        count: 14014
+      - value: '4.0'
+        count: 13263
+      - value: '5.0'
+        count: 12426
+    definition: Population count, Two or more races, not Hispanic or Latino.
+    needs_confirmation: no
+  - name: race_hispanic
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 36687
+    min_value: 0.0
+    max_value: 6.475937e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 190506
+      - value: '2.0'
+        count: 10753
+      - value: '3.0'
+        count: 10064
+      - value: '4.0'
+        count: 9394
+      - value: '5.0'
+        count: 8510
+    definition: Population count, Hispanic or Latino
+    needs_confirmation: no
+  - name: pct_white_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 651344
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1.0'
+        count: 70841
+      - value: -nan
+        count: 11017
+      - value: '0.0'
+        count: 10691
+      - value: '0.9'
+        count: 383
+      - value: '0.8333333333333334'
+        count: 363
+    definition: Percent of population that is White alone, Not Hispanic or Latino. Share / percentage; denominator is race_total. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_black_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 517321
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 315831
+      - value: -nan
+        count: 11017
+      - value: '1.0'
+        count: 1106
+      - value: '0.012987012987012988'
+        count: 94
+      - value: '0.015151515151515152'
+        count: 93
+    definition: Percent of population that is Black or African American alone, Not Hispanic or Latino. Share / percentage; denominator is race_total. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_aian_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 291020
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 550069
+      - value: -nan
+        count: 11017
+      - value: '1.0'
+        count: 1206
+      - value: '0.007751937984496124'
+        count: 86
+      - value: '0.0125'
+        count: 85
+    definition: Percent of population that is American Indian and Alaska Native alone, Not Hispanic or Latino. Share / percentage; denominator is race_total. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_asian_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 398671
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 425654
+      - value: -nan
+        count: 11017
+      - value: '0.012658227848101266'
+        count: 108
+      - value: '0.0136986301369863'
+        count: 100
+      - value: '0.015151515151515152'
+        count: 99
+    definition: Percent of population that is Asian alone, Not Hispanic or Latino. Share / percentage; denominator is race_total. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_nhpi_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 129237
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 851755
+      - value: -nan
+        count: 11017
+      - value: '0.003787878787878788'
+        count: 22
+      - value: '0.0032679738562091504'
+        count: 20
+      - value: '0.004524886877828055'
+        count: 18
+    definition: Percent of population that is Native Hawaiian and Other Pacific Islander alone, Not Hispanic or Latino. Share / percentage; denominator is race_total. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_other_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 229053
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 704607
+      - value: -nan
+        count: 11017
+      - value: '0.009174311926605505'
+        count: 47
+      - value: '0.006211180124223602'
+        count: 38
+      - value: '0.0037174721189591076'
+        count: 36
+    definition: Percent of population that is Some other race alone, Not Hispanic or Latino. Share / percentage; denominator is race_total. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_two_plus_nh
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 460891
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 217400
+      - value: -nan
+        count: 11017
+      - value: '0.03125'
+        count: 264
+      - value: '0.038461538461538464'
+        count: 256
+      - value: '0.024390243902439025'
+        count: 249
+    definition: Percent of population that is Two or more races, Not Hispanic or Latino. Share / percentage; denominator is race_total. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_hispanic
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 562059
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 179489
+      - value: -nan
+        count: 11017
+      - value: '1.0'
+        count: 5431
+      - value: '0.043478260869565216'
+        count: 230
+      - value: '0.05263157894736842'
+        count: 218
+    definition: Percent of population that is Hispanic or Latino. Share / percentage; denominator is race_total. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: diversity_index
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 840718
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 78740
+      - value: -nan
+        count: 11017
+      - value: '0.4444444444444444'
+        count: 216
+      - value: '0.375'
+        count: 190
+      - value: '0.31999999999999984'
+        count: 165
+    definition: Diversity index, calculated as 1 - sum of squares of percent of races, lower score means less diversity, higher score means more diversity.
+    needs_confirmation: yes
+lineage:
+  - step: write_target
+    script: scripts/etl/gold/gold_population_wide.sql
+    details: 'Table write/create reference(s): scripts/etl/gold/gold_population_wide.sql:79:FROM
+      metro_deep_dive.silver.race_kpi  | scripts/etl/silver/acs_race_silver.R:151:DBI::dbWriteTable(con,
+      DBI::Id(schema="silver", table="race_kpi"),'
+kpi_definitions:
+  - kpi_name: race_total
+    business_definition: Total:.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: race_white_nh
+    business_definition: Total:, Not Hispanic or Latino:, White alone.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: race_black_nh
+    business_definition: Total:, Not Hispanic or Latino:, Black or African American
+      alone.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: race_aian_nh
+    business_definition: Total:, Not Hispanic or Latino:, American Indian and Alaska
+      Native alone.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: race_asian_nh
+    business_definition: Total:, Not Hispanic or Latino:, Asian alone.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: race_nhpi_nh
+    business_definition: Total:, Not Hispanic or Latino:, Native Hawaiian and Other
+      Pacific Islander alone.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: race_other_nh
+    business_definition: Total:, Not Hispanic or Latino:, Some other race alone.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: race_two_plus_nh
+    business_definition: Total:, Not Hispanic or Latino:, Two or more races:.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: race_hispanic
+    business_definition: Ratio of hispanic anyE + mutate + pct white nh + race white
+      nh to race total.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_white_nh
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_black_nh
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_aian_nh
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_asian_nh
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_nhpi_nh
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_other_nh
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_two_plus_nh
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_hispanic
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: diversity_index
+    business_definition: Business metric for diversity index.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE

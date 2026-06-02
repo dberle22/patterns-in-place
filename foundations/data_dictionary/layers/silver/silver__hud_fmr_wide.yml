@@ -1,0 +1,204 @@
+table_name: hud_fmr_wide
+schema: silver
+grain: One row per geo_level + geo_id + period (inferred).
+primary_key:
+- geo_level
+- geo_id
+- period
+foreign_keys: []
+time_coverage:
+  type: range
+  column: period
+  min: '2023'
+  max: '2023'
+geo_coverage:
+  notes:
+  - distinct_geo_levels=4
+  - distinct_geo_id=27442
+columns:
+- name: geo_level
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 4
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 8
+  top_values:
+  - value: Zip Code
+    count: 27331
+  - value: County
+    count: 4764
+  - value: CBSA
+    count: 929
+  - value: State
+    count: 56
+  definition: Geographic level (US, region, division, state, county, place, zcta,
+    tract, cbsa)
+  needs_confirmation: no
+- name: geo_id
+  type: VARCHAR
+  null_pct: 0.003
+  distinct_count: 27442
+  min_value: ~
+  max_value: ~
+  min_length: 2
+  max_length: 5
+  top_values:
+  - value: '23003'
+    count: 72
+  - value: '23019'
+    count: 67
+  - value: '25027'
+    count: 60
+  - value: '25017'
+    count: 54
+  - value: '23029'
+    count: 48
+  definition: Geographic identifier for the row
+  needs_confirmation: no
+- name: geo_name
+  type: VARCHAR
+  null_pct: 0.003
+  distinct_count: 29072
+  min_value: ~
+  max_value: ~
+  min_length: 2
+  max_length: 46
+  top_values:
+  - value: Aroostook County, ME
+    count: 71
+  - value: Penobscot County, ME
+    count: 67
+  - value: Worcester County, MA
+    count: 60
+  - value: Middlesex County, MA
+    count: 54
+  - value: Washington County, ME
+    count: 48
+  definition: Geographic name (from ACS NAME)
+  needs_confirmation: no
+- name: period
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 1
+  min_value: 2023.0
+  max_value: 2023.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '2023.0'
+    count: 33080
+  definition: Time period for the observation (usually calendar year).
+  needs_confirmation: no
+- name: fmr_0br
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 1063
+  min_value: 360.0
+  max_value: 3280.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '660.0'
+    count: 642
+  - value: '690.0'
+    count: 589
+  - value: '630.0'
+    count: 559
+  - value: '710.0'
+    count: 538
+  - value: '620.0'
+    count: 517
+  definition: Fair Market Rent (40th Percentile) for 0-bedroom units.
+  needs_confirmation: no
+- name: fmr_1br
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 1124
+  min_value: 390.0
+  max_value: 4000.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '740.0'
+    count: 536
+  - value: '720.0'
+    count: 507
+  - value: '790.0'
+    count: 503
+  - value: '680.0'
+    count: 497
+  - value: '760.0'
+    count: 482
+  definition: Fair Market Rent (40th Percentile) for 1-bedroom units.
+  needs_confirmation: no
+- name: fmr_2br
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 1207
+  min_value: 440.0
+  max_value: 4780.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '830.0'
+    count: 663
+  - value: '930.0'
+    count: 461
+  - value: '860.0'
+    count: 442
+  - value: '910.0'
+    count: 441
+  - value: '880.0'
+    count: 438
+  definition: Fair Market Rent (40th Percentile) for 2-bedroom units.
+  needs_confirmation: no
+- name: fmr_3br
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 1452
+  min_value: 550.0
+  max_value: 5870.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '1170.0'
+    count: 414
+  - value: '1110.0'
+    count: 386
+  - value: '1160.0'
+    count: 354
+  - value: '1250.0'
+    count: 339
+  - value: '1180.0'
+    count: 323
+  definition: Fair Market Rent (40th Percentile) for 3-bedroom units.
+  needs_confirmation: no
+- name: fmr_4br
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 1604
+  min_value: 596.0
+  max_value: 6420.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '1410.0'
+    count: 354
+  - value: '1310.0'
+    count: 351
+  - value: '1320.0'
+    count: 307
+  - value: '1500.0'
+    count: 288
+  - value: '1380.0'
+    count: 282
+  definition: Fair Market Rent (40th Percentile) for 4-bedroom units.
+  needs_confirmation: no
+lineage:
+- step: write_target
+  script: scripts/etl/silver/hud_fmr_silver.R
+  details: 'Table write/create reference(s): scripts/etl/silver/hud_fmr_silver.R:109:DBI::dbWriteTable(con,
+    DBI::Id(schema="silver", table="hud_fmr_wide"),'
+kpi_definitions: []

@@ -1,0 +1,192 @@
+table_name: metadata_topics
+schema: silver
+grain: One row per table_name (inferred).
+primary_key:
+- table_name
+foreign_keys: []
+time_coverage:
+  type: unknown
+  column: ~
+  min: ~
+  max: ~
+geo_coverage:
+  notes: []
+columns:
+- name: table_schema
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 1
+  min_value: ~
+  max_value: ~
+  min_length: 6
+  max_length: 6
+  top_values:
+  - value: silver
+    count: 16
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: table_name
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 16
+  min_value: ~
+  max_value: ~
+  min_length: 7
+  max_length: 14
+  top_values:
+  - value: age_base
+    count: 1
+  - value: age_kpi
+    count: 1
+  - value: education_base
+    count: 1
+  - value: education_kpi
+    count: 1
+  - value: housing_base
+    count: 1
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: topic
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 8
+  min_value: ~
+  max_value: ~
+  min_length: 3
+  max_length: 9
+  top_values:
+  - value: age
+    count: 2
+  - value: education
+    count: 2
+  - value: housing
+    count: 2
+  - value: income
+    count: 2
+  - value: labor
+    count: 2
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: table_type
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 2
+  min_value: ~
+  max_value: ~
+  min_length: 3
+  max_length: 4
+  top_values:
+  - value: base
+    count: 8
+  - value: kpi
+    count: 8
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: row_count
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 1
+  min_value: 913388.0
+  max_value: 913388.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '913388.0'
+    count: 16
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: col_count
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 13
+  min_value: 13.0
+  max_value: 54.0
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '14.0'
+    count: 3
+  - value: '22.0'
+    count: 2
+  - value: '13.0'
+    count: 1
+  - value: '23.0'
+    count: 1
+  - value: '26.0'
+    count: 1
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: min_year
+  type: INTEGER
+  null_pct: 0.0
+  distinct_count: 1
+  min_value: 2012
+  max_value: 2012
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '2012'
+    count: 16
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: max_year
+  type: INTEGER
+  null_pct: 0.0
+  distinct_count: 1
+  min_value: 2023
+  max_value: 2023
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '2023'
+    count: 16
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: geo_levels
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 16
+  min_value: ~
+  max_value: ~
+  min_length: 74
+  max_length: 74
+  top_values:
+  - value: c("US", "division", "place", "tract", "Region", "state", "county", "zcta")
+    count: 1
+  - value: c("US", "division", "place", "zcta", "state", "county", "Region", "tract")
+    count: 1
+  - value: c("US", "state", "county", "zcta", "Region", "division", "tract", "place")
+    count: 1
+  - value: c("division", "Region", "US", "place", "tract", "zcta", "state", "county")
+    count: 1
+  - value: c("division", "Region", "place", "zcta", "state", "county", "US", "tract")
+    count: 1
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: last_refreshed
+  type: TIMESTAMP
+  null_pct: 0.0
+  distinct_count: 16
+  min_value: ~
+  max_value: ~
+  min_length: 24
+  max_length: 26
+  top_values:
+  - value: 2025-11-02 14:52:07.102005
+    count: 1
+  - value: 2025-11-02 14:52:07.171306
+    count: 1
+  - value: 2025-11-02 14:52:07.216115
+    count: 1
+  - value: 2025-11-02 14:52:07.262194
+    count: 1
+  - value: 2025-11-02 14:52:07.299466
+    count: 1
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+lineage:
+- step: write_target
+  script: scripts/etl/silver/acs_metadata_silver.R
+  details: 'Table write/create reference(s): scripts/etl/silver/acs_metadata_silver.R:107:  DBI::Id(schema
+    = "silver", table = "metadata_topics"),'
+kpi_definitions: []

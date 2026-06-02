@@ -1,0 +1,260 @@
+table_name: housing_core_wide
+schema: gold
+grain: One row per geo_level + geo_id + year.
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=115976
+quality_notes:
+  - Live key check on 2026-04-10 found zero duplicates on geo_level + geo_id + year.
+  - HUD benchmark rent fields are sparse because the current HUD silver inputs are narrower and mostly 2023-only.
+  - BPS-derived permit fields are sparse outside supported BPS geographies.
+sources:
+  - silver.housing_kpi
+  - silver.income_kpi
+  - silver.hud_fmr_wide
+  - silver.hud_rent50_wide
+  - silver.bps_wide
+  - silver.age_kpi
+columns:
+  - name: geo_level
+    type: VARCHAR
+    definition: Geographic level for the row.
+  - name: geo_id
+    type: VARCHAR
+    definition: Geographic identifier for the row.
+  - name: geo_name
+    type: VARCHAR
+    definition: Geographic display name for the row.
+  - name: year
+    type: INTEGER
+    definition: Observation year.
+  - name: pop_total
+    type: DOUBLE
+    definition: Total population joined from the ACS age KPI table.
+  - name: hu_total
+    type: DOUBLE
+    definition: Total housing units.
+  - name: occ_total
+    type: DOUBLE
+    definition: Total housing units used in occupancy metrics.
+  - name: occ_occupied
+    type: DOUBLE
+    definition: Occupied housing units.
+  - name: occ_vacant
+    type: DOUBLE
+    definition: Vacant housing units.
+  - name: vacancy_rate
+    type: DOUBLE
+    definition: Share of housing units that are vacant.
+  - name: occupancy_rate
+    type: DOUBLE
+    definition: Share of housing units that are occupied.
+  - name: tenure_total
+    type: DOUBLE
+    definition: Total occupied units used in tenure metrics.
+  - name: owner_occupied
+    type: DOUBLE
+    definition: Owner-occupied housing units.
+  - name: renter_occupied
+    type: DOUBLE
+    definition: Renter-occupied housing units.
+  - name: owner_occ_rate
+    type: DOUBLE
+    definition: Share of occupied units that are owner-occupied.
+  - name: renter_occ_rate
+    type: DOUBLE
+    definition: Share of occupied units that are renter-occupied.
+  - name: median_gross_rent
+    type: DOUBLE
+    definition: ACS median gross monthly rent.
+  - name: annualized_median_rent
+    type: DOUBLE
+    definition: Annualized ACS median gross rent, calculated as median_gross_rent times 12.
+  - name: median_home_value
+    type: DOUBLE
+    definition: ACS median owner-reported home value.
+  - name: median_owner_costs_mortgage
+    type: DOUBLE
+    definition: Median selected monthly owner costs for units with a mortgage.
+  - name: median_owner_costs_no_mortgage
+    type: DOUBLE
+    definition: Median selected monthly owner costs for units without a mortgage.
+  - name: rent_burden_total
+    type: DOUBLE
+    definition: Total renter universe for rent burden metrics.
+  - name: rent_burden_30plus
+    type: DOUBLE
+    definition: Count of renters spending 30 percent or more of income on rent.
+  - name: rent_burden_50plus
+    type: DOUBLE
+    definition: Count of renters spending 50 percent or more of income on rent.
+  - name: pct_rent_burden_30plus
+    type: DOUBLE
+    definition: Share of renters spending 30 percent or more of income on rent.
+  - name: pct_rent_burden_50plus
+    type: DOUBLE
+    definition: Share of renters spending 50 percent or more of income on rent.
+  - name: median_hh_income
+    type: DOUBLE
+    definition: ACS median household income.
+  - name: per_capita_income
+    type: DOUBLE
+    definition: ACS per capita income.
+  - name: pov_rate
+    type: DOUBLE
+    definition: Poverty rate.
+  - name: gini_index
+    type: DOUBLE
+    definition: Gini index of income inequality.
+  - name: pct_hh_lt25k
+    type: DOUBLE
+    definition: Share of households with income below $25k.
+  - name: pct_hh_25k_50k
+    type: DOUBLE
+    definition: Share of households with income from $25k to $50k.
+  - name: pct_hh_50k_100k
+    type: DOUBLE
+    definition: Share of households with income from $50k to $100k.
+  - name: pct_hh_100k_plus
+    type: DOUBLE
+    definition: Share of households with income above $100k.
+  - name: rent_to_income
+    type: DOUBLE
+    definition: Annualized median rent divided by median household income.
+  - name: value_to_income
+    type: DOUBLE
+    definition: Median home value divided by median household income.
+  - name: fmr_0br
+    type: DOUBLE
+    definition: HUD fair market rent for 0-bedroom units.
+  - name: fmr_1br
+    type: DOUBLE
+    definition: HUD fair market rent for 1-bedroom units.
+  - name: fmr_2br
+    type: DOUBLE
+    definition: HUD fair market rent for 2-bedroom units.
+  - name: fmr_3br
+    type: DOUBLE
+    definition: HUD fair market rent for 3-bedroom units.
+  - name: fmr_4br
+    type: DOUBLE
+    definition: HUD fair market rent for 4-bedroom units.
+  - name: rent50_0br
+    type: DOUBLE
+    definition: HUD median rent estimate for 0-bedroom units.
+  - name: rent50_1br
+    type: DOUBLE
+    definition: HUD median rent estimate for 1-bedroom units.
+  - name: rent50_2br
+    type: DOUBLE
+    definition: HUD median rent estimate for 2-bedroom units.
+  - name: rent50_3br
+    type: DOUBLE
+    definition: HUD median rent estimate for 3-bedroom units.
+  - name: rent50_4br
+    type: DOUBLE
+    definition: HUD median rent estimate for 4-bedroom units.
+  - name: fmr_gap_2br_vs_median_rent
+    type: DOUBLE
+    definition: Difference between HUD 2-bedroom fair market rent and ACS median gross rent.
+  - name: rent50_gap_2br_vs_median_rent
+    type: DOUBLE
+    definition: Difference between HUD 2-bedroom median rent and ACS median gross rent.
+  - name: permits_total_bldgs
+    type: DOUBLE
+    definition: Total permitted buildings from BPS.
+  - name: permits_total_units
+    type: DOUBLE
+    definition: Total permitted units from BPS.
+  - name: permits_total_value
+    type: DOUBLE
+    definition: Total value of permitted units from BPS.
+  - name: permits_multifam_bldgs
+    type: DOUBLE
+    definition: Total permitted multifamily buildings from BPS.
+  - name: permits_multifam_units
+    type: DOUBLE
+    definition: Total permitted multifamily units from BPS.
+  - name: permits_multifam_value
+    type: DOUBLE
+    definition: Total value of permitted multifamily units from BPS.
+  - name: permits_avg_units_per_bldg
+    type: DOUBLE
+    definition: Average permitted units per building from BPS.
+  - name: permits_avg_units_per_mf_bldg
+    type: DOUBLE
+    definition: Average permitted units per multifamily building from BPS.
+  - name: permits_share_multifam_units
+    type: DOUBLE
+    definition: Share of permitted units that are multifamily.
+  - name: permits_share_units_5_plus
+    type: DOUBLE
+    definition: Share of permitted units in 5-plus-unit structures.
+  - name: permits_share_units_1_unit
+    type: DOUBLE
+    definition: Share of permitted units in 1-unit structures.
+  - name: permits_structure_mix
+    type: VARCHAR
+    definition: Categorical structure mix label from BPS.
+  - name: permits_per_1000_housing_units
+    type: DOUBLE
+    definition: Permitted units per 1,000 existing housing units.
+  - name: permits_per_1000_population
+    type: DOUBLE
+    definition: Permitted units per 1,000 residents.
+  - name: multifam_permits_per_1000_housing_units
+    type: DOUBLE
+    definition: Permitted multifamily units per 1,000 existing housing units.
+  - name: struct_total
+    type: DOUBLE
+    definition: Total housing structures.
+  - name: struct_1_unit
+    type: DOUBLE
+    definition: Count of 1-unit structures.
+  - name: struct_sf_det
+    type: DOUBLE
+    definition: Count of single-family detached structures.
+  - name: struct_small_mf
+    type: DOUBLE
+    definition: Count of small multifamily structures.
+  - name: struct_mid_mf
+    type: DOUBLE
+    definition: Count of mid-size multifamily structures.
+  - name: struct_large_mf
+    type: DOUBLE
+    definition: Count of large multifamily structures.
+  - name: struct_mobile
+    type: DOUBLE
+    definition: Count of mobile home structures.
+  - name: pct_struct_1_unit
+    type: DOUBLE
+    definition: Share of structures that are 1-unit.
+  - name: pct_struct_sf_det
+    type: DOUBLE
+    definition: Share of structures that are single-family detached.
+  - name: pct_struct_small_mf
+    type: DOUBLE
+    definition: Share of structures that are small multifamily.
+  - name: pct_struct_mid_mf
+    type: DOUBLE
+    definition: Share of structures that are mid-size multifamily.
+  - name: pct_struct_large_mf
+    type: DOUBLE
+    definition: Share of structures that are large multifamily.
+  - name: pct_struct_mobile
+    type: DOUBLE
+    definition: Share of structures that are mobile homes.
+  - name: pct_struct_multifam
+    type: DOUBLE
+    definition: Combined share of small, mid-size, and large multifamily structures.

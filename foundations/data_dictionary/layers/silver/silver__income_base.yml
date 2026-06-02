@@ -1,0 +1,706 @@
+table_name: income_base
+schema: silver
+grain: One row per geo_level + geo_id + geo_name + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - geo_name
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=115976
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 8
+    top_values:
+      - value: zcta
+        count: 433172
+      - value: place
+        count: 397094
+      - value: tract
+        count: 135851
+      - value: county
+        count: 41870
+      - value: cbsa
+        count: 12085
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 115976
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 11
+    top_values:
+      - value: '1'
+        count: 39
+      - value: '2'
+        count: 26
+      - value: '3'
+        count: 26
+      - value: '4'
+        count: 26
+      - value: '01001'
+        count: 25
+    definition: Geographic identifier for the row
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 97125
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 66
+    top_values:
+      - value: Alexandria city, Virginia
+        count: 26
+      - value: Baltimore city, Maryland
+        count: 26
+      - value: Bristol city, Virginia
+        count: 26
+      - value: Buena Vista city, Virginia
+        count: 26
+      - value: Carson City, Nevada
+        count: 26
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 13
+    min_value: 2012
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2024'
+        count: 82276
+      - value: '2023'
+        count: 82271
+      - value: '2022'
+        count: 82134
+      - value: '2021'
+        count: 81848
+      - value: '2020'
+        count: 81194
+    definition: Observation year or period year for the row.
+    needs_confirmation: no
+  - name: median_hh_incomeE
+    type: DOUBLE
+    null_pct: 6.0525
+    distinct_count: 122343
+    min_value: 2499.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 61792
+      - value: '46250.0'
+        count: 2140
+      - value: '48750.0'
+        count: 2115
+      - value: '41250.0'
+        count: 2063
+      - value: '51250.0'
+        count: 2020
+    definition: 'ACS 2024 Median Household Income in the Past 12 Months (in 2024 Inflation-Adjusted
+      Dollars) [B19013_001]: Median household income in the past 12 months (in 2024
+      inflation-adjusted dollars) (estimate).'
+    needs_confirmation: no
+  - name: per_capita_incomeE
+    type: DOUBLE
+    null_pct: 2.0314
+    distinct_count: 90038
+    min_value: 6.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 20739
+      - value: '22937.0'
+        count: 69
+      - value: '22485.0'
+        count: 68
+      - value: '23844.0'
+        count: 68
+      - value: '24771.0'
+        count: 66
+    definition: 'ACS 2024 Per Capita Income in the Past 12 Months (in 2024 Inflation-Adjusted
+      Dollars) [B19301_001]: Per capita income in the past 12 months (in 2024 inflation-adjusted
+      dollars) (estimate).'
+    needs_confirmation: no
+  - name: pov_universeE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 79624
+    min_value: 0.0
+    max_value: 3.2707919e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 14548
+      - value: '61.0'
+        count: 616
+      - value: '74.0'
+        count: 614
+      - value: '115.0'
+        count: 610
+      - value: '69.0'
+        count: 604
+    definition: 'ACS 2024 Poverty Status in the Past 12 Months by Sex by Age [B17001_001]:
+      Total: (estimate).'
+    needs_confirmation: no
+  - name: pov_belowE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 29390
+    min_value: 0.0
+    max_value: 4.7755606e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 59343
+      - value: '10.0'
+        count: 4274
+      - value: '9.0'
+        count: 4232
+      - value: '8.0'
+        count: 4160
+      - value: '6.0'
+        count: 4060
+    definition: 'ACS 2024 Poverty Status in the Past 12 Months by Sex by Age [B17001_002]:
+      Total:, Income in the past 12 months below poverty level: (estimate).'
+    needs_confirmation: no
+  - name: hh_inc_totalE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 45115
+    min_value: 0.0
+    max_value: 1.292275e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 15641
+      - value: '33.0'
+        count: 1475
+      - value: '32.0'
+        count: 1463
+      - value: '39.0'
+        count: 1453
+      - value: '43.0'
+        count: 1445
+    definition: 'ACS 2024 Household Income in the Past 12 Months (in 2024 Inflation-Adjusted
+      Dollars) [B19001_001]: Total: (estimate).'
+    needs_confirmation: no
+  - name: hh_inc_lt10kE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 12227
+    min_value: 0.0
+    max_value: 8421482.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 129824
+      - value: '2.0'
+        count: 15910
+      - value: '4.0'
+        count: 14334
+      - value: '3.0'
+        count: 13851
+      - value: '5.0'
+        count: 13696
+    definition: 'ACS 2024 Household Income in the Past 12 Months (in 2024 Inflation-Adjusted
+      Dollars) [B19001_002]: Total:, Less than $10,000 (estimate).'
+    needs_confirmation: no
+  - name: hh_inc_10k_15kE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 10167
+    min_value: 0.0
+    max_value: 6260673.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 152138
+      - value: '2.0'
+        count: 16445
+      - value: '4.0'
+        count: 15059
+      - value: '3.0'
+        count: 15009
+      - value: '5.0'
+        count: 14898
+    definition: 'ACS 2024 Household Income in the Past 12 Months (in 2024 Inflation-Adjusted
+      Dollars) [B19001_003]: Total:, $10,000 to $14,999 (estimate).'
+    needs_confirmation: no
+  - name: hh_inc_15k_20kE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 10112
+    min_value: 0.0
+    max_value: 6236898.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 144422
+      - value: '2.0'
+        count: 16851
+      - value: '4.0'
+        count: 15213
+      - value: '3.0'
+        count: 14762
+      - value: '6.0'
+        count: 14749
+    definition: 'ACS 2024 Household Income in the Past 12 Months (in 2024 Inflation-Adjusted
+      Dollars) [B19001_004]: Total:, $15,000 to $19,999 (estimate).'
+    needs_confirmation: no
+  - name: hh_inc_20k_25kE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 10238
+    min_value: 0.0
+    max_value: 6231706.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 138080
+      - value: '2.0'
+        count: 16134
+      - value: '4.0'
+        count: 14990
+      - value: '5.0'
+        count: 14527
+      - value: '6.0'
+        count: 14323
+    definition: 'ACS 2024 Household Income in the Past 12 Months (in 2024 Inflation-Adjusted
+      Dollars) [B19001_005]: Total:, $20,000 to $24,999 (estimate).'
+    needs_confirmation: no
+  - name: hh_inc_25k_30kE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 10097
+    min_value: 0.0
+    max_value: 6004724.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 137919
+      - value: '2.0'
+        count: 16243
+      - value: '4.0'
+        count: 14920
+      - value: '6.0'
+        count: 14720
+      - value: '5.0'
+        count: 14687
+    definition: 'ACS 2024 Household Income in the Past 12 Months (in 2024 Inflation-Adjusted
+      Dollars) [B19001_006]: Total:, $25,000 to $29,999 (estimate).'
+    needs_confirmation: no
+  - name: hh_inc_30k_35kE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 10175
+    min_value: 0.0
+    max_value: 6000199.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 137019
+      - value: '2.0'
+        count: 16172
+      - value: '4.0'
+        count: 14916
+      - value: '5.0'
+        count: 14836
+      - value: '6.0'
+        count: 14735
+    definition: 'ACS 2024 Household Income in the Past 12 Months (in 2024 Inflation-Adjusted
+      Dollars) [B19001_007]: Total:, $30,000 to $34,999 (estimate).'
+    needs_confirmation: no
+  - name: hh_inc_35k_40kE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 9862
+    min_value: 0.0
+    max_value: 5469262.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 143405
+      - value: '2.0'
+        count: 16944
+      - value: '4.0'
+        count: 15761
+      - value: '6.0'
+        count: 15387
+      - value: '3.0'
+        count: 15303
+    definition: 'ACS 2024 Household Income in the Past 12 Months (in 2024 Inflation-Adjusted
+      Dollars) [B19001_008]: Total:, $35,000 to $39,999 (estimate).'
+    needs_confirmation: no
+  - name: hh_inc_40k_45kE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 9801
+    min_value: 0.0
+    max_value: 5507464.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 143407
+      - value: '2.0'
+        count: 17249
+      - value: '4.0'
+        count: 15762
+      - value: '6.0'
+        count: 15503
+      - value: '5.0'
+        count: 15259
+    definition: 'ACS 2024 Household Income in the Past 12 Months (in 2024 Inflation-Adjusted
+      Dollars) [B19001_009]: Total:, $40,000 to $44,999 (estimate).'
+    needs_confirmation: no
+  - name: hh_inc_45k_50kE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 9467
+    min_value: 0.0
+    max_value: 4847697.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 153920
+      - value: '2.0'
+        count: 18565
+      - value: '3.0'
+        count: 16670
+      - value: '4.0'
+        count: 16349
+      - value: '6.0'
+        count: 16220
+    definition: 'ACS 2024 Household Income in the Past 12 Months (in 2024 Inflation-Adjusted
+      Dollars) [B19001_010]: Total:, $45,000 to $49,999 (estimate).'
+    needs_confirmation: no
+  - name: hh_inc_50k_60kE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 12766
+    min_value: 0.0
+    max_value: 9307672.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 96884
+      - value: '6.0'
+        count: 11211
+      - value: '7.0'
+        count: 11182
+      - value: '8.0'
+        count: 11124
+      - value: '9.0'
+        count: 11086
+    definition: 'ACS 2024 Household Income in the Past 12 Months (in 2024 Inflation-Adjusted
+      Dollars) [B19001_011]: Total:, $50,000 to $59,999 (estimate).'
+    needs_confirmation: no
+  - name: hh_inc_60k_75kE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 14373
+    min_value: 0.0
+    max_value: 1.1911889e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 84402
+      - value: '8.0'
+        count: 9921
+      - value: '6.0'
+        count: 9870
+      - value: '7.0'
+        count: 9800
+      - value: '9.0'
+        count: 9631
+    definition: 'ACS 2024 Household Income in the Past 12 Months (in 2024 Inflation-Adjusted
+      Dollars) [B19001_012]: Total:, $60,000 to $74,999 (estimate).'
+    needs_confirmation: no
+  - name: hh_inc_75k_100kE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 16055
+    min_value: 0.0
+    max_value: 1.6319799e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 78520
+      - value: '8.0'
+        count: 9066
+      - value: '9.0'
+        count: 8946
+      - value: '7.0'
+        count: 8786
+      - value: '6.0'
+        count: 8609
+    definition: 'ACS 2024 Household Income in the Past 12 Months (in 2024 Inflation-Adjusted
+      Dollars) [B19001_013]: Total:, $75,000 to $99,999 (estimate).'
+    needs_confirmation: no
+  - name: hh_inc_100k_125kE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 13732
+    min_value: 0.0
+    max_value: 1.3068961e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 117440
+      - value: '2.0'
+        count: 13797
+      - value: '4.0'
+        count: 12678
+      - value: '3.0'
+        count: 12376
+      - value: '6.0'
+        count: 12175
+    definition: 'ACS 2024 Household Income in the Past 12 Months (in 2024 Inflation-Adjusted
+      Dollars) [B19001_014]: Total:, $100,000 to $124,999 (estimate).'
+    needs_confirmation: no
+  - name: hh_inc_125k_150kE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 11335
+    min_value: 0.0
+    max_value: 9601960.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 185000
+      - value: '2.0'
+        count: 19929
+      - value: '3.0'
+        count: 16888
+      - value: '4.0'
+        count: 16138
+      - value: '5.0'
+        count: 15282
+    definition: 'ACS 2024 Household Income in the Past 12 Months (in 2024 Inflation-Adjusted
+      Dollars) [B19001_015]: Total:, $125,000 to $149,999 (estimate).'
+    needs_confirmation: no
+  - name: hh_inc_150k_200kE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 11822
+    min_value: 0.0
+    max_value: 1.240537e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 215461
+      - value: '2.0'
+        count: 20790
+      - value: '3.0'
+        count: 17909
+      - value: '4.0'
+        count: 16023
+      - value: '5.0'
+        count: 15128
+    definition: 'ACS 2024 Household Income in the Past 12 Months (in 2024 Inflation-Adjusted
+      Dollars) [B19001_016]: Total:, $150,000 to $199,999 (estimate).'
+    needs_confirmation: no
+  - name: hh_inc_200k_plusE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 12999
+    min_value: 0.0
+    max_value: 1.7266233e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 264806
+      - value: '2.0'
+        count: 22804
+      - value: '3.0'
+        count: 19131
+      - value: '4.0'
+        count: 16565
+      - value: '5.0'
+        count: 15229
+    definition: 'ACS 2024 Household Income in the Past 12 Months (in 2024 Inflation-Adjusted
+      Dollars) [B19001_017]: Total:, $200,000 or more (estimate).'
+    needs_confirmation: no
+  - name: gini_indexE
+    type: DOUBLE
+    null_pct: 2.489
+    distinct_count: 13071
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 25411
+      - value: '0.4121'
+        count: 716
+      - value: '0.4077'
+        count: 714
+      - value: '0.4032'
+        count: 712
+      - value: '0.4083'
+        count: 707
+    definition: 'ACS 2024 Gini Index of Income Inequality [B19083_001]: Gini Index
+      (estimate).'
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/silver/acs_income_silver.R
+    details: 'Table write/create reference(s): scripts/etl/silver/acs_income_silver.R:144:DBI::dbWriteTable(con,
+      DBI::Id(schema="silver", table="income_base"),'
+kpi_definitions:
+  - kpi_name: median_hh_incomeE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: per_capita_incomeE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pov_universeE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pov_belowE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_inc_totalE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_inc_lt10kE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_inc_10k_15kE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_inc_15k_20kE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_inc_20k_25kE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_inc_25k_30kE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_inc_30k_35kE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_inc_35k_40kE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_inc_40k_45kE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_inc_45k_50kE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_inc_50k_60kE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_inc_60k_75kE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_inc_75k_100kE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_inc_100k_125kE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_inc_125k_150kE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_inc_150k_200kE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: hh_inc_200k_plusE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: gini_indexE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Income/Poverty (B19xxx/B17xxx)
+    denominator_hint: ~
+    data_type: DOUBLE

@@ -1,0 +1,65 @@
+table_name: transport_built_form_wide
+schema: gold
+grain: One row per geo_level + geo_id + year.
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=115976
+quality_notes:
+  - Live key check on 2026-04-10 found zero duplicates on geo_level + geo_id + year.
+  - Density fields are intentionally partial because they depend on tract geometry support.
+  - Non-null density rows are currently concentrated in tract, county, cbsa, and a subset of state rows.
+sources:
+  - silver.transport_kpi
+  - silver.xwalk_tract_county
+  - silver.xwalk_county_state
+  - silver.xwalk_cbsa_county
+  - geo.tracts_all_us
+columns:
+  - { name: geo_level, type: VARCHAR, definition: Geographic level for the row. }
+  - { name: geo_id, type: VARCHAR, definition: Geographic identifier for the row. }
+  - { name: geo_name, type: VARCHAR, definition: Geographic display name for the row. }
+  - { name: year, type: INTEGER, definition: Observation year. }
+  - { name: commute_workers_total, type: DOUBLE, definition: Total worker commute universe. }
+  - { name: commute_drove_alone, type: DOUBLE, definition: Workers who drove alone to work. }
+  - { name: commute_carpool, type: DOUBLE, definition: Workers who carpooled to work. }
+  - { name: commute_public_trans, type: DOUBLE, definition: Workers who used public transportation to work. }
+  - { name: commute_taxicab, type: DOUBLE, definition: Workers who used taxicab or ride-hailing to work. }
+  - { name: commute_motorcycle, type: DOUBLE, definition: Workers who used motorcycles to work. }
+  - { name: commute_bicycle, type: DOUBLE, definition: Workers who biked to work. }
+  - { name: commute_walked, type: DOUBLE, definition: Workers who walked to work. }
+  - { name: commute_other, type: DOUBLE, definition: Workers using other commute modes. }
+  - { name: commute_worked_home, type: DOUBLE, definition: Workers who worked from home. }
+  - { name: pct_commute_drive_alone, type: DOUBLE, definition: Share of commuters who drove alone. }
+  - { name: pct_commute_carpool, type: DOUBLE, definition: Share of commuters who carpooled. }
+  - { name: pct_commute_transit, type: DOUBLE, definition: Share of commuters who used public transit. }
+  - { name: pct_commute_walk, type: DOUBLE, definition: Share of commuters who walked. }
+  - { name: pct_commute_wfh, type: DOUBLE, definition: Share of commuters who worked from home. }
+  - { name: pct_low_car_commute, type: DOUBLE, definition: Combined share of transit, walking, and work-from-home commuting. }
+  - { name: veh_total_hh, type: DOUBLE, definition: Household vehicle universe total. }
+  - { name: veh_0, type: DOUBLE, definition: Households with zero vehicles. }
+  - { name: veh_1, type: DOUBLE, definition: Households with one vehicle. }
+  - { name: veh_2, type: DOUBLE, definition: Households with two vehicles. }
+  - { name: veh_3, type: DOUBLE, definition: Households with three vehicles. }
+  - { name: veh_4_plus, type: DOUBLE, definition: Households with four or more vehicles. }
+  - { name: pct_hh_0_vehicles, type: DOUBLE, definition: Share of households with zero vehicles. }
+  - { name: pct_hh_1_vehicles, type: DOUBLE, definition: Share of households with one vehicle. }
+  - { name: pct_hh_2_vehicles, type: DOUBLE, definition: Share of households with two vehicles. }
+  - { name: pct_hh_3_vehicles, type: DOUBLE, definition: Share of households with three vehicles. }
+  - { name: pct_hh_4p_vehicles, type: DOUBLE, definition: Share of households with four or more vehicles. }
+  - { name: total_travel_time, type: DOUBLE, definition: Aggregate commute travel time in minutes. }
+  - { name: mean_travel_time, type: DOUBLE, definition: Mean commute travel time in minutes. }
+  - { name: density_population, type: DOUBLE, definition: Population total used for density aggregation. }
+  - { name: land_area_sqmi, type: DOUBLE, definition: Summed tract land area in square miles for the supported aggregation. }
+  - { name: gross_density_sqmi, type: DOUBLE, definition: Population divided by aggregated land area in square miles. }
+  - { name: pop_weighted_density_sqmi, type: DOUBLE, definition: Population-weighted tract density aggregated to the output geography. }

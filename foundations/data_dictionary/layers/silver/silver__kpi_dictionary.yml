@@ -1,0 +1,151 @@
+table_name: kpi_dictionary
+schema: silver
+grain: One row per table_name (inferred).
+primary_key:
+- table_name
+foreign_keys: []
+time_coverage:
+  type: unknown
+  column: ~
+  min: ~
+  max: ~
+geo_coverage:
+  notes: []
+columns:
+- name: topic
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 8
+  min_value: ~
+  max_value: ~
+  min_length: 3
+  max_length: 9
+  top_values:
+  - value: labor
+    count: 93
+  - value: age
+    count: 76
+  - value: housing
+    count: 67
+  - value: transport
+    count: 45
+  - value: education
+    count: 35
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: table_name
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 16
+  min_value: ~
+  max_value: ~
+  min_length: 7
+  max_length: 14
+  top_values:
+  - value: age_base
+    count: 50
+  - value: labor_kpi
+    count: 49
+  - value: labor_base
+    count: 44
+  - value: housing_base
+    count: 34
+  - value: housing_kpi
+    count: 33
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: kpi_name
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 403
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 37
+  top_values:
+  - value: occ_totalE
+    count: 2
+  - value: age_0_4
+    count: 1
+  - value: age_15_24
+    count: 1
+  - value: age_25_34
+    count: 1
+  - value: age_25_54
+    count: 1
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: business_definition
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 3
+  min_value: ~
+  max_value: ~
+  min_length: 29
+  max_length: 53
+  top_values:
+  - value: Measure derived from ACS Silver table.
+    count: 324
+  - value: Share / percentage; denominator defined in KPI logic.
+    count: 72
+  - value: Rate derived from ACS counts.
+    count: 8
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: source
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 3
+  min_value: ~
+  max_value: ~
+  min_length: 10
+  max_length: 34
+  top_values:
+  - value: ACS 5-year
+    count: 305
+  - value: ACS Housing (B2500x)
+    count: 67
+  - value: ACS Income/Poverty (B19xxx/B17xxx)
+    count: 32
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: denominator_hint
+  type: VARCHAR
+  null_pct: 91.3366
+  distinct_count: 7
+  min_value: ~
+  max_value: ~
+  min_length: 8
+  max_length: 32
+  top_values:
+  - value: ~
+    count: 369
+  - value: ind_total_emp
+    count: 13
+  - value: households (topic-specific)
+    count: 9
+  - value: commute_workers_total
+    count: 5
+  - value: occ_total_emp
+    count: 5
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+- name: data_type
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 1
+  min_value: ~
+  max_value: ~
+  min_length: 6
+  max_length: 6
+  top_values:
+  - value: DOUBLE
+    count: 404
+  definition: Definition not yet documented; inferred from column name. Needs confirmation.
+  needs_confirmation: yes
+lineage:
+- step: write_target
+  script: scripts/etl/silver/acs_metadata_silver.R
+  details: 'Table write/create reference(s): scripts/etl/silver/acs_metadata_silver.R:203:  DBI::Id(schema
+    = "silver", table = "kpi_dictionary"),'
+kpi_definitions: []

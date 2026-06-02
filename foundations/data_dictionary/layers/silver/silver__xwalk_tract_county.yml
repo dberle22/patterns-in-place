@@ -1,0 +1,243 @@
+table_name: xwalk_tract_county
+schema: silver
+grain: One row per state_fip (inferred).
+primary_key: state_fip
+foreign_keys: []
+time_coverage:
+  type: range
+  column: vintage
+  min: '2023'
+  max: '2023'
+geo_coverage:
+  notes: distinct_tract_geoid=10573
+columns:
+  - name: state_fip
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 3
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: '12'
+        count: 5122
+      - value: '13'
+        count: 2791
+      - value: '37'
+        count: 2660
+    definition: State FIPS code.
+    needs_confirmation: no
+  - name: county_fip
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 161
+    min_value: ~
+    max_value: ~
+    min_length: 3
+    max_length: 3
+    top_values:
+      - value: 086
+        count: 706
+      - value: '057'
+        count: 431
+      - value: '011'
+        count: 425
+      - value: 099
+        count: 386
+      - value: '121'
+        count: 342
+    definition: County FIPS code.
+    needs_confirmation: no
+  - name: tract_fip
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 5896
+    min_value: ~
+    max_value: ~
+    min_length: 6
+    max_length: 6
+    top_values:
+      - value: '950100'
+        count: 27
+      - value: '960200'
+        count: 27
+      - value: '960100'
+        count: 26
+      - value: '960300'
+        count: 24
+      - value: '970200'
+        count: 24
+    definition: Tract FIPS code.
+    needs_confirmation: no
+  - name: tract_geoid
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 10573
+    min_value: ~
+    max_value: ~
+    min_length: 11
+    max_length: 11
+    top_values:
+      - value: '12001000201'
+        count: 1
+      - value: '12001000202'
+        count: 1
+      - value: '12001000301'
+        count: 1
+      - value: '12001000302'
+        count: 1
+      - value: '12001000400'
+        count: 1
+    definition: Tract GEOID, which is a concatenation of the state FIPS code, county
+      FIPS code, and tract FIPS code.
+    needs_confirmation: no
+  - name: tract_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 5896
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 7
+    top_values:
+      - value: '9501'
+        count: 27
+      - value: '9602'
+        count: 27
+      - value: '9601'
+        count: 26
+      - value: '9603'
+        count: 24
+      - value: '9702'
+        count: 24
+    definition: Name of Tract, defined by the Census Bureau. Typically a 4-digit number,
+      but can include a suffix (e.g. '9501.01' or '9601A').
+    needs_confirmation: no
+  - name: tract_name_long
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 5896
+    min_value: ~
+    max_value: ~
+    min_length: 14
+    max_length: 20
+    top_values:
+      - value: Census Tract 9501
+        count: 27
+      - value: Census Tract 9602
+        count: 27
+      - value: Census Tract 9601
+        count: 26
+      - value: Census Tract 9603
+        count: 24
+      - value: Census Tract 9702
+        count: 24
+    definition: Long name of the tract.
+    needs_confirmation: no
+  - name: state_abbr
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 3
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: FL
+        count: 5122
+      - value: GA
+        count: 2791
+      - value: NC
+        count: 2660
+    definition: State abbreviation.
+    needs_confirmation: no
+  - name: county_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 280
+    min_value: ~
+    max_value: ~
+    min_length: 10
+    max_length: 20
+    top_values:
+      - value: Miami-Dade County
+        count: 706
+      - value: Broward County
+        count: 416
+      - value: Palm Beach County
+        count: 372
+      - value: Hillsborough County
+        count: 333
+      - value: Fulton County
+        count: 327
+    definition: Name of the county.
+    needs_confirmation: no
+  - name: state_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 3
+    min_value: ~
+    max_value: ~
+    min_length: 7
+    max_length: 14
+    top_values:
+      - value: Florida
+        count: 5122
+      - value: Georgia
+        count: 2791
+      - value: North Carolina
+        count: 2660
+    definition: Full name of the state.
+    needs_confirmation: no
+  - name: lsad
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: CT
+        count: 10573
+    definition: LSAD (Legal Statistical Area Description) code for the tract.
+    needs_confirmation: no
+  - name: vintage
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: 2023
+    max_value: 2023
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2023'
+        count: 10573
+    definition: Year of the crosswalk data.
+    needs_confirmation: no
+  - name: source
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: ~
+    max_value: ~
+    min_length: 6
+    max_length: 6
+    top_values:
+      - value: TIGRIS
+        count: 10573
+    definition: Source of the crosswalk data.
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/silver/geo_crosswalks_silver.R
+    details: 'Table write/create reference(s): scripts/etl/silver/geo_crosswalks_silver.R:94:DBI::dbWriteTable(con,
+      DBI::Id(schema="silver", table="xwalk_tract_county"),'
+  - step: downstream_usage_examples
+    script: notebooks/retail_opportunity_finder/legacy/retail_opportunity_finder_dash_v1.qmd
+    details: 'Downstream reference(s): notebooks/retail_opportunity_finder/legacy/retail_opportunity_finder_dash_v1.qmd:192:  FROM
+      metro_deep_dive.silver.xwalk_tract_county | notebooks/retail_opportunity_finder/tract_universe.sql:18:  FROM
+      metro_deep_dive.silver.xwalk_tract_county | notebooks/retail_opportunity_finder/tract_features.sql:25:  FROM
+      metro_deep_dive.silver.xwalk_tract_county t'
+kpi_definitions: []

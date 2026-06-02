@@ -1,0 +1,1014 @@
+table_name: housing_base
+schema: silver
+grain: One row per geo_level + geo_id + geo_name + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - geo_name
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=115976
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 8
+    top_values:
+      - value: zcta
+        count: 433172
+      - value: place
+        count: 397094
+      - value: tract
+        count: 135851
+      - value: county
+        count: 41870
+      - value: cbsa
+        count: 12085
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 115976
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 11
+    top_values:
+      - value: '1'
+        count: 39
+      - value: '2'
+        count: 26
+      - value: '3'
+        count: 26
+      - value: '4'
+        count: 26
+      - value: '01001'
+        count: 25
+    definition: Geographic identifier for the row
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 97125
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 66
+    top_values:
+      - value: Alexandria city, Virginia
+        count: 26
+      - value: Baltimore city, Maryland
+        count: 26
+      - value: Bristol city, Virginia
+        count: 26
+      - value: Buena Vista city, Virginia
+        count: 26
+      - value: Carson City, Nevada
+        count: 26
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 13
+    min_value: 2012
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2024'
+        count: 82276
+      - value: '2023'
+        count: 82271
+      - value: '2022'
+        count: 82134
+      - value: '2021'
+        count: 81848
+      - value: '2020'
+        count: 81194
+    definition: Observation year or period year for the row.
+    needs_confirmation: no
+  - name: hu_totalE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 48279
+    min_value: 0.0
+    max_value: 1.4377536e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 12518
+      - value: '46.0'
+        count: 1194
+      - value: '50.0'
+        count: 1174
+      - value: '71.0'
+        count: 1166
+      - value: '52.0'
+        count: 1159
+    definition: 'ACS 2024 Housing Units [B25001_001]: Total (estimate).'
+    needs_confirmation: no
+  - name: occ_totalE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 48279
+    min_value: 0.0
+    max_value: 1.4377536e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 12518
+      - value: '46.0'
+        count: 1194
+      - value: '50.0'
+        count: 1174
+      - value: '71.0'
+        count: 1166
+      - value: '52.0'
+        count: 1159
+    definition: 'ACS 2024 Occupancy Status [B25002_001]: Total: (estimate).'
+    needs_confirmation: no
+  - name: occ_occupiedE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 45115
+    min_value: 0.0
+    max_value: 1.292275e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 15641
+      - value: '33.0'
+        count: 1475
+      - value: '32.0'
+        count: 1463
+      - value: '39.0'
+        count: 1453
+      - value: '43.0'
+        count: 1445
+    definition: 'ACS 2024 Occupancy Status [B25002_002]: Total:, Occupied (estimate).'
+    needs_confirmation: no
+  - name: occ_vacantE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 17020
+    min_value: 0.0
+    max_value: 1.6672938e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 67178
+      - value: '9.0'
+        count: 6089
+      - value: '14.0'
+        count: 5988
+      - value: '13.0'
+        count: 5927
+      - value: '15.0'
+        count: 5907
+    definition: 'ACS 2024 Occupancy Status [B25002_003]: Total:, Vacant (estimate).'
+    needs_confirmation: no
+  - name: tenure_totalE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 45115
+    min_value: 0.0
+    max_value: 1.292275e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 15641
+      - value: '33.0'
+        count: 1475
+      - value: '32.0'
+        count: 1463
+      - value: '39.0'
+        count: 1453
+      - value: '43.0'
+        count: 1445
+    definition: 'ACS 2024 Tenure [B25003_001]: Total: (estimate).'
+    needs_confirmation: no
+  - name: owner_occupiedE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 35573
+    min_value: 0.0
+    max_value: 8.4210142e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 22036
+      - value: '25.0'
+        count: 1920
+      - value: '26.0'
+        count: 1879
+      - value: '27.0'
+        count: 1854
+      - value: '17.0'
+        count: 1851
+    definition: 'ACS 2024 Tenure [B25003_002]: Total:, Owner occupied (estimate).'
+    needs_confirmation: no
+  - name: renter_occupiedE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 27966
+    min_value: 0.0
+    max_value: 4.5017354e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 59306
+      - value: '9.0'
+        count: 6033
+      - value: '8.0'
+        count: 5878
+      - value: '10.0'
+        count: 5806
+      - value: '7.0'
+        count: 5801
+    definition: 'ACS 2024 Tenure [B25003_003]: Total:, Renter occupied (estimate).'
+    needs_confirmation: no
+  - name: median_gross_rentE
+    type: DOUBLE
+    null_pct: 17.7859
+    distinct_count: 7772
+    min_value: 99.0
+    max_value: 3501.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 181582
+      - value: '675.0'
+        count: 3799
+      - value: '625.0'
+        count: 3687
+      - value: '725.0'
+        count: 3579
+      - value: '775.0'
+        count: 3366
+    definition: 'ACS 2024 Median Gross Rent (Dollars) [B25064_001]: Median gross rent
+      (estimate).'
+    needs_confirmation: no
+  - name: median_home_valueE
+    type: DOUBLE
+    null_pct: 6.8108
+    distinct_count: 18205
+    min_value: 9999.0
+    max_value: 2000001.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 69534
+      - value: '85000.0'
+        count: 1928
+      - value: '112500.0'
+        count: 1924
+      - value: '75000.0'
+        count: 1878
+      - value: '95000.0'
+        count: 1737
+    definition: 'ACS 2024 Median Value (Dollars) [B25077_001]: Median value (dollars)
+      (estimate).'
+    needs_confirmation: no
+  - name: rent_burden_totalE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 27966
+    min_value: 0.0
+    max_value: 4.5017354e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 59283
+      - value: '9.0'
+        count: 6033
+      - value: '8.0'
+        count: 5877
+      - value: '10.0'
+        count: 5804
+      - value: '7.0'
+        count: 5801
+    definition: 'ACS 2024 Gross Rent as a Percentage of Household Income in the Past
+      12 Months [B25070_001]: Total: (estimate).'
+    needs_confirmation: no
+  - name: rent_lt_10E
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 5666
+    min_value: 0.0
+    max_value: 1730092.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 418608
+      - value: '2.0'
+        count: 22622
+      - value: '3.0'
+        count: 19922
+      - value: '4.0'
+        count: 18214
+      - value: '5.0'
+        count: 16707
+    definition: 'ACS 2024 Gross Rent as a Percentage of Household Income in the Past
+      12 Months [B25070_002]: Total:, Less than 10.0 percent (estimate).'
+    needs_confirmation: no
+  - name: rent_10_14E
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 8272
+    min_value: 0.0
+    max_value: 3706926.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 292256
+      - value: '2.0'
+        count: 21083
+      - value: '3.0'
+        count: 18184
+      - value: '4.0'
+        count: 17214
+      - value: '5.0'
+        count: 16423
+    definition: 'ACS 2024 Gross Rent as a Percentage of Household Income in the Past
+      12 Months [B25070_003]: Total:, 10.0 to 14.9 percent (estimate).'
+    needs_confirmation: no
+  - name: rent_15_19E
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 9817
+    min_value: 0.0
+    max_value: 5254304.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 263880
+      - value: '2.0'
+        count: 20563
+      - value: '3.0'
+        count: 16706
+      - value: '4.0'
+        count: 16015
+      - value: '5.0'
+        count: 15281
+    definition: 'ACS 2024 Gross Rent as a Percentage of Household Income in the Past
+      12 Months [B25070_004]: Total:, 15.0 to 19.9 percent (estimate).'
+    needs_confirmation: no
+  - name: rent_20_24E
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 9884
+    min_value: 0.0
+    max_value: 5274812.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 277367
+      - value: '2.0'
+        count: 20222
+      - value: '3.0'
+        count: 17108
+      - value: '4.0'
+        count: 16172
+      - value: '5.0'
+        count: 15283
+    definition: 'ACS 2024 Gross Rent as a Percentage of Household Income in the Past
+      12 Months [B25070_005]: Total:, 20.0 to 24.9 percent (estimate).'
+    needs_confirmation: no
+  - name: rent_25_29E
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 9454
+    min_value: 0.0
+    max_value: 4820123.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 304224
+      - value: '2.0'
+        count: 20642
+      - value: '3.0'
+        count: 16863
+      - value: '4.0'
+        count: 15610
+      - value: '5.0'
+        count: 14557
+    definition: 'ACS 2024 Gross Rent as a Percentage of Household Income in the Past
+      12 Months [B25070_006]: Total:, 25.0 to 29.9 percent (estimate).'
+    needs_confirmation: no
+  - name: rent_30_34E
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 8538
+    min_value: 0.0
+    max_value: 3872456.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 344207
+      - value: '2.0'
+        count: 21019
+      - value: '3.0'
+        count: 17442
+      - value: '4.0'
+        count: 15901
+      - value: '5.0'
+        count: 14996
+    definition: 'ACS 2024 Gross Rent as a Percentage of Household Income in the Past
+      12 Months [B25070_007]: Total:, 30.0 to 34.9 percent (estimate).'
+    needs_confirmation: no
+  - name: rent_35_39E
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 7466
+    min_value: 0.0
+    max_value: 2838920.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 399811
+      - value: '2.0'
+        count: 20690
+      - value: '3.0'
+        count: 18334
+      - value: '4.0'
+        count: 15860
+      - value: '5.0'
+        count: 14348
+    definition: 'ACS 2024 Gross Rent as a Percentage of Household Income in the Past
+      12 Months [B25070_008]: Total:, 35.0 to 39.9 percent (estimate).'
+    needs_confirmation: no
+  - name: rent_40_49E
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 8587
+    min_value: 0.0
+    max_value: 3858845.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 348019
+      - value: '2.0'
+        count: 21492
+      - value: '3.0'
+        count: 18364
+      - value: '4.0'
+        count: 16146
+      - value: '5.0'
+        count: 14990
+    definition: 'ACS 2024 Gross Rent as a Percentage of Household Income in the Past
+      12 Months [B25070_009]: Total:, 40.0 to 49.9 percent (estimate).'
+    needs_confirmation: no
+  - name: rent_50_plusE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 14027
+    min_value: 0.0
+    max_value: 1.0852194e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 217364
+      - value: '2.0'
+        count: 18637
+      - value: '3.0'
+        count: 15279
+      - value: '4.0'
+        count: 14894
+      - value: '5.0'
+        count: 13847
+    definition: 'ACS 2024 Gross Rent as a Percentage of Household Income in the Past
+      12 Months [B25070_010]: Total:, 50.0 percent or more (estimate).'
+    needs_confirmation: no
+  - name: rent_not_computedE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 7827
+    min_value: 0.0
+    max_value: 3206218.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 197080
+      - value: '2.0'
+        count: 20641
+      - value: '3.0'
+        count: 18320
+      - value: '4.0'
+        count: 17877
+      - value: '5.0'
+        count: 17211
+    definition: 'ACS 2024 Gross Rent as a Percentage of Household Income in the Past
+      12 Months [B25070_011]: Total:, Not computed (estimate).'
+    needs_confirmation: no
+  - name: median_owner_costs_totalE
+    type: DOUBLE
+    null_pct: 6.7597
+    distinct_count: 8334
+    min_value: 99.0
+    max_value: 4001.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 69012
+      - value: '650.0'
+        count: 3098
+      - value: '550.0'
+        count: 3086
+      - value: '750.0'
+        count: 2679
+      - value: '600.0'
+        count: 2635
+    definition: 'ACS 2024 Median Selected Monthly Owner Costs (Dollars) by Mortgage
+      Status [B25088_001]: Median selected monthly owner costs (dollars) --, Total:
+      (estimate).'
+    needs_confirmation: no
+  - name: median_owner_costs_mortgageE
+    type: DOUBLE
+    null_pct: 10.0527
+    distinct_count: 8122
+    min_value: 99.0
+    max_value: 4001.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 102631
+      - value: '4001.0'
+        count: 9584
+      - value: '1125.0'
+        count: 4185
+      - value: '950.0'
+        count: 4175
+      - value: '850.0'
+        count: 3548
+    definition: 'ACS 2024 Median Selected Monthly Owner Costs (Dollars) by Mortgage
+      Status [B25088_002]: Median selected monthly owner costs (dollars) --, Housing
+      units with a mortgage (dollars) (estimate).'
+    needs_confirmation: no
+  - name: median_owner_costs_no_mortgageE
+    type: DOUBLE
+    null_pct: 8.1629
+    distinct_count: 5842
+    min_value: 99.0
+    max_value: 1501.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 83338
+      - value: '1501.0'
+        count: 8670
+      - value: '1001.0'
+        count: 6039
+      - value: '375.0'
+        count: 5993
+      - value: '450.0'
+        count: 5319
+    definition: 'ACS 2024 Median Selected Monthly Owner Costs (Dollars) by Mortgage
+      Status [B25088_003]: Median selected monthly owner costs (dollars) --, Housing
+      units without a mortgage (dollars) (estimate).'
+    needs_confirmation: no
+  - name: struct_totalE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 48279
+    min_value: 0.0
+    max_value: 1.4377536e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 12518
+      - value: '46.0'
+        count: 1194
+      - value: '50.0'
+        count: 1174
+      - value: '71.0'
+        count: 1166
+      - value: '52.0'
+        count: 1159
+    definition: 'ACS 2024 Units in Structure [B25024_001]: Total: (estimate).'
+    needs_confirmation: no
+  - name: struct_1_detE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 37660
+    min_value: 0.0
+    max_value: 8.8075458e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 17114
+      - value: '39.0'
+        count: 1548
+      - value: '48.0'
+        count: 1530
+      - value: '43.0'
+        count: 1518
+      - value: '45.0'
+        count: 1516
+    definition: 'ACS 2024 Units in Structure [B25024_002]: Total:, 1, detached (estimate).'
+    needs_confirmation: no
+  - name: struct_1_attE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 12687
+    min_value: 0.0
+    max_value: 8955086.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 351732
+      - value: '2.0'
+        count: 22108
+      - value: '3.0'
+        count: 18733
+      - value: '4.0'
+        count: 15979
+      - value: '5.0'
+        count: 13889
+    definition: 'ACS 2024 Units in Structure [B25024_003]: Total:, 1, attached (estimate).'
+    needs_confirmation: no
+  - name: struct_2_unitsE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 10034
+    min_value: 0.0
+    max_value: 5004472.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 383610
+      - value: '2.0'
+        count: 13654
+      - value: '3.0'
+        count: 12302
+      - value: '4.0'
+        count: 12236
+      - value: '5.0'
+        count: 11547
+    definition: 'ACS 2024 Units in Structure [B25024_004]: Total:, 2 (estimate).'
+    needs_confirmation: no
+  - name: struct_3_4_unitsE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 11041
+    min_value: 0.0
+    max_value: 6214115.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 381874
+      - value: '2.0'
+        count: 10406
+      - value: '6.0'
+        count: 10054
+      - value: '4.0'
+        count: 9845
+      - value: '9.0'
+        count: 9770
+    definition: 'ACS 2024 Units in Structure [B25024_005]: Total:, 3 or 4 (estimate).'
+    needs_confirmation: no
+  - name: struct_5_9_unitsE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 11481
+    min_value: 0.0
+    max_value: 6483370.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 437110
+      - value: '5.0'
+        count: 8539
+      - value: '4.0'
+        count: 8529
+      - value: '7.0'
+        count: 8452
+      - value: '3.0'
+        count: 8324
+    definition: 'ACS 2024 Units in Structure [B25024_006]: Total:, 5 to 9 (estimate).'
+    needs_confirmation: no
+  - name: struct_10_19E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 11327
+    min_value: 0.0
+    max_value: 6141784.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 517677
+      - value: '3.0'
+        count: 8680
+      - value: '2.0'
+        count: 8058
+      - value: '4.0'
+        count: 7590
+      - value: '6.0'
+        count: 7366
+    definition: 'ACS 2024 Units in Structure [B25024_007]: Total:, 10 to 19 (estimate).'
+    needs_confirmation: no
+  - name: struct_20_49E
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 10275
+    min_value: 0.0
+    max_value: 5407809.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 558946
+      - value: '3.0'
+        count: 7573
+      - value: '9.0'
+        count: 6596
+      - value: '2.0'
+        count: 6595
+      - value: '4.0'
+        count: 6447
+    definition: 'ACS 2024 Units in Structure [B25024_008]: Total:, 20 to 49 (estimate).'
+    needs_confirmation: no
+  - name: struct_50_plusE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 12776
+    min_value: 0.0
+    max_value: 9451738.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 628358
+      - value: '3.0'
+        count: 6660
+      - value: '4.0'
+        count: 5754
+      - value: '8.0'
+        count: 5586
+      - value: '2.0'
+        count: 5502
+    definition: 'ACS 2024 Units in Structure [B25024_009]: Total:, 50 or more (estimate).'
+    needs_confirmation: no
+  - name: struct_mobileE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 11835
+    min_value: 0.0
+    max_value: 8583843.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 204491
+      - value: '9.0'
+        count: 11188
+      - value: '8.0'
+        count: 11171
+      - value: '10.0'
+        count: 10724
+      - value: '7.0'
+        count: 10578
+    definition: 'ACS 2024 Units in Structure [B25024_010]: Total:, Mobile home (estimate).'
+    needs_confirmation: no
+  - name: struct_otherE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 1703
+    min_value: 0.0
+    max_value: 186040.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 864362
+      - value: '2.0'
+        count: 7377
+      - value: '3.0'
+        count: 6925
+      - value: '8.0'
+        count: 6318
+      - value: '9.0'
+        count: 6165
+    definition: 'ACS 2024 Units in Structure [B25024_011]: Total:, Boat, RV, van,
+      etc. (estimate).'
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/silver/acs_housing_silver.R
+    details: 'Table write/create reference(s): scripts/etl/silver/acs_housing_silver.R:210:DBI::dbWriteTable(con,
+      DBI::Id(schema="silver", table="housing_base"),'
+kpi_definitions:
+  - kpi_name: hu_totalE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_totalE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_occupiedE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_vacantE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: tenure_totalE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: owner_occupiedE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: renter_occupiedE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: median_gross_rentE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: median_home_valueE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: rent_burden_totalE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: rent_lt_10E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: rent_10_14E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: rent_15_19E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: rent_20_24E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: rent_25_29E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: rent_30_34E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: rent_35_39E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: rent_40_49E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: rent_50_plusE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: rent_not_computedE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: median_owner_costs_totalE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: median_owner_costs_mortgageE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: median_owner_costs_no_mortgageE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: struct_totalE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: struct_1_detE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: struct_1_attE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: struct_2_unitsE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: struct_3_4_unitsE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: struct_5_9_unitsE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: struct_10_19E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: struct_20_49E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: struct_50_plusE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: struct_mobileE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: struct_otherE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS Housing (B2500x)
+    denominator_hint: ~
+    data_type: DOUBLE

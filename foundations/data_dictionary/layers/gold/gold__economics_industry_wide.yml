@@ -1,0 +1,708 @@
+table_name: economics_industry_wide
+schema: gold
+grain: One row per geo_level + geo_id + period (inferred).
+primary_key:
+- geo_level
+- geo_id
+- period
+foreign_keys: []
+time_coverage:
+  type: range
+  column: period
+  min: '2010'
+  max: '2023'
+geo_coverage:
+  notes:
+  - distinct_geo_levels=3
+  - distinct_geo_id=4089
+columns:
+- name: geo_level
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 3
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 6
+  top_values:
+  - value: county
+    count: 43652
+  - value: cbsa
+    count: 12782
+  - value: state
+    count: 840
+  definition: Geographic level (US, region, division, state, county, place, zcta,
+    tract, cbsa)
+  needs_confirmation: no
+- name: geo_id
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 4089
+  min_value: ~
+  max_value: ~
+  min_length: 5
+  max_length: 5
+  top_values:
+  - value: '32000'
+    count: 28
+  - value: '45000'
+    count: 28
+  - value: '00000'
+    count: 14
+  - value: '01000'
+    count: 14
+  - value: '01001'
+    count: 14
+  definition: Geographic identifier for the row
+  needs_confirmation: no
+- name: geo_name
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 3976
+  min_value: ~
+  max_value: ~
+  min_length: 4
+  max_length: 48
+  top_values:
+  - value: Alamosa, CO
+    count: 28
+  - value: Alpena, MI
+    count: 28
+  - value: Andrews, TX
+    count: 28
+  - value: Ashland, OH
+    count: 28
+  - value: Atchison, KS
+    count: 28
+  definition: Geographic name (from ACS NAME)
+  needs_confirmation: no
+- name: period
+  type: INTEGER
+  null_pct: 0.0
+  distinct_count: 14
+  min_value: 2010
+  max_value: 2023
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '2010'
+    count: 4091
+  - value: '2011'
+    count: 4091
+  - value: '2012'
+    count: 4091
+  - value: '2013'
+    count: 4091
+  - value: '2014'
+    count: 4091
+  definition: Time period for the observation (usually calendar year).
+  needs_confirmation: no
+- name: real_gdp_total
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 48677
+  min_value: 0.0
+  max_value: 2.2671096e+13
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 66
+  - value: '1291355000.0'
+    count: 5
+  - value: '1047702000.0'
+    count: 4
+  - value: '1162632000.0'
+    count: 4
+  - value: '1232928000.0'
+    count: 4
+  definition: Total real GDP for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: real_gdp_natural_resources
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 35213
+  min_value: 0.0
+  max_value: 5.3393692e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 10674
+  - value: '11237000.0'
+    count: 6
+  - value: '13982000.0'
+    count: 6
+  - value: '14675000.0'
+    count: 6
+  - value: '18161000.0'
+    count: 6
+  definition: Real GDP for the Natural Resources Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: real_gdp_manufacturing
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 41803
+  min_value: 0.0
+  max_value: 2.317923e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 4905
+  - value: '10000.0'
+    count: 6
+  - value: '8000.0'
+    count: 6
+  - value: '92000.0'
+    count: 6
+  - value: '10166000.0'
+    count: 5
+  definition: Real GDP for the Manufacturing Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: real_gdp_construction
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 39390
+  min_value: 0.0
+  max_value: 8.87608e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 4795
+  - value: '5940000.0'
+    count: 8
+  - value: '10986000.0'
+    count: 6
+  - value: '15007000.0'
+    count: 6
+  - value: '56503000.0'
+    count: 6
+  definition: Real GDP for the Construction Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: real_gdp_trade
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 36600
+  min_value: 0.0
+  max_value: 2.4847339e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 11359
+  - value: '118164000.0'
+    count: 5
+  - value: '141981000.0'
+    count: 5
+  - value: '52212000.0'
+    count: 5
+  - value: '102816000.0'
+    count: 4
+  definition: Real GDP for the Wholesale and Retail Trade Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: real_gdp_transportation
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 30295
+  min_value: 0.0
+  max_value: 7.06954e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 16203
+  - value: '33334000.0'
+    count: 7
+  - value: '11350000.0'
+    count: 6
+  - value: '11528000.0'
+    count: 6
+  - value: '27792000.0'
+    count: 6
+  definition: Real GDP for the Transportation Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: real_gdp_information
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 30599
+  min_value: 0.0
+  max_value: 1.605851e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 9231
+  - value: '21000.0'
+    count: 18
+  - value: '1000.0'
+    count: 17
+  - value: '2000.0'
+    count: 14
+  - value: '4000.0'
+    count: 14
+  definition: Real GDP for the Information Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: real_gdp_fire
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 42353
+  min_value: 0.0
+  max_value: 4.683675e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 4983
+  - value: '145390000.0'
+    count: 5
+  - value: '150642000.0'
+    count: 5
+  - value: '174069000.0'
+    count: 5
+  - value: '106141000.0'
+    count: 4
+  definition: Real GDP for the Finance, Insurance, and Real Estate Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: real_gdp_professional
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 38332
+  min_value: 0.0
+  max_value: 3.397301e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 3531
+  - value: '3000.0'
+    count: 7
+  - value: '4383000.0'
+    count: 7
+  - value: '105000.0'
+    count: 6
+  - value: '13556000.0'
+    count: 6
+  definition: Real GDP for the Professional, Scientific, and Management Services Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: real_gdp_edu_health
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 40771
+  min_value: 0.0
+  max_value: 2.021153e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 4518
+  - value: '174647000.0'
+    count: 6
+  - value: '176000.0'
+    count: 6
+  - value: '12100000.0'
+    count: 5
+  - value: '123207000.0'
+    count: 5
+  definition: Real GDP for the Educational and Health Services Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: real_gdp_leisure
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 34819
+  min_value: 0.0
+  max_value: 8.91815e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 9469
+  - value: '13000.0'
+    count: 12
+  - value: '16000.0'
+    count: 11
+  - value: '9000.0'
+    count: 10
+  - value: '1000.0'
+    count: 9
+  definition: Real GDP for the Leisure and Hospitality Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: real_gdp_gov
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 46758
+  min_value: 0.0
+  max_value: 2.582255e+12
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 66
+  - value: '118272000.0'
+    count: 5
+  - value: '182999000.0'
+    count: 5
+  - value: '217825000.0'
+    count: 5
+  - value: '408821000.0'
+    count: 5
+  definition: Real GDP for the Government Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: sector_sum
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 48671
+  min_value: 0.0
+  max_value: 2.204666e+13
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 66
+  - value: '1086191000.0'
+    count: 4
+  - value: '1239731000.0'
+    count: 4
+  - value: '1241494000.0'
+    count: 4
+  - value: '1474888000.0'
+    count: 4
+  definition: Sum of all Real GDPs for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: calc_real_gdp_other
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 46169
+  min_value: -3.364944e+09
+  max_value: 7.5218162e+11
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 66
+  - value: '25994000.0'
+    count: 6
+  - value: '45237000.0'
+    count: 6
+  - value: '63707000.0'
+    count: 6
+  - value: '72432000.0'
+    count: 6
+  definition: Real GDP for the "Other Services" Industry for the geographic area and time period, calculated as the difference between real_gdp_total and sector_sum.
+  needs_confirmation: no
+- name: pct_real_gdp_natural_resources
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 40090
+  min_value: 0.0
+  max_value: ~
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 10608
+  - value: -nan
+    count: 66
+  - value: '0.00023382027765575362'
+    count: 2
+  - value: '0.00025871421063795007'
+    count: 2
+  - value: '0.00027198913259063524'
+    count: 2
+  definition: Percentage of Real GDP for the Natural Resources Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: pct_real_gdp_manufacturing
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 44362
+  min_value: 0.0
+  max_value: ~
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 4839
+  - value: -nan
+    count: 66
+  - value: '0.0008406536318126004'
+    count: 2
+  - value: '0.0009340613774349977'
+    count: 2
+  - value: '0.001308300497051173'
+    count: 2
+  definition: Percentage of Real GDP for the Manufacturing Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: pct_real_gdp_construction
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 44462
+  min_value: 0.0
+  max_value: ~
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 4729
+  - value: -nan
+    count: 66
+  - value: '0.004587720523472292'
+    count: 2
+  - value: '0.006557404020111722'
+    count: 2
+  - value: '0.007438501252163227'
+    count: 2
+  definition: Percentage of Real GDP for the Construction Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: pct_real_gdp_trade
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 38905
+  min_value: 0.0
+  max_value: ~
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 11293
+  - value: -nan
+    count: 66
+  - value: '0.010340896770347193'
+    count: 2
+  - value: '0.011111784519859742'
+    count: 2
+  - value: '0.011181512453121984'
+    count: 2
+  definition: Percentage of Real GDP for the Wholesale and Retail Trade Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: pct_real_gdp_transportation
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 34553
+  min_value: 0.0
+  max_value: ~
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 16137
+  - value: -nan
+    count: 66
+  - value: '0.0003890499954895852'
+    count: 2
+  - value: '0.000993455780160484'
+    count: 2
+  - value: '0.0012708676693486715'
+    count: 2
+  definition: Percentage of Real GDP for the Transportation Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: pct_real_gdp_information
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 40041
+  min_value: 0.0
+  max_value: ~
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 9165
+  - value: -nan
+    count: 66
+  - value: '0.00046306403483129015'
+    count: 2
+  - value: '0.0005357101778224229'
+    count: 2
+  - value: '0.0006276552463660274'
+    count: 2
+  definition: Percentage of Real GDP for the Information Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: pct_real_gdp_fire
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 44132
+  min_value: 0.0
+  max_value: ~
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 4917
+  - value: -nan
+    count: 66
+  - value: '0.0025552374427359114'
+    count: 2
+  - value: '0.004607431619459697'
+    count: 2
+  - value: '0.007910972412065164'
+    count: 2
+  definition: Percentage of Real GDP for the Finance, Insurance, Real Estate Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: pct_real_gdp_professional
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 45656
+  min_value: 0.0
+  max_value: ~
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 3465
+  - value: -nan
+    count: 66
+  - value: '0.0015215332576264515'
+    count: 2
+  - value: '0.00154332518521149'
+    count: 2
+  - value: '0.00158115892246609'
+    count: 2
+  definition: Percentage of Real GDP for the Professional, Scientific, and Technical Services Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: pct_real_gdp_edu_health
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 44939
+  min_value: 0.0
+  max_value: ~
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 4452
+  - value: -nan
+    count: 66
+  - value: '0.0003859912123977272'
+    count: 2
+  - value: '0.0004003168214272374'
+    count: 2
+  - value: '0.00048537590222722844'
+    count: 2
+  definition: Percentage of Real GDP for the Educational and Health Services Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: pct_real_gdp_leisure
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 39851
+  min_value: 0.0
+  max_value: ~
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: '0.0'
+    count: 9403
+  - value: -nan
+    count: 66
+  - value: '0.00028434582582030366'
+    count: 2
+  - value: '0.00237503957280735'
+    count: 2
+  - value: '0.0043289914145101015'
+    count: 2
+  definition: Percentage of Real GDP for the Leisure and Hospitality Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: pct_real_gdp_gov
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 49033
+  min_value: 0.0001713
+  max_value: ~
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: -nan
+    count: 66
+  - value: '0.011030856115526287'
+    count: 2
+  - value: '0.011315654411064822'
+    count: 2
+  - value: '0.014076266572605071'
+    count: 2
+  - value: '0.014709317237897535'
+    count: 2
+  definition: Percentage of Real GDP for the Government Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: pct_calc_real_gdp_other
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 49033
+  min_value: -0.5689498
+  max_value: ~
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: -nan
+    count: 66
+  - value: '-0.00036832435458395693'
+    count: 2
+  - value: '-0.00046048122843446036'
+    count: 2
+  - value: '-0.0005418729995629883'
+    count: 2
+  - value: '-0.0011061286166589085'
+    count: 2
+  definition: Percentage of Real GDP for the Other Industry for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: industry_concentration_hhi
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 49033
+  min_value: 0.0985001
+  max_value: ~
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: -nan
+    count: 66
+  - value: '0.10219313942181639'
+    count: 2
+  - value: '0.10362014040034506'
+    count: 2
+  - value: '0.1037600528212887'
+    count: 2
+  - value: '0.10537338754516103'
+    count: 2
+  definition: Industry Concentration HHI (Herfindahl-Hirschman Index) for the geographic area and time period, from BEA regional data. Higher values indicate more concentration (less diversity) of industry GDP contributions.
+  needs_confirmation: no
+- name: sector_sum_ratio
+  type: DOUBLE
+  null_pct: 0.0
+  distinct_count: 49033
+  min_value: 0.0018203
+  max_value: ~
+  min_length: ~
+  max_length: ~
+  top_values:
+  - value: -nan
+    count: 66
+  - value: '0.22286412120320354'
+    count: 2
+  - value: '0.22549197756467484'
+    count: 2
+  - value: '0.22628174300074494'
+    count: 2
+  - value: '0.2552024435855193'
+    count: 2
+  definition: Ratio of the sum of all industry percentages to 100% for the geographic area and time period, from BEA regional data.
+  needs_confirmation: no
+- name: sector_sum_ratio_quality_flag
+  type: VARCHAR
+  null_pct: 0.0
+  distinct_count: 2
+  min_value: ~
+  max_value: ~
+  min_length: 7
+  max_length: 10
+  top_values:
+  - value: Non Bug
+    count: 57112
+  - value: Sector Bug
+    count: 162
+  definition: Quality flag indicating whether the sector sum ratio is within expected bounds (i.e., not a bug in the data processing).
+  needs_confirmation: no
+lineage:
+- step: write_target
+  script: scripts/etl/gold/gold_economy_industry.sql
+  details: 'scripts/etl/gold/gold_economy_industry.sql:5:create or replace table metro_deep_dive.gold.economics_industry_wide
+    as '
+kpi_definitions: []

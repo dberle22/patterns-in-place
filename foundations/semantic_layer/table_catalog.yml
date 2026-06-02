@@ -1,0 +1,840 @@
+version: 2
+catalog_name: table_catalog
+description: Canonical Gold-layer table contracts for the patterns-foundations semantic layer.
+tables:
+  - table_id: population_demographics
+    schema: gold
+    table_name: population_demographics
+    subject_areas: [population, demographics, character]
+    description: Core population, age, race, and education profile mart at the standard geography-year grain.
+    grain: one row per geo_level + geo_id + year
+    primary_key: [geo_level, geo_id, year]
+    geo_id_field: geo_id
+    geo_level_field: geo_level
+    geo_name_field: geo_name
+    time_field: year
+    supported_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    sources:
+      - source_id: ACS
+        columns:
+          - pop_total
+          - pop_growth_5yr
+          - median_age
+          - pct_age_under_18
+          - pct_age_over_64
+          - pct_hispanic
+          - diversity_index
+          - pct_ba_plus
+    upstream_dependencies:
+      - silver.age_kpi
+      - silver.race_kpi
+      - silver.education_kpi
+    columns:
+      - column_name: pop_total
+        type: integer
+        description: Total resident population for the geography and year.
+        source_id: ACS
+        queryable: true
+      - column_name: pop_growth_1yr
+        type: percent
+        description: One-year percentage change in total population.
+        source_id: ACS
+        queryable: true
+      - column_name: pop_growth_5yr
+        type: percent
+        description: Five-year percentage change in total population.
+        source_id: ACS
+        queryable: true
+      - column_name: pop_growth_10yr
+        type: percent
+        description: Ten-year percentage change in total population.
+        source_id: ACS
+        queryable: true
+      - column_name: median_age
+        type: number_1dp
+        description: Median age of the resident population.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_age_under_18
+        type: percent
+        description: Share of residents younger than 18.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_age_18_64
+        type: percent
+        description: Share of residents age 18 to 64.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_age_over_64
+        type: percent
+        description: Share of residents age 65 and older.
+        source_id: ACS
+        queryable: true
+      - column_name: dependents_per_worker
+        type: ratio
+        description: Ratio of young and older dependents to core working-age residents.
+        source_id: ACS
+        queryable: true
+      - column_name: aging_index
+        type: index
+        description: Ratio of older residents to younger residents.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_white_nh
+        type: percent
+        description: Share of residents who identify as non-Hispanic White.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_black_nh
+        type: percent
+        description: Share of residents who identify as non-Hispanic Black.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_asian_nh
+        type: percent
+        description: Share of residents who identify as non-Hispanic Asian.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_hispanic
+        type: percent
+        description: Share of residents who identify as Hispanic or Latino.
+        source_id: ACS
+        queryable: true
+      - column_name: diversity_index
+        type: index
+        description: Diversity index derived from race and ethnicity shares.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_ba_plus
+        type: percent
+        description: Share of adults age 25+ with a bachelor's degree or higher.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_grad_plus
+        type: percent
+        description: Share of adults age 25+ with a graduate or professional degree.
+        source_id: ACS
+        queryable: true
+    notes:
+      - Normalize warehouse geo values `US` and `Region` to canonical `us` and `region` in planner-facing layers.
+      - DB coverage is 2012-2024 across the full geography ladder.
+    status: active
+
+  - table_id: housing_core_wide
+    schema: gold
+    table_name: housing_core_wide
+    subject_areas: [housing, affordability, livability]
+    description: Core housing stock, rent, home value, burden, benchmark rent, permit, and structure mix mart.
+    grain: one row per geo_level + geo_id + year
+    primary_key: [geo_level, geo_id, year]
+    geo_id_field: geo_id
+    geo_level_field: geo_level
+    geo_name_field: geo_name
+    time_field: year
+    supported_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    sources:
+      - source_id: ACS
+        columns:
+          - hu_total
+          - vacancy_rate
+          - owner_occ_rate
+          - renter_occ_rate
+          - median_gross_rent
+          - median_home_value
+          - pct_rent_burden_30plus
+          - pct_rent_burden_50plus
+          - rent_to_income
+          - value_to_income
+          - pct_struct_multifam
+      - source_id: HUD_FMR
+        columns: [fmr_2br, fmr_gap_2br_vs_median_rent]
+      - source_id: HUD_RENT50
+        columns: [rent50_2br, rent50_gap_2br_vs_median_rent]
+      - source_id: BPS
+        columns: [permits_per_1000_housing_units, permits_share_multifam_units]
+    upstream_dependencies:
+      - silver.housing_kpi
+      - silver.income_kpi
+      - silver.hud_fmr_wide
+      - silver.hud_rent50_wide
+      - silver.bps_wide
+      - silver.age_kpi
+    columns:
+      - column_name: hu_total
+        type: integer
+        description: Total housing units.
+        source_id: ACS
+        queryable: true
+      - column_name: vacancy_rate
+        type: percent
+        description: Share of housing units that are vacant.
+        source_id: ACS
+        queryable: true
+      - column_name: owner_occ_rate
+        type: percent
+        description: Share of occupied housing units that are owner occupied.
+        source_id: ACS
+        queryable: true
+      - column_name: renter_occ_rate
+        type: percent
+        description: Share of occupied housing units that are renter occupied.
+        source_id: ACS
+        queryable: true
+      - column_name: median_gross_rent
+        type: currency
+        description: Median monthly gross rent.
+        source_id: ACS
+        queryable: true
+      - column_name: annualized_median_rent
+        type: currency
+        description: Median monthly gross rent multiplied by 12.
+        source_id: ACS
+        queryable: true
+      - column_name: median_home_value
+        type: currency
+        description: Median owner-occupied home value.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_rent_burden_30plus
+        type: percent
+        description: Share of renter households spending at least 30 percent of income on rent.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_rent_burden_50plus
+        type: percent
+        description: Share of renter households spending at least 50 percent of income on rent.
+        source_id: ACS
+        queryable: true
+      - column_name: rent_to_income
+        type: ratio
+        description: Annualized median rent divided by ACS per-capita income proxy.
+        source_id: ACS
+        queryable: true
+      - column_name: value_to_income
+        type: ratio
+        description: Median home value divided by household income context.
+        source_id: ACS
+        queryable: true
+      - column_name: fmr_2br
+        type: currency
+        description: HUD fair market rent for a two-bedroom unit.
+        source_id: HUD_FMR
+        queryable: true
+      - column_name: rent50_2br
+        type: currency
+        description: HUD 50th percentile rent for a two-bedroom unit.
+        source_id: HUD_RENT50
+        queryable: true
+      - column_name: fmr_gap_2br_vs_median_rent
+        type: currency
+        description: Difference between two-bedroom fair market rent and median gross rent.
+        source_id: HUD_FMR
+        queryable: true
+      - column_name: rent50_gap_2br_vs_median_rent
+        type: currency
+        description: Difference between two-bedroom rent50 benchmark and median gross rent.
+        source_id: HUD_RENT50
+        queryable: true
+      - column_name: permits_per_1000_housing_units
+        type: ratio
+        description: Residential permits per 1,000 housing units.
+        source_id: BPS
+        queryable: true
+      - column_name: permits_share_multifam_units
+        type: percent
+        description: Share of permitted units in multifamily structures.
+        source_id: BPS
+        queryable: true
+      - column_name: pct_struct_multifam
+        type: percent
+        description: Share of housing stock in multifamily structures.
+        source_id: ACS
+        queryable: true
+    notes:
+      - DB coverage is 2012-2024, but HUD and BPS fields are sparser than core ACS measures.
+      - Use this as the canonical source for housing affordability levels before falling back to affordability_wide.
+    status: active
+
+  - table_id: economics_income_wide
+    schema: gold
+    table_name: economics_income_wide
+    subject_areas: [income, opportunity, affordability]
+    description: Income, earnings, and inequality mart combining ACS household context with BEA personal income measures.
+    grain: one row per geo_level + geo_id + year
+    primary_key: [geo_level, geo_id, year]
+    geo_id_field: geo_id
+    geo_level_field: geo_level
+    geo_name_field: geo_name
+    time_field: year
+    supported_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    sources:
+      - source_id: ACS
+        columns: [median_hh_income, acs_income_pc, pov_rate, gini_index]
+      - source_id: BEA_CAINC1
+        columns: [pi_total, calc_income_pc, pi_wages_salary, pi_wage_share]
+      - source_id: BEA_CAINC4
+        columns: [income_pc_growth_1yr, income_pc_growth_5yr, income_pc_growth_10yr]
+    upstream_dependencies:
+      - silver.age_kpi
+      - silver.income_kpi
+      - silver.bea_regional_cainc1_wide
+      - silver.bea_regional_cainc4_wide
+    columns:
+      - column_name: median_hh_income
+        type: currency
+        description: Median household income.
+        source_id: ACS
+        queryable: true
+      - column_name: acs_income_pc
+        type: currency
+        description: ACS-derived per-capita income.
+        source_id: ACS
+        queryable: true
+      - column_name: calc_income_pc
+        type: currency
+        description: BEA personal income divided by population.
+        source_id: BEA_CAINC1
+        queryable: true
+      - column_name: income_pc_growth_1yr
+        type: percent
+        description: One-year percentage change in per-capita income.
+        source_id: BEA_CAINC4
+        queryable: true
+      - column_name: income_pc_growth_5yr
+        type: percent
+        description: Five-year percentage change in per-capita income.
+        source_id: BEA_CAINC4
+        queryable: true
+      - column_name: income_pc_growth_10yr
+        type: percent
+        description: Ten-year percentage change in per-capita income.
+        source_id: BEA_CAINC4
+        queryable: true
+      - column_name: pi_total
+        type: currency
+        description: Total personal income.
+        source_id: BEA_CAINC1
+        queryable: true
+      - column_name: pi_wages_salary
+        type: currency
+        description: Wages and salary disbursements.
+        source_id: BEA_CAINC1
+        queryable: true
+      - column_name: pi_wage_share
+        type: percent
+        description: Share of personal income from wages and salaries.
+        source_id: BEA_CAINC1
+        queryable: true
+      - column_name: pov_rate
+        type: percent
+        description: Poverty rate.
+        source_id: ACS
+        queryable: true
+      - column_name: gini_index
+        type: index
+        description: Household income inequality index.
+        source_id: ACS
+        queryable: true
+    notes:
+      - DB coverage is 2012-2024 across the core geography ladder, broader than the earlier chatbot-only contract.
+      - Prefer this mart for opportunity and income-growth analysis; housing_core_wide carries duplicated income context for convenience only.
+    status: active
+
+  - table_id: affordability_wide
+    schema: gold
+    table_name: affordability_wide
+    subject_areas: [affordability, housing, income]
+    description: Derived affordability mart that layers regional price parity context on top of housing and income measures.
+    grain: one row per geo_level + geo_id + year
+    primary_key: [geo_level, geo_id, year]
+    geo_id_field: geo_id
+    geo_level_field: geo_level
+    geo_name_field: geo_name
+    time_field: year
+    supported_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    sources:
+      - source_id: ACS
+        columns: [rent_to_income, value_to_income]
+      - source_id: BEA_RPP
+        columns: [rpp_real_pc_income, rpp_all_items, rpp_price_deflator, rent_to_rpp_income, value_to_rpp_income]
+    upstream_dependencies:
+      - gold.housing_core_wide
+      - gold.economics_income_wide
+      - silver.bea_regional_marpp_wide
+    columns:
+      - column_name: rpp_real_pc_income
+        type: currency
+        description: Regional-price-parity-adjusted real per-capita income.
+        source_id: BEA_RPP
+        queryable: true
+      - column_name: rpp_all_items
+        type: index
+        description: BEA regional price parity all-items index.
+        source_id: BEA_RPP
+        queryable: true
+      - column_name: rpp_price_deflator
+        type: index
+        description: Price parity deflator used in affordability adjustments.
+        source_id: BEA_RPP
+        queryable: true
+      - column_name: rent_to_rpp_income
+        type: ratio
+        description: Annualized median rent divided by RPP-adjusted income.
+        source_id: BEA_RPP
+        queryable: true
+      - column_name: value_to_rpp_income
+        type: ratio
+        description: Median home value divided by RPP-adjusted income.
+        source_id: BEA_RPP
+        queryable: true
+    notes:
+      - This table reuses several housing and income fields, but the semantic layer treats it as the canonical source only for RPP-adjusted affordability metrics.
+      - Some BEA RPP fields are null at the finest geographies.
+    status: active
+
+  - table_id: migration_wide
+    schema: gold
+    table_name: migration_wide
+    subject_areas: [migration, nativity, character]
+    description: Migration, mobility, nativity, and IRS migration extension mart.
+    grain: one row per geo_level + geo_id + year
+    primary_key: [geo_level, geo_id, year]
+    geo_id_field: geo_id
+    geo_level_field: geo_level
+    geo_name_field: geo_name
+    time_field: year
+    supported_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    sources:
+      - source_id: ACS
+        columns:
+          - pct_same_house
+          - pct_moved_diff_st
+          - pct_moved_abroad
+          - mobility_rate
+          - pct_foreign_born
+          - pct_non_citizen
+      - source_id: IRS
+        columns:
+          - irs_net_migration
+          - irs_net_migration_rate
+          - irs_migration_churn
+    upstream_dependencies:
+      - silver.migration_kpi
+    columns:
+      - column_name: pct_same_house
+        type: percent
+        description: Share of residents living in the same house as one year earlier.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_moved_diff_st
+        type: percent
+        description: Share of residents who moved from a different state within the past year.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_moved_abroad
+        type: percent
+        description: Share of residents who moved from abroad within the past year.
+        source_id: ACS
+        queryable: true
+      - column_name: mobility_rate
+        type: percent
+        description: Share of residents who changed residence within the past year.
+        source_id: ACS
+        queryable: true
+      - column_name: migration_churn
+        type: percent
+        description: Combined share of movers as a churn-style mobility indicator.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_foreign_born
+        type: percent
+        description: Share of residents born outside the United States.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_non_citizen
+        type: percent
+        description: Share of residents who are non-citizens.
+        source_id: ACS
+        queryable: true
+      - column_name: irs_net_migration
+        type: integer
+        description: IRS-based net migration count.
+        source_id: IRS
+        queryable: true
+      - column_name: irs_net_migration_rate
+        type: percent
+        description: IRS-based net migration rate.
+        source_id: IRS
+        queryable: true
+      - column_name: irs_migration_churn
+        type: percent
+        description: IRS-based migration churn rate.
+        source_id: IRS
+        queryable: true
+    notes:
+      - IRS fields are not universally populated, so ACS migration measures remain the most reliable defaults.
+    status: active
+
+  - table_id: transport_built_form_wide
+    schema: gold
+    table_name: transport_built_form_wide
+    subject_areas: [transport, mobility, built_form, livability]
+    description: Commute mode, household vehicle access, travel time, and density mart.
+    grain: one row per geo_level + geo_id + year
+    primary_key: [geo_level, geo_id, year]
+    geo_id_field: geo_id
+    geo_level_field: geo_level
+    geo_name_field: geo_name
+    time_field: year
+    supported_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    sources:
+      - source_id: ACS
+        columns:
+          - pct_commute_drive_alone
+          - pct_commute_transit
+          - pct_commute_walk
+          - pct_commute_wfh
+          - pct_low_car_commute
+          - pct_hh_0_vehicles
+          - mean_travel_time
+      - source_id: TIGER_OSM
+        columns: [density_population, gross_density_sqmi, pop_weighted_density_sqmi]
+    upstream_dependencies:
+      - silver.transport_kpi
+    columns:
+      - column_name: pct_commute_drive_alone
+        type: percent
+        description: Share of commuters who drive alone.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_commute_transit
+        type: percent
+        description: Share of commuters who use public transit.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_commute_walk
+        type: percent
+        description: Share of commuters who walk to work.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_commute_wfh
+        type: percent
+        description: Share of workers who work from home.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_low_car_commute
+        type: percent
+        description: Combined low-car commute mode share.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_hh_0_vehicles
+        type: percent
+        description: Share of households with zero vehicles available.
+        source_id: ACS
+        queryable: true
+      - column_name: mean_travel_time
+        type: number_1dp
+        description: Mean commute travel time in minutes.
+        source_id: ACS
+        queryable: true
+      - column_name: density_population
+        type: density
+        description: Population density input measure.
+        source_id: TIGER_OSM
+        queryable: true
+      - column_name: gross_density_sqmi
+        type: density
+        description: Gross population density per square mile.
+        source_id: TIGER_OSM
+        queryable: true
+      - column_name: pop_weighted_density_sqmi
+        type: density
+        description: Population-weighted density per square mile.
+        source_id: TIGER_OSM
+        queryable: true
+    notes:
+      - Density fields can be null for some rows even when commute metrics are populated.
+    status: active
+
+  - table_id: economics_gdp_wide
+    schema: gold
+    table_name: economics_gdp_wide
+    subject_areas: [economy, gdp, opportunity]
+    description: GDP and productivity mart for output and per-capita production analysis.
+    grain: one row per geo_level + geo_id + year
+    primary_key: [geo_level, geo_id, year]
+    geo_id_field: geo_id
+    geo_level_field: geo_level
+    geo_name_field: geo_name
+    time_field: year
+    supported_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    sources:
+      - source_id: BEA_GDP
+        columns:
+          - nominal_gdp_total
+          - nominal_gdp_growth_5yr
+          - nominal_gdp_pc
+          - real_gdp_total
+          - real_gdp_growth_5yr
+          - real_gdp_pc
+          - productivity_index
+          - productivity_growth_5yr
+    upstream_dependencies:
+      - silver.bea_regional_cagdp2_wide
+      - silver.bea_regional_cagdp9_wide
+      - silver.age_kpi
+    columns:
+      - column_name: nominal_gdp_total
+        type: currency
+        description: Nominal gross domestic product.
+        source_id: BEA_GDP
+        queryable: true
+      - column_name: nominal_gdp_growth_5yr
+        type: percent
+        description: Five-year percentage change in nominal GDP.
+        source_id: BEA_GDP
+        queryable: true
+      - column_name: nominal_gdp_pc
+        type: currency
+        description: Nominal GDP per capita.
+        source_id: BEA_GDP
+        queryable: true
+      - column_name: real_gdp_total
+        type: currency
+        description: Real gross domestic product.
+        source_id: BEA_GDP
+        queryable: true
+      - column_name: real_gdp_growth_5yr
+        type: percent
+        description: Five-year percentage change in real GDP.
+        source_id: BEA_GDP
+        queryable: true
+      - column_name: real_gdp_pc
+        type: currency
+        description: Real GDP per capita.
+        source_id: BEA_GDP
+        queryable: true
+      - column_name: productivity_index
+        type: index
+        description: Output-per-worker productivity index.
+        source_id: BEA_GDP
+        queryable: true
+      - column_name: productivity_growth_5yr
+        type: percent
+        description: Five-year percentage change in productivity.
+        source_id: BEA_GDP
+        queryable: true
+    notes:
+      - GDP fields exist in the warehouse at more geographies than originally assumed, but completeness varies.
+    status: active
+
+  - table_id: economics_labor_wide
+    schema: gold
+    table_name: economics_labor_wide
+    subject_areas: [labor, employment, opportunity]
+    description: Labor force participation, employment, and unemployment mart.
+    grain: one row per geo_level + geo_id + year
+    primary_key: [geo_level, geo_id, year]
+    geo_id_field: geo_id
+    geo_level_field: geo_level
+    geo_name_field: geo_name
+    time_field: year
+    supported_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    sources:
+      - source_id: ACS
+        columns: [working_age_pop, labor_force, lfpr, jobs_to_pop_ratio]
+      - source_id: BLS_LAUS
+        columns: [employed, unemployed, pct_unemployment_rate, unemployment_rate_change_1yr]
+    upstream_dependencies:
+      - silver.labor_kpi
+      - silver.bls_laus_wide
+      - silver.age_kpi
+    columns:
+      - column_name: working_age_pop
+        type: integer
+        description: Working-age population base.
+        source_id: ACS
+        queryable: true
+      - column_name: labor_force
+        type: integer
+        description: Total labor force.
+        source_id: ACS
+        queryable: true
+      - column_name: lfpr
+        type: percent
+        description: Labor force participation rate.
+        source_id: ACS
+        queryable: true
+      - column_name: lfpr_growth_5yr
+        type: percent
+        description: Five-year percentage change in labor force participation rate.
+        source_id: ACS
+        queryable: true
+      - column_name: employed
+        type: integer
+        description: Employed residents or workers in the labor series.
+        source_id: BLS_LAUS
+        queryable: true
+      - column_name: jobs_to_pop_ratio
+        type: percent
+        description: Employed population divided by total population.
+        source_id: ACS
+        queryable: true
+      - column_name: unemployed
+        type: integer
+        description: Unemployed residents in the labor series.
+        source_id: BLS_LAUS
+        queryable: true
+      - column_name: pct_unemployment_rate
+        type: percent
+        description: Unemployment rate.
+        source_id: BLS_LAUS
+        queryable: true
+    notes:
+      - The warehouse stores more geography coverage than the earlier MVP contract, but BLS-derived quality still varies by geography.
+    status: active
+
+  - table_id: economics_industry_wide
+    schema: gold
+    table_name: economics_industry_wide
+    subject_areas: [industry, economy, opportunity]
+    description: Industry composition and sector GDP mix mart at the standard geography-year grain.
+    grain: one row per geo_level + geo_id + year
+    primary_key: [geo_level, geo_id, year]
+    geo_id_field: geo_id
+    geo_level_field: geo_level
+    geo_name_field: geo_name
+    time_field: year
+    supported_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    sources:
+      - source_id: ACS
+        columns:
+          - acs_ind_total_emp
+          - pct_acs_ind_manufacturing
+          - pct_acs_ind_professional
+          - pct_acs_ind_educ_health
+          - pct_acs_ind_arts_accomm_food
+          - acs_industry_concentration_hhi
+      - source_id: BEA_GDP
+        columns:
+          - pct_real_gdp_manufacturing
+          - pct_real_gdp_professional
+          - pct_real_gdp_edu_health
+          - industry_concentration_hhi
+    upstream_dependencies:
+      - silver.labor_kpi
+      - silver.bea_regional_cagdp9_wide
+      - silver.age_kpi
+    columns:
+      - column_name: acs_ind_total_emp
+        type: integer
+        description: Total employed population in the ACS industry breakout.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_acs_ind_manufacturing
+        type: percent
+        description: Share of workers employed in manufacturing.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_acs_ind_professional
+        type: percent
+        description: Share of workers employed in professional services.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_acs_ind_educ_health
+        type: percent
+        description: Share of workers employed in education and health services.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_acs_ind_arts_accomm_food
+        type: percent
+        description: Share of workers employed in arts, accommodations, and food services.
+        source_id: ACS
+        queryable: true
+      - column_name: pct_real_gdp_manufacturing
+        type: percent
+        description: Share of real GDP from manufacturing.
+        source_id: BEA_GDP
+        queryable: true
+      - column_name: pct_real_gdp_professional
+        type: percent
+        description: Share of real GDP from professional services.
+        source_id: BEA_GDP
+        queryable: true
+      - column_name: pct_real_gdp_edu_health
+        type: percent
+        description: Share of real GDP from education and health.
+        source_id: BEA_GDP
+        queryable: true
+      - column_name: industry_concentration_hhi
+        type: index
+        description: Sector concentration index based on GDP mix.
+        source_id: BEA_GDP
+        queryable: true
+      - column_name: acs_industry_concentration_hhi
+        type: index
+        description: Sector concentration index based on ACS worker mix.
+        source_id: ACS
+        queryable: true
+    notes:
+      - Despite its name, the live warehouse table is still a wide geography-year mart rather than a geography-year-industry long table.
+    status: active
+
+  - table_id: benchmark_reference
+    schema: gold
+    table_name: benchmark_reference
+    subject_areas: [benchmarks, planner_internal]
+    description: Precomputed benchmark reference table for normalized comparisons against US, region, and division aggregates.
+    grain: one row per benchmark_level + benchmark_geo_id + source_table + metric_id + year
+    primary_key: [benchmark_level, benchmark_geo_id, source_table, metric_id, year]
+    geo_id_field: benchmark_geo_id
+    geo_level_field: benchmark_level
+    geo_name_field: benchmark_label
+    time_field: year
+    supported_geo_levels: [us, region, division]
+    sources:
+      - source_id: DERIVED
+        columns: [metric_value]
+    upstream_dependencies:
+      - gold.population_demographics
+      - gold.housing_core_wide
+      - gold.economics_income_wide
+    columns:
+      - column_name: metric_value
+        type: numeric
+        description: Benchmark value for a specific source table, metric, year, and benchmark geography.
+        source_id: DERIVED
+        queryable: false
+    notes:
+      - This table is planner support infrastructure, not a primary direct-query fact mart.
+    status: restricted
+
+  - table_id: tx_isd_metrics
+    schema: gold
+    table_name: tx_isd_metrics
+    subject_areas: [education, texas_school_districts]
+    description: Specialized Texas independent school district scoring output used outside the core cross-market semantic layer.
+    grain: one row per district
+    primary_key: [nces_district_id]
+    geo_id_field: nces_district_id
+    geo_level_field: district_type
+    geo_name_field: district_name
+    time_field: null
+    supported_geo_levels: [tx_isd]
+    sources:
+      - source_id: TEA
+        columns: [enrollment, title_1_allocations, allocations_per_student, lead_score]
+      - source_id: ACS
+        columns: [population, population_growth_5yr, median_income, child_poverty_rate, diversity_index]
+    upstream_dependencies:
+      - silver.acs_tx_school_metrics
+      - silver.tx_tea_district_metrics
+    columns:
+      - column_name: lead_score
+        type: index
+        description: District lead score used in the Texas school-district workflow.
+        source_id: TEA
+        queryable: false
+    notes:
+      - This table is intentionally excluded from the default planner surface pending a broader education semantic design.
+    status: restricted

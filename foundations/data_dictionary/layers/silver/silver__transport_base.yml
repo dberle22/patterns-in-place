@@ -1,0 +1,595 @@
+table_name: transport_base
+schema: silver
+grain: One row per geo_level + geo_id + geo_name + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - geo_name
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=115976
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 8
+    top_values:
+      - value: zcta
+        count: 433172
+      - value: place
+        count: 397094
+      - value: tract
+        count: 135851
+      - value: county
+        count: 41870
+      - value: cbsa
+        count: 12085
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 115976
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 11
+    top_values:
+      - value: '1'
+        count: 39
+      - value: '2'
+        count: 26
+      - value: '3'
+        count: 26
+      - value: '4'
+        count: 26
+      - value: '01001'
+        count: 25
+    definition: Geographic identifier for the row
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 97125
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 66
+    top_values:
+      - value: Alexandria city, Virginia
+        count: 26
+      - value: Baltimore city, Maryland
+        count: 26
+      - value: Bristol city, Virginia
+        count: 26
+      - value: Buena Vista city, Virginia
+        count: 26
+      - value: Carson City, Nevada
+        count: 26
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 13
+    min_value: 2012
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2024'
+        count: 82276
+      - value: '2023'
+        count: 82271
+      - value: '2022'
+        count: 82134
+      - value: '2021'
+        count: 81848
+      - value: '2020'
+        count: 81194
+    definition: Observation year or period year for the row.
+    needs_confirmation: no
+  - name: commute_workers_totalE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 51619
+    min_value: 0.0
+    max_value: 1.5911409e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 18087
+      - value: '27.0'
+        count: 1423
+      - value: '41.0'
+        count: 1393
+      - value: '46.0'
+        count: 1390
+      - value: '28.0'
+        count: 1377
+    definition: 'ACS 2024 Means of Transportation to Work [B08301_001]: Total: (estimate).'
+    needs_confirmation: no
+  - name: commute_car_truck_vanE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 46993
+    min_value: 0.0
+    max_value: 1.3034804e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 21870
+      - value: '14.0'
+        count: 1603
+      - value: '27.0'
+        count: 1575
+      - value: '21.0'
+        count: 1550
+      - value: '12.0'
+        count: 1539
+    definition: 'ACS 2024 Means of Transportation to Work [B08301_002]: Total:, Car,
+      truck, or van: (estimate).'
+    needs_confirmation: no
+  - name: commute_drove_aloneE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 44049
+    min_value: 0.0
+    max_value: 1.1658451e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 23593
+      - value: '14.0'
+        count: 1778
+      - value: '15.0'
+        count: 1712
+      - value: '12.0'
+        count: 1699
+      - value: '18.0'
+        count: 1699
+    definition: 'ACS 2024 Means of Transportation to Work [B08301_003]: Total:, Car,
+      truck, or van:, Drove alone (estimate).'
+    needs_confirmation: no
+  - name: commute_carpoolE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 15490
+    min_value: 0.0
+    max_value: 1.4032099e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 108075
+      - value: '4.0'
+        count: 9485
+      - value: '6.0'
+        count: 9410
+      - value: '8.0'
+        count: 9301
+      - value: '2.0'
+        count: 9229
+    definition: 'ACS 2024 Means of Transportation to Work [B08301_004]: Total:, Car,
+      truck, or van:, Carpooled: (estimate).'
+    needs_confirmation: no
+  - name: commute_public_transE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 11105
+    min_value: 0.0
+    max_value: 7641160.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 581989
+      - value: '2.0'
+        count: 16192
+      - value: '3.0'
+        count: 13915
+      - value: '1.0'
+        count: 12467
+      - value: '4.0'
+        count: 11431
+    definition: 'ACS 2024 Means of Transportation to Work [B08301_010]: Total:, Public
+      transportation: (estimate).'
+    needs_confirmation: no
+  - name: commute_taxicabE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 2532
+    min_value: 0.0
+    max_value: 415878.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 881462
+      - value: '9.0'
+        count: 4225
+      - value: '8.0'
+        count: 4087
+      - value: '10.0'
+        count: 3874
+      - value: '11.0'
+        count: 3650
+    definition: 'ACS 2024 Means of Transportation to Work [B08301_016]: Total:, Taxi
+      or ride-hailing services (estimate).'
+    needs_confirmation: no
+  - name: commute_motorcycleE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 2493
+    min_value: 0.0
+    max_value: 316992.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 777305
+      - value: '2.0'
+        count: 10391
+      - value: '3.0'
+        count: 10266
+      - value: '9.0'
+        count: 8717
+      - value: '8.0'
+        count: 8614
+    definition: 'ACS 2024 Means of Transportation to Work [B08301_017]: Total:, Motorcycle
+      (estimate).'
+    needs_confirmation: no
+  - name: commute_bicycleE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 4494
+    min_value: 0.0
+    max_value: 877995.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 728764
+      - value: '2.0'
+        count: 10125
+      - value: '3.0'
+        count: 9834
+      - value: '4.0'
+        count: 8276
+      - value: '7.0'
+        count: 7976
+    definition: 'ACS 2024 Means of Transportation to Work [B08301_018]: Total:, Bicycle
+      (estimate).'
+    needs_confirmation: no
+  - name: commute_walkedE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 9157
+    min_value: 0.0
+    max_value: 4073891.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 301804
+      - value: '2.0'
+        count: 21683
+      - value: '3.0'
+        count: 18938
+      - value: '4.0'
+        count: 17386
+      - value: '5.0'
+        count: 16448
+    definition: 'ACS 2024 Means of Transportation to Work [B08301_019]: Total:, Walked
+      (estimate).'
+    needs_confirmation: no
+  - name: commute_otherE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 5551
+    min_value: 0.0
+    max_value: 1807557.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 452073
+      - value: '2.0'
+        count: 22666
+      - value: '3.0'
+        count: 20297
+      - value: '4.0'
+        count: 17403
+      - value: '5.0'
+        count: 15488
+    definition: 'ACS 2024 Means of Transportation to Work [B08301_020]: Total:, Other
+      means (estimate).'
+    needs_confirmation: no
+  - name: commute_worked_homeE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 13990
+    min_value: 0.0
+    max_value: 2.4042489e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 156507
+      - value: '2.0'
+        count: 16059
+      - value: '3.0'
+        count: 14367
+      - value: '4.0'
+        count: 14162
+      - value: '5.0'
+        count: 13102
+    definition: 'ACS 2024 Means of Transportation to Work [B08301_021]: Total:, Worked
+      from home (estimate).'
+    needs_confirmation: no
+  - name: veh_total_hhE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 45115
+    min_value: 0.0
+    max_value: 1.292275e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 15641
+      - value: '33.0'
+        count: 1475
+      - value: '32.0'
+        count: 1463
+      - value: '39.0'
+        count: 1453
+      - value: '43.0'
+        count: 1445
+    definition: 'ACS 2024 Household Size by Vehicles Available [B08201_001]: Total:
+      (estimate).'
+    needs_confirmation: no
+  - name: veh_0E
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 14095
+    min_value: 0.0
+    max_value: 1.0793323e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 167297
+      - value: '2.0'
+        count: 19638
+      - value: '3.0'
+        count: 16005
+      - value: '4.0'
+        count: 15406
+      - value: '5.0'
+        count: 14564
+    definition: 'ACS 2024 Household Size by Vehicles Available [B08201_002]: Total:,
+      No vehicle available (estimate).'
+    needs_confirmation: no
+  - name: veh_1E
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 25800
+    min_value: 0.0
+    max_value: 4.2801892e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 40851
+      - value: '9.0'
+        count: 4964
+      - value: '10.0'
+        count: 4829
+      - value: '11.0'
+        count: 4799
+      - value: '8.0'
+        count: 4714
+    definition: 'ACS 2024 Household Size by Vehicles Available [B08201_003]: Total:,
+      1 vehicle available (estimate).'
+    needs_confirmation: no
+  - name: veh_2E
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 27085
+    min_value: 0.0
+    max_value: 4.7334152e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 33163
+      - value: '9.0'
+        count: 3756
+      - value: '10.0'
+        count: 3727
+      - value: '11.0'
+        count: 3590
+      - value: '8.0'
+        count: 3579
+    definition: 'ACS 2024 Household Size by Vehicles Available [B08201_004]: Total:,
+      2 vehicles available (estimate).'
+    needs_confirmation: no
+  - name: veh_3E
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 17156
+    min_value: 0.0
+    max_value: 1.8773476e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 59849
+      - value: '9.0'
+        count: 7170
+      - value: '10.0'
+        count: 7011
+      - value: '8.0'
+        count: 7004
+      - value: '11.0'
+        count: 6866
+    definition: 'ACS 2024 Household Size by Vehicles Available [B08201_005]: Total:,
+      3 vehicles available (estimate).'
+    needs_confirmation: no
+  - name: veh_4_plusE
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 11828
+    min_value: 0.0
+    max_value: 9524653.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 108276
+      - value: '6.0'
+        count: 11947
+      - value: '8.0'
+        count: 11838
+      - value: '9.0'
+        count: 11702
+      - value: '7.0'
+        count: 11666
+    definition: 'ACS 2024 Household Size by Vehicles Available [B08201_006]: Total:,
+      4 or more vehicles available (estimate).'
+    needs_confirmation: no
+  - name: total_travel_timeE
+    type: DOUBLE
+    null_pct: 7.4595
+    distinct_count: 127607
+    min_value: 0.0
+    max_value: 3.9017299e+09
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 76156
+      - value: '2455.0'
+        count: 236
+      - value: '2725.0'
+        count: 228
+      - value: '1940.0'
+        count: 225
+      - value: '1980.0'
+        count: 225
+    definition: 'ACS 2024 Aggregate Travel Time to Work (in Minutes) of Workers by
+      Sex [B08013_001]: Aggregate travel time to work (in minutes): (estimate).'
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/silver/acs_transport_silver.R
+    details: 'Table write/create reference(s): scripts/etl/silver/acs_transport_silver.R:186:DBI::dbWriteTable(con,
+      DBI::Id(schema="silver", table="transport_base"),'
+kpi_definitions:
+  - kpi_name: commute_workers_totalE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: commute_car_truck_vanE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: commute_drove_aloneE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: commute_carpoolE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: commute_public_transE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: commute_taxicabE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: commute_motorcycleE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: commute_bicycleE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: commute_walkedE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: commute_otherE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: commute_worked_homeE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: veh_total_hhE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: veh_0E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: veh_1E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: veh_2E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: veh_3E
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: veh_4_plusE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: mean_travel_timeE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE

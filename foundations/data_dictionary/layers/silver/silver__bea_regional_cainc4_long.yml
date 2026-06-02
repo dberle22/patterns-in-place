@@ -1,0 +1,293 @@
+table_name: bea_regional_cainc4_long
+schema: silver
+grain: One row per geo_level + geo_id + period + metric_key (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - period
+  - metric_key
+foreign_keys: []
+time_coverage:
+  type: range
+  column: period
+  min: '2000'
+  max: '2023'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=3
+    - distinct_geo_id=3585
+columns:
+  - name: code
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 13
+    min_value: ~
+    max_value: ~
+    min_length: 9
+    max_length: 9
+    top_values:
+      - value: CAINC4-11
+        count: 86040
+      - value: CAINC4-35
+        count: 86040
+      - value: CAINC4-42
+        count: 86040
+      - value: CAINC4-45
+        count: 86040
+      - value: CAINC4-46
+        count: 86040
+    definition: 'BEA Table Code, used to link to BEA datasets and metadata. Examples include: CAGDP2-1, CAGDP2-10, CAINC1-1, etc.'
+    needs_confirmation: no
+  - name: table
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: ~
+    max_value: ~
+    min_length: 6
+    max_length: 6
+    top_values:
+      - value: CAINC4
+        count: 1097160
+    definition: BEA source table identifier (for example, CAGDP2, CAGDP9, CAINC1,
+      CAINC4, MARPP).
+    needs_confirmation: no
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 3
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 6
+    top_values:
+      - value: county
+        count: 979680
+      - value: cbsa
+        count: 101640
+      - value: state
+        count: 15840
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 3585
+    min_value: ~
+    max_value: ~
+    min_length: 5
+    max_length: 5
+    top_values:
+      - value: '01001'
+        count: 312
+      - value: '01003'
+        count: 312
+      - value: '01005'
+        count: 312
+      - value: '01007'
+        count: 312
+      - value: 01009
+        count: 312
+    definition: Geographic identifier for the row
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 3585
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 78
+    top_values:
+      - value: Abbeville, SC
+        count: 312
+      - value: Acadia, LA
+        count: 312
+      - value: Accomack, VA
+        count: 312
+      - value: Ada, ID
+        count: 312
+      - value: Adair, IA
+        count: 312
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: no
+  - name: period
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 24
+    min_value: 2000
+    max_value: 2023
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2000'
+        count: 45715
+      - value: '2001'
+        count: 45715
+      - value: '2002'
+        count: 45715
+      - value: '2003'
+        count: 45715
+      - value: '2004'
+        count: 45715
+    definition: Time period for the observation (usually calendar year).
+    needs_confirmation: no
+  - name: line_code
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 13
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: '11'
+        count: 86040
+      - value: '35'
+        count: 86040
+      - value: '42'
+        count: 86040
+      - value: '45'
+        count: 86040
+      - value: '46'
+        count: 86040
+    definition: Description of the economic activity in the row (from BEA metadata).
+    needs_confirmation: no
+  - name: unit_raw
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: ~
+    max_value: ~
+    min_length: 20
+    max_length: 20
+    top_values:
+      - value: Thousands of dollars
+        count: 1097160
+    definition: Raw unit of measure for the value in long-format records (before any scaling or conversion).
+    needs_confirmation: no
+  - name: unit_mult
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: 3
+    max_value: 3
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '3'
+        count: 1097160
+    definition: Multiplier for the raw value (i.e., 10^3 for thousands of dollars).
+    needs_confirmation: no
+  - name: value_raw
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 605835
+    min_value: -2.6318124e+08
+    max_value: 2.3279071e+10
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 10176
+      - value: '12696.0'
+        count: 20
+      - value: '1520.0'
+        count: 20
+      - value: '24984.0'
+        count: 20
+      - value: '4457.0'
+        count: 20
+    definition: Raw value for the metric in long-format records (before any scaling or conversion).
+    needs_confirmation: no
+  - name: value
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 605835
+    min_value: -2.6318124e+11
+    max_value: 2.3279071e+13
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 10176
+      - value: '12696000.0'
+        count: 20
+      - value: '1520000.0'
+        count: 20
+      - value: '24984000.0'
+        count: 20
+      - value: '4457000.0'
+        count: 20
+    definition: Numeric value for the metric in long-format records.
+    needs_confirmation: no
+  - name: note_ref
+    type: VARCHAR
+    null_pct: 59.0922
+    distinct_count: 17
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 8
+    top_values:
+      - value: ~
+        count: 648336
+      - value: '1'
+        count: 83616
+      - value: '6'
+        count: 83616
+      - value: '7'
+        count: 83616
+      - value: '8'
+        count: 83616
+    definition: Reference number for the note in the BEA metadata.
+    needs_confirmation: no
+  - name: metric_key
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 13
+    min_value: ~
+    max_value: ~
+    min_length: 10
+    max_length: 29
+    top_values:
+      - value: pi_dividends_interest_rent
+        count: 86040
+      - value: pi_earnings_workplace
+        count: 86040
+      - value: pi_employer_pension_insurance
+        count: 86040
+      - value: pi_employer_social_insurance
+        count: 86040
+      - value: pi_net_earnings_residence
+        count: 86040
+    definition: Key for the economic activity in the row (from BEA metadata).
+    needs_confirmation: no
+  - name: line_desc_clean
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 13
+    min_value: ~
+    max_value: ~
+    min_length: 18
+    max_length: 63
+    top_values:
+      - value: Adjustment for residence
+        count: 86040
+      - value: Dividends, interest, and rent
+        count: 86040
+      - value: Earnings by place of work
+        count: 86040
+      - value: Employer contributions for employee pension and insurance funds
+        count: 86040
+      - value: Employer contributions for government social insurance
+        count: 86040
+    definition: Description of the economic activity in the row (from BEA metadata).
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/silver/bea_cainc4_silver.R
+    details: 'Table write/create reference(s): scripts/etl/silver/bea_cainc4_silver.R:158:DBI::dbWriteTable(con,
+      DBI::Id(schema="silver", table="bea_regional_cainc4_long"),'
+kpi_definitions: []

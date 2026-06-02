@@ -1,0 +1,406 @@
+table_name: tx_tea_district_metrics
+schema: silver
+grain: One row per county_number (inferred).
+primary_key: county_number
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2024'
+  max: '2024'
+geo_coverage:
+  notes: []
+columns:
+  - name: county_number
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 253
+    min_value: ~
+    max_value: ~
+    min_length: 3
+    max_length: 3
+    top_values:
+      - value: '101'
+        count: 60
+      - value: '057'
+        count: 43
+      - value: '015'
+        count: 39
+      - value: '220'
+        count: 26
+      - value: '227'
+        count: 26
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: county_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 253
+    min_value: ~
+    max_value: ~
+    min_length: 10
+    max_length: 20
+    top_values:
+      - value: HARRIS COUNTY
+        count: 60
+      - value: DALLAS COUNTY
+        count: 43
+      - value: BEXAR COUNTY
+        count: 39
+      - value: TARRANT COUNTY
+        count: 26
+      - value: TRAVIS COUNTY
+        count: 26
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: esc_region_served
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 20
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: '10'
+        count: 113
+      - value: '07'
+        count: 101
+      - value: '11'
+        count: 95
+      - value: '04'
+        count: 91
+      - value: '20'
+        count: 86
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: district_number
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1218
+    min_value: ~
+    max_value: ~
+    min_length: 6
+    max_length: 6
+    top_values:
+      - value: 001902
+        count: 1
+      - value: 001903
+        count: 1
+      - value: 001904
+        count: 1
+      - value: 001906
+        count: 1
+      - value: 001907
+        count: 1
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: district_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1207
+    min_value: ~
+    max_value: ~
+    min_length: 7
+    max_length: 48
+    top_values:
+      - value: BIG SANDY ISD
+        count: 2
+      - value: CENTERVILLE ISD
+        count: 2
+      - value: CHAPEL HILL ISD
+        count: 2
+      - value: DAWSON ISD
+        count: 2
+      - value: EDGEWOOD ISD
+        count: 2
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: district_city
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 917
+    min_value: ~
+    max_value: ~
+    min_length: 3
+    max_length: 22
+    top_values:
+      - value: HOUSTON
+        count: 49
+      - value: SAN ANTONIO
+        count: 39
+      - value: AUSTIN
+        count: 20
+      - value: DALLAS
+        count: 18
+      - value: FORT WORTH
+        count: 13
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: district_zip
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1168
+    min_value: ~
+    max_value: ~
+    min_length: 5
+    max_length: 10
+    top_values:
+      - value: '77077'
+        count: 6
+      - value: '78212'
+        count: 6
+      - value: '77004'
+        count: 4
+      - value: '75217'
+        count: 3
+      - value: '76401'
+        count: 3
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: district_type
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 5
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 11
+    top_values:
+      - value: INDEPENDENT
+        count: 1020
+      - value: CHARTER
+        count: 189
+      - value: COMMON
+        count: 6
+      - value: TSD/TSBVI
+        count: 2
+      - value: TJJD
+        count: 1
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: nces_district_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1209
+    min_value: ~
+    max_value: ~
+    min_length: 0
+    max_length: 7
+    top_values:
+      - value: ''
+        count: 10
+      - value: '4800001'
+        count: 1
+      - value: '4800002'
+        count: 1
+      - value: '4800003'
+        count: 1
+      - value: '4800004'
+        count: 1
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: district_enrollment_as_of_oct_2024
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 989
+    min_value: 0.0
+    max_value: 176727.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 18
+      - value: '343.0'
+        count: 6
+      - value: '141.0'
+        count: 5
+      - value: '227.0'
+        count: 5
+      - value: '119.0'
+        count: 4
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: number_of_schools
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 73
+    min_value: 1
+    max_value: 274
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '1'
+        count: 280
+      - value: '3'
+        count: 209
+      - value: '2'
+        count: 149
+      - value: '4'
+        count: 140
+      - value: '5'
+        count: 95
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: avg_school_enrollment
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 990
+    min_value: -1.0
+    max_value: 3075.25
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 18
+      - value: '141.0'
+        count: 6
+      - value: '119.0'
+        count: 4
+      - value: '129.0'
+        count: 4
+      - value: '163.0'
+        count: 4
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: lea_name
+    type: VARCHAR
+    null_pct: 16.5025
+    distinct_count: 1006
+    min_value: ~
+    max_value: ~
+    min_length: 30
+    max_length: 68
+    top_values:
+      - value: ~
+        count: 201
+      - value: Big Sandy Independent School District
+        count: 2
+      - value: Centerville Independent School District
+        count: 2
+      - value: Chapel Hill Independent School District
+        count: 2
+      - value: Dawson Independent School District
+        count: 2
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: allocations
+    type: DOUBLE
+    null_pct: 16.5025
+    distinct_count: 988
+    min_value: 0.0
+    max_value: 1.6976089e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 201
+      - value: '0.0'
+        count: 19
+      - value: '21534.039622084958'
+        count: 3
+      - value: '104270.0865911482'
+        count: 2
+      - value: '107670.19811042478'
+        count: 2
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: 2024
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2024'
+        count: 1218
+    definition: Observation year or period year for the row.
+    needs_confirmation: no
+  - name: charter_status
+    type: VARCHAR
+    null_pct: 1.7241
+    distinct_count: 2
+    min_value: ~
+    max_value: ~
+    min_length: 19
+    max_length: 23
+    top_values:
+      - value: TRADITIONAL ISD/CSD
+        count: 1020
+      - value: OPEN ENROLLMENT CHARTER
+        count: 177
+      - value: ~
+        count: 21
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: total_count
+    type: DOUBLE
+    null_pct: 1.7241
+    distinct_count: 987
+    min_value: -999.0
+    max_value: 176727.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 21
+      - value: '343.0'
+        count: 6
+      - value: '141.0'
+        count: 5
+      - value: '227.0'
+        count: 5
+      - value: '119.0'
+        count: 4
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: not_economically_disadvantaged_percent
+    type: DOUBLE
+    null_pct: 15.353
+    distinct_count: 945
+    min_value: 0.0
+    max_value: 100.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 187
+      - value: '0.0'
+        count: 9
+      - value: '34.78'
+        count: 3
+      - value: '36.14'
+        count: 3
+      - value: '50.81'
+        count: 3
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+  - name: economically_disadvantaged_percent
+    type: DOUBLE
+    null_pct: 15.353
+    distinct_count: 945
+    min_value: 0.0
+    max_value: 100.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 187
+      - value: '100.0'
+        count: 9
+      - value: '39.36'
+        count: 3
+      - value: '49.19'
+        count: 3
+      - value: '63.86'
+        count: 3
+    definition: Definition not yet documented; inferred from column name. Needs confirmation.
+    needs_confirmation: yes
+lineage:
+  - step: write_target
+    script: scripts/etl/gold/gold_tx_school_district.sql
+    details: 'Table write/create reference(s): scripts/etl/gold/gold_tx_school_district.sql:26:from
+      metro_deep_dive.silver.tx_tea_district_metrics '
+kpi_definitions: []

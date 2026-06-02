@@ -1,0 +1,463 @@
+table_name: economics_gdp_wide
+schema: gold
+grain: One row per geo_level + geo_id + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2023'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=3
+    - distinct_geo_id=4221
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 3
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 6
+    top_values:
+      - value: county
+        count: 38648
+      - value: cbsa
+        count: 11174
+      - value: state
+        count: 624
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 4221
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 5
+    top_values:
+      - value: '32000'
+        count: 24
+      - value: '45000'
+        count: 24
+      - value: '01'
+        count: 12
+      - value: '01001'
+        count: 12
+      - value: '01003'
+        count: 12
+    definition: Geographic identifier for the row
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 4222
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 59
+    top_values:
+      - value: Marion, NC
+        count: 24
+      - value: Susanville, CA
+        count: 24
+      - value: Abbeville County, South Carolina
+        count: 12
+      - value: Aberdeen, SD
+        count: 12
+      - value: Aberdeen, WA
+        count: 12
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 12
+    min_value: 2012
+    max_value: 2023
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2022'
+        count: 4211
+      - value: '2023'
+        count: 4211
+      - value: '2012'
+        count: 4203
+      - value: '2013'
+        count: 4203
+      - value: '2020'
+        count: 4203
+    definition: Observation year or period year for the row.
+    needs_confirmation: no
+  - name: pop_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 35702
+    min_value: 43.0
+    max_value: 3.9455353e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '25477.0'
+        count: 8
+      - value: '3389.0'
+        count: 7
+      - value: '14335.0'
+        count: 6
+      - value: '16211.0'
+        count: 6
+      - value: '16511.0'
+        count: 6
+    definition: Total population (all ages).
+    needs_confirmation: no
+  - name: nominal_gdp_total
+    type: DOUBLE
+    null_pct: 4.7893
+    distinct_count: 40782
+    min_value: 6288000.0
+    max_value: 2.2969302e+12
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 2416
+      - value: '2502608000.0'
+        count: 4
+      - value: '851888000.0'
+        count: 4
+      - value: '9628476000.0'
+        count: 4
+      - value: '1057030000.0'
+        count: 3
+    definition: Total Nominal GDP, in current dollars.
+    needs_confirmation: no
+  - name: nominal_gdp_growth_5yr
+    type: DOUBLE
+    null_pct: 44.4753
+    distinct_count: 23943
+    min_value: -0.8650248
+    max_value: 5.4349737
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 22436
+      - value: '-0.00027760493945340546'
+        count: 2
+      - value: '-0.001396598414595962'
+        count: 2
+      - value: '-0.001642857589528592'
+        count: 2
+      - value: '-0.0019435866936867753'
+        count: 2
+    definition: 5-year nominal GDP growth rate (i.e., the percentage change in GDP over 5 years).
+    needs_confirmation: no
+  - name: nominal_gdp_cagr_5yr
+    type: DOUBLE
+    null_pct: 44.4753
+    distinct_count: 23943
+    min_value: -0.3300371
+    max_value: 0.4511401
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 22436
+      - value: '-0.00027947585277199316'
+        count: 2
+      - value: '-0.00032878764946953076'
+        count: 2
+      - value: '-0.00038901989397022163'
+        count: 2
+      - value: '-0.0004116872184751763'
+        count: 2
+    definition: 5-year nominal GDP compound annual growth rate (CAGR).
+    needs_confirmation: no
+  - name: nominal_gdp_pc
+    type: DOUBLE
+    null_pct: 4.7893
+    distinct_count: 41021
+    min_value: 3077.142552
+    max_value: 1.8954806e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 2416
+      - value: '29081.956995948894'
+        count: 3
+      - value: '31344.865426822224'
+        count: 3
+      - value: '31603.362764940062'
+        count: 3
+      - value: '31777.2061849609'
+        count: 3
+    definition: Per capita nominal GDP (i.e., total nominal GDP divided by total population).
+    needs_confirmation: no
+  - name: nominal_gdp_pc_growth_5yr
+    type: DOUBLE
+    null_pct: 44.4753
+    distinct_count: 23950
+    min_value: -0.845072
+    max_value: 13.9307821
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 22436
+      - value: '-0.00015571105356292886'
+        count: 2
+      - value: '-0.0003731373655807843'
+        count: 2
+      - value: '-0.0006511156453991608'
+        count: 2
+      - value: '-0.000827836192526019'
+        count: 2
+    definition: 5-year per capita nominal GDP growth rate (i.e., the percentage change in per capita nominal GDP over 5 years).
+    needs_confirmation: no
+  - name: nominal_gdp_pc_cagr_5yr
+    type: DOUBLE
+    null_pct: 44.4753
+    distinct_count: 23950
+    min_value: -0.3113065
+    max_value: 0.7171827
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 22436
+      - value: '-0.00013025705846259061'
+        count: 2
+      - value: '-0.00016562209077364276'
+        count: 2
+      - value: '-0.0002766813159467141'
+        count: 2
+      - value: '-0.0004395352584974921'
+        count: 2
+    definition: 5-year per capita nominal GDP compound annual growth rate (CAGR).
+    needs_confirmation: no
+  - name: real_gdp_total
+    type: DOUBLE
+    null_pct: 4.7893
+    distinct_count: 40782
+    min_value: 5420000.0
+    max_value: 1.9038946e+12
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 2416
+      - value: '1047702000.0'
+        count: 4
+      - value: '1232928000.0'
+        count: 4
+      - value: '1418863000.0'
+        count: 4
+      - value: '1660722000.0'
+        count: 4
+    definition: Real GDP total (i.e., total real GDP for a given geographic area).
+    needs_confirmation: no
+  - name: real_gdp_growth_5yr
+    type: DOUBLE
+    null_pct: 44.4753
+    distinct_count: 23943
+    min_value: -0.9953508
+    max_value: 222.2084522
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 22436
+      - value: '-0.00010551862403714256'
+        count: 2
+      - value: '-0.0001212878821323432'
+        count: 2
+      - value: '-0.00014708462254922302'
+        count: 2
+      - value: '-0.00016798244391700285'
+        count: 2
+    definition: 5-year real GDP growth rate (i.e., the percentage change in real GDP over 5 years).
+    needs_confirmation: no
+  - name: real_gdp_cagr_5yr
+    type: DOUBLE
+    null_pct: 44.4753
+    distinct_count: 23943
+    min_value: -0.6584335
+    max_value: 1.9494574
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 22436
+      - value: '-0.000109358698214157'
+        count: 2
+      - value: '-0.00011862043601318373'
+        count: 2
+      - value: '-0.00012327797834754683'
+        count: 2
+      - value: '-0.00012478084946743184'
+        count: 2
+    definition: 5-year real GDP compound annual growth rate (CAGR).
+    needs_confirmation: no
+  - name: real_gdp_pc
+    type: DOUBLE
+    null_pct: 4.7893
+    distinct_count: 41046
+    min_value: 2714.0161464
+    max_value: 1.5365035e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 2416
+      - value: '100231.46067415731'
+        count: 2
+      - value: '100303.92273321211'
+        count: 2
+      - value: '101201.9748751094'
+        count: 2
+      - value: '103223.47555591779'
+        count: 2
+    definition: Per capita real GDP (i.e., total real GDP divided by population).
+    needs_confirmation: no
+  - name: real_gdp_pc_growth_5yr
+    type: DOUBLE
+    null_pct: 44.4753
+    distinct_count: 23950
+    min_value: -0.9954697
+    max_value: 218.0774814
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 22436
+      - value: '-0.00019170347304418907'
+        count: 2
+      - value: '-0.00023468766132942687'
+        count: 2
+      - value: '-0.0002524549904455399'
+        count: 2
+      - value: '-0.0003592372424745634'
+        count: 2
+    definition: 5-year per capita real GDP growth rate (i.e., the percentage change in per capita real GDP over 5 years).
+    needs_confirmation: no
+  - name: real_gdp_pc_cagr_5yr
+    type: DOUBLE
+    null_pct: 44.4753
+    distinct_count: 23950
+    min_value: -0.6601982
+    max_value: 1.9384584
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 22436
+      - value: '-0.00012867418838524713'
+        count: 2
+      - value: '-0.00015046421351283534'
+        count: 2
+      - value: '-0.00015842086240158704'
+        count: 2
+      - value: '-0.00016815093520128332'
+        count: 2
+    definition: 5-year per capita real GDP compound annual growth rate (CAGR).
+    needs_confirmation: no
+  - name: employed
+    type: DOUBLE
+    null_pct: 0.3529
+    distinct_count: 29353
+    min_value: 0.0
+    max_value: 1.8621929e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 178
+      - value: '0.0'
+        count: 11
+      - value: '2693.0'
+        count: 10
+      - value: '4535.0'
+        count: 10
+      - value: '3928.0'
+        count: 9
+    definition: Total Employed Persons, used as numerator for employment-population
+      ratio and unemployment rate in ACS.
+    needs_confirmation: no
+  - name: productivity_index
+    type: DOUBLE
+    null_pct: 4.9479
+    distinct_count: 40964
+    min_value: 5240.4740614
+    max_value: 1.6990126e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 2496
+      - value: '100006.25818658128'
+        count: 2
+      - value: '100016.08815426998'
+        count: 2
+      - value: '100063.6855036855'
+        count: 2
+      - value: '100076.1421319797'
+        count: 2
+    definition: Productivity index calculated as real GDP per employed person
+    needs_confirmation: no
+  - name: productivity_growth_5yr
+    type: DOUBLE
+    null_pct: 44.5546
+    distinct_count: 23910
+    min_value: -0.9950743
+    max_value: 249.1911089
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 22476
+      - value: '-0.0002034254487034615'
+        count: 2
+      - value: '-0.00022242355705629204'
+        count: 2
+      - value: '-0.00023024883582251426'
+        count: 2
+      - value: '-0.00024384894788505925'
+        count: 2
+    definition: 5-year real GDP per employed person growth rate (i.e., the percentage change in real GDP per employed person over 5 years).
+    needs_confirmation: no
+  - name: productivity_cagr_5yr
+    type: DOUBLE
+    null_pct: 44.5546
+    distinct_count: 23910
+    min_value: -0.6544641
+    max_value: 2.0175493
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 22476
+      - value: '-0.00010690502710763994'
+        count: 2
+      - value: '-0.00010798777299925177'
+        count: 2
+      - value: '-0.00012156872454915923'
+        count: 2
+      - value: '-0.00012527641972370773'
+        count: 2
+    definition: 5-year real GDP per employed person compound annual growth rate (CAGR).
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/gold/gold_economy_gdp.sql
+    details: 'scripts/etl/gold/gold_economy_gdp.sql:4:create or replace table metro_deep_dive.gold.economics_gdp_wide
+      as '
+kpi_definitions: []

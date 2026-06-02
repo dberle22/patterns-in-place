@@ -1,0 +1,1423 @@
+table_name: labor_kpi
+schema: silver
+grain: One row per geo_level + geo_id + geo_name + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - geo_name
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=115976
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 8
+    top_values:
+      - value: zcta
+        count: 433172
+      - value: place
+        count: 397094
+      - value: tract
+        count: 135851
+      - value: county
+        count: 41870
+      - value: cbsa
+        count: 12085
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 115976
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 11
+    top_values:
+      - value: '1'
+        count: 39
+      - value: '2'
+        count: 26
+      - value: '3'
+        count: 26
+      - value: '4'
+        count: 26
+      - value: '01001'
+        count: 25
+    definition: Geographic identifier for the row
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 97125
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 66
+    top_values:
+      - value: Alexandria city, Virginia
+        count: 26
+      - value: Baltimore city, Maryland
+        count: 26
+      - value: Bristol city, Virginia
+        count: 26
+      - value: Buena Vista city, Virginia
+        count: 26
+      - value: Carson City, Nevada
+        count: 26
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 13
+    min_value: 2012
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2024'
+        count: 82276
+      - value: '2023'
+        count: 82271
+      - value: '2022'
+        count: 82134
+      - value: '2021'
+        count: 81848
+      - value: '2020'
+        count: 81194
+    definition: Observation year or period year for the row.
+    needs_confirmation: no
+  - name: pop_16plus
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 70459
+    min_value: 0.0
+    max_value: 2.7018164e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 11027
+      - value: '65.0'
+        count: 746
+      - value: '80.0'
+        count: 741
+      - value: '77.0'
+        count: 739
+      - value: '47.0'
+        count: 734
+    definition: Total Population, Age 16 and Up. Considered the denominator for ACS Labor Metrics.
+    needs_confirmation: no
+  - name: in_labor_force
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 54423
+    min_value: 0.0
+    max_value: 1.7149328e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 17145
+      - value: '53.0'
+        count: 1241
+      - value: '49.0'
+        count: 1240
+      - value: '38.0'
+        count: 1237
+      - value: '46.0'
+        count: 1234
+    definition: Total Population in Labor Force, used as basis for labor force participation rate and unemployment rate in ACS.
+    needs_confirmation: no
+  - name: in_lf_civilian
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 54223
+    min_value: 0.0
+    max_value: 1.7019952e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 17517
+      - value: '53.0'
+        count: 1253
+      - value: '38.0'
+        count: 1241
+      - value: '49.0'
+        count: 1239
+      - value: '30.0'
+        count: 1235
+    definition: Total Population in Civilian Labor Force.
+    needs_confirmation: no
+  - name: in_lf_armed_forces
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 52125
+    min_value: 0.0
+    max_value: 1.6129716e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 18242
+      - value: '46.0'
+        count: 1392
+      - value: '27.0'
+        count: 1364
+      - value: '28.0'
+        count: 1363
+      - value: '41.0'
+        count: 1337
+    definition: Total Population in Armed Forces Labor Force.
+    needs_confirmation: no
+  - name: not_in_labor_force
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 13916
+    min_value: 0.0
+    max_value: 1.5249189e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 128203
+      - value: '2.0'
+        count: 13467
+      - value: '3.0'
+        count: 12219
+      - value: '4.0'
+        count: 11942
+      - value: '5.0'
+        count: 11384
+    definition: Total Population Not in Labor Force, used as numerator for not in labor force rate in ACS.
+    needs_confirmation: no
+  - name: employed
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 39939
+    min_value: 0.0
+    max_value: 9.8688351e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 17315
+      - value: '35.0'
+        count: 1752
+      - value: '39.0'
+        count: 1740
+      - value: '28.0'
+        count: 1731
+      - value: '34.0'
+        count: 1718
+    definition: Total Employed Persons, used as numerator for employment-population ratio and unemployment rate in ACS.
+    needs_confirmation: no
+  - name: unemployed
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 41915
+    min_value: -320178.0
+    max_value: 7.2804934e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 13505
+      - value: '1.0'
+        count: 2554
+      - value: '4.0'
+        count: 2496
+      - value: '12.0'
+        count: 2468
+      - value: '3.0'
+        count: 2454
+    definition: Total Unemployed Persons, used as numerator for unemployment rate in ACS.
+    needs_confirmation: no
+  - name: lfpr
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 604128
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: -nan
+        count: 11027
+      - value: '1.0'
+        count: 6288
+      - value: '0.0'
+        count: 6118
+      - value: '0.5'
+        count: 2478
+      - value: '0.6666666666666666'
+        count: 1857
+    definition: Labor Force Participation Rate, share of population 16+ in labor force. Ratio of in labor force to pop 16plus.
+    needs_confirmation: yes
+  - name: unemp_rate
+    type: DOUBLE
+    null_pct: 1.6862
+    distinct_count: 604126
+    min_value: -5066.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 17215
+      - value: '1.0'
+        count: 6288
+      - value: '0.0'
+        count: 2478
+      - value: '0.5'
+        count: 1857
+      - value: '0.3333333333333333'
+        count: 1248
+    definition: Unemployment Rate, derived from ACS counts. Unemployment / In Labor Force. Note some values are >1 due to data quality issues in source ACS tables.
+    needs_confirmation: no
+  - name: emp_pop_ratio
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 604128
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: -nan
+        count: 11027
+      - value: '0.0'
+        count: 6288
+      - value: '1.0'
+        count: 6118
+      - value: '0.5'
+        count: 2478
+      - value: '0.3333333333333333'
+        count: 1857
+    definition: Ratio of Employed Persons to Population 16 and Up, used as employment-population ratio in ACS.
+    needs_confirmation: no
+  - name: unemp_rate_civ
+    type: DOUBLE
+    null_pct: 1.7226
+    distinct_count: 604769
+    min_value: -5066.0
+    max_value: 1060.4285714
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 17587
+      - value: '1.0'
+        count: 5696
+      - value: '0.0'
+        count: 2475
+      - value: '0.5'
+        count: 1830
+      - value: '0.3333333333333333'
+        count: 1245
+    definition: Unemployment Rate for Civilian Labor Force, derived from ACS counts. Unemployed / In LF Civilian.
+     Note some values are >1 due to data quality issues in source ACS tables.
+     Also note some values are >100% due to data quality issues in source ACS tables.
+     Consider using unemp_rate instead of this metric for analysis given the data quality issues with this one.
+    needs_confirmation: no
+  - name: occ_total_emp
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 52125
+    min_value: 0.0
+    max_value: 1.6129716e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 18242
+      - value: '46.0'
+        count: 1392
+      - value: '27.0'
+        count: 1364
+      - value: '28.0'
+        count: 1363
+      - value: '41.0'
+        count: 1337
+    definition: Total Population, Occupational Eployment. Considered the denominator for ACS Occupational Employment Metrics.
+    needs_confirmation: no
+  - name: occ_mgmt_business_sci_arts
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 31419
+    min_value: 0.0
+    max_value: 6.8788669e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 41659
+      - value: '9.0'
+        count: 4620
+      - value: '10.0'
+        count: 4577
+      - value: '8.0'
+        count: 4513
+      - value: '7.0'
+        count: 4426
+    definition: Population count for Management, Business, Science, and Arts Occupations.
+    needs_confirmation: no
+  - name: occ_service
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 21410
+    min_value: 0.0
+    max_value: 2.7489501e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 59347
+      - value: '9.0'
+        count: 6327
+      - value: '8.0'
+        count: 6273
+      - value: '10.0'
+        count: 6200
+      - value: '6.0'
+        count: 6062
+    definition: Population count for Services Occupations.
+    needs_confirmation: no
+  - name: occ_sales_office
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 23651
+    min_value: 0.0
+    max_value: 3.5440563e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 53449
+      - value: '9.0'
+        count: 5732
+      - value: '10.0'
+        count: 5681
+      - value: '8.0'
+        count: 5672
+      - value: '6.0'
+        count: 5620
+    definition: Population count for Sales and Office Occupations.
+    needs_confirmation: no
+  - name: occ_nat_resources_const_maint
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 15213
+    min_value: 0.0
+    max_value: 1.3773265e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 73460
+      - value: '8.0'
+        count: 8155
+      - value: '9.0'
+        count: 8106
+      - value: '10.0'
+        count: 7966
+      - value: '7.0'
+        count: 7695
+    definition: Population count for Natural Resources, Construction, and Maintenance Occupations.
+    needs_confirmation: no
+  - name: occ_prod_transp_material
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 18399
+    min_value: 0.0
+    max_value: 2.0842673e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 68973
+      - value: '9.0'
+        count: 6860
+      - value: '8.0'
+        count: 6645
+      - value: '10.0'
+        count: 6633
+      - value: '7.0'
+        count: 6406
+    definition: Population count for Production, Transportation, and Material Moving Occupations.
+    needs_confirmation: no
+  - name: pct_occ_mgmt_business_sci_arts
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 500650
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 23417
+      - value: -nan
+        count: 18242
+      - value: '1.0'
+        count: 4910
+      - value: '0.3333333333333333'
+        count: 2839
+      - value: '0.25'
+        count: 2516
+    definition: Percent of Occupational Employment in Management, Business, Science, and Arts Occupations. Share / percentage; denominator is occ_total_emp. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_occ_service
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 454403
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 41105
+      - value: -nan
+        count: 18242
+      - value: '0.2'
+        count: 2330
+      - value: '1.0'
+        count: 2245
+      - value: '0.16666666666666666'
+        count: 2194
+    definition: Percent of Occupational Employment in Service Occupations. Share / percentage; denominator is occ_total_emp. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_occ_sales_office
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 444401
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 35207
+      - value: -nan
+        count: 18242
+      - value: '0.2'
+        count: 2697
+      - value: '0.25'
+        count: 2677
+      - value: '0.16666666666666666'
+        count: 2056
+    definition: Percent of Occupational Employment in Sales and Office Occupations. Share / percentage; denominator is occ_total_emp. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_occ_nat_resources_const_maint
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 437451
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 55218
+      - value: -nan
+        count: 18242
+      - value: '0.16666666666666666'
+        count: 1902
+      - value: '0.14285714285714285'
+        count: 1841
+      - value: '0.2'
+        count: 1739
+    definition: Percent of Occupational Employment in Natural Resources, Construction, and Maintenance Occupations. Share / percentage; denominator is occ_total_emp. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_occ_prod_transp_material
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 463988
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 50731
+      - value: -nan
+        count: 18242
+      - value: '0.25'
+        count: 1982
+      - value: '0.2'
+        count: 1950
+      - value: '1.0'
+        count: 1881
+    definition: Percent of Occupational Employment in Production, Transportation, and Material Moving Occupations. Share / percentage; denominator is occ_total_emp. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: ind_total_emp
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 52125
+    min_value: 0.0
+    max_value: 1.6129716e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 18242
+      - value: '46.0'
+        count: 1392
+      - value: '27.0'
+        count: 1364
+      - value: '28.0'
+        count: 1363
+      - value: '41.0'
+        count: 1337
+    definition: Total Population, Industry Employment. Considered the denominator for ACS Industry Employment Metrics.
+     Note this is the same as occ_total_emp, just from a different source table in ACS
+    needs_confirmation: yes
+  - name: ind_ag_mining
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 6514
+    min_value: 0.0
+    max_value: 2852402.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 289212
+      - value: '2.0'
+        count: 17358
+      - value: '3.0'
+        count: 15525
+      - value: '4.0'
+        count: 15459
+      - value: '9.0'
+        count: 15364
+    definition: 'Population count for Agriculture, Mining, Quarrying, Oil and Gas Extraction industries. From the ACS table IND_AG_Mining, which is the sum of the following ACS industry categories: Agriculture, Forestry, Fishing and Hunting; Mining, Quarrying, and Oil and Gas Extraction.'
+    needs_confirmation: no
+  - name: ind_construction
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 13062
+    min_value: 0.0
+    max_value: 1.116704e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 109876
+      - value: '4.0'
+        count: 10921
+      - value: '6.0'
+        count: 10902
+      - value: '5.0'
+        count: 10828
+      - value: '8.0'
+        count: 10705
+    definition: Population count for Construction.
+      From the ACS table IND_CONSTRUCTION, which corresponds to the ACS industry category Construction.
+    needs_confirmation: no
+  - name: ind_manufacturing
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 16549
+    min_value: 0.0
+    max_value: 1.594e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 108029
+      - value: '6.0'
+        count: 8366
+      - value: '8.0'
+        count: 8334
+      - value: '4.0'
+        count: 8212
+      - value: '2.0'
+        count: 8136
+    definition: Population count for Manufacturing.
+      From the ACS table IND_MANUFACTURING, which corresponds to the ACS industry category Manufacturing.
+    needs_confirmation: no
+  - name: ind_wholesale
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 8641
+    min_value: 0.0
+    max_value: 4042867.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 253072
+      - value: '2.0'
+        count: 21822
+      - value: '3.0'
+        count: 18910
+      - value: '4.0'
+        count: 17507
+      - value: '5.0'
+        count: 16223
+    definition: Population count for Wholesale Industries.
+      From the ACS table IND_WHOLESALE, which corresponds to the ACS industry category Wholesale Trade.
+    needs_confirmation: no
+  - name: ind_retail
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 17285
+    min_value: 0.0
+    max_value: 1.7463378e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 86509
+      - value: '6.0'
+        count: 8387
+      - value: '8.0'
+        count: 8298
+      - value: '7.0'
+        count: 8203
+      - value: '9.0'
+        count: 8161
+    definition: Population count for Retail Industries.
+      From the ACS table IND_RETAIL, which corresponds to the ACS industry category Retail Trade.
+    needs_confirmation: no
+  - name: ind_transport_util
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 11871
+    min_value: 0.0
+    max_value: 9568767.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 130157
+      - value: '2.0'
+        count: 13584
+      - value: '4.0'
+        count: 13074
+      - value: '6.0'
+        count: 13065
+      - value: '3.0'
+        count: 13025
+    definition: 'Population count for Transportation, Warehousing, and Utilities industries (IND_TRANSPORT_UTIL), combining ACS categories Transportation and Warehousing; Utilities.'
+    needs_confirmation: no
+  - name: ind_information
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 7783
+    min_value: 0.0
+    max_value: 3173300.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 343828
+      - value: '2.0'
+        count: 24563
+      - value: '3.0'
+        count: 21058
+      - value: '4.0'
+        count: 18722
+      - value: '5.0'
+        count: 16944
+    definition: Population count for Information Industry.
+      From the ACS table IND_INFORMATION, which corresponds to the ACS industry category Information.
+    needs_confirmation: no
+  - name: ind_finance_real
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 13121
+    min_value: 0.0
+    max_value: 1.0783159e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 170331
+      - value: '2.0'
+        count: 17522
+      - value: '3.0'
+        count: 15222
+      - value: '4.0'
+        count: 15063
+      - value: '5.0'
+        count: 13828
+    definition: 'Population count for Finance, Insurance, Real Estate, and Rental and Leasing industries (IND_FINANCE_REAL), combining ACS categories Finance and Insurance; Real Estate and Rental and Leasing.'
+    needs_confirmation: no
+  - name: ind_professional
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 17003
+    min_value: 0.0
+    max_value: 2.028245e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 124747
+      - value: '2.0'
+        count: 14700
+      - value: '3.0'
+        count: 12764
+      - value: '4.0'
+        count: 12737
+      - value: '5.0'
+        count: 11905
+    definition: 'Population count for Professional, Scientific, Management, Administrative, and Waste Management industries (IND_PROFESSIONAL).'
+    needs_confirmation: no
+  - name: ind_educ_health
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 24226
+    min_value: 0.0
+    max_value: 3.7913663e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 51451
+      - value: '9.0'
+        count: 5539
+      - value: '8.0'
+        count: 5378
+      - value: '10.0'
+        count: 5297
+      - value: '6.0'
+        count: 5228
+    definition: 'Population count for Education and Health Services industries (IND_EDUC_HEALTH), combining ACS categories Educational Services; Health Care and Social Assistance.'
+    needs_confirmation: no
+  - name: ind_arts_accomm_food
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 15972
+    min_value: 0.0
+    max_value: 1.4962299e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 118324
+      - value: '2.0'
+        count: 12409
+      - value: '3.0'
+        count: 11659
+      - value: '4.0'
+        count: 11444
+      - value: '5.0'
+        count: 11108
+    definition: 'Population count for Arts, Entertainment, Recreation, Accommodation, and Food Services industries (IND_ARTS_ACCOMM_FOOD), combining ACS categories Arts, Entertainment, and Recreation; Accommodation and Food Services.'
+    needs_confirmation: no
+  - name: ind_other_services
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 11420
+    min_value: 0.0
+    max_value: 7588496.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 146740
+      - value: '2.0'
+        count: 16720
+      - value: '3.0'
+        count: 14852
+      - value: '4.0'
+        count: 14508
+      - value: '5.0'
+        count: 13908
+    definition: Population count for Other Services.
+      From the ACS table IND_OTHER_SERVICES, which corresponds to the ACS industry category Other Services (except Public Administration).
+    needs_confirmation: no
+  - name: ind_public_admin
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 11649
+    min_value: 0.0
+    max_value: 7624243.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 146953
+      - value: '2.0'
+        count: 16572
+      - value: '3.0'
+        count: 14799
+      - value: '4.0'
+        count: 14675
+      - value: '5.0'
+        count: 14017
+    definition: Population count for Public Administration.
+      From the ACS table IND_PUBLIC_ADMIN, which corresponds to the ACS industry category Public Administration.
+     Note this industry category includes public administration jobs in various government departments and agencies, so may be less useful for analysis focused on specific types of government jobs (e.g. education administration jobs, public health administration jobs, etc.).
+     Consider using more specific industry categories from source ACS tables if analysis focused on specific types of government jobs.
+     Also note this industry category includes public administration jobs at all levels of government (federal, state, local), so may be less useful for analysis focused on specific levels of government jobs.
+     Consider using more specific industry categories from source ACS tables if analysis focused on specific levels of government jobs.
+     Also note this industry category includes some non-government public administration jobs (e.g. public administration jobs in non-profits), so may be less useful for analysis focused specifically on government jobs.
+     Consider using more specific industry categories from source ACS tables if analysis focused specifically on government jobs.
+    needs_confirmation: no
+  - name: pct_ind_ag_mining
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 329223
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 270970
+      - value: -nan
+        count: 18242
+      - value: '1.0'
+        count: 1417
+      - value: '0.125'
+        count: 776
+      - value: '0.1'
+        count: 758
+    definition: Percent of Industry Employment in Agriculture, Mining, Quarrying, Oil and Gas Extraction Industries. Share / percentage; denominator is ind_total_emp. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_ind_construction
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 404911
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 91634
+      - value: -nan
+        count: 18242
+      - value: '0.09090909090909091'
+        count: 1307
+      - value: '0.1'
+        count: 1290
+      - value: '0.07692307692307693'
+        count: 1273
+    definition: Percent of Industry Employment in Construction. Share / percentage; denominator is ind_total_emp. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_ind_manufacturing
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 451740
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 89787
+      - value: -nan
+        count: 18242
+      - value: '0.16666666666666666'
+        count: 1383
+      - value: '0.2'
+        count: 1371
+      - value: '0.14285714285714285'
+        count: 1308
+    definition: Percent of Industry Employment in Manufacturing. Share / percentage; denominator is ind_total_emp. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_ind_wholesale
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 326846
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 234830
+      - value: -nan
+        count: 18242
+      - value: '0.03333333333333333'
+        count: 643
+      - value: '0.038461538461538464'
+        count: 631
+      - value: '0.037037037037037035'
+        count: 627
+    definition: Percent of Industry Employment in Wholesale. Share / percentage; denominator is ind_total_emp. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_ind_retail
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 416487
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 68267
+      - value: -nan
+        count: 18242
+      - value: '0.125'
+        count: 1829
+      - value: '0.1111111111111111'
+        count: 1667
+      - value: '0.14285714285714285'
+        count: 1637
+    definition: Percent of Industry Employment in Retail. Share / percentage; denominator is ind_total_emp. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_ind_transport_util
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 381118
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 111915
+      - value: -nan
+        count: 18242
+      - value: '0.07142857142857142'
+        count: 1168
+      - value: '0.08333333333333333'
+        count: 1161
+      - value: '0.07692307692307693'
+        count: 1144
+    definition: Percent of Industry Employment in Transportation and Utilities. Share / percentage; denominator is ind_total_emp. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_ind_information
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 300029
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 325586
+      - value: -nan
+        count: 18242
+      - value: '0.02564102564102564'
+        count: 406
+      - value: '0.02702702702702703'
+        count: 399
+      - value: '0.022222222222222223'
+        count: 398
+    definition: Percent of Industry Employment in Information. Share / percentage; denominator is ind_total_emp. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_ind_finance_real
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 385772
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 152089
+      - value: -nan
+        count: 18242
+      - value: '0.05555555555555555'
+        count: 892
+      - value: '0.0625'
+        count: 871
+      - value: '0.05263157894736842'
+        count: 851
+    definition: Percent of Industry Employment in Finance and Real Estate. Share / percentage; denominator is ind_total_emp. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_ind_professional
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 421673
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 106505
+      - value: -nan
+        count: 18242
+      - value: '0.07692307692307693'
+        count: 1033
+      - value: '0.06666666666666667'
+        count: 1023
+      - value: '0.08333333333333333'
+        count: 1016
+    definition: Percent of Industry Employment in Professional and Business Services. Share / percentage; denominator is ind_total_emp. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_ind_educ_health
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 457769
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 33209
+      - value: -nan
+        count: 18242
+      - value: '0.25'
+        count: 2744
+      - value: '1.0'
+        count: 2593
+      - value: '0.2'
+        count: 2529
+    definition: Percent of Industry Employment in Education and Health Services. Share / percentage; denominator is ind_total_emp. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_ind_arts_accomm_food
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 417545
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 100082
+      - value: -nan
+        count: 18242
+      - value: '0.07692307692307693'
+        count: 1106
+      - value: '0.08333333333333333'
+        count: 1099
+      - value: '0.1'
+        count: 1093
+    definition: Percent of Industry Employment in Arts, Entertainment, and Recreation. Share / percentage; denominator is ind_total_emp. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_ind_other_services
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 362395
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 128498
+      - value: -nan
+        count: 18242
+      - value: '0.05263157894736842'
+        count: 1076
+      - value: '0.05555555555555555'
+        count: 1038
+      - value: '0.045454545454545456'
+        count: 1037
+    definition: Percent of Industry Employment in Other Services. Share / percentage; denominator is ind_total_emp. (from silver.kpi_dictionary).
+    needs_confirmation: no
+  - name: pct_ind_public_admin
+    type: DOUBLE
+    null_pct: 0.0069
+    distinct_count: 382246
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 128711
+      - value: -nan
+        count: 18242
+      - value: '0.06666666666666667'
+        count: 896
+      - value: '0.058823529411764705'
+        count: 882
+      - value: '0.043478260869565216'
+        count: 877
+    definition: Percent of Industry Employment in Public Administration. Share / percentage; denominator is ind_total_emp. (from silver.kpi_dictionary).
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/silver/acs_labor_silver.R
+    details: 'Table write/create reference(s): scripts/etl/silver/acs_labor_silver.R:270:DBI::dbWriteTable(con,
+      DBI::Id(schema="silver", table="labor_kpi"),'
+kpi_definitions:
+  - kpi_name: pop_16plus
+    business_definition: Total:.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: in_labor_force
+    business_definition: Total:, In labor force:.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: in_lf_civilian
+    business_definition: Total:, In labor force:, Civilian labor force:.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: in_lf_armed_forces
+    business_definition: Total:, In labor force:, Civilian labor force:, Employed.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: not_in_labor_force
+    business_definition: Total:, In labor force:, Civilian labor force:, Unemployed.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: employed
+    business_definition: Total:, Not in labor force.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: unemployed
+    business_definition: Ratio of in labor forceE + employedE + mutate + lfpr + in
+      labor force to pop 16plus.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: lfpr
+    business_definition: Business metric for lfpr.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: unemp_rate
+    business_definition: Rate derived from ACS counts. (from silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: emp_pop_ratio
+    business_definition: Ratio of employed to pop 16plus.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: unemp_rate_civ
+    business_definition: Rate derived from ACS counts. (from silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_total_emp
+    business_definition: Total:.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_mgmt_business_sci_arts
+    business_definition: Population count for occ mgmt business sci arts.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_service
+    business_definition: Population count for occ service.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_sales_office
+    business_definition: Population count for occ sales office.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_nat_resources_const_maint
+    business_definition: Population count for occ nat resources const maint.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: occ_prod_transp_material
+    business_definition: Ratio of occ male prod transp materialE + occ female prod
+      transp materialE + mutate + pct occ mgmt business sci arts + occ mgmt business
+      sci arts to occ total emp.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_occ_mgmt_business_sci_arts
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: occ_total_emp
+    data_type: DOUBLE
+  - kpi_name: pct_occ_service
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: occ_total_emp
+    data_type: DOUBLE
+  - kpi_name: pct_occ_sales_office
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: occ_total_emp
+    data_type: DOUBLE
+  - kpi_name: pct_occ_nat_resources_const_maint
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: occ_total_emp
+    data_type: DOUBLE
+  - kpi_name: pct_occ_prod_transp_material
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: occ_total_emp
+    data_type: DOUBLE
+  - kpi_name: ind_total_emp
+    business_definition: Business metric for ind total emp.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_ag_mining
+    business_definition: Population count for ind ag mining.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_construction
+    business_definition: Population count for ind construction.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_manufacturing
+    business_definition: Population count for ind manufacturing.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_wholesale
+    business_definition: Population count for ind wholesale.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_retail
+    business_definition: Population count for ind retail.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_transport_util
+    business_definition: Population count for ind transport util.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_information
+    business_definition: Population count for ind information.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_finance_real
+    business_definition: Population count for ind finance real.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_professional
+    business_definition: Population count for ind professional.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_educ_health
+    business_definition: Population count for ind educ health.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_arts_accomm_food
+    business_definition: Population count for ind arts accomm food.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_other_services
+    business_definition: Population count for ind other services.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: ind_public_admin
+    business_definition: Ratio of ind male public adminE + ind female public adminE
+      + mutate + pct ind ag mining + ind ag mining to ind total emp.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: pct_ind_ag_mining
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ind_total_emp
+    data_type: DOUBLE
+  - kpi_name: pct_ind_construction
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ind_total_emp
+    data_type: DOUBLE
+  - kpi_name: pct_ind_manufacturing
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ind_total_emp
+    data_type: DOUBLE
+  - kpi_name: pct_ind_wholesale
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ind_total_emp
+    data_type: DOUBLE
+  - kpi_name: pct_ind_retail
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ind_total_emp
+    data_type: DOUBLE
+  - kpi_name: pct_ind_transport_util
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ind_total_emp
+    data_type: DOUBLE
+  - kpi_name: pct_ind_information
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ind_total_emp
+    data_type: DOUBLE
+  - kpi_name: pct_ind_finance_real
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ind_total_emp
+    data_type: DOUBLE
+  - kpi_name: pct_ind_professional
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ind_total_emp
+    data_type: DOUBLE
+  - kpi_name: pct_ind_educ_health
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ind_total_emp
+    data_type: DOUBLE
+  - kpi_name: pct_ind_arts_accomm_food
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ind_total_emp
+    data_type: DOUBLE
+  - kpi_name: pct_ind_other_services
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ind_total_emp
+    data_type: DOUBLE
+  - kpi_name: pct_ind_public_admin
+    business_definition: Share / percentage; denominator defined in KPI logic. (from
+      silver.kpi_dictionary).
+    source: ACS 5-year
+    denominator_hint: ind_total_emp
+    data_type: DOUBLE

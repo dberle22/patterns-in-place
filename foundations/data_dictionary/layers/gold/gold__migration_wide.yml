@@ -1,0 +1,58 @@
+table_name: migration_wide
+schema: gold
+grain: One row per geo_level + geo_id + year.
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=115976
+quality_notes:
+  - Live key check on 2026-04-10 found zero duplicates on geo_level + geo_id + year.
+  - mobility_rate is null only where the ACS migration base is missing.
+  - IRS fields are intentionally all null in the current ACS-only version.
+sources:
+  - silver.migration_kpi
+columns:
+  - { name: geo_level, type: VARCHAR, definition: Geographic level for the row. }
+  - { name: geo_id, type: VARCHAR, definition: Geographic identifier for the row. }
+  - { name: geo_name, type: VARCHAR, definition: Geographic display name for the row. }
+  - { name: year, type: INTEGER, definition: Observation year. }
+  - { name: mig_total, type: DOUBLE, definition: ACS migration universe total. }
+  - { name: mig_same_house, type: DOUBLE, definition: Population in same house as one year ago. }
+  - { name: mig_moved_same_cnty, type: DOUBLE, definition: Population that moved within the same county. }
+  - { name: mig_moved_same_st, type: DOUBLE, definition: Population that moved from another county in the same state. }
+  - { name: mig_moved_diff_st, type: DOUBLE, definition: Population that moved from another state. }
+  - { name: mig_moved_abroad, type: DOUBLE, definition: Population that moved from abroad. }
+  - { name: pct_same_house, type: DOUBLE, definition: Share of migration universe in same house as one year ago. }
+  - { name: pct_moved_same_cnty, type: DOUBLE, definition: Share of migration universe that moved within the same county. }
+  - { name: pct_moved_same_st, type: DOUBLE, definition: Share of migration universe that moved from another county in the same state. }
+  - { name: pct_moved_diff_st, type: DOUBLE, definition: Share of migration universe that moved from another state. }
+  - { name: pct_moved_abroad, type: DOUBLE, definition: Share of migration universe that moved from abroad. }
+  - { name: mobility_rate, type: DOUBLE, definition: Derived mobility rate calculated as one minus pct_same_house. }
+  - { name: pct_moved_domestic, type: DOUBLE, definition: Combined domestic mover share across same-county, same-state, and different-state movers. }
+  - { name: migration_churn, type: DOUBLE, definition: Combined mover share including domestic and abroad movers. }
+  - { name: migration_churn_count, type: DOUBLE, definition: Combined mover count including domestic and abroad movers. }
+  - { name: pop_nativity_total, type: DOUBLE, definition: Nativity universe total. }
+  - { name: pop_native, type: DOUBLE, definition: Native-born population. }
+  - { name: pop_foreign_born, type: DOUBLE, definition: Foreign-born population. }
+  - { name: pop_foreign_born_citizen, type: DOUBLE, definition: Foreign-born naturalized citizen population. }
+  - { name: pop_foreign_born_noncitizen, type: DOUBLE, definition: Foreign-born noncitizen population. }
+  - { name: pct_native, type: DOUBLE, definition: Share of population that is native-born. }
+  - { name: pct_foreign_born, type: DOUBLE, definition: Share of population that is foreign-born. }
+  - { name: pct_non_citizen, type: DOUBLE, definition: Share of population that is noncitizen. }
+  - { name: pct_foreign_born_citizen, type: DOUBLE, definition: Share of nativity universe that is foreign-born and naturalized. }
+  - { name: pct_foreign_born_noncitizen, type: DOUBLE, definition: Share of nativity universe that is foreign-born and noncitizen. }
+  - { name: irs_inflow_total, type: DOUBLE, definition: Placeholder for IRS inflow total; currently null in the ACS-only version. }
+  - { name: irs_outflow_total, type: DOUBLE, definition: Placeholder for IRS outflow total; currently null in the ACS-only version. }
+  - { name: irs_net_migration, type: DOUBLE, definition: Placeholder for IRS net migration; currently null in the ACS-only version. }
+  - { name: irs_net_migration_rate, type: DOUBLE, definition: Placeholder for IRS net migration rate; currently null in the ACS-only version. }
+  - { name: irs_migration_churn, type: DOUBLE, definition: Placeholder for IRS migration churn; currently null in the ACS-only version. }

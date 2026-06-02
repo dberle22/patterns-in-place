@@ -1,0 +1,169 @@
+table_name: xwalk_cbsa_primary_city
+schema: silver
+grain: One row per cbsa_code (inferred).
+primary_key: cbsa_code
+foreign_keys: []
+time_coverage:
+  type: range
+  column: vintage
+  min: '2023'
+  max: '2023'
+geo_coverage:
+  notes:
+    - distinct_state_fips=52
+    - distinct_cbsa_code=935
+columns:
+  - name: cbsa_code
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 935
+    min_value: ~
+    max_value: ~
+    min_length: 5
+    max_length: 5
+    top_values:
+      - value: '31080'
+        count: 19
+      - value: '33100'
+        count: 13
+      - value: '41860'
+        count: 12
+      - value: '33460'
+        count: 10
+      - value: '47900'
+        count: 10
+    definition: GEOID for Core Based Statistical Areas (CBSAs).
+    needs_confirmation: no
+  - name: cbsa_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 935
+    min_value: ~
+    max_value: ~
+    min_length: 7
+    max_length: 46
+    top_values:
+      - value: Los Angeles-Long Beach-Anaheim, CA
+        count: 19
+      - value: Miami-Fort Lauderdale-West Palm Beach, FL
+        count: 13
+      - value: San Francisco-Oakland-Fremont, CA
+        count: 12
+      - value: Minneapolis-St. Paul-Bloomington, MN-WI
+        count: 10
+      - value: Washington-Arlington-Alexandria, DC-VA-MD-WV
+        count: 10
+    definition: Name of Core Based Statistical Areas (CBSAs).
+    needs_confirmation: no
+  - name: cbsa_type
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 2
+    min_value: ~
+    max_value: ~
+    min_length: 29
+    max_length: 29
+    top_values:
+      - value: Metropolitan Statistical Area
+        count: 726
+      - value: Micropolitan Statistical Area
+        count: 568
+    definition: Type of Core Based Statistical Area (CBSA). Metropolitan Statistical
+      Areas have an urban core population of 50,000 or more, while Micropolitan Statistical
+      Areas have an urban core population of at least 10,000 but less than 50,000.
+    needs_confirmation: no
+  - name: primary_city
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1153
+    min_value: ~
+    max_value: ~
+    min_length: 3
+    max_length: 57
+    top_values:
+      - value: Auburn
+        count: 5
+      - value: Columbus
+        count: 5
+      - value: Springfield
+        count: 5
+      - value: Greenville
+        count: 4
+      - value: Jackson
+        count: 4
+    definition: Primary city within a Core Based Statistical Area (CBSA).
+    needs_confirmation: no
+  - name: state_fips
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 52
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: '06'
+        count: 95
+      - value: '48'
+        count: 94
+      - value: '12'
+        count: 67
+      - value: '37'
+        count: 48
+      - value: '39'
+        count: 47
+    definition: FIPS code for the state within a Core Based Statistical Area (CBSA).
+    needs_confirmation: no
+  - name: place_fips
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1168
+    min_value: ~
+    max_value: ~
+    min_length: 5
+    max_length: 5
+    top_values:
+      - value: '01000'
+        count: 5
+      - value: '37000'
+        count: 5
+      - value: '53000'
+        count: 5
+      - value: '65000'
+        count: 5
+      - value: '67000'
+        count: 5
+    definition: FIPS code for the place within a Core Based Statistical Area (CBSA).
+    needs_confirmation: no
+  - name: vintage
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: 2023
+    max_value: 2023
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2023'
+        count: 1294
+    definition: The vintage year of the crosswalk data.
+    needs_confirmation: no
+  - name: source
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: ~
+    max_value: ~
+    min_length: 8
+    max_length: 8
+    top_values:
+      - value: OMB_2023
+        count: 1294
+    definition: Crosswalk source identifier, indicating the source and vintage of the CBSA to primary city crosswalk data. In this case, OMB_2023 indicates that the data is based on the Office of Management and Budget's 2023 delineations of CBSAs.
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/silver/geo_crosswalks_silver.R
+    details: 'Table write/create reference(s): scripts/etl/silver/geo_crosswalks_silver.R:69:DBI::dbWriteTable(con,
+      DBI::Id(schema="silver", table="xwalk_cbsa_primary_city"),'
+kpi_definitions: []

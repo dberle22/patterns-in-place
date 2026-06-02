@@ -1,0 +1,199 @@
+table_name: xwalk_county_state
+schema: silver
+grain: One row per county_geoid (inferred).
+primary_key: county_geoid
+foreign_keys: []
+time_coverage:
+  type: range
+  column: vintage
+  min: '2023'
+  max: '2023'
+geo_coverage:
+  notes: distinct_county_geoid=3235
+columns:
+  - name: state_fip
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 56
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: '48'
+        count: 254
+      - value: '13'
+        count: 159
+      - value: '51'
+        count: 133
+      - value: '21'
+        count: 120
+      - value: '29'
+        count: 115
+    definition: "2-digit state FIPS code. Note: physical column name is `state_fip` (legacy singular naming), semantically equivalent to `state_fips` used in other tables."
+    needs_confirmation: no
+  - name: county_fip
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 333
+    min_value: ~
+    max_value: ~
+    min_length: 3
+    max_length: 3
+    top_values:
+      - value: '001'
+        count: 49
+      - value: '003'
+        count: 49
+      - value: '005'
+        count: 49
+      - value: 009
+        count: 48
+      - value: '007'
+        count: 47
+    definition: County FIPS code.
+    needs_confirmation: no
+  - name: county_geoid
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 3235
+    min_value: ~
+    max_value: ~
+    min_length: 5
+    max_length: 5
+    top_values:
+      - value: '01001'
+        count: 1
+      - value: '01003'
+        count: 1
+      - value: '01005'
+        count: 1
+      - value: '01007'
+        count: 1
+      - value: 01009
+        count: 1
+    definition: County GEOID, which is a concatenation of the state FIPS code and
+      county FIPS code.
+    needs_confirmation: no
+  - name: county_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1927
+    min_value: ~
+    max_value: ~
+    min_length: 3
+    max_length: 30
+    top_values:
+      - value: Washington
+        count: 31
+      - value: Franklin
+        count: 26
+      - value: Jefferson
+        count: 26
+      - value: Jackson
+        count: 24
+      - value: Lincoln
+        count: 24
+    definition: County Name.
+    needs_confirmation: no
+  - name: county_name_long
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1973
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 46
+    top_values:
+      - value: Washington County
+        count: 30
+      - value: Jefferson County
+        count: 25
+      - value: Franklin County
+        count: 24
+      - value: Jackson County
+        count: 23
+      - value: Lincoln County
+        count: 23
+    definition: Long name of the county.
+    needs_confirmation: no
+  - name: state_abbr
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 56
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: TX
+        count: 254
+      - value: GA
+        count: 159
+      - value: VA
+        count: 133
+      - value: KY
+        count: 120
+      - value: MO
+        count: 115
+    definition: State abbreviation.
+    needs_confirmation: no
+  - name: lsad
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 12
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: '06'
+        count: 2999
+      - value: '13'
+        count: 78
+      - value: '15'
+        count: 64
+      - value: '25'
+        count: 40
+      - value: '04'
+        count: 13
+    definition: LSAD (Legal Statistical Area Description) code for the county.
+    needs_confirmation: no
+  - name: vintage
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: 2023
+    max_value: 2023
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2023'
+        count: 3235
+    definition: Year of the crosswalk data.
+    needs_confirmation: no
+  - name: source
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: ~
+    max_value: ~
+    min_length: 6
+    max_length: 6
+    top_values:
+      - value: TIGRIS
+        count: 3235
+    definition: Crosswalk source identifier, indicating the source and vintage of the county to state crosswalk data. In this case, TIGRIS indicates that the data is based on the U.S. Census Bureau's TIGER/Line Shapefiles.
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: scripts/etl/silver/hud_fmr_silver.R
+    details: 'Table write/create reference(s): scripts/etl/silver/hud_fmr_silver.R:43:county_state_xwalk
+      <- dbGetQuery(con, "SELECT * FROM silver.xwalk_county_state") | scripts/etl/silver/geo_crosswalks_silver.R:188:DBI::dbWriteTable(con,
+      DBI::Id(schema="silver", table="xwalk_county_state"), | scripts/etl/silver/bps_silver.R:46:county_state_xwalk
+      <- dbGetQuery(con, "SELECT * FROM silver.xwalk_county_state")'
+  - step: downstream_usage_examples
+    script: scripts/etl/staging/get_irs_migration.R
+    details: 'Downstream reference(s): scripts/etl/staging/get_irs_migration.R:86:county_state_xwalk
+      <- dbGetQuery(con, "SELECT * FROM silver.xwalk_county_state")'
+kpi_definitions: []
