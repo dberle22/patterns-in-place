@@ -52,6 +52,7 @@ config/api_keys.yaml
 .streamlit/secrets.toml
 
 # ── Product output folders ───────────────────────────────────────────────────
+foundations/outputs/
 publisher/publisher/output/
 publisher/analysis/vacancy_rates/**/chart*.png
 publisher/analysis/vacancy_rates/**/result*.csv
