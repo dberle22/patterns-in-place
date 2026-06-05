@@ -1,0 +1,47 @@
+table_name: opportunity_zones
+schema: silver
+grain: One row per geo_level + geo_id for the Opportunity Zones designation surface.
+primary_key:
+  - geo_level
+  - geo_id
+foreign_keys: []
+time_coverage:
+  type: static
+  notes:
+    - Opportunity Zone designations are static in the first-pass Foundations contract.
+geo_coverage:
+  notes:
+    - geo_levels=tract,county,cbsa
+columns:
+  - name: geo_level
+    type: VARCHAR
+    definition: Geographic level for the row (`tract`, `county`, or `cbsa`).
+  - name: geo_id
+    type: VARCHAR
+    definition: Geographic identifier for the row. Tract rows use 11-digit tract GEOIDs, county rows use 5-digit county FIPS, and CBSA rows use 5-digit CBSA codes.
+  - name: geo_name
+    type: VARCHAR
+    definition: Geographic display name for the row.
+  - name: is_opportunity_zone
+    type: BOOLEAN
+    definition: Binary Opportunity Zone designation flag for tract rows. Null for county and CBSA rollup rows.
+  - name: oz_tract_count
+    type: INTEGER
+    definition: Number of designated Opportunity Zone tracts in the geography. For tract rows, this is `1` when the tract is designated and `0` otherwise.
+  - name: total_tract_count
+    type: INTEGER
+    definition: Number of tracts represented by the geography row. Tract rows always equal `1`.
+  - name: pct_oz_tracts
+    type: DOUBLE
+    definition: Share of tracts in the geography that are designated Opportunity Zones.
+lineage:
+  - step: read_source
+    script: foundations/etl/staging/get_opportunity_zones.R
+    details: Downloads and normalizes the official CDFI Fund designated-QOZ workbook into `staging.opportunity_zones`.
+  - step: standardize_and_roll_up
+    script: foundations/etl/silver/opportunity_zones_silver.R
+    details: Uses `silver.xwalk_tract_county` as the tract backbone, applies the tract designation flag, and derives county and CBSA counts and shares.
+  - step: write_target
+    script: foundations/etl/silver/opportunity_zones_silver.R
+    details: Writes `silver.opportunity_zones` with overwrite enabled.
+kpi_definitions: []

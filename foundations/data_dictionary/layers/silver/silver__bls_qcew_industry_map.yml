@@ -1,0 +1,172 @@
+table_name: bls_qcew_industry_map
+schema: silver
+grain: One row per QCEW industry_code in the stabilized mapping reference.
+primary_key:
+  - industry_code
+foreign_keys: []
+time_coverage:
+  type: none
+geo_coverage:
+  notes:
+    - non_geographic_reference_table
+    - row_count=2660
+columns:
+  - name: industry_code
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 2660
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Raw QCEW industry code published by BLS.
+    needs_confirmation: no
+  - name: industry_title
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 2660
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Human-readable title for the QCEW industry code.
+    needs_confirmation: no
+  - name: first_seen_year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: ~
+    min_value: 2010
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: First annual archive year in which the code appeared in the mapping build.
+    needs_confirmation: no
+  - name: last_seen_year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: ~
+    min_value: 2010
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Most recent annual archive year in which the code appeared in the mapping build.
+    needs_confirmation: no
+  - name: years_present
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Pipe-delimited list of annual archive years in which the code appeared.
+    needs_confirmation: no
+  - name: member_count
+    type: INTEGER
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Number of annual archive members contributing to the code's year-presence record.
+    needs_confirmation: no
+  - name: code_length
+    type: INTEGER
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Character length of the published code after preserving hyphens.
+    needs_confirmation: no
+  - name: code_type
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Code classification such as `total`, `naics_sector`, `naics_compound_sector`, or `supersector_aggregate`.
+    needs_confirmation: no
+  - name: is_aggregate
+    type: BOOLEAN
+    null_pct: ~
+    distinct_count: 2
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Whether the published code is an aggregate rather than a leaf NAICS-style code.
+    needs_confirmation: no
+  - name: aggregate_components
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Delimited component-code list for aggregate rows when known.
+    needs_confirmation: no
+  - name: keep_in_staging
+    type: BOOLEAN
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Whether the published code should be retained in source-faithful staging coverage.
+    needs_confirmation: no
+  - name: keep_in_silver_canonical
+    type: BOOLEAN
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Whether the code belongs to the canonical curated industry family used by `silver.bls_qcew`.
+    needs_confirmation: no
+  - name: silver_rollup_family
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Optional grouped family label for Silver analytical rollups.
+    needs_confirmation: no
+  - name: notes
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Free-text note or caveat about the code.
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: foundations/etl/silver/bls_qcew_silver.R
+    details: Table materialized from the maintained CSV seed at `foundations/etl/reference/bls_qcew_industry_map.csv`.
+kpi_definitions: []

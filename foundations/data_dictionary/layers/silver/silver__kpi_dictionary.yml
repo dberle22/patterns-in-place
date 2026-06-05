@@ -107,8 +107,8 @@ columns:
     count: 67
   - value: ACS Income/Poverty (B19xxx/B17xxx)
     count: 32
-  definition: Definition not yet documented; inferred from column name. Needs confirmation.
-  needs_confirmation: yes
+  definition: Upstream source or ETL-assigned provenance label for the row.
+  needs_confirmation: no
 - name: denominator_hint
   type: VARCHAR
   null_pct: 91.3366

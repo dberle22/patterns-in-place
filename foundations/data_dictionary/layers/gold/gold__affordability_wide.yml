@@ -19,9 +19,11 @@ quality_notes:
   - Live key check on 2026-04-10 found zero duplicates on geo_level + geo_id + year.
   - RPP coverage currently lands mainly for cbsa rows and a subset of county rows.
   - State-level RPP fields are currently missing because of a state geo_id alignment issue with MARPP.
+  - HUD CHAS affordability-burden fields land only for 2021 cbsa, county, and place rows because the current CHAS Silver contract is limited to those geographies and that source period.
 sources:
   - gold.housing_core_wide
   - gold.economics_income_wide
+  - silver.hud_chas_burden
   - silver.bea_regional_marpp_wide
   - silver.xwalk_cbsa_county
   - silver.xwalk_county_state
@@ -49,6 +51,9 @@ columns:
   - { name: rpp_price_deflator, type: DOUBLE, definition: MARPP price deflator. }
   - { name: rent_to_income, type: DOUBLE, definition: Annualized median rent divided by median household income. }
   - { name: value_to_income, type: DOUBLE, definition: Median home value divided by median household income. }
+  - { name: pct_cost_burdened, type: DOUBLE, definition: Share of all households spending more than 30 percent of income on housing from HUD CHAS. Populated for 2021 cbsa, county, and place rows only. }
+  - { name: pct_severely_cost_burdened, type: DOUBLE, definition: Share of all households spending more than 50 percent of income on housing from HUD CHAS. Populated for 2021 cbsa, county, and place rows only. }
+  - { name: pct_renter_severely_cost_burdened, type: DOUBLE, definition: Share of renter households spending more than 50 percent of income on housing from HUD CHAS. Populated for 2021 cbsa, county, and place rows only. }
   - { name: pct_rent_burden_30plus, type: DOUBLE, definition: Share of renters spending 30 percent or more of income on rent. }
   - { name: pct_rent_burden_50plus, type: DOUBLE, definition: Share of renters spending 50 percent or more of income on rent. }
   - { name: fmr_2br, type: DOUBLE, definition: HUD fair market rent for 2-bedroom units. }

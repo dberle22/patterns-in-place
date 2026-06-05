@@ -1,0 +1,12 @@
+# Required for migration and build
+DB_PATH=/path/to/external-drive/data/patterns-in-place/duckdb/patterns_in_place.duckdb
+OLD_DB_PATH=/path/to/local/data/duckdb/metro_deep_dive.duckdb
+DATA=/path/to/local/data
+DATA_DEMO_RAW=/path/to/local/data/demographics/raw/acs
+DATA_RAW=/path/to/local/data/demographics/raw
+
+# Optional for re-running staging ingestion later
+# BEA_KEY=your_bea_api_key
+# CENSUS_API_KEY=your_census_api_key
+# BLS_KEY=your_bls_api_key
+# ROF_TRACT_STATE_SCOPE=FL,GA,NC,SC

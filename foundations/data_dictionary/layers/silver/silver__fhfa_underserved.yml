@@ -1,0 +1,59 @@
+table_name: fhfa_underserved
+schema: silver
+grain: One row per geo_level + geo_id + year for the current FHFA underserved designation surface.
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+geo_coverage:
+  notes:
+    - geo_levels=tract,county,cbsa
+columns:
+  - name: geo_level
+    type: VARCHAR
+    definition: Geographic level for the row (`tract`, `county`, or `cbsa`).
+  - name: geo_id
+    type: VARCHAR
+    definition: Geographic identifier for the row. Tract rows use 11-digit tract GEOIDs, county rows use 5-digit county FIPS, and CBSA rows use 5-digit CBSA codes.
+  - name: geo_name
+    type: VARCHAR
+    definition: Geographic display name for the row.
+  - name: year
+    type: INTEGER
+    definition: FHFA underserved release year represented by the row.
+  - name: is_underserved
+    type: BOOLEAN
+    definition: Combined underserved designation flag for tract rows. True when the tract qualifies as a low-income area, minority tract, or designated disaster area. Null for county and CBSA rollup rows.
+  - name: is_low_income_area
+    type: BOOLEAN
+    definition: FHFA low-income-area designation flag for tract rows. Null for county and CBSA rollup rows.
+  - name: is_minority_area
+    type: BOOLEAN
+    definition: FHFA minority-tract designation flag for tract rows. Null for county and CBSA rollup rows.
+  - name: is_disaster_area
+    type: BOOLEAN
+    definition: FHFA designated-disaster-area flag for tract rows. Null for county and CBSA rollup rows.
+  - name: underserved_tract_count
+    type: INTEGER
+    definition: Number of tracts in the geography that qualify for the combined underserved designation. For tract rows, this is `1` when the tract is underserved and `0` otherwise.
+  - name: total_tract_count
+    type: INTEGER
+    definition: Number of tracts represented by the geography row. Tract rows always equal `1`.
+  - name: pct_underserved_tracts
+    type: DOUBLE
+    definition: Share of tracts in the geography that qualify for the combined underserved designation.
+lineage:
+  - step: read_source
+    script: foundations/etl/staging/get_fhfa_underserved.R
+    details: Resolves the latest FHFA yearly ZIP, parses the fixed-width text file, and writes normalized tract booleans to `staging.fhfa_underserved`.
+  - step: standardize_and_roll_up
+    script: foundations/etl/silver/fhfa_underserved_silver.R
+    details: Uses `silver.xwalk_tract_county` as the tract backbone, applies the tract designation flags, and derives county and CBSA counts and shares for the combined underserved flag.
+  - step: write_target
+    script: foundations/etl/silver/fhfa_underserved_silver.R
+    details: Writes `silver.fhfa_underserved` with overwrite enabled.
+kpi_definitions: []

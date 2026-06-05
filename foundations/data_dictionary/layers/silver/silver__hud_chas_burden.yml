@@ -1,0 +1,123 @@
+table_name: hud_chas_burden
+schema: silver
+grain: One row per geo_level + geo_id + year + tenure + income_band (HUD CHAS burden segment).
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+  - tenure
+  - income_band
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2021'
+  max: '2021'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=3
+    - cbsa_rows=16704
+    - county_rows=57978
+    - place_rows=574344
+columns:
+  - name: source
+    type: VARCHAR
+    null_pct: 0.0
+    definition: Upstream source or ETL-assigned provenance label for the row.
+    needs_confirmation: no
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    definition: Canonical geography grain label for the row (for example, state, county, place, tract, zcta, or cbsa).
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    definition: Canonical geographic identifier for the row. Format depends on `geo_level` and is zero-padded where applicable.
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    definition: Display name for the geography identified by `geo_id`.
+    needs_confirmation: no
+  - name: state_fips
+    type: VARCHAR
+    null_pct: 2.5738
+    definition: Two-digit state FIPS code for county and place rows. Null for CBSA rows because metros can span multiple states.
+    needs_confirmation: no
+  - name: state_abbr
+    type: VARCHAR
+    null_pct: 2.5738
+    definition: USPS state abbreviation for county and place rows. Null for CBSA rows because metros can span multiple states.
+    needs_confirmation: no
+  - name: chas_period
+    type: VARCHAR
+    null_pct: 0.0
+    definition: Source CHAS tabulation period label carried through from staging.
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    definition: Calendar end year used as the canonical analysis year for the CHAS tabulation period.
+    needs_confirmation: no
+  - name: tenure
+    type: VARCHAR
+    null_pct: 0.0
+    definition: Tenure segment for the CHAS row (`all`, `owner`, or `renter`).
+    needs_confirmation: no
+  - name: income_band
+    type: VARCHAR
+    null_pct: 0.0
+    definition: Income band segment for the CHAS row (`all`, `le_30_hamfi`, `gt_30_to_50_hamfi`, `gt_50_to_80_hamfi`, `gt_80_to_100_hamfi`, or `gt_100_hamfi`).
+    needs_confirmation: no
+  - name: total_households
+    type: DOUBLE
+    null_pct: 0.0
+    definition: Total households in the geography-tenure-income segment from HUD CHAS Table 7.
+    needs_confirmation: no
+  - name: households_cost_burden_le_30
+    type: DOUBLE
+    null_pct: 0.0
+    definition: Households in the segment spending 30 percent or less of income on housing.
+    needs_confirmation: no
+  - name: households_cost_burden_30_50
+    type: DOUBLE
+    null_pct: 0.0
+    definition: Households in the segment spending more than 30 percent and up to 50 percent of income on housing.
+    needs_confirmation: no
+  - name: households_cost_burden_50plus
+    type: DOUBLE
+    null_pct: 0.0
+    definition: Households in the segment spending more than 50 percent of income on housing.
+    needs_confirmation: no
+  - name: households_cost_burdened
+    type: DOUBLE
+    null_pct: 0.0
+    definition: Households in the segment spending more than 30 percent of income on housing.
+    needs_confirmation: no
+  - name: households_severely_cost_burdened
+    type: DOUBLE
+    null_pct: 0.0
+    definition: Households in the segment spending more than 50 percent of income on housing.
+    needs_confirmation: no
+  - name: pct_cost_burdened
+    type: DOUBLE
+    null_pct: 13.96
+    definition: Share of the segment spending more than 30 percent of income on housing.
+    needs_confirmation: no
+  - name: pct_severely_cost_burdened
+    type: DOUBLE
+    null_pct: 13.96
+    definition: Share of the segment spending more than 50 percent of income on housing.
+    needs_confirmation: no
+lineage:
+  - step: read_source
+    script: foundations/etl/staging/get_hud_chas.R
+    details: Reads HUD CHAS Table 7 source files, keeps the denominator rows plus owner/renter income-burden detail rows, and writes staged county and place long tables.
+  - step: transform
+    script: foundations/etl/silver/hud_chas_silver.R
+    details: Standardizes county and place CHAS rows, preserves tenure and all staged income bands including `gt_100_hamfi`, reconstructs segment totals by summing detailed household-type rows where HUD does not ship direct subtotals, rebases county CHAS counts to CBSA using `silver.xwalk_cbsa_county`, pivots burden buckets into one row per geography-segment, and derives burden counts and rates.
+  - step: write_target
+    script: foundations/etl/silver/hud_chas_silver.R
+    details: Writes `silver.hud_chas_burden` with overwrite enabled.
+kpi_definitions: []

@@ -1,0 +1,53 @@
+table_name: health_wide
+schema: gold
+grain: One row per geo_level + geo_id + year.
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2025'
+  max: '2025'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=2
+    - distinct_geo_id=4077
+    - county_rows=3152
+    - cbsa_rows=925
+quality_notes:
+  - Live key check on 2026-06-04 found zero duplicates on geo_level + geo_id + year.
+  - This first-pass Gold mart is intentionally the approved CHR Silver contract carried through directly at county + CBSA grain.
+  - `air_pollution_pm25` and `adverse_climate_events` remain lagged holdover fields pending direct EPA and FEMA/environment source coverage in later tracks.
+  - Provider access fields use CHR's published ratio helper columns (`population:provider`) rather than per-100k raw values.
+sources:
+  - silver.chr_health_outcomes
+columns:
+  - { name: geo_level, type: VARCHAR, definition: Geographic level for the row (`county` or derived `cbsa`). }
+  - { name: geo_id, type: VARCHAR, definition: Geographic identifier for the row. County rows use 5-digit county FIPS and CBSA rows use 5-digit CBSA codes. }
+  - { name: geo_name, type: VARCHAR, definition: Geographic display name for the row. }
+  - { name: year, type: INTEGER, definition: Observation year. }
+  - { name: life_expectancy, type: DOUBLE, definition: Life Expectancy raw value from CHR. }
+  - { name: premature_death_rate, type: DOUBLE, definition: Premature Death raw value from CHR. }
+  - { name: premature_age_adjusted_mortality, type: DOUBLE, definition: Premature Age-Adjusted Mortality raw value from CHR. }
+  - { name: child_mortality_rate, type: DOUBLE, definition: Child Mortality raw value from CHR. }
+  - { name: infant_mortality_rate, type: DOUBLE, definition: Infant Mortality raw value from CHR. }
+  - { name: drug_overdose_death_rate, type: DOUBLE, definition: Drug Overdose Deaths raw value from CHR. }
+  - { name: pct_uninsured_adults, type: DOUBLE, definition: Uninsured Adults raw value from CHR. }
+  - { name: primary_care_ratio, type: DOUBLE, definition: Published CHR ratio of population to primary care physicians. Lower values indicate better access. }
+  - { name: mental_health_provider_ratio, type: DOUBLE, definition: Published CHR ratio of population to mental health providers. Lower values indicate better access. }
+  - { name: preventable_hospital_stay_rate, type: DOUBLE, definition: Preventable Hospital Stays raw value from CHR. }
+  - { name: food_insecurity_rate, type: DOUBLE, definition: Food Insecurity raw value from CHR. }
+  - { name: social_associations_per_10k, type: DOUBLE, definition: Social Associations raw value from CHR, measured per 10,000 residents. }
+  - { name: child_care_cost_burden_rate, type: DOUBLE, definition: Child Care Cost Burden raw value from CHR. }
+  - { name: hs_graduation_rate, type: DOUBLE, definition: High School Graduation raw value from CHR. }
+  - { name: air_pollution_pm25, type: DOUBLE, definition: Air Pollution: Particulate Matter raw value from CHR. Lagged holdover field pending direct EPA coverage. }
+  - { name: adverse_climate_events, type: DOUBLE, definition: Adverse Climate Events raw value from CHR. Holdover field pending direct FEMA/environment coverage. }
+  - { name: pct_access_to_parks, type: DOUBLE, definition: Access to Parks raw value from CHR. }
+  - { name: homicide_rate, type: DOUBLE, definition: Homicides raw value from CHR. }
+  - { name: firearm_fatality_rate, type: DOUBLE, definition: Firearm Fatalities raw value from CHR. }
+  - { name: motor_vehicle_crash_rate, type: DOUBLE, definition: Motor Vehicle Crash Deaths raw value from CHR. }
+  - { name: reading_score_index, type: DOUBLE, definition: Reading Scores raw value from CHR. }
+  - { name: math_score_index, type: DOUBLE, definition: Math Scores raw value from CHR. }

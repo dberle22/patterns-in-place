@@ -79,6 +79,21 @@ When working on a sprint or series of tasks:
 
 ---
 
+## 5.1 ETL Workflow Commands
+
+**Build data layer work one step at a time.**
+
+When adding a new source or table:
+- Stage first. Only download, parse, normalize, and land the raw table.
+- Inspect staging before writing Silver. Check row counts, columns, obvious nulls, and source quirks first.
+- Keep staging source-faithful. Do tract/backbone validation, geographic joins, and contract enforcement in Silver unless the user asks otherwise.
+- Build Silver next. Standardize grain, validate keys, and test joins only after staging looks right.
+- Build Gold last. Do not design downstream rollups before the Silver shape is confirmed.
+- Update docs and pipeline wiring after the code for that layer is working.
+- Do not run parallel DuckDB writes. Materialize staging, Silver, and Gold steps sequentially.
+
+---
+
 ## 6. Documentation Safety
 
 **Never write machine-specific absolute paths into committed files.**
@@ -117,3 +132,15 @@ This is the `patterns-in-place` monorepo. Top-level folders are independent prod
 **`foundations/` is a dependency, not a product.** Product folders reference it for the semantic layer, visual library, and DuckDB output. Do not embed copies of foundations assets inside product folders.
 
 Each folder may have its own `README.md` and language-specific tooling (R, Python, etc.). When working in a specific folder, check for a local README before assuming project-wide conventions apply.
+
+## 8. Inline Notes Style
+
+When adding inline code comments, prefer richer explanatory notes over terse labels.
+Comments should help a human quickly understand:
+- what the block is doing
+- why it exists
+- any important business rule, exclusion, or modeling choice
+- how the output of the block is used downstream
+
+Favor section headers and brief walkthrough-style comments in the style of `foundations/etl/silver/acs_age_silver.R`.
+Do not comment every line; focus on the parts that would otherwise take time to reason through.

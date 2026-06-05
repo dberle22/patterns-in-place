@@ -1,0 +1,259 @@
+table_name: bls_qcew
+schema: silver
+grain: One row per geo_level + geo_id + period + own_code + industry_code in the curated QCEW subset.
+primary_key:
+  - geo_level
+  - geo_id
+  - period
+  - own_code
+  - industry_code
+foreign_keys: []
+time_coverage:
+  type: range
+  column: period
+  min: '2010'
+  max: '2024'
+geo_coverage:
+  notes:
+    - geo_levels=county,cbsa,state
+    - curated_from_county_staging
+    - row_count=1412242
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: 3
+    min_value: ~
+    max_value: ~
+    min_length: 5
+    max_length: 6
+    top_values: []
+    definition: Geographic level for the row (`county`, `cbsa`, or `state`).
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 5
+    top_values: []
+    definition: Geographic identifier for the row.
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Geographic name for the row.
+    needs_confirmation: no
+  - name: period
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 15
+    min_value: 2010
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Calendar year for the QCEW annual-average observation.
+    needs_confirmation: no
+  - name: own_code
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 5
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 1
+    top_values: []
+    definition: Ownership code retained in the curated subset; `0` for the total-covered headline row, `5` for most private-sector industry rows, and `1`/`2`/`3` for the Public Administration exception rows.
+    needs_confirmation: no
+  - name: own_title
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 5
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Human-readable ownership title for the row.
+    needs_confirmation: no
+  - name: industry_code
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 21
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 5
+    top_values: []
+    definition: Curated QCEW industry code for the row.
+    needs_confirmation: no
+  - name: industry_title
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 21
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Human-readable QCEW industry title for the row's industry code.
+    needs_confirmation: no
+  - name: code_type
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Industry-code classification from `silver.bls_qcew_industry_map`.
+    needs_confirmation: no
+  - name: is_aggregate
+    type: BOOLEAN
+    null_pct: ~
+    distinct_count: 2
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Whether the industry code is an aggregate rather than a leaf NAICS-style code.
+    needs_confirmation: no
+  - name: aggregate_components
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Delimited component-code list for aggregate rows when known.
+    needs_confirmation: no
+  - name: silver_rollup_family
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Optional Silver rollup-family label carried from the QCEW industry map.
+    needs_confirmation: no
+  - name: annual_avg_estabs
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Annual average number of establishments for the geography-year-ownership-industry row.
+    needs_confirmation: no
+  - name: annual_avg_emplvl
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Annual average employment level for the geography-year-ownership-industry row.
+    needs_confirmation: no
+  - name: total_annual_wages
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Total annual wages for the geography-year-ownership-industry row.
+    needs_confirmation: no
+  - name: taxable_annual_wages
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Total taxable annual wages for the geography-year-ownership-industry row.
+    needs_confirmation: no
+  - name: annual_contributions
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Annual unemployment-insurance contributions for the geography-year-ownership-industry row.
+    needs_confirmation: no
+  - name: annual_avg_wkly_wage
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Average weekly wage for the row; CBSA and state rows are recomputed from summed wages and employment.
+    needs_confirmation: no
+  - name: avg_annual_pay
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Average annual pay for the row; CBSA and state rows are recomputed from summed wages and employment.
+    needs_confirmation: no
+  - name: disclosure_code
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: 1
+    top_values: []
+    definition: QCEW disclosure flag for the row; rolled-up rows carry `N` when any contributing county row is suppressed.
+    needs_confirmation: no
+  - name: source
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: ~
+    max_value: ~
+    min_length: 8
+    max_length: 8
+    top_values:
+      - value: BLS QCEW
+        count: ~
+    definition: Source system or provider for the row.
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: foundations/etl/silver/bls_qcew_silver.R
+    details: Table materialized from `staging.bls_qcew_county`, filtered to the curated subset and rolled from counties to CBSA and state.
+kpi_definitions: []

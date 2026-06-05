@@ -1,0 +1,421 @@
+table_name: irs_migration_flows
+schema: silver
+grain: One row per geo_level + origin_geo_id + dest_geo_id + year (inferred).
+primary_key:
+  - geo_level
+  - origin_geo_id
+  - dest_geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2022'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=2
+    - distinct_origin_geo_id=3115
+    - distinct_dest_geo_id=3141
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 2
+    min_value: ~
+    max_value: ~
+    min_length: 5
+    max_length: 6
+    top_values:
+      - value: county
+        count: 626175
+      - value: state
+        count: 28050
+    definition: Geographic level shared by the origin and destination IDs in the flow row (`county` or `state`).
+    needs_confirmation: no
+  - name: flow_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 654225
+    min_value: ~
+    max_value: ~
+    min_length: 10
+    max_length: 16
+    top_values:
+      - value: '2012_01001_01021'
+        count: 1
+      - value: '2012_01001_01047'
+        count: 1
+      - value: '2012_01001_01051'
+        count: 1
+      - value: '2012_01001_01073'
+        count: 1
+      - value: '2012_01001_01081'
+        count: 1
+    definition: Derived flow identifier composed from destination year, origin geography ID, and destination geography ID.
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 11
+    min_value: 2012
+    max_value: 2022
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2013'
+        count: 94009
+      - value: '2012'
+        count: 92077
+      - value: '2017'
+        count: 62687
+      - value: '2022'
+        count: 57072
+      - value: '2021'
+        count: 56265
+    definition: Destination tax year and canonical analysis year for the migration flow.
+    needs_confirmation: no
+  - name: origin_year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 11
+    min_value: 2011
+    max_value: 2021
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2012'
+        count: 94009
+      - value: '2011'
+        count: 92077
+      - value: '2016'
+        count: 62687
+      - value: '2021'
+        count: 57072
+      - value: '2020'
+        count: 56265
+    definition: Prior-year residence tax year carried from the IRS source file.
+    needs_confirmation: no
+  - name: dest_year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 11
+    min_value: 2012
+    max_value: 2022
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2013'
+        count: 94009
+      - value: '2012'
+        count: 92077
+      - value: '2017'
+        count: 62687
+      - value: '2022'
+        count: 57072
+      - value: '2021'
+        count: 56265
+    definition: Destination-year label from the IRS source file.
+    needs_confirmation: no
+  - name: origin_geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 3115
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 5
+    top_values:
+      - value: '04013'
+        count: 6414
+      - value: '48201'
+        count: 5326
+      - value: '06037'
+        count: 4861
+      - value: '06073'
+        count: 4513
+      - value: '32003'
+        count: 4405
+    definition: Origin geography identifier for the flow row. County rows use 5-digit county FIPS; state rows use 2-digit state FIPS.
+    needs_confirmation: no
+  - name: origin_geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1895
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 46
+    top_values:
+      - value: Montgomery County
+        count: 8013
+      - value: Orange County
+        count: 7104
+      - value: Jefferson County
+        count: 6877
+      - value: Maricopa County
+        count: 6414
+      - value: Clark County
+        count: 6080
+    definition: Name of the origin geography for the flow row.
+    needs_confirmation: no
+  - name: origin_state_fips
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 51
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: '48'
+        count: 57611
+      - value: '12'
+        count: 57427
+      - value: '06'
+        count: 41973
+      - value: '13'
+        count: 29487
+      - value: '37'
+        count: 27809
+    definition: 2-digit state FIPS code for the flow origin.
+    needs_confirmation: no
+  - name: origin_state_abbr
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 51
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: TX
+        count: 57611
+      - value: FL
+        count: 57427
+      - value: CA
+        count: 41973
+      - value: GA
+        count: 29487
+      - value: NC
+        count: 27809
+    definition: USPS state abbreviation for the flow origin.
+    needs_confirmation: no
+  - name: origin_county_fips
+    type: VARCHAR
+    null_pct: 4.2875
+    distinct_count: 321
+    min_value: ~
+    max_value: ~
+    min_length: 3
+    max_length: 3
+    top_values:
+      - value: ~
+        count: 28050
+      - value: '003'
+        count: 19131
+      - value: '031'
+        count: 17821
+      - value: '013'
+        count: 16388
+      - value: '001'
+        count: 15178
+    definition: 3-digit county FIPS code for county-level origin rows; null for state-level rows.
+    needs_confirmation: no
+  - name: dest_geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 3141
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 5
+    top_values:
+      - value: '04013'
+        count: 5723
+      - value: '06037'
+        count: 5527
+      - value: '17031'
+        count: 4973
+      - value: '06073'
+        count: 4960
+      - value: '48201'
+        count: 4843
+    definition: Destination geography identifier for the flow row. County rows use 5-digit county FIPS; state rows use 2-digit state FIPS.
+    needs_confirmation: no
+  - name: dest_geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1910
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 46
+    top_values:
+      - value: Montgomery County
+        count: 8234
+      - value: Orange County
+        count: 7781
+      - value: Jefferson County
+        count: 6769
+      - value: Maricopa County
+        count: 5723
+      - value: Clark County
+        count: 5562
+    definition: Name of the destination geography for the flow row.
+    needs_confirmation: no
+  - name: dest_state_fips
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 51
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: '48'
+        count: 51314
+      - value: '06'
+        count: 47043
+      - value: '12'
+        count: 46470
+      - value: '36'
+        count: 31855
+      - value: '13'
+        count: 27985
+    definition: 2-digit state FIPS code for the flow destination.
+    needs_confirmation: no
+  - name: dest_state_abbr
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 51
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: TX
+        count: 51314
+      - value: CA
+        count: 47043
+      - value: FL
+        count: 46470
+      - value: NY
+        count: 31855
+      - value: GA
+        count: 27985
+    definition: USPS state abbreviation for the flow destination.
+    needs_confirmation: no
+  - name: dest_county_fips
+    type: VARCHAR
+    null_pct: 4.2875
+    distinct_count: 326
+    min_value: ~
+    max_value: ~
+    min_length: 3
+    max_length: 3
+    top_values:
+      - value: ~
+        count: 28050
+      - value: '003'
+        count: 20228
+      - value: '031'
+        count: 17736
+      - value: '013'
+        count: 15927
+      - value: '001'
+        count: 15651
+    definition: 3-digit county FIPS code for county-level destination rows; null for state-level rows.
+    needs_confirmation: no
+  - name: n_returns
+    type: DOUBLE
+    null_pct: 0.013
+    distinct_count: 6818
+    min_value: 3
+    max_value: 54136
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '20'
+        count: 24026
+      - value: '21'
+        count: 21914
+      - value: '22'
+        count: 19763
+      - value: '23'
+        count: 18630
+      - value: '24'
+        count: 17053
+    definition: Number of tax returns moving from the origin geography to the destination geography.
+    needs_confirmation: no
+  - name: n_exemptions
+    type: DOUBLE
+    null_pct: 0.013
+    distinct_count: 9545
+    min_value: 3
+    max_value: 106882
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '41'
+        count: 8237
+      - value: '43'
+        count: 8237
+      - value: '42'
+        count: 8235
+      - value: '39'
+        count: 8144
+      - value: '40'
+        count: 8116
+    definition: Number of claimed exemptions or people associated with the migrating tax returns.
+    needs_confirmation: no
+  - name: agi_thousands
+    type: DOUBLE
+    null_pct: 0.1029
+    distinct_count: 56266
+    min_value: 0
+    max_value: 11000837
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 673
+      - value: '970'
+        count: 272
+      - value: '900'
+        count: 264
+      - value: '777'
+        count: 257
+      - value: '887'
+        count: 256
+    definition: Adjusted gross income associated with the flow, reported in thousands of dollars.
+    needs_confirmation: no
+  - name: agi
+    type: DOUBLE
+    null_pct: 0.1029
+    distinct_count: 56266
+    min_value: 0
+    max_value: 11000837000
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 673
+      - value: '970000'
+        count: 272
+      - value: '900000'
+        count: 264
+      - value: '777000'
+        count: 257
+      - value: '887000'
+        count: 256
+    definition: Adjusted gross income associated with the flow, scaled into dollars from the IRS thousand-dollar source field.
+    needs_confirmation: no
+lineage:
+  - step: ingest_source
+    script: foundations/etl/staging/get_irs_migration.R
+    details: Downloads annual IRS county inflow CSVs, normalizes county and state inflow staging tables, converts suppressed negative measures to nulls, and scales AGI into dollars.
+  - step: enrich_and_write
+    script: foundations/etl/silver/irs_migration_silver.R
+    details: Joins county and state naming metadata, deduplicates exact staging repeats, and writes combined county/state origin-destination flows to silver.irs_migration_flows.
+kpi_definitions: []

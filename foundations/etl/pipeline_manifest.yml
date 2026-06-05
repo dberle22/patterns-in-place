@@ -1,0 +1,527 @@
+version: 1
+
+steps:
+  - id: seed_staging
+    layer: staging
+    script: foundations/etl/seed_staging.R
+    outputs:
+      - staging.*
+    depends_on: []
+    enabled: true
+    notes: Seed local staging tables from an existing DuckDB before downstream builds.
+
+  - id: seed_geo
+    layer: geo
+    script: foundations/etl/seed_geo.R
+    outputs:
+      - geo.states
+      - geo.cbsas
+      - geo.counties
+      - geo.tracts_all_us
+    depends_on:
+      - seed_staging
+    enabled: true
+    notes: Seed the minimal canonical geometry/reference tables from an existing DuckDB.
+
+  - id: geo_crosswalks
+    layer: silver
+    script: foundations/etl/silver/geo_crosswalks_silver.R
+    outputs:
+      - silver.xwalk_cbsa_county
+      - silver.xwalk_cbsa_primary_city
+      - silver.xwalk_cbsa_state
+      - silver.xwalk_county_state
+      - silver.xwalk_state_region
+      - silver.xwalk_tract_county
+      - silver.xwalk_zcta_cbsa
+      - silver.xwalk_zcta_county
+      - silver.xwalk_zcta_tract
+    depends_on:
+      - seed_staging
+    enabled: true
+
+  - id: opportunity_zones_staging
+    layer: staging
+    script: foundations/etl/staging/get_opportunity_zones.R
+    outputs:
+      - staging.opportunity_zones
+    depends_on:
+      - seed_staging
+    enabled: true
+
+  - id: fhfa_underserved_staging
+    layer: staging
+    script: foundations/etl/staging/get_fhfa_underserved.R
+    outputs:
+      - staging.fhfa_underserved
+    depends_on:
+      - seed_staging
+    enabled: true
+
+  - id: bea_metric_dictionary
+    layer: silver
+    script: foundations/etl/silver/bea_metric_dictionary.R
+    outputs:
+      - silver.bea_regional_metrics_ref
+    depends_on:
+      - seed_staging
+    enabled: true
+    notes: Required before the BEA silver scripts.
+
+  - id: acs_age
+    layer: silver
+    script: foundations/etl/silver/acs_age_silver.R
+    outputs:
+      - silver.age_base
+      - silver.age_kpi
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: acs_edu
+    layer: silver
+    script: foundations/etl/silver/acs_edu_silver.R
+    outputs:
+      - silver.education_base
+      - silver.education_kpi
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: acs_housing
+    layer: silver
+    script: foundations/etl/silver/acs_housing_silver.R
+    outputs:
+      - silver.housing_base
+      - silver.housing_kpi
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: acs_income
+    layer: silver
+    script: foundations/etl/silver/acs_income_silver.R
+    outputs:
+      - silver.income_base
+      - silver.income_kpi
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: acs_labor
+    layer: silver
+    script: foundations/etl/silver/acs_labor_silver.R
+    outputs:
+      - silver.labor_base
+      - silver.labor_kpi
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: acs_migration
+    layer: silver
+    script: foundations/etl/silver/acs_migration_silver.R
+    outputs:
+      - silver.migration_base
+      - silver.migration_kpi
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: acs_race
+    layer: silver
+    script: foundations/etl/silver/acs_race_silver.R
+    outputs:
+      - silver.race_base
+      - silver.race_kpi
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: acs_social_infra
+    layer: silver
+    script: foundations/etl/silver/acs_social_infra_silver.R
+    outputs:
+      - silver.social_infra_base
+      - silver.social_infra_kpi
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: acs_transport
+    layer: silver
+    script: foundations/etl/silver/acs_transport_silver.R
+    outputs:
+      - silver.transport_base
+      - silver.transport_kpi
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: opportunity_zones
+    layer: silver
+    script: foundations/etl/silver/opportunity_zones_silver.R
+    outputs:
+      - silver.opportunity_zones
+    depends_on:
+      - opportunity_zones_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: fhfa_underserved
+    layer: silver
+    script: foundations/etl/silver/fhfa_underserved_silver.R
+    outputs:
+      - silver.fhfa_underserved
+    depends_on:
+      - fhfa_underserved_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: bea_cagdp2
+    layer: silver
+    script: foundations/etl/silver/bea_cagdp2_silver.R
+    outputs:
+      - silver.bea_regional_cagdp2_long
+      - silver.bea_regional_cagdp2_wide
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+      - bea_metric_dictionary
+    enabled: true
+
+  - id: bea_cagdp9
+    layer: silver
+    script: foundations/etl/silver/bea_cagdp9_silver.R
+    outputs:
+      - silver.bea_regional_cagdp9_long
+      - silver.bea_regional_cagdp9_wide
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+      - bea_metric_dictionary
+    enabled: true
+
+  - id: bea_cainc1
+    layer: silver
+    script: foundations/etl/silver/bea_cainc1_silver.R
+    outputs:
+      - silver.bea_regional_cainc1_long
+      - silver.bea_regional_cainc1_wide
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+      - bea_metric_dictionary
+    enabled: true
+
+  - id: bea_cainc4
+    layer: silver
+    script: foundations/etl/silver/bea_cainc4_silver.R
+    outputs:
+      - silver.bea_regional_cainc4_long
+      - silver.bea_regional_cainc4_wide
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+      - bea_metric_dictionary
+    enabled: true
+
+  - id: bea_marpp
+    layer: silver
+    script: foundations/etl/silver/bea_marpp_silver.R
+    outputs:
+      - silver.bea_regional_marpp_long
+      - silver.bea_regional_marpp_wide
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+      - bea_metric_dictionary
+    enabled: true
+
+  - id: bls_laus
+    layer: silver
+    script: foundations/etl/silver/bls_laus_silver.R
+    outputs:
+      - silver.bls_laus_wide
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: bps
+    layer: silver
+    script: foundations/etl/silver/bps_silver.R
+    outputs:
+      - silver.bps_wide
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: hud_fmr
+    layer: silver
+    script: foundations/etl/silver/hud_fmr_silver.R
+    outputs:
+      - silver.hud_fmr_wide
+      - silver.hud_rent50_wide
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: zillow_market
+    layer: silver
+    script: foundations/etl/silver/zillow_silver.R
+    outputs:
+      - silver.zillow_zhvi
+      - silver.zillow_zori
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+      - acs_housing
+    enabled: true
+    notes: Requires seeded Zillow staging tables plus county housing weights from `silver.housing_base` for the derived CBSA rows.
+
+  - id: fhfa_hpi
+    layer: silver
+    script: foundations/etl/silver/fhfa_hpi_silver.R
+    outputs:
+      - silver.fhfa_hpi
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+    enabled: true
+    notes: Assumes the seeded staging schema already contains the refreshed FHFA annual HPI tables.
+
+  - id: chr_health
+    layer: silver
+    script: foundations/etl/silver/chr_silver.R
+    outputs:
+      - silver.chr_health_outcomes
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+      - acs_age
+    enabled: true
+    notes: Assumes the seeded staging schema already contains the refreshed CHR analytic CSV surface; derives CBSA rows with county crosswalks and ACS age-based population weights.
+
+  - id: acs_variable_dictionary
+    layer: silver
+    script: foundations/etl/silver/acs_variable_dictionary_silver.R
+    outputs:
+      - silver.acs_variable_dictionary
+    depends_on:
+      - acs_age
+      - acs_edu
+      - acs_housing
+      - acs_income
+      - acs_labor
+      - acs_migration
+      - acs_race
+      - acs_social_infra
+      - acs_transport
+      - bea_cagdp2
+      - bea_cagdp9
+      - bea_cainc1
+      - bea_cainc4
+      - bea_marpp
+      - bls_laus
+      - bps
+      - hud_fmr
+    enabled: true
+    notes: Run after the main silver tables are present.
+
+  - id: acs_metadata
+    layer: silver
+    script: foundations/etl/silver/acs_metadata_silver.R
+    outputs:
+      - silver.metadata_topics
+      - silver.metadata_vars
+      - silver.kpi_dictionary
+    depends_on:
+      - acs_variable_dictionary
+    enabled: true
+    notes: Final silver metadata pass that inspects the populated silver schema.
+
+  - id: irs_migration
+    layer: silver
+    script: foundations/etl/silver/irs_migration_silver.R
+    outputs:
+      - silver.irs_migration_summary
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: build_social_infra_dictionary
+    layer: utility
+    script: foundations/etl/silver/build_social_infra_dictionary.R
+    outputs: []
+    depends_on:
+      - acs_social_infra
+      - acs_metadata
+    enabled: false
+    notes: Documentation utility, not part of the core ETL materialization flow.
+
+  - id: gold_dim_geo
+    layer: gold
+    script: foundations/etl/gold/gold_dim_geo.sql
+    outputs:
+      - gold.dim_geo
+    depends_on:
+      - geo_crosswalks
+    enabled: true
+
+  - id: gold_policy_designations
+    layer: gold
+    script: foundations/etl/gold/gold_policy_designations.sql
+    outputs:
+      - gold.dim_policy_designations
+    depends_on:
+      - opportunity_zones
+      - fhfa_underserved
+    enabled: true
+
+  - id: gold_population_wide
+    layer: gold
+    script: foundations/etl/gold/gold_population_wide.sql
+    outputs:
+      - gold.population_demographics
+    depends_on:
+      - acs_age
+      - acs_edu
+      - acs_race
+    enabled: true
+
+  - id: gold_economy_income
+    layer: gold
+    script: foundations/etl/gold/gold_economy_income.sql
+    outputs:
+      - gold.economics_income_wide
+    depends_on:
+      - acs_age
+      - acs_income
+      - bea_cainc1
+      - bea_cainc4
+    enabled: true
+
+  - id: gold_economy_gdp
+    layer: gold
+    script: foundations/etl/gold/gold_economy_gdp.sql
+    outputs:
+      - gold.economics_gdp_wide
+    depends_on:
+      - acs_age
+      - acs_income
+      - bea_cagdp2
+      - bea_cagdp9
+      - bls_laus
+    enabled: true
+
+  - id: gold_economy_industry
+    layer: gold
+    script: foundations/etl/gold/gold_economy_industry.sql
+    outputs:
+      - gold.economics_industry_wide
+    depends_on:
+      - acs_age
+      - acs_labor
+      - bea_cagdp9
+    enabled: true
+
+  - id: gold_economy_labor
+    layer: gold
+    script: foundations/etl/gold/gold_economy_labor.sql
+    outputs:
+      - gold.economics_labor_wide
+    depends_on:
+      - acs_age
+      - bls_laus
+    enabled: true
+
+  - id: gold_housing_core
+    layer: gold
+    script: foundations/etl/gold/gold_housing_core.sql
+    outputs:
+      - gold.housing_core_wide
+    depends_on:
+      - acs_age
+      - acs_housing
+      - acs_income
+      - bps
+      - hud_fmr
+    enabled: true
+
+  - id: gold_housing_market_wide
+    layer: gold
+    script: foundations/etl/gold/gold_housing_market_wide.sql
+    outputs:
+      - gold.housing_market_wide
+    depends_on:
+      - zillow_market
+      - fhfa_hpi
+    enabled: true
+
+  - id: gold_health_wide
+    layer: gold
+    script: foundations/etl/gold/gold_health_wide.sql
+    outputs:
+      - gold.health_wide
+    depends_on:
+      - chr_health
+    enabled: true
+
+  - id: gold_affordability_wide
+    layer: gold
+    script: foundations/etl/gold/gold_affordability_wide.sql
+    outputs:
+      - gold.affordability_wide
+    depends_on:
+      - gold_housing_core
+      - gold_economy_income
+      - bea_marpp
+      - geo_crosswalks
+    enabled: true
+
+  - id: gold_migration_wide
+    layer: gold
+    script: foundations/etl/gold/gold_migration_wide.sql
+    outputs:
+      - gold.migration_wide
+    depends_on:
+      - acs_migration
+    enabled: true
+
+  - id: gold_transport_built_form_wide
+    layer: gold
+    script: foundations/etl/gold/gold_transport_built_form_wide.sql
+    outputs:
+      - gold.transport_built_form_wide
+    depends_on:
+      - seed_geo
+      - acs_age
+      - acs_transport
+      - geo_crosswalks
+    enabled: true
+    notes: Requires geo.tracts_all_us for land area and density calculations.
+
+  - id: gold_economy_wide
+    layer: gold
+    script: foundations/etl/gold/gold_economy_wide.sql
+    outputs: []
+    depends_on:
+      - gold_economy_income
+      - gold_economy_gdp
+      - gold_economy_industry
+      - gold_economy_labor
+    enabled: false
+    notes: Legacy exploratory SQL; does not currently materialize a gold table.

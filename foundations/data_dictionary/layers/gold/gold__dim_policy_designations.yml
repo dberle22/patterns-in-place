@@ -1,0 +1,54 @@
+table_name: dim_policy_designations
+schema: gold
+grain: One row per tract designation record, with static Opportunity Zone rows represented at null year.
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+sources:
+  - silver.opportunity_zones
+  - silver.fhfa_underserved
+columns:
+  - name: geo_level
+    type: VARCHAR
+    definition: Geographic level for the row. Current Gold scope is tract-only.
+  - name: geo_id
+    type: VARCHAR
+    definition: Geographic identifier for the row.
+  - name: geo_name
+    type: VARCHAR
+    definition: Geographic display name for the row.
+  - name: year
+    type: INTEGER
+    definition: FHFA underserved release year for annual rows. Null for the static Opportunity Zone rows.
+  - name: is_opportunity_zone
+    type: BOOLEAN
+    definition: Opportunity Zone designation flag for tract rows. Null for FHFA rows.
+  - name: oz_tract_count
+    type: INTEGER
+    definition: Opportunity Zone tract count on static OZ rows. Current tract-only scope is `1` when designated and `0` otherwise.
+  - name: total_tract_count
+    type: INTEGER
+    definition: Number of tracts represented by the row in the contributing Silver source. Current tract-only scope is always `1`.
+  - name: pct_oz_tracts
+    type: DOUBLE
+    definition: Share of designated tracts on static OZ rows. Current tract-only scope is `1` when designated and `0` otherwise.
+  - name: is_underserved
+    type: BOOLEAN
+    definition: Combined FHFA underserved designation flag for tract rows in the annual FHFA slice.
+  - name: is_low_income_area
+    type: BOOLEAN
+    definition: FHFA low-income-area designation flag for tract rows in the annual FHFA slice.
+  - name: is_minority_area
+    type: BOOLEAN
+    definition: FHFA minority-tract designation flag for tract rows in the annual FHFA slice.
+  - name: is_disaster_area
+    type: BOOLEAN
+    definition: FHFA designated-disaster-area flag for tract rows in the annual FHFA slice.
+  - name: underserved_tract_count
+    type: INTEGER
+    definition: FHFA underserved tract count on annual FHFA rows. Current tract-only scope is `1` when designated and `0` otherwise.
+  - name: pct_underserved_tracts
+    type: DOUBLE
+    definition: Share of underserved tracts on annual FHFA rows. Current tract-only scope is `1` when designated and `0` otherwise.

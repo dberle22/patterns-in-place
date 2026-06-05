@@ -1,0 +1,403 @@
+table_name: irs_migration_summary
+schema: silver
+grain: One row per geo_level + geo_id + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2022'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=3
+    - distinct_geo_id=4076
+    - county_rows=31909
+    - cbsa_rows=10105
+    - state_rows=561
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 3
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 6
+    top_values:
+      - value: county
+        count: 31909
+      - value: cbsa
+        count: 10105
+      - value: state
+        count: 561
+    definition: Geographic level for the summary row (`county`, `cbsa`, or `state`).
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 4076
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 5
+    top_values:
+      - value: '01'
+        count: 11
+      - value: '01001'
+        count: 11
+      - value: '01003'
+        count: 11
+      - value: '01005'
+        count: 11
+      - value: '01007'
+        count: 11
+    definition: Geographic identifier for the summary row. County rows use county FIPS, CBSA rows use CBSA code, and state rows use state FIPS.
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 2839
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 46
+    top_values:
+      - value: Washington County
+        count: 320
+      - value: Jefferson County
+        count: 275
+      - value: Franklin County
+        count: 256
+      - value: Lincoln County
+        count: 243
+      - value: Jackson County
+        count: 235
+    definition: Geographic name for the summary row.
+    needs_confirmation: no
+  - name: state_fips
+    type: VARCHAR
+    null_pct: 23.7346
+    distinct_count: 51
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: ~
+        count: 10105
+      - value: '48'
+        count: 2415
+      - value: '13'
+        count: 1704
+      - value: '51'
+        count: 1455
+      - value: '21'
+        count: 1290
+    definition: State FIPS code for county and state rows. Null for CBSA rows because metros can span multiple states.
+    needs_confirmation: no
+  - name: state_abbr
+    type: VARCHAR
+    null_pct: 23.7346
+    distinct_count: 51
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values:
+      - value: ~
+        count: 10105
+      - value: TX
+        count: 2415
+      - value: GA
+        count: 1704
+      - value: VA
+        count: 1455
+      - value: KY
+        count: 1290
+    definition: USPS state abbreviation for county and state rows. Null for CBSA rows.
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 11
+    min_value: 2012
+    max_value: 2022
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2012'
+        count: 4041
+      - value: '2013'
+        count: 4026
+      - value: '2017'
+        count: 3886
+      - value: '2020'
+        count: 3845
+      - value: '2014'
+        count: 3844
+    definition: Destination tax year and canonical analysis year for the summary row.
+    needs_confirmation: no
+  - name: inflow_returns
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 7857
+    min_value: 0
+    max_value: 399436
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0'
+        count: 323
+      - value: '20'
+        count: 165
+      - value: '21'
+        count: 157
+      - value: '23'
+        count: 148
+      - value: '22'
+        count: 126
+    definition: Sum of IRS returns moving into the geography during the year. CBSA rows exclude within-CBSA county moves.
+    needs_confirmation: no
+  - name: outflow_returns
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 8008
+    min_value: 0
+    max_value: 398307
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0'
+        count: 747
+      - value: '20'
+        count: 178
+      - value: '23'
+        count: 170
+      - value: '21'
+        count: 164
+      - value: '22'
+        count: 146
+    definition: Sum of IRS returns moving out of the geography during the year. CBSA rows exclude within-CBSA county moves.
+    needs_confirmation: no
+  - name: net_returns
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 4483
+    min_value: -128228
+    max_value: 158220
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '21'
+        count: 313
+      - value: '2'
+        count: 310
+      - value: '-1'
+        count: 303
+      - value: '23'
+        count: 303
+      - value: '0'
+        count: 299
+    definition: Net IRS migration returns calculated as inflow_returns minus outflow_returns.
+    needs_confirmation: no
+  - name: inflow_exemptions
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 9976
+    min_value: 0
+    max_value: 738242
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0'
+        count: 323
+      - value: '49'
+        count: 64
+      - value: '44'
+        count: 62
+      - value: '37'
+        count: 61
+      - value: '59'
+        count: 57
+    definition: Sum of exemptions or people associated with incoming IRS migration returns.
+    needs_confirmation: no
+  - name: outflow_exemptions
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 10290
+    min_value: 0
+    max_value: 736023
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0'
+        count: 747
+      - value: '43'
+        count: 62
+      - value: '53'
+        count: 60
+      - value: '49'
+        count: 58
+      - value: '57'
+        count: 58
+    definition: Sum of exemptions or people associated with outgoing IRS migration returns.
+    needs_confirmation: no
+  - name: net_exemptions
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 6088
+    min_value: -255834
+    max_value: 331760
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '-4'
+        count: 163
+      - value: '4'
+        count: 153
+      - value: '-13'
+        count: 152
+      - value: '13'
+        count: 149
+      - value: '5'
+        count: 148
+    definition: Net exemptions or people calculated as inflow_exemptions minus outflow_exemptions.
+    needs_confirmation: no
+  - name: inflow_agi_thousands
+    type: DOUBLE
+    null_pct: 0.0188
+    distinct_count: 27478
+    min_value: 0
+    max_value: 52265474
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0'
+        count: 323
+      - value: '2088'
+        count: 8
+      - value: '7530'
+        count: 8
+      - value: ~
+        count: 8
+      - value: '861'
+        count: 7
+    definition: Sum of incoming adjusted gross income, in thousands of dollars.
+    needs_confirmation: no
+  - name: outflow_agi_thousands
+    type: DOUBLE
+    null_pct: 0.0117
+    distinct_count: 27519
+    min_value: 0
+    max_value: 62397835
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0'
+        count: 747
+      - value: '1799'
+        count: 10
+      - value: '973'
+        count: 9
+      - value: '782'
+        count: 8
+      - value: '1277'
+        count: 8
+    definition: Sum of outgoing adjusted gross income, in thousands of dollars.
+    needs_confirmation: no
+  - name: net_agi_thousands
+    type: DOUBLE
+    null_pct: 0.0305
+    distinct_count: 21623
+    min_value: -39187044
+    max_value: 29070960
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '31'
+        count: 14
+      - value: '138'
+        count: 14
+      - value: '643'
+        count: 14
+      - value: '-128'
+        count: 13
+      - value: '80'
+        count: 13
+    definition: Net adjusted gross income calculated as inflow_agi_thousands minus outflow_agi_thousands.
+    needs_confirmation: no
+  - name: inflow_agi
+    type: DOUBLE
+    null_pct: 0.0188
+    distinct_count: 27478
+    min_value: 0
+    max_value: 52265474000
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0'
+        count: 323
+      - value: '2088000'
+        count: 8
+      - value: '7530000'
+        count: 8
+      - value: ~
+        count: 8
+      - value: '861000'
+        count: 7
+    definition: Sum of incoming adjusted gross income, in dollars.
+    needs_confirmation: no
+  - name: outflow_agi
+    type: DOUBLE
+    null_pct: 0.0117
+    distinct_count: 27519
+    min_value: 0
+    max_value: 62397835000
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0'
+        count: 747
+      - value: '1799000'
+        count: 10
+      - value: '973000'
+        count: 9
+      - value: '782000'
+        count: 8
+      - value: '1277000'
+        count: 8
+    definition: Sum of outgoing adjusted gross income, in dollars.
+    needs_confirmation: no
+  - name: net_agi
+    type: DOUBLE
+    null_pct: 0.0305
+    distinct_count: 21623
+    min_value: -39187044000
+    max_value: 29070960000
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '31000'
+        count: 14
+      - value: '138000'
+        count: 14
+      - value: '643000'
+        count: 14
+      - value: '-128000'
+        count: 13
+      - value: '80000'
+        count: 13
+    definition: Net adjusted gross income calculated as inflow_agi minus outflow_agi.
+    needs_confirmation: no
+lineage:
+  - step: stage_to_flow
+    script: foundations/etl/staging/get_irs_migration.R
+    details: Builds county-level inflow records plus interstate state inflow records that seed the Silver summary rollups.
+  - step: summarize_and_write
+    script: foundations/etl/silver/irs_migration_silver.R
+    details: Aggregates county inflows and outflows, rebases county flows to CBSA while excluding within-CBSA moves, preserves state-level interstate summary rows, and writes silver.irs_migration_summary.
+kpi_definitions: []

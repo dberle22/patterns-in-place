@@ -1,0 +1,80 @@
+table_name: housing_market_wide
+schema: gold
+grain: One row per geo_level + geo_id + year.
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2016'
+  max: '2025'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=3
+    - distinct_geo_id=28811
+    - cbsa_hpi_rows=9141
+    - county_hpi_rows=27217
+    - zcta_hpi_rows=173374
+quality_notes:
+  - Live key check on 2026-06-04 found zero duplicates on geo_level + geo_id + year.
+  - FHFA enrichment follows the Zillow market surface rather than the full FHFA Silver surface, so `state` and `us` rows remain available in `silver.fhfa_hpi` but do not appear in this Gold mart.
+  - Annual average fields are computed over observed monthly Zillow values only after Silver trimmed null rows and pre-2016 history.
+  - December fields are sparse where a geography-year lacks an observed December value; 2025 is especially sparse because current Zillow Silver coverage runs only through October 2025.
+  - ZORI coverage remains much narrower than ZHVI, so rent fields are null for many geography-years where value fields are still available.
+  - FHFA ZCTA enrichment now uses the approved ZIP5-as-ZCTA proxy from `silver.fhfa_hpi`, but coverage is still partial because Gold only includes geography-years already present in the Zillow market surface.
+sources:
+  - silver.fhfa_hpi
+  - silver.zillow_zhvi
+  - silver.zillow_zori
+columns:
+  - name: geo_level
+    type: VARCHAR
+    definition: Geographic level for the row.
+  - name: geo_id
+    type: VARCHAR
+    definition: Geographic identifier for the row.
+  - name: geo_name
+    type: VARCHAR
+    definition: Geographic display name for the row.
+  - name: year
+    type: INTEGER
+    definition: Observation year.
+  - name: hpi_level
+    type: DOUBLE
+    definition: FHFA annual house price index level for the geography-year, joined from `silver.fhfa_hpi` when available on the Zillow market surface.
+  - name: hpi_yoy_pct
+    type: DOUBLE
+    definition: Year-over-year FHFA house price appreciation rate for the geography-year.
+  - name: hpi_5yr_pct
+    type: DOUBLE
+    definition: Five-year FHFA cumulative house price appreciation rate for the geography-year.
+  - name: hpi_10yr_pct
+    type: DOUBLE
+    definition: Ten-year FHFA cumulative house price appreciation rate for the geography-year.
+  - name: zhvi_annual_avg
+    type: DOUBLE
+    definition: Average Zillow Home Value Index across observed months in the year.
+  - name: zhvi_december
+    type: DOUBLE
+    definition: Zillow Home Value Index for the December observation in the year when available.
+  - name: zhvi_annual_avg_yoy_pct
+    type: DOUBLE
+    definition: Year-over-year percent change in the annual average Zillow Home Value Index.
+  - name: zhvi_december_yoy_pct
+    type: DOUBLE
+    definition: Year-over-year percent change in the December Zillow Home Value Index.
+  - name: zori_annual_avg
+    type: DOUBLE
+    definition: Average Zillow Observed Rent Index across observed months in the year.
+  - name: zori_december
+    type: DOUBLE
+    definition: Zillow Observed Rent Index for the December observation in the year when available.
+  - name: zori_annual_avg_yoy_pct
+    type: DOUBLE
+    definition: Year-over-year percent change in the annual average Zillow Observed Rent Index.
+  - name: zori_december_yoy_pct
+    type: DOUBLE
+    definition: Year-over-year percent change in the December Zillow Observed Rent Index.

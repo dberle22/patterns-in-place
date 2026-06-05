@@ -18,6 +18,8 @@ The dictionary captures:
 - KPI definitions where applicable
 
 ## Folder Structure
+- [sources](./sources)
+  Provider-level source specs and ingestion-to-Silver pathway docs
 - [layers/bronze](./layers/bronze)
 - [layers/staging](./layers/staging)
 - [layers/silver](./layers/silver)
@@ -33,6 +35,9 @@ Project-wide control docs:
 - [docs/governance/data_quality_checklist.md](./docs/governance/data_quality_checklist.md)
 - [agent.md](./agent.md)
 - [docs/governance/bug_fixes.md](./docs/governance/bug_fixes.md)
+- [sources/README.md](./sources/README.md)
+- [sources/checklist.md](./sources/checklist.md)
+- [sources/source_topic_checklist.md](./sources/source_topic_checklist.md)
 
 Layer guides:
 - [docs/layer_guides/bronze.md](./docs/layer_guides/bronze.md)
@@ -46,6 +51,8 @@ Generated artifacts:
 - `artifacts/backlog/` for remediation backlogs and ranking files
 
 ## Main Dictionary Themes
+- Source specs:
+one file per upstream provider, with topic groups handled inside that file unless the operating rules diverge materially
 - Layered contracts: Bronze -> Staging -> Silver -> Gold
 - Staging contracts are family-level landing contracts rather than one file per geography replica table
 - Standardized geo/time fields across analytics tables (`geo_level`, `geo_id`, `geo_name`, `year`/`period`)
@@ -87,11 +94,14 @@ all carried fields use Silver definitions; derived fields use semantic definitio
 5. Log significant changes in `docs/governance/bug_fixes.md` if behavior/definitions changed materially.
 
 ## Source Of Truth Rules
+- Source specs are narrative Markdown artifacts that sit above layer contracts and should link to staging/silver docs rather than duplicate full table profiling.
 - YAML is the source of truth for Silver and Gold table dictionaries.
 - Staging is the current exception: source/theme family contracts are maintained directly in Markdown until a family-level machine-readable format is introduced.
 - When a table has both YAML and Markdown artifacts, update YAML first, then sync Markdown.
 
 ## How Analysts Should Use This
+- Start with the relevant source spec when the question is about upstream provenance, ingestion strategy, or how one source fans out into multiple tables.
+- The source-spec landing page is [sources/README.md](./sources/README.md).
 - Start with the relevant `.md` contract file for quick understanding.
 - For staging, that usually means the source/theme family contract rather than an individual replica table.
 - Use `Grain & Keys` before joining tables.
@@ -106,11 +116,12 @@ all carried fields use Silver definitions; derived fields use semantic definitio
 - Use lineage entries to trace transformations in ETL scripts.
 - Prefer dictionary values over inferred guesses when generating analysis or visuals.
 - When updating definitions:
-- Keep key fields standardized across tables
-- Label uncertain entries with `needs_confirmation: yes`
-- Preserve deterministic formatting and section structure
+- keep key fields standardized across tables
+- label uncertain entries with `needs_confirmation: yes`
+- preserve deterministic formatting and section structure
 
 ## Coverage And Quality Workflow
+- Source coverage is tracked in `sources/checklist.md`.
 - Coverage status by layer is tracked in `docs/governance/coverage_checklist.md` and layer-specific checklist files.
 - DQ workflow is tracked in `docs/governance/data_quality_checklist.md`.
 - Recommended update order for themed datasets:

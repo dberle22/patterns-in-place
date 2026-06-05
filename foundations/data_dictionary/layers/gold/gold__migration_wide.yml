@@ -18,9 +18,11 @@ geo_coverage:
 quality_notes:
   - Live key check on 2026-04-10 found zero duplicates on geo_level + geo_id + year.
   - mobility_rate is null only where the ACS migration base is missing.
-  - IRS fields are intentionally all null in the current ACS-only version.
+  - IRS summary fields populate only for county, cbsa, and state rows where silver.irs_migration_summary exists.
+  - IRS rate fields use ACS pop_nativity_total as the denominator to keep the Gold contract on a common population base.
 sources:
   - silver.migration_kpi
+  - silver.irs_migration_summary
 columns:
   - { name: geo_level, type: VARCHAR, definition: Geographic level for the row. }
   - { name: geo_id, type: VARCHAR, definition: Geographic identifier for the row. }
@@ -51,8 +53,11 @@ columns:
   - { name: pct_non_citizen, type: DOUBLE, definition: Share of population that is noncitizen. }
   - { name: pct_foreign_born_citizen, type: DOUBLE, definition: Share of nativity universe that is foreign-born and naturalized. }
   - { name: pct_foreign_born_noncitizen, type: DOUBLE, definition: Share of nativity universe that is foreign-born and noncitizen. }
-  - { name: irs_inflow_total, type: DOUBLE, definition: Placeholder for IRS inflow total; currently null in the ACS-only version. }
-  - { name: irs_outflow_total, type: DOUBLE, definition: Placeholder for IRS outflow total; currently null in the ACS-only version. }
-  - { name: irs_net_migration, type: DOUBLE, definition: Placeholder for IRS net migration; currently null in the ACS-only version. }
-  - { name: irs_net_migration_rate, type: DOUBLE, definition: Placeholder for IRS net migration rate; currently null in the ACS-only version. }
-  - { name: irs_migration_churn, type: DOUBLE, definition: Placeholder for IRS migration churn; currently null in the ACS-only version. }
+  - { name: irs_inflow_total, type: DOUBLE, definition: IRS-based inflow count of tax returns moving into the geography during the year. }
+  - { name: irs_outflow_total, type: DOUBLE, definition: IRS-based outflow count of tax returns moving out of the geography during the year. }
+  - { name: irs_net_migration, type: DOUBLE, definition: IRS-based net migration count of tax returns, calculated as irs_inflow_total minus irs_outflow_total. }
+  - { name: irs_net_migration_rate, type: DOUBLE, definition: IRS-based net migration rate, calculated as irs_net_migration divided by ACS pop_nativity_total. }
+  - { name: irs_migration_churn, type: DOUBLE, definition: IRS-based migration churn rate, calculated as (irs_inflow_total + irs_outflow_total) divided by ACS pop_nativity_total. }
+  - { name: irs_inflow_agi, type: DOUBLE, definition: IRS-based total adjusted gross income of inbound migrant tax returns, in dollars. }
+  - { name: irs_outflow_agi, type: DOUBLE, definition: IRS-based total adjusted gross income of outbound migrant tax returns, in dollars. }
+  - { name: irs_net_agi, type: DOUBLE, definition: IRS-based net adjusted gross income of migrant tax returns, calculated as irs_inflow_agi minus irs_outflow_agi. }

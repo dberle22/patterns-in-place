@@ -1,11 +1,13 @@
 # Gold Layer Coverage Checklist
 
 Schema: `gold`
-Table count: 11
+Table count: 12
 
 ## Housing
 - [x] Dictionary: [gold__housing_core_wide.md](./gold__housing_core_wide.md)
 - [x] `housing_core_wide`
+- [x] Dictionary: [gold__housing_market_wide.md](./gold__housing_market_wide.md)
+- [x] `housing_market_wide`
 
 ## Migration
 - [x] Dictionary: [gold__migration_wide.md](./gold__migration_wide.md)

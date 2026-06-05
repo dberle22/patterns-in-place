@@ -18,12 +18,13 @@
 - **Housing cost inputs**: `median_gross_rent`, `annualized_median_rent`, `median_home_value`, `vacancy_rate`, `owner_occ_rate`, `renter_occ_rate`
 - **Income inputs**: `median_hh_income`, `acs_income_pc`, `calc_income_pc`, `income_pc_growth_*`, `income_pc_cagr_*`, `pi_wage_share`
 - **RPP context**: `rpp_real_pc_income`, `rpp_all_items`, `rpp_price_deflator`
-- **Affordability outputs**: `rent_to_income`, `value_to_income`, `pct_rent_burden_30plus`, `pct_rent_burden_50plus`, `rent_to_rpp_income`, `value_to_rpp_income`
+- **Affordability outputs**: `rent_to_income`, `value_to_income`, `pct_cost_burdened`, `pct_severely_cost_burdened`, `pct_renter_severely_cost_burdened`, `pct_rent_burden_30plus`, `pct_rent_burden_50plus`, `rent_to_rpp_income`, `value_to_rpp_income`
 - **HUD reference rents**: `fmr_2br`, `rent50_2br`, `fmr_gap_2br_vs_median_rent`, `rent50_gap_2br_vs_median_rent`
 - **Supply context**: `permits_per_1000_housing_units`, `permits_per_1000_population`
 
 ## Data Quality Notes
 - Live query checks confirm the intended `geo_level + geo_id + year` grain with zero duplicate keys.
+- HUD CHAS burden fields land only for 2021 `cbsa`, `county`, and `place` rows because the current CHAS Silver contract does not yet cover additional years.
 - `rpp_real_pc_income` is null in 1,002,526 rows; RPP context currently lands mostly for `cbsa` rows and a subset of county rows through CBSA/state backfill logic.
 - `rent_to_rpp_income` is null in 1,002,541 rows because it depends on both RPP coverage and non-null rent values.
 - Current non-null RPP coverage by geo level:
@@ -37,11 +38,13 @@
 2. **Primary upstreams**:
    - `gold.housing_core_wide`
    - `gold.economics_income_wide`
+   - `silver.hud_chas_burden`
    - `silver.bea_regional_marpp_wide`
    - `silver.xwalk_cbsa_county`
    - `silver.xwalk_county_state`
 
 ## Known Gaps / To-Dos
+- CHAS fields are intentionally sparse outside 2021 cbsa/county/place rows until the CHAS source is extended to more years or rebased to additional geographies.
 - State-level RPP backfill is not landing in the current snapshot because of a geo ID alignment issue.
 - RPP coverage does not yet extend to tract, place, zcta, region, division, or US rows.
 - This table is the right place to add normalized affordability fields later, but it does not currently include z-scores or percentile-style outputs.
