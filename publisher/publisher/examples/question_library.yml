@@ -1,0 +1,384 @@
+version: 1
+catalog_name: question_library
+description: Hand-authored example questions and structured plans used to test Phase 2 SQL generation.
+examples:
+  - example_id: q01_ranking_pop_states
+    natural_language_question: Which states had the highest total population in 2024?
+    expected_template_type: ranking
+    expected_sql_pattern: ["from gold.population_demographics", "row_number()", "limit 10"]
+    expected_chart_type: bar
+    structured_query_plan:
+      template_id: ranking
+      question_type: ranking
+      metric_id: pop_total
+      source_table: population_demographics
+      geo_level: state
+      year: 2024
+      sort_direction: desc
+      limit: 10
+
+  - example_id: q02_ranking_median_age_cbsas
+    natural_language_question: Which CBSAs had the oldest populations in 2024?
+    expected_template_type: ranking
+    expected_sql_pattern: ["from gold.population_demographics", "median_age", "limit 15"]
+    expected_chart_type: bar
+    structured_query_plan:
+      template_id: ranking
+      question_type: ranking
+      metric_id: median_age
+      source_table: population_demographics
+      geo_level: cbsa
+      year: 2024
+      sort_direction: desc
+      limit: 15
+
+  - example_id: q03_ranking_income_growth_counties
+    natural_language_question: Which counties had the fastest 5-year per-capita income growth in 2023?
+    expected_template_type: ranking
+    expected_sql_pattern: ["from gold.economics_income_wide", "income_pc_growth_5yr", "limit 20"]
+    expected_chart_type: bar
+    structured_query_plan:
+      template_id: ranking
+      question_type: ranking
+      metric_id: income_pc_growth_5yr
+      source_table: economics_income_wide
+      geo_level: county
+      year: 2023
+      sort_direction: desc
+      limit: 20
+
+  - example_id: q04_trend_wilmington_population
+    natural_language_question: Show Wilmington population over time.
+    expected_template_type: trend
+    expected_sql_pattern: ["from gold.population_demographics", "between 2015 and 2024", "order by base.geo_name asc, period asc"]
+    expected_chart_type: line
+    structured_query_plan:
+      template_id: trend
+      question_type: trend
+      metric_id: pop_total
+      source_table: population_demographics
+      geo_level: cbsa
+      geo_ids: ["48900"]
+      start_year: 2015
+      end_year: 2024
+
+  - example_id: q05_trend_cbsa_income_compare
+    natural_language_question: Compare Wilmington, Raleigh, and Charlotte per-capita income over time.
+    expected_template_type: trend
+    expected_sql_pattern: ["from gold.economics_income_wide", "between 2013 and 2023", "base.geo_id in ('48900', '39580', '16740')"]
+    expected_chart_type: line
+    structured_query_plan:
+      template_id: trend
+      question_type: trend
+      metric_id: calc_income_pc
+      source_table: economics_income_wide
+      geo_level: cbsa
+      geo_ids: ["48900", "39580", "16740"]
+      start_year: 2013
+      end_year: 2023
+
+  - example_id: q06_trend_states_rent_burden
+    natural_language_question: Compare rent burden over time in California, Texas, and Florida.
+    expected_template_type: trend
+    expected_sql_pattern: ["from gold.housing_core_wide", "pct_rent_burden_30plus", "base.geo_id in ('06', '48', '12')"]
+    expected_chart_type: line
+    structured_query_plan:
+      template_id: trend
+      question_type: trend
+      metric_id: pct_rent_burden_30plus
+      source_table: housing_core_wide
+      geo_level: state
+      geo_ids: ["06", "48", "12"]
+      start_year: 2015
+      end_year: 2024
+
+  - example_id: q07_compare_selected_states_income
+    natural_language_question: Compare median household income across California, Texas, Florida, and New York in 2023.
+    expected_template_type: compare_selected
+    expected_sql_pattern: ["from gold.economics_income_wide", "case when base.geo_id = '06' then 0", "base.geo_id in ('06', '48', '12', '36')"]
+    expected_chart_type: bar
+    structured_query_plan:
+      template_id: compare_selected
+      question_type: comparison
+      metric_id: median_hh_income
+      source_table: economics_income_wide
+      geo_level: state
+      geo_ids: ["06", "48", "12", "36"]
+      year: 2023
+
+  - example_id: q08_compare_selected_cbsa_rent
+    natural_language_question: Compare median gross rent across Wilmington, Charlotte, and Raleigh in 2024.
+    expected_template_type: compare_selected
+    expected_sql_pattern: ["from gold.housing_core_wide", "median_gross_rent", "base.geo_id in ('48900', '16740', '39580')"]
+    expected_chart_type: bar
+    structured_query_plan:
+      template_id: compare_selected
+      question_type: comparison
+      metric_id: median_gross_rent
+      source_table: housing_core_wide
+      geo_level: cbsa
+      geo_ids: ["48900", "16740", "39580"]
+      year: 2024
+
+  - example_id: q09_compare_selected_county_population
+    natural_language_question: Compare total population across a few large Florida counties in 2024.
+    expected_template_type: compare_selected
+    expected_sql_pattern: ["from gold.population_demographics", "pop_total", "base.geo_id in ('12086', '12011', '12099')"]
+    expected_chart_type: bar
+    structured_query_plan:
+      template_id: compare_selected
+      question_type: comparison
+      metric_id: pop_total
+      source_table: population_demographics
+      geo_level: county
+      geo_ids: ["12086", "12011", "12099"]
+      year: 2024
+
+  - example_id: q09a_compare_selected_states_income_2024
+    natural_language_question: Compare California, Texas, and Florida on median household income in 2024.
+    expected_template_type: compare_selected
+    expected_sql_pattern: ["from gold.economics_income_wide", "case when base.geo_id = '06' then 0", "base.geo_id in ('06', '48', '12')"]
+    expected_chart_type: bar
+    structured_query_plan:
+      template_id: compare_selected
+      question_type: comparison
+      metric_id: median_hh_income
+      source_table: economics_income_wide
+      geo_level: state
+      geo_ids: ["06", "48", "12"]
+      year: 2024
+
+  - example_id: q09b_compare_selected_states_home_values_2024
+    natural_language_question: How do New York, Illinois, and Washington compare on median home values in 2024?
+    expected_template_type: compare_selected
+    expected_sql_pattern: ["from gold.housing_core_wide", "case when base.geo_id = '36' then 0", "base.geo_id in ('36', '17', '53')"]
+    expected_chart_type: bar
+    structured_query_plan:
+      template_id: compare_selected
+      question_type: comparison
+      metric_id: median_home_value
+      source_table: housing_core_wide
+      geo_level: state
+      geo_ids: ["36", "17", "53"]
+      year: 2024
+
+  - example_id: q10_distribution_state_home_values
+    natural_language_question: Show the distribution of state home values in 2024.
+    expected_template_type: distribution
+    expected_sql_pattern: ["from gold.housing_core_wide", "highlight_flag", "order by metric_value desc"]
+    expected_chart_type: boxplot
+    structured_query_plan:
+      template_id: distribution
+      question_type: distribution
+      metric_id: median_home_value
+      source_table: housing_core_wide
+      geo_level: state
+      year: 2024
+
+  - example_id: q11_distribution_cbsa_rent_to_income
+    natural_language_question: Show the spread of rent-to-income ratios across CBSAs in 2024.
+    expected_template_type: distribution
+    expected_sql_pattern: ["from gold.housing_core_wide", "rent_to_income", "highlight_flag"]
+    expected_chart_type: boxplot
+    structured_query_plan:
+      template_id: distribution
+      question_type: distribution
+      metric_id: rent_to_income
+      source_table: housing_core_wide
+      geo_level: cbsa
+      year: 2024
+
+  - example_id: q12_distribution_county_income
+    natural_language_question: Show the distribution of county per-capita income in 2023.
+    expected_template_type: distribution
+    expected_sql_pattern: ["from gold.economics_income_wide", "calc_income_pc", "highlight_flag"]
+    expected_chart_type: boxplot
+    structured_query_plan:
+      template_id: distribution
+      question_type: distribution
+      metric_id: calc_income_pc
+      source_table: economics_income_wide
+      geo_level: county
+      year: 2023
+
+  - example_id: q13a_benchmark_texas_vs_us_income
+    natural_language_question: How does Texas household income stack up against the national average?
+    expected_template_type: benchmark
+    expected_sql_pattern: ["with target as", "avg(base.median_hh_income)", "comparison_group"]
+    expected_chart_type: bar
+    structured_query_plan:
+      template_id: benchmark
+      question_type: benchmark
+      metric_id: median_hh_income
+      source_table: economics_income_wide
+      target_geo_level: state
+      target_geo_id: "48"
+      year: 2024
+      benchmark_type: us
+      benchmark_geo_level: us
+      comparison_label: United States
+
+  - example_id: q13b_benchmark_california_vs_us_home_value
+    natural_language_question: Is California's median home value above the US average in 2024?
+    expected_template_type: benchmark
+    expected_sql_pattern: ["with target as", "avg(base.median_home_value)", "comparison_group"]
+    expected_chart_type: bar
+    structured_query_plan:
+      template_id: benchmark
+      question_type: benchmark
+      metric_id: median_home_value
+      source_table: housing_core_wide
+      target_geo_level: state
+      target_geo_id: "06"
+      year: 2024
+      benchmark_type: us
+      benchmark_geo_level: us
+      comparison_label: United States
+
+  - example_id: q13c_benchmark_florida_vs_us_population_2024
+    natural_language_question: Compare Florida's population to the US in 2024.
+    expected_template_type: benchmark
+    expected_sql_pattern: ["with target as", "avg(base.pop_total)", "comparison_group"]
+    expected_chart_type: bar
+    structured_query_plan:
+      template_id: benchmark
+      question_type: benchmark
+      metric_id: pop_total
+      source_table: population_demographics
+      target_geo_level: state
+      target_geo_id: "12"
+      year: 2024
+      benchmark_type: us
+      benchmark_geo_level: us
+      comparison_label: United States
+
+  - example_id: q13_benchmark_florida_vs_us_population
+    natural_language_question: Compare Florida population with the US in 2024.
+    expected_template_type: benchmark
+    expected_sql_pattern: ["with target as", "avg(base.pop_total)", "comparison_group"]
+    expected_chart_type: bar
+    structured_query_plan:
+      template_id: benchmark
+      question_type: benchmark
+      metric_id: pop_total
+      source_table: population_demographics
+      target_geo_level: state
+      target_geo_id: "12"
+      year: 2024
+      benchmark_type: us
+      benchmark_geo_level: us
+      comparison_label: United States
+
+  - example_id: q14_benchmark_wilmington_vs_peers
+    natural_language_question: Compare Wilmington median gross rent with Charlotte and Raleigh in 2024.
+    expected_template_type: benchmark
+    expected_sql_pattern: ["with target as", "avg(base.median_gross_rent)", "base.geo_id in ('16740', '39580')"]
+    expected_chart_type: bar
+    structured_query_plan:
+      template_id: benchmark
+      question_type: benchmark
+      metric_id: median_gross_rent
+      source_table: housing_core_wide
+      target_geo_level: cbsa
+      target_geo_id: "48900"
+      year: 2024
+      benchmark_type: peers
+      benchmark_geo_level: cbsa
+      benchmark_geo_ids: ["16740", "39580"]
+      comparison_label: Peer average
+
+  - example_id: q15_benchmark_miami_vs_states
+    natural_language_question: Compare Miami-Dade per-capita income with a small benchmark set of large Florida counties.
+    expected_template_type: benchmark
+    expected_sql_pattern: ["with target as", "avg(base.calc_income_pc)", "base.geo_id in ('12011', '12099')"]
+    expected_chart_type: bar
+    structured_query_plan:
+      template_id: benchmark
+      question_type: benchmark
+      metric_id: calc_income_pc
+      source_table: economics_income_wide
+      target_geo_level: county
+      target_geo_id: "12086"
+      year: 2023
+      benchmark_type: peers
+      benchmark_geo_level: county
+      benchmark_geo_ids: ["12011", "12099"]
+      comparison_label: Large county peer average
+
+  - example_id: q16_growth_state_population
+    natural_language_question: Which states had the fastest population growth over 5 years ending in 2024?
+    expected_template_type: growth
+    expected_sql_pattern: ["lag(base.pop_total, 5)", "where year = 2024", "growth_value"]
+    expected_chart_type: bar
+    structured_query_plan:
+      template_id: growth
+      question_type: ranking
+      base_metric_id: pop_total
+      source_table: population_demographics
+      geo_level: state
+      end_year: 2024
+      window_years: 5
+      sort_direction: desc
+      limit: 15
+
+  - example_id: q17_growth_cbsa_income
+    natural_language_question: Which CBSAs saw the biggest 5-year increase in per-capita personal income by 2023?
+    expected_template_type: growth
+    expected_sql_pattern: ["lag(base.calc_income_pc, 5)", "where year = 2023", "limit 20"]
+    expected_chart_type: bar
+    structured_query_plan:
+      template_id: growth
+      question_type: ranking
+      base_metric_id: calc_income_pc
+      source_table: economics_income_wide
+      geo_level: cbsa
+      end_year: 2023
+      window_years: 5
+      sort_direction: desc
+      limit: 20
+
+  - example_id: q18_growth_county_home_values
+    natural_language_question: Which counties had the biggest 5-year home value gains by 2024?
+    expected_template_type: growth
+    expected_sql_pattern: ["lag(base.median_home_value, 5)", "where year = 2024", "growth_value"]
+    expected_chart_type: bar
+    structured_query_plan:
+      template_id: growth
+      question_type: ranking
+      base_metric_id: median_home_value
+      source_table: housing_core_wide
+      geo_level: county
+      end_year: 2024
+      window_years: 5
+      sort_direction: desc
+      limit: 20
+
+  - example_id: q19_ranking_states_foreign_born
+    natural_language_question: Which states had the highest Hispanic share in 2024?
+    expected_template_type: ranking
+    expected_sql_pattern: ["from gold.population_demographics", "pct_hispanic", "limit 12"]
+    expected_chart_type: bar
+    structured_query_plan:
+      template_id: ranking
+      question_type: ranking
+      metric_id: pct_hispanic
+      source_table: population_demographics
+      geo_level: state
+      year: 2024
+      sort_direction: desc
+      limit: 12
+
+  - example_id: q20_trend_state_housing_units
+    natural_language_question: Show housing unit growth over time in California, Texas, and Florida.
+    expected_template_type: trend
+    expected_sql_pattern: ["from gold.housing_core_wide", "hu_total", "between 2015 and 2024"]
+    expected_chart_type: line
+    structured_query_plan:
+      template_id: trend
+      question_type: trend
+      metric_id: hu_total
+      source_table: housing_core_wide
+      geo_level: state
+      geo_ids: ["06", "48", "12"]
+      start_year: 2015
+      end_year: 2024

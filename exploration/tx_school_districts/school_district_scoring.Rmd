@@ -1,0 +1,858 @@
+---
+title: "Texas School District Scores"
+output: html_notebook
+params:
+  focus_district_id: "4813200"
+---
+
+```{r Set Up: Load Packages and Paths, include = FALSE}
+# Read our common libraries & set other packages ----
+source(here::here("scripts", "utils.R"))
+
+
+# Set paths for our environments ----
+# Make sure we're reading from the project Renviron
+if (file.exists(".Renviron")) readRenviron(".Renviron")
+
+# Set our Paths - Pointing to our Bronze folder in Data
+data <- get_env_path("DATA")
+outputs <- get_env_path("OUTPUTS")
+db_path <- paste0(data, "/duckdb", "/metro_deep_dive.duckdb")
+output <- paste0(outputs, "/analyses/tx_school_districts")
+
+## Connect to the DB ----
+con <- dbConnect(duckdb::duckdb(), dbdir = db_path, read_only = FALSE)
+
+## Disconnect
+dbDisconnect(con, shutdown = TRUE)
+```
+
+```{r Set Up: Read in Data Sets, include = FALSE}
+tx_school_district_metrics <- dbGetQuery(con, "SELECT * FROM gold.tx_isd_metrics") 
+
+tx_school_district_metrics <- tx_school_district_metrics %>%
+  mutate(econ_disadv_rate = economically_disadvantaged_percent / 100)
+
+## Disconnect
+dbDisconnect(con, shutdown = TRUE)
+```
+
+```{r Set Up: Get Boundaries, include = FALSE }
+tx_boundary <- tigris::states(cb = FALSE, year = 2024) %>%
+  filter(STUSPS == "TX")
+
+tx_sd_unified <- tigris::school_districts(
+  state = "TX",
+  type  = "unified",
+  cb    = TRUE,
+  year  = 2024
+)
+
+# CBSAs
+## Ingest all CBSAs
+cbsa_sf <- tigris::core_based_statistical_areas(cb = TRUE, year = 2024)
+
+# Intersect to Texas footprint (keeps just CBSAs touching TX)
+cbsa_tx <- st_intersection(cbsa_sf, tx_boundary)
+
+# Transform CRS to 3857 - This is good for Webmaps
+## Check the current CRS 
+st_crs(tx_boundary)
+st_crs(tx_sd_unified)
+st_crs(cbsa_sf)
+```
+
+# Executive Summary
+
+This report identifies Texas school districts with the strongest combination of scale, federal funding support, and student need, with the goal of improving territory prioritization and call preparation.
+
+Key takeaways:
+
+- High-opportunity districts are concentrated in a limited number of geographic clusters rather than evenly distributed statewide.
+- The strongest targets combine large enrollment with above-average Title I funding per student.
+- District-level context varies meaningfully, making tailored outreach more effective than one-size-fits-all messaging.
+
+The sections below move from a statewide scan (Top 25 districts and map) to district-specific deep dives designed for use immediately before outreach or meetings.
+
+# Top Opportunities in Texas 
+
+## Top 25 School Districts
+
+```{r Create our data frame, include = FALSE}
+top_25 <- tx_school_district_metrics %>%
+  arrange(desc(lead_score)) %>%
+  slice_head(n = 25) %>%
+  mutate(
+    growth_label = case_when(
+      pop_growth_quartile == 4 ~ "↑ High growth",
+      pop_growth_quartile == 3 ~ "↗ Moderate growth",
+      pop_growth_quartile == 1 ~ "↓ Declining",
+      TRUE                     ~ "— Stable"
+    ),
+    econ_disadv_rate = economically_disadvantaged_percent / 100,
+    why = case_when(
+  allocations_per_student >= quantile(allocations_per_student, 0.75, na.rm = TRUE) &
+        econ_disadv_rate >= 0.60 ~
+        "High Title I funding and high student need",
+
+      enrollment >= quantile(enrollment, 0.75, na.rm = TRUE) ~
+        "Large district with meaningful contract scale",
+  
+      child_poverty_rate >= quantile(child_poverty_rate, 0.75, na.rm = TRUE) ~
+        "High community need aligned with federal funding",
+
+      pop_growth_quartile == 4 ~
+        "Strong growth outlook with solid funding base",
+
+      TRUE ~
+        "Balanced mix of scale, funding, and need"
+)
+
+  ) %>%
+  select(
+    rank = lead_score_rank,
+    district_name,
+    # tier, ## There is no Tiering yet
+    lead_score,
+    enrollment,
+    num_schools = number_of_schools,
+    title1_per_student = allocations_per_student,
+    econ_disadv_rate,
+    child_poverty_rate,
+    growth_label,
+    why
+  )
+```
+
+```{r Build Table, echo=FALSE}
+library(gt)
+
+top_25 %>%
+  gt() %>%
+
+  # Column labels
+  cols_label(
+    rank               = "",
+    district_name      = "District",
+    lead_score         = "Score",
+    enrollment         = "Enrollment",
+    num_schools        = "Schools",
+    title1_per_student = "Title I $ / Student",
+    econ_disadv_rate   = "Econ Disadv %",
+    child_poverty_rate = "Child Poverty %",
+    growth_label       = "Growth",
+    why                = "Why this district"
+  ) %>%
+
+  # Formatting
+  fmt_number(
+    columns = lead_score,
+    decimals = 0
+  ) %>%
+  fmt_number(
+    columns = c(enrollment, num_schools),
+    decimals = 0
+  ) %>%
+  fmt_currency(
+    columns = title1_per_student,
+    decimals = 0
+  ) %>%
+  fmt_percent(
+    columns = c(econ_disadv_rate, child_poverty_rate),
+    decimals = 0
+  ) %>%
+
+  # Emphasize score
+  tab_style(
+    style = list(
+      cell_fill(color = "#f5f7fa"),
+      cell_text(weight = "bold")
+    ),
+    locations = cells_body(columns = lead_score)
+  ) %>%
+
+  # Alignments
+  cols_align(
+    align = "center",
+    columns = c(rank, lead_score, growth_label)
+  ) %>%
+  cols_align(
+    align = "left",
+    columns = c(district_name, why)
+  ) %>%
+
+  # Header
+  tab_header(
+    title = "Top 25 Texas School District Leads",
+    subtitle = "Ranked by overall lead score with context for outreach conversations"
+  ) %>%
+
+  opt_table_outline() %>%
+  opt_all_caps()
+```
+
+## Geographic Clusters of Opportunity
+
+In this section we visualize our school districts against the backdrop of the map of Texas. We will be able to see geographic clusters of our top markets. We introduce a Tier for our Lead Score here. This is based on simple cutoffs: A is the Top 15th Percentile, B = 50th to 85th Percentile, and C is the bottom 50th Percentile.
+
+```{r Maps: Data Prep - Tiers, include = FALSE}
+## Create our Tiers
+# Calculate cut points on non-missing scores
+cutoff_a <- quantile(tx_school_district_metrics$lead_score, 0.85, na.rm = TRUE)
+cutoff_b <- quantile(tx_school_district_metrics$lead_score, 0.50, na.rm = TRUE)
+
+# Add scoring
+scored_districts <- tx_school_district_metrics %>%
+  mutate(
+    lead_tier = case_when(
+      is.na(lead_score)        ~ NA_character_,
+      lead_score >= cutoff_a  ~ "A",
+      lead_score >= cutoff_b  ~ "B",
+      TRUE                          ~ "C"
+    ),
+    lead_tier = factor(lead_tier, levels = c("A", "B", "C"))
+  )
+```
+
+```{r Tiers QA, include = FALSE}
+# distribution
+scored_districts %>%
+  count(lead_tier) %>%
+  mutate(pct = n / sum(n))
+
+# range check
+summary(scored_districts$lead_score)
+
+# confirm cutoffs
+cutoff_a
+cutoff_b
+```
+
+```{r Maps Data Prep - Map DFs and Vars, include = FALSE}
+# Vars
+alpha_fill   <- 0.9
+top_n_outline <- 25
+plot_crs     <- sf::st_crs(tx_boundary)
+
+# Add Geography to metrics
+tx_sd_scored <- tx_sd_unified %>%
+  left_join(scored_districts, by = c("GEOID" = "nces_district_id"))
+
+
+# Optional: outline top-N districts by score
+topN_outline <- tx_sd_scored %>%
+  select(GEOID, lead_score, lead_tier) %>%
+  filter(!is.na(lead_score)) %>%
+  slice_max(order_by = lead_score, n = top_n_outline, with_ties = FALSE)
+
+# Map extent (Texas)
+bb   <- sf::st_bbox(tx_boundary)
+xlim <- c(bb["xmin"], bb["xmax"])
+ylim <- c(bb["ymin"], bb["ymax"])
+
+
+```
+
+```{r Map - Build, echo = FALSE}
+
+# Plot
+p_tx_tier_map <- ggplot() +
+
+  # Districts filled by tier
+  geom_sf(
+    data = tx_sd_scored,
+    aes(fill = lead_tier),
+    color = "white", linewidth = 0.22, alpha = alpha_fill
+  ) +
+
+  # Texas border (double stroke)
+  geom_sf(data = tx_boundary, fill = NA, color = "white",  linewidth = 0.8) +
+  geom_sf(data = tx_boundary, fill = NA, color = "grey30", linewidth = 0.45) +
+
+  # Subtle district edges
+  geom_sf(data = tx_sd_scored, fill = NA, color = "grey25", linewidth = 0.16) +
+
+  # Bold outline for top-N districts
+  # geom_sf(data = topN_outline, fill = NA, color = "black", linewidth = 0.55) +
+
+  # Discrete viridis for tiers
+  scale_fill_viridis_d(
+    option = "viridis",
+    name   = "Lead Tier",
+    na.value = "grey90"
+  ) +
+
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE, clip = "on") +
+  labs(
+    title    = "Texas School District Lead Tiers",
+    subtitle = "Fill: A/B/C tiers from lead score. Bold outline: Top districts by lead score."
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    axis.text    = element_blank(),
+    axis.title   = element_blank(),
+    axis.ticks   = element_blank(),
+    panel.grid   = element_blank(),
+    legend.title = element_text(face = "bold")
+  )
+
+p_tx_tier_map
+```
+
+```{r Map Build - Continuous w/ Deciles Data Prep, echo=FALSE}
+metric_var <- "lead_score"
+
+tx_sd_scored_deciles <- tx_sd_scored %>%
+  mutate(
+    score_decile = dplyr::ntile(.data[[metric_var]], 10),
+    score_decile_lbl = factor(
+      score_decile,
+      levels = 1:10,
+      labels = c("Bottom 10%", "10–20%", "20–30%", "30–40%", "40–50%",
+                 "50–60%", "60–70%", "70–80%", "80–90%", "Top 10%")
+    )
+  ) %>%
+  filter(!is.na(score_decile))
+
+# Create Top Decile CBSAs
+
+# districts in top decile
+top_decile_sf <- tx_sd_scored_deciles %>% filter(score_decile == 10)
+
+# count how many top-decile districts touch each CBSA
+cbsa_top_counts <- cbsa_tx %>%
+  st_make_valid() %>%
+  mutate(
+    top10_districts = lengths(st_intersects(geometry, st_make_valid(top_decile_sf)))
+  ) %>%
+  arrange(desc(top10_districts))
+
+n_cbsa_labels <- 12
+
+cbsa_labels <- cbsa_top_counts %>%
+  slice_head(n = n_cbsa_labels) %>%
+  mutate(
+    label_pt = suppressWarnings(st_point_on_surface(geometry)),
+    coords   = suppressWarnings(st_coordinates(label_pt)),
+    x = coords[,1],
+    y = coords[,2],
+    label = paste0(NAME, " (", top10_districts, ")")
+  )
+
+```
+
+```{r Map Build - Continuous w/ Deciles Map, echo=FALSE}
+# Create Map
+p_tx_score_decile_map <- ggplot() +
+  # Base SDs
+  geom_sf(
+    data = tx_sd_scored_deciles,
+    aes(fill = score_decile_lbl),
+    color = "white", linewidth = 0.18, alpha = alpha_fill
+  ) +
+  # Add CBSAs
+  geom_sf(data = cbsa_tx, fill = NA, color = "grey10", linewidth = 0.35, alpha = 0.5) + # This is kind of hard to see, what about using a non-grey scale color
+    # CBSA callout labels
+  # ggrepel::geom_label_repel(
+  #   data = cbsa_labels,
+  #   aes(x = x, y = y, label = label),
+  #   size = 3,
+  #   seed = 123,
+  #   fill = scales::alpha("white", 0.65),
+  #   label.size = 0.2,
+  #   min.segment.length = 0,
+  #   max.overlaps = Inf
+  # ) +
+  
+  # TX Boundary
+  geom_sf(data = tx_boundary, fill = NA, color = "white",  linewidth = 0.8) +
+  geom_sf(data = tx_boundary, fill = NA, color = "grey30", linewidth = 0.45) +
+  # Adds black over the SDs
+  # geom_sf(data = tx_sd_scored_deciles, fill = NA, color = "grey25", linewidth = 0.16) +
+  # geom_sf(data = topN_outline, fill = NA, color = "black", linewidth = 0.55) +
+  scale_fill_viridis_d(
+    option = "viridis",
+    direction = -1,        # reverse so Top 10% becomes darkest
+    name   = "Lead Score\n(deciles)",
+    na.value = "grey90"
+  ) +
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE, clip = "on") +
+  labs(
+    title    = "Texas School District Lead Score",
+    subtitle = "Fill: Lead score deciles (Top 10% darkest). Labels show CBSAs with the strongest clusters of high-scoring districts."
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    axis.text    = element_blank(),
+    axis.title   = element_blank(),
+    axis.ticks   = element_blank(),
+    panel.grid   = element_blank(),
+    legend.title = element_text(face = "bold")
+  )
+
+p_tx_score_decile_map
+```
+
+
+```{r Export Decile Map, echo=FALSE}
+ggsave(paste0(output, "/tx_sd_score_decile_map.png"), p_tx_score_decile_map,
+       width = 12, height = 8, dpi = 300,
+       bg = "white",
+  device = ragg::agg_png)
+```
+
+# District Deep Dive
+
+In this section we deep dive into specific districts to see how they compare to Texas at large.
+
+```{r Define KPI Vectors, echo=FALSE}
+core_kpis <- c(
+  "allocations_per_student",
+  "econ_disadv_rate",
+  "child_poverty_rate",
+  "population_growth_5yr",
+  "hispanic_any_share",
+  "enrollment",
+  "number_of_schools"
+)
+
+core_kpis_avg_only <- c(
+  "enrollment",
+  "number_of_schools"
+)
+
+core_kpis_weighted_only <- c(
+  "allocations_per_student",
+  "econ_disadv_rate",
+  "child_poverty_rate",
+  "population_growth_5yr",
+  "hispanic_any_share"
+)
+
+secondary_kpis <- c(
+  "hispanic_any_share"
+  # add the rest of your ACS context KPIs here later
+)
+
+radar_kpis <- c(
+  "hispanic_any_share",
+  "allocations_per_student",
+  "population_growth_5yr",
+  "median_age", # Lower is better
+  "median_income",
+  "child_poverty_rate", # Lower is better
+  "no_higher_ed_share", # Lower is better
+  "households_w_children_share", 
+  "hispanic_any_share",
+  "diversity_index" # Higher is more diverse
+)
+
+# KPIs where lower values are considered better (invert after percentile)
+invert_kpis <- c(
+  "median_age",
+  "child_poverty_rate",
+  "no_higher_ed_share"
+)
+
+# Avoid Scientific Notation
+options(scipen = 999)
+```
+
+```{r Compute Benchmarks for Core KPIs, echo=FALSE}
+# Median
+tx_core_median <- tx_school_district_metrics %>%
+  summarise(
+    across(
+      all_of(core_kpis),
+      ~ median(.x, na.rm = TRUE),
+      .names = "med_{.col}"
+    )
+  )
+
+# Weighted Average - Implement later
+tx_core_weighted <- tx_school_district_metrics %>%
+  summarise(
+    across(
+      all_of(core_kpis_weighted_only),
+      ~ weighted.mean(.x, enrollment, na.rm = TRUE),
+      .names = "wtd_{.col}"
+    )
+  )
+
+# Simple Average - Implement later
+tx_core_avg <- tx_school_district_metrics %>%
+  summarise(
+    across(
+      all_of(core_kpis_avg_only),
+      ~ mean(.x, na.rm = TRUE),
+      .names = "avg_{.col}"
+    )
+  )
+
+# All Benchmarks
+tx_benchmarks <- bind_cols(
+  tx_core_median,
+  tx_core_weighted,
+  tx_core_avg
+)
+```
+
+
+
+```{r Create lookup table for ISDs, echo=FALSE}
+library(DT)
+
+# Select the variables for our table
+isd_lookup <- tx_school_district_metrics %>%
+  transmute(
+    `District` = district_name,
+    `NCES District ID` = as.character(nces_district_id),
+    `Lead Score` = lead_score
+  ) %>%
+  arrange(desc(`Lead Score`))
+
+# Build table with a search bar
+DT::datatable(
+  isd_lookup,
+  rownames = FALSE,
+  filter = "top",     # adds per-column filters (in addition to global search)
+  options = list(
+    pageLength = 15,
+    lengthMenu = c(10, 15, 25, 50, 100),
+    autoWidth = TRUE,
+    order = list(list(2, "desc")), # sort by lead_score desc (0-based column index)
+    dom = "ftip"                   # f=search, t=table, i=info, p=pagination
+  ),
+  class = "stripe hover compact"
+) %>%
+  formatRound("Lead Score", digits = 0)
+```
+
+```{r Set the ISD for our focus areas, echo=FALSE}
+# Set the ISD
+focus_isd <- "LEANDER ISD"
+
+# Create the Focus DF
+focus_df <- tx_school_district_metrics %>%
+  filter(district_name == focus_isd)
+```
+
+
+## Snapshot
+
+```{r Build Mini Cards Table, echo=FALSE}
+# Create our KPIs table
+focus_cards_tbl <- bind_rows(
+  tibble(
+    Group = "Focus District",
+    Enrollment = scales::comma(focus_df$enrollment),
+    Schools = scales::comma(focus_df$number_of_schools),
+    `Title I $ / Student` = scales::dollar(focus_df$allocations_per_student, accuracy = 1),
+    `Econ Disadv %` = scales::percent(focus_df$econ_disadv_rate, accuracy = 1)
+  ),
+  tibble(
+    Group = "TX Average",
+    Enrollment = scales::comma(tx_benchmarks$avg_enrollment),
+    Schools = scales::comma(tx_benchmarks$avg_number_of_schools),
+    `Title I $ / Student` = scales::dollar(tx_benchmarks$wtd_allocations_per_student, accuracy = 1),
+    `Econ Disadv %` = scales::percent(tx_benchmarks$wtd_econ_disadv_rate, accuracy = 1)
+  )
+)
+
+# Render as a GT Table
+gt(focus_cards_tbl) %>%
+  tab_header(title = "Quick Snapshot") %>%
+  cols_align(align = "center", columns = -Group) %>%
+  cols_align(align = "left", columns = Group) %>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_body(columns = Group, rows = Group == "Focus District")
+  ) %>%
+  tab_options(
+    table.font.size = px(12),
+    data_row.padding = px(10)
+  )
+```
+
+```{r Bar Chart of Selected District vs Benchmarks - Data Prep, echo=FALSE}
+# Set our prefix for the benchmark
+bench_prefix <- "wtd_"  # switch to "med_" if using medians
+
+# Create DF
+bench_long <- tibble(kpi = core_kpis) %>%
+  mutate(
+    # focus values from the selected ISD (focus_df is 1 row)
+    focus_value = sapply(kpi, \(k) focus_df[[k]][1]),
+
+    # choose correct benchmark column name per KPI
+    bench_col = ifelse(
+      kpi %in% core_kpis_weighted_only,
+      paste0("wtd_", kpi),
+      paste0("avg_", kpi)
+    ),
+
+    # benchmark values from tx_benchmarks (1 row)
+    bench_value = sapply(bench_col, \(c) tx_benchmarks[[c]][1]),
+
+    # index vs benchmark
+    index = 100 * focus_value / bench_value
+  ) %>%
+  mutate(
+    kpi_lbl = recode(
+      kpi,
+      enrollment = "Enrollment",
+      allocations_per_student = "Title I $ / Student",
+      econ_disadv_rate = "Econ Disadv %",
+      child_poverty_rate = "Child Poverty %",
+      population_growth_5yr = "Population Growth Rate (5 Year)",
+      hispanic_any_share = "Population Share - Hispanic",
+      number_of_schools = "Schools"
+    )
+  ) %>%
+  mutate(
+    index = ifelse(is.na(bench_value) | bench_value == 0, NA_real_, index)
+  )
+
+```
+
+## Score Drivers
+
+```{r Bar Chart Visual, echo=FALSE}
+p_focus_index <- bench_long %>%
+  filter(!is.na(index)) %>%
+  mutate(
+    kpi_lbl = ifelse(is.na(kpi_lbl), kpi, kpi_lbl),
+    kpi_lbl = reorder(kpi_lbl, index)
+  ) %>%
+  ggplot(aes(x = index, y = kpi_lbl)) +
+  geom_col() +
+  geom_vline(xintercept = 100, linetype = "dashed", linewidth = 0.6) +
+  labs(
+    title = "Focus district vs Texas benchmark",
+    subtitle = "Index where 100 = benchmark (weighted for rates/$ per student; median for size metrics).",
+    x = "Index (TX benchmark = 100)",
+    y = NULL
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    panel.grid.minor = element_blank()
+  )
+
+p_focus_index
+```
+
+
+```{r Radar Chart DF Prep, include = FALSE}
+# Set KPIs
+radar_kpis <- unique(c(
+  "hispanic_any_share",
+  "allocations_per_student",
+  "population_growth_5yr",
+  "median_age",
+  "median_income",
+  "child_poverty_rate",
+  "no_higher_ed_share",
+  "households_w_children_share",
+  "diversity_index"
+))
+
+invert_kpis <- c("median_age", "child_poverty_rate", "no_higher_ed_share")
+
+# Create our DF
+## Use our radar_kpis vector to make a long DF, filter to Focus ISD later
+radar_long <- tx_school_district_metrics %>%
+  select(district_id = nces_district_id, district_name, all_of(radar_kpis)) %>%
+  pivot_longer(
+    cols = all_of(radar_kpis),
+    names_to = "kpi",
+    values_to = "value"
+  ) %>%
+  group_by(kpi) %>%
+  mutate(
+    pct = percent_rank(value)  # 0..1 relative to TX, NA stays NA
+  ) %>%
+  ungroup() %>%
+  mutate(
+    pct_adj = ifelse(kpi %in% invert_kpis, 1 - pct, pct),
+    direction = ifelse(kpi %in% invert_kpis, "Lower is better (inverted)", "Higher is better")
+  )
+
+# Select Focus ISDs
+radar_focus <- radar_long %>%
+  filter(district_name == focus_isd) %>%
+  filter(!is.na(pct_adj)) %>%
+  mutate(
+    kpi_lbl = recode(
+      kpi,
+      hispanic_any_share = "Hispanic share",
+      allocations_per_student = "Title I $/student",
+      population_growth_5yr = "Pop growth (5y)",
+      median_age = "Median age",
+      median_income = "Median income",
+      child_poverty_rate = "Child poverty",
+      no_higher_ed_share = "Higher ed",
+      households_w_children_share = "HH w/ children",
+      diversity_index = "Diversity index",
+      .default = kpi
+    ),
+    # This guarantees no duplicate axis labels even if something collides
+    kpi_lbl = make.unique(kpi_lbl)
+  )
+
+radar_wide <- radar_focus %>%
+  transmute(kpi_lbl, value = pct_adj) %>%
+  pivot_wider(names_from = kpi_lbl, values_from = value)
+
+stopifnot(ncol(radar_wide) >= 3)   # radar requires 3+ axes
+
+radar_ready <- bind_rows(
+  radar_wide %>% mutate(across(everything(), ~1)),  # max row
+  radar_wide %>% mutate(across(everything(), ~0)),  # min row
+  radar_wide                                     # focus row
+) %>%
+  as.data.frame()
+
+
+# Add benchmark rings
+radar_ref <- tibble(
+  kpi_lbl = factor(axis_levels, levels = axis_levels),
+  p50 = 0.50,
+  p75 = 0.75
+) %>%
+  pivot_longer(cols = c(p50, p75), names_to = "ref", values_to = "pct_adj") %>%
+  mutate(
+    ref_lbl = recode(ref, p50 = "TX median", p75 = "Top quartile")
+  )
+
+# Create a Strip DF
+strip_df <- radar_focus %>%
+  transmute(
+    kpi_lbl,
+    strength_pct = 100 * pct_adj
+  ) %>%
+  arrange(desc(strength_pct))
+```
+
+## Additional Context
+
+```{r Secondary Strengths, echo=FALSE}
+p_strength_strip_labeled <- ggplot(strip_df, aes(x = strength_pct, y = reorder(kpi_lbl, strength_pct))) +
+  geom_col() +
+  geom_text(
+    aes(label = sprintf("%.0f", strength_pct)),
+    hjust = -0.15,
+    size = 3
+  ) +
+  geom_vline(xintercept = 50, linetype = "dashed", linewidth = 0.6) +
+  geom_vline(xintercept = 75, linetype = "dotted", linewidth = 0.6) +
+  scale_x_continuous(limits = c(0, 105), breaks = seq(0, 100, 25)) +
+  labs(
+    title = "District context strengths",
+    subtitle = "Percentile ranks within Texas (higher = stronger).",
+    x = "Strength percentile (0–100)",
+    y = NULL
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.minor = element_blank())
+
+p_strength_strip_labeled
+```
+
+
+```{r Radar Chart Visuals, include = FALSE}
+p_radar_strength <- ggplot() +
+  # reference rings
+  geom_path(
+    data = radar_ref,
+    aes(x = kpi_lbl, y = pct_adj, group = ref),
+    linewidth = 0.6,
+    linetype = "dashed",
+    alpha = 0.8
+  ) +
+
+  # district polygon
+  geom_polygon(
+    data = radar_focus,
+    aes(x = kpi_lbl, y = pct_adj, group = 1),
+    alpha = 0.25
+  ) +
+  geom_path(
+    data = radar_focus,
+    aes(x = kpi_lbl, y = pct_adj, group = 1),
+    linewidth = 0.9
+  ) +
+  geom_point(
+    data = radar_focus,
+    aes(x = kpi_lbl, y = pct_adj),
+    size = 1.6
+  ) +
+
+  coord_polar() +
+  scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 0.75, 1)) +
+  labs(
+    title = "District strength snapshot (normalized)",
+    subtitle = "All metrics shown as Texas percentiles with direction aligned so higher = better. Dashed rings: TX median (0.50) and top quartile (0.75).",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    panel.grid.minor = element_blank(),
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(size = 9)
+  )
+
+p_radar_strength
+```
+
+```{r FMSB Input, include = FALSE}
+radar_wide_focus <- radar_wide %>% mutate(series = "Focus ISD")
+radar_wide_p50   <- radar_wide %>% mutate(across(everything(), ~0.50), series = "Median")
+radar_wide_p75   <- radar_wide %>% mutate(across(everything(), ~0.75), series = "Top quartile")
+
+radar_plot_df <- bind_rows(radar_wide_focus, radar_wide_p50, radar_wide_p75)
+
+radar_max <- radar_plot_df %>% slice(1) %>% mutate(across(-series, ~1), series = "max")
+radar_min <- radar_plot_df %>% slice(1) %>% mutate(across(-series, ~0), series = "min")
+
+radar_ready2 <- bind_rows(radar_max, radar_min, radar_plot_df) %>%
+  select(-series) %>%
+  as.data.frame()
+```
+
+```{r radar_chart, include = FALSE}
+# plot.new()
+
+op <- par(mar = c(2, 2, 3, 6))
+
+fmsb::radarchart(
+  radar_ready2,
+  axistype = 1,
+  pty = 32,
+
+  # 3 series: Focus, TX median, Top quartile (max/min excluded automatically)
+  plwd = c(3, 1.2, 1.2),
+  plty = c(1, 2, 2),
+  pcol = c("black", "grey35", "grey35"),
+  pfcol = c(scales::alpha("grey50", 0.25), NA, NA),
+
+  # grid / axis
+  cglcol = "grey88",
+  cglwd = 0.8,
+  axislabcol = "grey35",
+  vlcex = 0.8,
+  caxislabels = c("0", "0.25", "0.50", "0.75", "1.00")
+)
+
+legend(
+  "topright",
+  legend = c("Focus ISD", "TX median", "Top quartile"),
+  lty = c(1, 2, 2),
+  lwd = c(3, 1.2, 1.2),
+  bty = "n",
+  cex = 0.9
+)
+
+par(op)
+```
+
+# Appendix

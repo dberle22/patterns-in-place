@@ -1,0 +1,21 @@
+{
+  "output_mode": "presentation",
+  "title": "The Tightest Major Metro Housing Markets in 2024",
+  "subtitle": "Top 20 CBSAs by lowest vacancy rate | Population filter: 250k+ | US benchmark shown for reference",
+  "y_label": "Vacancy rate (%)",
+  "label_style": "number",
+  "label_accuracy": 0.1,
+  "bar_variant": "ranked_horizontal",
+  "sort_desc": false,
+  "show_labels": true,
+  "show_axis_labels": true,
+  "show_benchmark": true,
+  "benchmark_value": 10.1,
+  "benchmark_label": "US: 10.1%",
+  "caption_side_note": "Major metros are CBSAs with population of at least 250,000 in 2024.",
+  "caption_methodology_note": "Vacancy rate from gold.housing_core_wide. Population filter from gold.population_demographics.",
+  "right_margin_pt": 72,
+  "width": 12,
+  "height": 8,
+  "dpi": 300
+}

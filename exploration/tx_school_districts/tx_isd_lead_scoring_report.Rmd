@@ -1,0 +1,337 @@
+---
+title: "Texas ISD Lead Scoring Report"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+
+```{r Set Up: Load Packages and Paths, include=FALSE}
+# Read our common libraries & set other packages ----
+source(here::here("scripts", "utils.R"))
+
+
+# Set paths for our environments ----
+# Make sure we're reading from the project Renviron
+if (file.exists(".Renviron")) readRenviron(".Renviron")
+
+# Set our Paths - Pointing to our Bronze folder in Data
+data <- get_env_path("DATA")
+outputs <- get_env_path("OUTPUTS")
+db_path <- paste0(data, "/duckdb", "/metro_deep_dive.duckdb")
+output <- paste0(outputs, "/analyses/tx_school_districts")
+
+## Connect to the DB ----
+con <- dbConnect(duckdb::duckdb(), dbdir = db_path, read_only = FALSE)
+
+library(shiny)
+```
+
+```{r Set Up: Read in Data Sets, include=FALSE}
+tx_school_district_metrics <- dbGetQuery(con, "SELECT * FROM gold.tx_isd_metrics")
+
+## Disconnect
+dbDisconnect(con, shutdown = TRUE)
+```
+
+```{r Set Up: Get Boundaries, include=FALSE}
+tx_boundary <- tigris::states(cb = FALSE, year = 2024) %>%
+  filter(STUSPS == "TX")
+
+tx_sd_unified <- tigris::school_districts(
+  state = "TX",
+  type  = "unified",
+  cb    = TRUE,
+  year  = 2024
+)
+
+# CBSAs
+## Ingest all CBSAs
+cbsa_sf <- tigris::core_based_statistical_areas(cb = TRUE, year = 2024)
+
+# Intersect to Texas footprint (keeps just CBSAs touching TX)
+cbsa_tx <- st_intersection(cbsa_sf, tx_boundary)
+
+# Transform CRS to 3857 - This is good for Webmaps
+## Check the current CRS
+st_crs(tx_boundary)
+st_crs(tx_sd_unified)
+st_crs(cbsa_sf)
+```
+
+# Executive Summary
+
+This report identifies Texas school districts with the strongest combination of scale, federal funding support, and student need, with the goal of improving territory prioritization and call preparation.
+
+Key takeaways:
+
+-   High-opportunity districts are concentrated in a limited number of geographic clusters rather than evenly distributed statewide.
+-   The strongest targets combine large enrollment with above-average Title I funding per student.
+-   District-level context varies meaningfully, making tailored outreach more effective than one-size-fits-all messaging.
+
+The sections below move from a statewide scan (Top districts and map) to district-specific deep dives designed for use immediately before outreach or meetings.
+
+# Top Opportunities in Texas
+
+ 
+ **How to use this section**
+
+Start with the table to identify a shortlist of high-priority districts, then use the map to spot geographic clusters and plan efficient coverage.  
+ *(Deep Dive tools will be added next for meeting and outreach preparation.)*
+
+
+## Top Districts (Interactive Table)
+
+The table below ranks districts by our custom Lead Score and includes key context metrics used for outreach planning. Use the search bar and column filters to narrow to your target set (for example: focus on specific regions or the largest enrollment bands).
+
+**A quick note on our Lead Score methodology**
+
+What it is: A composite prioritization score to rank Texas ISDs by opportunity based on scale, funding, and student/community need.
+
+How it’s calculated: weighted average of percentile ranks across 4 inputs:
+
+- Enrollment (30%)
+- Title I allocations per student (30%)
+- Student economic disadvantage rate (20%)
+- Child poverty rate (20%)
+
+Lead Tiers (for planning):
+
+- A-tier: top 15% by Lead Score
+- B-tier: 50th–85th percentile
+- C-tier: bottom 50%
+
+**Other Variables Available**
+```{r Other Vars, echo=FALSE}
+other_vars_tbl <- tibble::tribble(
+  ~Variable, ~Category, ~`How it can be used`,
+  "Number of Schools", "District scale and structure", "Total campuses; useful for estimating footprint and implementation complexity.",
+  "Average School Enrollment", "District scale and structure", "Average size per campus; helps distinguish many small schools vs fewer large schools.",
+  "Total Population", "Demographics and growth context", "Community scale proxy; can indicate broader market size and local ecosystem.",
+  "Population Growth", "Demographics and growth context", "Momentum indicator; highlights expanding areas and potential enrollment tailwinds.",
+  "Median Age", "Demographics and growth context", "Family life-cycle context; can correlate with school-age population dynamics.",
+  "Median Income", "Socioeconomic context", "Affluence context; helps tailor messaging and understand resource constraints.",
+  "Adult Higher Education Rate", "Socioeconomic context", "Education attainment; can correlate with engagement patterns and program priorities.",
+  "Hispanic Share of Population", "Community composition", "Demographic context; supports culturally relevant outreach and program alignment.",
+  "Racial Diversity", "Community composition", "Diversity context; supports inclusive positioning and market segmentation."
+)
+
+knitr::kable(other_vars_tbl, format = "html")
+```
+
+
+```{r Create a DF with all our Vars, include=FALSE}
+# Calculate cut points on non-missing scores
+cutoff_a <- quantile(tx_school_district_metrics$lead_score, 0.85, na.rm = TRUE)
+cutoff_b <- quantile(tx_school_district_metrics$lead_score, 0.50, na.rm = TRUE)
+
+
+tx_isd_metrics_clean <- tx_school_district_metrics %>%
+  arrange(desc(lead_score)) %>%
+  mutate(
+    growth_label = case_when(
+      pop_growth_quartile == 4 ~ "↑ High growth",
+      pop_growth_quartile == 3 ~ "↗ Moderate growth",
+      pop_growth_quartile == 1 ~ "↓ Declining",
+      TRUE                     ~ "— Stable"
+    ),
+    why = case_when(
+  allocations_per_student >= quantile(allocations_per_student, 0.75, na.rm = TRUE) &
+        economically_disadvantaged_percent >= 0.60 ~
+        "High Title I funding and high student need",
+
+      enrollment >= quantile(enrollment, 0.75, na.rm = TRUE) ~
+        "Large district with meaningful contract scale",
+  
+      child_poverty_rate >= quantile(child_poverty_rate, 0.75, na.rm = TRUE) ~
+        "High community need aligned with federal funding",
+
+      pop_growth_quartile == 4 ~
+        "Strong growth outlook with solid funding base",
+
+      TRUE ~
+        "Balanced mix of scale, funding, and need"
+),
+lead_tier = case_when(
+      is.na(lead_score)        ~ NA_character_,
+      lead_score >= cutoff_a  ~ "A",
+      lead_score >= cutoff_b  ~ "B",
+      TRUE                          ~ "C"
+    ),
+    lead_tier = factor(lead_tier, levels = c("A", "B", "C"))
+
+  )
+```
+
+```{r Create our data frame, include=FALSE}
+rated_districts <- tx_isd_metrics_clean %>%
+  arrange(desc(lead_score)) %>%
+  select(
+    rank = lead_score_rank,
+    district_name,
+    esc_region_served,
+    # tier, ## There is no Tiering yet
+    lead_score,
+    enrollment,
+    num_schools = number_of_schools,
+    title1_per_student = allocations_per_student,
+    economically_disadvantaged_percent,
+    child_poverty_rate,
+    growth_label,
+    why
+  ) %>%
+  transmute(
+    ` ` = rank,  # blank-ish header (DT doesn't love empty strings)
+    `District` = district_name,
+    `Region` = esc_region_served,
+    `Score` = lead_score,
+    `Enrollment` = enrollment,
+    `Schools` = num_schools,
+    `Title I $ / Student` = title1_per_student,
+    `Econ Disadv %` = economically_disadvantaged_percent,
+    `Child Poverty %` = child_poverty_rate,
+    `Growth` = growth_label
+  )
+```
+
+```{r Build Table, echo=FALSE}
+library(DT)
+
+datatable(
+  rated_districts,
+  rownames = FALSE,
+  filter = "top",     # per-column filters
+  escape = TRUE,
+  options = list(
+    pageLength = 20,
+    lengthMenu = c(10, 25, 50, 100),
+    paging = TRUE,                   # force pagination on
+    autoWidth = TRUE,
+    scrollX = TRUE,
+    # order = list(list(2, "desc")), # Score column (0-based index: 2 = "Score")
+    dom = "ftip",
+    columnDefs = list(
+      list(width = "40px", targets = 0, className = "dt-center"),
+      list(width = "220px", targets = 1),
+      list(width = "90px",  targets = 2, className = "dt-center"),
+      list(width = "120px", targets = 3, className = "dt-center"),
+      list(width = "90px",  targets = 4, className = "dt-center"),
+      list(width = "140px", targets = 5, className = "dt-center"),
+      list(width = "110px", targets = 6, className = "dt-center"),
+      list(width = "120px", targets = 7, className = "dt-center"),
+      list(width = "90px",  targets = 8, className = "dt-center"),
+      list(width = "120px", targets = 9, className = "dt-center")
+    )
+  ),
+  class = "stripe hover compact"
+) %>%
+  # Number formatting
+  formatRound(columns = c("Score", "Enrollment", "Schools"), digits = 0) %>%
+  formatCurrency(columns = "Title I $ / Student", currency = "$", digits = 0) %>%
+  formatPercentage(columns = c("Econ Disadv %", "Child Poverty %"), digits = 0) %>%
+  # Emphasize Score column (like your gt styling)
+  formatStyle(
+    "Score",
+    backgroundColor = "#f5f7fa",
+    fontWeight = "bold"
+  ) 
+```
+
+
+## Geographic Clusters of Opportunity
+
+This map shows every Texas ISD colored by Lead Tier, so you can quickly spot pockets of high-priority outreach. Use it to plan efficient coverage, grouping nearby top districts into the same trip or campaign. Lead Tiers are percentile-based: A = top 15%, B = 50–85%, C = bottom 50% of districts by Lead Score.
+
+```{r Maps Data Prep - Map DFs and Vars, include=FALSE}
+# Vars
+alpha_fill   <- 0.9
+top_n_outline <- 25
+plot_crs     <- sf::st_crs(tx_boundary)
+
+# Add Geography to metrics
+tx_sd_scored <- tx_sd_unified %>%
+  left_join(tx_isd_metrics_clean, by = c("GEOID" = "nces_district_id")) %>%
+  filter(!is.na(lead_score))
+
+
+# Optional: outline top-N districts by score
+topN_outline <- tx_sd_scored %>%
+  select(GEOID, lead_score, lead_tier) %>%
+  filter(!is.na(lead_score)) %>%
+  slice_max(order_by = lead_score, n = top_n_outline, with_ties = FALSE)
+
+# Map extent (Texas)
+bb   <- sf::st_bbox(tx_boundary)
+xlim <- c(bb["xmin"], bb["xmax"])
+ylim <- c(bb["ymin"], bb["ymax"])
+
+```
+
+```{r Map - Build, echo=FALSE}
+
+# Plot
+p_tx_tier_map <- ggplot() +
+
+  # Districts filled by tier
+  geom_sf(
+    data = tx_sd_scored,
+    aes(fill = lead_tier),
+    color = "grey25", linewidth = 0.22, alpha = alpha_fill
+  ) +
+
+  # Texas border (double stroke)
+  geom_sf(data = tx_boundary, fill = NA, color = "white",  linewidth = 0.8) +
+  geom_sf(data = tx_boundary, fill = NA, color = "grey30", linewidth = 0.45) +
+
+  # Subtle district edges
+  # geom_sf(data = tx_sd_scored, fill = NA, color = "grey25", linewidth = 0.16) +
+
+  # Bold outline for top-N districts
+  # geom_sf(data = topN_outline, fill = NA, color = "black", linewidth = 0.55) +
+
+  # Discrete viridis for tiers
+  scale_fill_viridis_d(
+    option = "viridis",
+    name   = "Lead Tier",
+    na.value = "grey90"
+  ) +
+
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE, clip = "on") +
+  labs(
+    title    = "Texas School District Lead Tiers",
+    subtitle = "Fill: A/B/C tiers from lead score. Bold outline: Top districts by lead score."
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    axis.text    = element_blank(),
+    axis.title   = element_blank(),
+    axis.ticks   = element_blank(),
+    panel.grid   = element_blank(),
+    legend.title = element_text(face = "bold")
+  )
+
+print(p_tx_tier_map)
+```
+
+```{r Save RDS files for future reference}
+saveRDS(tx_boundary, paste0(data, "/demographics/gold/tx_isd/tx_boundary_sf.rds"))
+
+saveRDS(tx_sd_unified, paste0(data, "/demographics/gold/tx_isd/tx_sd_unified_sf.rds"))
+
+saveRDS(cbsa_sf, paste0(data, "/demographics/gold/tx_isd/cbsa_sf.rds"))
+
+write_csv(tx_isd_metrics_clean, paste0(data, "/demographics/gold/tx_isd/tx_isd_metrics.csv"))
+
+saveRDS(tx_sd_scored, paste0(data, "/demographics/gold/tx_isd/tx_sd_cored_sf.rds"))
+
+```
+
+

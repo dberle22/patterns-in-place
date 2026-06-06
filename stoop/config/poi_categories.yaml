@@ -1,0 +1,214 @@
+keyword_taxonomy_rules:
+  # Legacy matcher rules for coarse Google Maps export normalization.
+  # These are not the canonical taxonomy; the real curated taxonomy lives under
+  # `curated_taxonomy`.
+  # --- Food & Drink (specific first to avoid false matches) ---
+  pizza:
+    category: restaurants
+    subcategory: pizza
+    keywords:
+      - pizza
+  bakeries:
+    category: bakeries
+    subcategory: bakeries
+    keywords:
+      - bakery
+      - pastry
+      - patisserie
+  sandwiches:
+    category: restaurants
+    subcategory: sandwiches
+    keywords:
+      - sandwich
+  coffee_shops:
+    category: coffee_shops
+    subcategory: coffee_shops
+    keywords:
+      - coffee
+      - cafe
+      - espresso
+  chinese_cuisine:
+    category: restaurants
+    subcategory: chinese
+    keywords:
+      - chinese
+      - dim sum
+      - cantonese
+  japanese_cuisine:
+    category: restaurants
+    subcategory: japanese
+    keywords:
+      - japanese
+      - sushi
+      - ramen
+      - izakaya
+  specialty_grocery:
+    category: specialty_grocery
+    subcategory: specialty_grocery
+    keywords:
+      - speciality
+      - specialty
+      - gourmet
+  # food_markets must come before groceries — both can match "market"
+  food_markets:
+    category: food_markets
+    subcategory: food_markets
+    keywords:
+      - market
+      - food hall
+  restaurants:
+    category: restaurants
+    subcategory: restaurants
+    keywords:
+      - restaurant
+      - diner
+      - food
+  bars:
+    category: bars
+    subcategory: bars
+    keywords:
+      - bar
+      - brewery
+      - pub
+      - cocktail
+  # --- Culture & Entertainment ---
+  bookstores:
+    category: bookstores
+    subcategory: bookstores
+    keywords:
+      - bookstore
+      - books
+  record_stores:
+    category: record_stores
+    subcategory: record_stores
+    keywords:
+      - record
+      - vinyl
+  museums:
+    category: museums
+    subcategory: museums
+    keywords:
+      - museum
+      - gallery
+  movie_theaters:
+    category: movie_theaters
+    subcategory: movie_theaters
+    keywords:
+      - cinema
+      - movie
+      - theater
+  music_venues:
+    category: music_venues
+    subcategory: music_venues
+    keywords:
+      - venue
+      - concert
+      - music
+      - jazz
+  # --- Everyday & Outdoor ---
+  groceries:
+    category: groceries
+    subcategory: groceries
+    keywords:
+      - grocery
+      - supermarket
+  shopping:
+    category: shopping
+    subcategory: shopping
+    keywords:
+      - shop
+      - store
+      - mall
+  parks:
+    category: parks
+    subcategory: parks
+    keywords:
+      - park
+      - garden
+      - playground
+  # --- Services, Amenities, & Hotels ---
+  hotels:
+    category: hotels
+    subcategory: hotels
+    keywords:
+      - hotel
+      - lodging
+      - motel
+      - accomidations
+
+curated_taxonomy:
+  files:
+    poi_bookstores_nyc.csv:
+      category: bookstores
+      subcategory: independent_bookstores
+    poi_record_stores_nyc.csv:
+      category: record_stores
+      subcategory: record_stores
+    poi_museums_nyc.csv:
+      category: museums
+      subcategory: museums
+    poi_restaurants_nyc.csv:
+      category: restaurants
+      subcategory: ""
+      subcategory_from_tags_or_comment: true
+      detail_level_3_from_tags_or_comment: true
+    poi_pizza_nyc.csv:
+      category: restaurants
+      subcategory: pizza
+    poi_rest_chinese_nyc.csv:
+      category: restaurants
+      subcategory: chinese
+    poi_rest_japanese_nyc.csv:
+      category: restaurants
+      subcategory: japanese
+      detail_level_3_from_tags_or_comment: true
+    poi_sandwich_nyc.csv:
+      category: restaurants
+      subcategory: sandwiches
+      detail_level_3_from_tags_or_comment: true
+    poi_bars_nyc.csv:
+      category: bars
+      subcategory: bars
+      subcategory_from_tags_or_comment: true
+    poi_bakeries_nyc.csv:
+      category: bakeries
+      subcategory: bakeries
+    poi_cafe_nyc.csv:
+      category: coffee_shops
+      subcategory: coffee_shops
+    poi_markets_nyc.csv:
+      category: food_markets
+      subcategory: ""
+      detail_level_3_from_tags_or_comment: true
+    poi_speciality_food_market.csv:
+      category: specialty_grocery
+      subcategory: specialty_grocery
+    poi_movie_theaters_nyc.csv:
+      category: movie_theaters
+      subcategory: movie_theaters
+    poi_music_venue_nyc.csv:
+      category: music_venues
+      subcategory: ""
+      detail_level_3_from_tags_or_comment: true
+  tag_aliases:
+    bagels: bagels
+    brazilian: brazilian
+    chinese: chinese
+    club: club
+    deli: deli
+    greek: greek
+    indian: indian
+    irish: irish_pub
+    italian: italian
+    izakaya: izakaya
+    jazz: jazz
+    jewish: jewish
+    karaoke: karaoke
+    korean: korean
+    mexican: mexican
+    poke: poke
+    pizza: pizza
+    ramen: ramen
+    sushi: sushi
+    thai: thai
+    wine: wine_bar

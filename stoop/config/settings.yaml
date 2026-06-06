@@ -1,0 +1,13 @@
+database_path: data/processed/nyc_property_finder.duckdb
+local_user:
+  default_user_id: local_default
+target_boroughs:
+  - Bronx
+  - Brooklyn
+  - Manhattan
+  - Queens
+  - Staten Island
+default_map_center:
+  lat: 40.7128
+  lon: -74.0060
+default_map_zoom: 10

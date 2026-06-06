@@ -1,0 +1,16 @@
+{
+  "output_mode": "presentation",
+  "title": "US Housing Vacancy Has Fallen Every Year Since 2019",
+  "subtitle": "2012-2024 annual series | National vacancy fell from 12.1% to 10.1%; the housing-unit-weighted metro average declined too",
+  "y_label": "Vacancy rate (%)",
+  "label_style": "number",
+  "label_accuracy": 0.1,
+  "start_at_zero": true,
+  "y_limits": [0, 20],
+  "show_points": true,
+  "legend_position": "bottom",
+  "caption_side_note": "US series uses the true national row. Metro comparison is a housing-unit-weighted CBSA rollup.",
+  "width": 11,
+  "height": 7,
+  "dpi": 300
+}

@@ -1,0 +1,27 @@
+# App-level settings. No machine-specific paths here — those live in data_sources.yaml.
+
+database_path: data/processed/rof_app.duckdb
+
+# Fallback DB used on cloud deployments where data_sources.yaml is absent.
+export_database_path: data/exports/jacksonville_rof.duckdb
+
+local_user:
+  default_user_id: local_default
+
+default_market_key: jacksonville_fl
+
+markets:
+  jacksonville_fl:
+    label: "Jacksonville, FL"
+    cbsa_code: "27260"
+    state: FL
+    county_geoids:
+      - "12003"  # Baker
+      - "12019"  # Clay
+      - "12031"  # Duval
+      - "12089"  # Nassau
+      - "12109"  # St. Johns
+    default_map_center:
+      lat: 30.3322
+      lon: -81.6557
+    default_map_zoom: 9

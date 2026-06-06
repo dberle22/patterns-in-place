@@ -23,6 +23,7 @@ build/
 data/raw/
 data/interim/
 data/processed/
+stoop/data/
 *.csv
 *.parquet
 *.xlsx
@@ -53,9 +54,11 @@ config/api_keys.yaml
 
 # ── Product output folders ───────────────────────────────────────────────────
 foundations/outputs/
-publisher/publisher/output/
-publisher/analysis/vacancy_rates/**/chart*.png
-publisher/analysis/vacancy_rates/**/result*.csv
+publisher/publisher/output/*
+!publisher/publisher/output/q001/
+!publisher/publisher/output/q001/**
+publisher/content/**/chart*.png
+publisher/content/**/result*.csv
 foundations/visual_library/charts/**/sample_output/
 foundations/data_dictionary/artifacts/
 exploration/**/outputs/

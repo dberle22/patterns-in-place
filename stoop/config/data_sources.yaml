@@ -1,0 +1,69 @@
+sources:
+  census_tracts:
+    path: data/raw/geography/census_tracts.geojson
+    expected_format: geojson
+    id_column: GEOID
+    owner: manual_download
+    source_url: https://services5.arcgis.com/GfwWNkhOj9bNBqoJ/ArcGIS/rest/services/NYC_Census_Tracts_for_2020_US_Census/FeatureServer/0
+    notes: NYC DCP 2020 census tract geometry. Use GEOID for joins to the tract-to-NTA equivalency table. Manhattan and Brooklyn are the first coverage target.
+  tract_to_nta_equivalency:
+    path: data/raw/geography/tract_to_nta_equivalency.csv
+    expected_format: csv
+    owner: manual_download
+    source_url: https://data.cityofnewyork.us/api/views/hm78-6dwm/rows.csv?accessType=DOWNLOAD
+    notes: Preferred source for mapping 2020 census tracts to 2020 NTAs/CDTAs before centroid or intersection fallback.
+  nta_boundaries:
+    path: data/raw/geography/nta_boundaries.geojson
+    expected_format: geojson
+    id_column: nta_id
+    name_column: nta_name
+    owner: manual_download
+    notes: NTA code, display name, and WGS84 geometry for the primary neighborhood UI layer.
+  subway_stops:
+    path: data/raw/transit/gtfs_subway.zip
+    normalized_path: data/raw/transit/subway_stops.csv
+    expected_format: gtfs_zip
+    owner: mta_static_gtfs
+    source_url: https://rrgtfsfeeds.s3.amazonaws.com/gtfs_subway.zip
+    notes: MTA regular static subway GTFS. Normalize stops.txt to stop ID, stop name, served lines, lat, and lon.
+  google_maps_export:
+    path: data/raw/google_maps/saved_places.kml
+    expected_format: kml
+    alternate_paths:
+      - data/raw/google_maps/saved_places.json
+    owner: user_export
+    notes: Local/private Google Maps saved places export. First expected custom lists are Bookstores, Museums, and Restaurants. Preserve saved list name when available.
+  metro_deep_dive_tract_features:
+    path: data/raw/metro_deep_dive/tract_features.csv
+    expected_format: csv
+    source_database_path: /Users/danberle/Documents/projects/data/duckdb/metro_deep_dive.duckdb
+    owner: existing_local_duckdb_export
+    notes: First neighborhood feature source path. Export from Metro Deep Dive DuckDB, then map tracts to NTAs. Source table/view still needs to be selected. Crime is deferred.
+  listing_geocodes:
+    path: data/interim/geocoding/listing_geocodes.csv
+    quarantine_path: data/interim/geocoding/listing_geocode_quarantine.csv
+    expected_format: csv
+    owner: pipeline_generated
+    selected_source: nyc_geosearch
+    source_url: https://geosearch.planninglabs.nyc/v2/search
+    notes: Optional Sprint 2 support for address-only listing rows. Persist match status, geocode source, coordinate quality, and errors.
+  local_property_listings:
+    path: data/raw/listings_sample.csv
+    future_default_path: data/raw/property_listings.csv
+    expected_format: csv
+    source: streeteasy_saved
+    first_manual_sources:
+      - streeteasy_saved
+      - zillow_saved
+    owner: user_maintained
+    notes: First MVP listing source. Mixed listings leaning rental; images are post-MVP. See docs/listing_csv_contract.md.
+  streeteasy:
+    status: deferred_adapter
+    search_url: https://streeteasy.com/for-rent/nyc
+    notes: Future adapter only; manual CSV is the MVP source path until access and terms are settled.
+  renthop:
+    status: deferred_adapter
+    notes: Future adapter only; normalize into the manual listing contract when enabled.
+  zillow:
+    status: manual_source_first
+    notes: User will copy facts/links manually for MVP. Future adapter only after access and terms are settled.

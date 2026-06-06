@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nyc-property-finder"
+version = "0.1.0"
+description = "Map-based NYC property discovery and context scoring starter."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "duckdb>=0.10",
+    "geopandas>=0.14",
+    "pandas>=2.0",
+    "pyyaml>=6.0",
+    "shapely>=2.0",
+    "streamlit>=1.33",
+    "streamlit-analytics2>=0.5",
+    "pydeck>=0.8",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.4",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

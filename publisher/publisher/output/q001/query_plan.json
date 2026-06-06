@@ -1,0 +1,11 @@
+{
+  "question_type": "ranking",
+  "subject_area": "housing",
+  "metric_id": "rent_to_income",
+  "source_table": "housing_core_wide",
+  "geo_level": "cbsa",
+  "year": 2023,
+  "sort_direction": "desc",
+  "limit": 10,
+  "template_id": "ranking"
+}

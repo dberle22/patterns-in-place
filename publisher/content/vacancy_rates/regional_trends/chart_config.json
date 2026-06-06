@@ -1,0 +1,16 @@
+{
+  "output_mode": "presentation",
+  "title": "Every Census Region Has Tightened Since 2019",
+  "subtitle": "2014-2024 annual series | All four regions tightened after 2019; the West stayed tightest and the South remained loosest",
+  "y_label": "Vacancy rate (%)",
+  "label_style": "number",
+  "label_accuracy": 0.1,
+  "start_at_zero": true,
+  "y_limits": [0, 15],
+  "show_points": true,
+  "legend_position": "bottom",
+  "caption_side_note": "US line uses the true national row from gold.housing_core_wide. Regional lines use the four Census-region rows from the same table.",
+  "width": 11,
+  "height": 7,
+  "dpi": 300
+}

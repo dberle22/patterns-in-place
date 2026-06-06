@@ -1,0 +1,922 @@
+---
+title: "CBSAs by Real Per Capita Income"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+# Setup
+```{r Environment Setup}
+# Read our common libraries & set other packages ----
+source(here::here("scripts", "utils.R"))
+
+
+# Set paths for our environments ----
+# Make sure we're reading from the project Renviron
+if (file.exists(".Renviron")) readRenviron(".Renviron")
+
+# Set our Paths - Pointing to our Bronze folder in Data
+data <- get_env_path("DATA")
+outputs <- get_env_path("OUTPUTS")
+db_path <- paste0(data, "/duckdb", "/metro_deep_dive.duckdb")
+output <- paste0(outputs, "/analyses/real_personal_income")
+
+## Connect to the DB ----
+con <- dbConnect(duckdb::duckdb(), dbdir = db_path, read_only = FALSE)
+
+# Set Params ----
+year <- 2023
+top_n <- 15
+```
+
+# Ingest Data
+```{r Ingest Data Set}
+cbsa_income <- dbGetQuery(con, 
+                          "-- This script is used to build the base to analyze real personal income by CBSA
+-- We will get personal income from BEA CAINC1 and RPP from MARPP
+with county_pop as (
+select geo_level,
+	geo_id, 
+	pop_total
+from metro_deep_dive.silver.age_kpi 
+where geo_level = 'county'
+and year = '2023'
+),
+
+county_mapping as (	
+select cbsa.cbsa_code, 
+	cbsa.cbsa_name,
+	cbsa.cbsa_type,
+	cbsa.county_name,
+	cbsa.county_geoid,
+	pop.pop_total,
+	cbsa.state_name,
+	cbsa.state_fips,
+	st.census_region,
+	st.census_division,
+	row_number() over(partition by cbsa.cbsa_code order by pop.pop_total desc) as county_pop_rank
+from metro_deep_dive.silver.xwalk_cbsa_county cbsa
+left join metro_deep_dive.silver.xwalk_state_region st 
+	on cbsa.state_fips = st.state_fips
+left join county_pop pop 
+	on cbsa.county_geoid = pop.geo_id
+),
+
+cbsa_metadata as (
+select cbsa_code,
+	cbsa_name,
+	cbsa_type,
+	state_name as primary_state,
+	state_fips,
+	census_region,
+	census_division
+from county_mapping
+where county_pop_rank = 1
+),
+
+income as (
+select cainc.geo_level,
+	cainc.geo_id,
+	cainc.geo_name,
+	xw.cbsa_type,
+	xw.state_fips,
+	xw.primary_state,
+	xw.census_region,
+	xw.census_division,
+	period,
+	population,
+	pi_total,
+	pi_per_capita 
+from metro_deep_dive.silver.bea_regional_cainc1_wide cainc
+left join cbsa_metadata xw 
+	on cainc.geo_id = xw.cbsa_code
+where cainc.geo_level = 'cbsa'
+),
+
+-- Real Personal Income is already computed, we have RPP for all items and goods
+-- We would need to bring more data to silver if we want to break it down another way
+cbsa_rpp as (
+select geo_level,
+	geo_id,
+	geo_name,
+	period,
+	rpp_real_pc_income,
+	rpp_all_items,
+	rpp_goods
+from metro_deep_dive.silver.bea_regional_marpp_wide 
+where geo_level = 'cbsa'
+),
+
+state_rpp as (
+select geo_level,
+	LEFT(geo_id, 2) as state_fips, -- We need to only take the first two digits
+	geo_name, 
+	period,
+	rpp_real_pc_income,
+	rpp_all_items,
+	rpp_goods
+from metro_deep_dive.silver.bea_regional_marpp_wide 
+where geo_level = 'state'
+),
+
+-- Join CAINC1 and MARPP data
+kpi_base as (
+select inc.geo_level,
+	inc.geo_id,
+	inc.geo_name,
+	inc.cbsa_type,
+	inc.state_fips,
+	inc.primary_state,
+	inc.census_region,
+	inc.census_division,
+	inc.period,
+	inc.population,
+	inc.pi_total,
+	inc.pi_per_capita,
+	-- cbsa.rpp_real_pc_income as cbsa_real_pc_income, -- This looks wrong for some reason
+	cbsa.rpp_all_items as cbsa_rpp_all_items,
+	inc.pi_per_capita / (cbsa.rpp_all_items / 100) as cbsa_real_pc_income,
+	cbsa.rpp_goods as cbsa_rpp_goods,
+	-- state.rpp_real_pc_income as state_real_pc_income,
+	state.rpp_all_items as state_rpp_all_items,
+	inc.pi_per_capita / (state.rpp_all_items / 100) as state_real_pc_income,
+	state.rpp_goods as state_rpp_goods,
+	coalesce(cbsa_real_pc_income, state_real_pc_income) as real_pc_income,
+	coalesce(cbsa.rpp_all_items, state.rpp_all_items) as rpp_all_items_coalesce
+from income inc 
+left join cbsa_rpp cbsa 
+	on inc.geo_id = cbsa.geo_id 
+	and inc.period = cbsa.period
+left join state_rpp state 
+	on inc.state_fips = state.state_fips 
+	and inc.period = state.period
+)
+
+select geo_level,
+	geo_id,
+	period,
+	geo_name,
+	cbsa_type,
+	state_fips,
+	primary_state,
+	census_region,
+	census_division,
+	population,
+	pi_per_capita as nominal_pc_income,
+	real_pc_income,
+	(real_pc_income - pi_per_capita) / pi_per_capita as pc_real_change,
+	rpp_all_items_coalesce as rpp_all_items,
+	rank() over(partition by cbsa_type, period order by rpp_all_items_coalesce) as lowest_rpp_rank,
+	rank() over(partition by cbsa_type, period order by pi_per_capita desc) as nominal_pc_income_rank,
+	rank() over(partition by cbsa_type, period order by real_pc_income desc) as real_pc_income_rank,
+	(rank() over(partition by cbsa_type, period order by pi_per_capita desc)) - 
+	(rank() over(partition by cbsa_type, period order by real_pc_income desc)) as pc_real_rank_change
+from kpi_base
+order by pi_per_capita desc
+"
+                          )
+```
+
+```{r Small Export}
+cbsa_test <- cbsa_income %>%
+  filter(period == "2023") %>%
+  slice_head(n = 10)
+
+```
+
+
+# QA & Sanity Check
+```{r Rows per year and type}
+qa_rows <- cbsa_income %>%
+  group_by(cbsa_type, period) %>%
+  summarize(counts = n()) %>%
+  ungroup()
+```
+
+```{r Null RPPs}
+qa_nulls <- cbsa_income %>%
+  group_by(cbsa_type, period) %>%
+  summarize(nulls = sum(is.na(rpp_all_items))) %>%
+  ungroup()
+```
+Based on this, we can see that we don't have RPP data before 2008
+
+```{r Per Capita Income Ranges}
+qa_nulls <- cbsa_income %>%
+  filter(period == "2023") %>%
+  group_by(cbsa_type, period) %>%
+  summarize(min_rpp_all_items = min(rpp_all_items),
+            max_rpp_all_items = max(rpp_all_items),
+            min_real_pc_income = min(real_pc_income),
+            max_real_pc_income = max(real_pc_income),
+            min_nominal_pc_income = min(nominal_pc_income),
+            max_nominal_pc_income = max(nominal_pc_income)
+            ) %>%
+  ungroup()
+```
+
+# Visual Library
+
+```{r 2023 Data}
+cbsa_income2023 <- cbsa_income %>%
+  filter(period == "2023",
+         cbsa_type == "Metropolitan Statistical Area")
+```
+
+```{r Bar Chart Function}
+plot_top_cbsa_bar <- function(
+  df,
+  metric_var,                 # e.g. "real_pci" or "pc_income_nominal"
+  geo_name,
+  top_n        = 15,
+  title        = "",
+  subtitle     = "",
+  legend_title = NULL,
+  y_label      = NULL,
+  fill_limits_df = NULL       # optional: dataset to set global fill range
+) {
+  metric_sym <- rlang::sym(metric_var)
+
+  # dataset to compute fill limits (defaults to df)
+  if (is.null(fill_limits_df)) {
+    fill_limits_df <- df
+  }
+
+  limits_vec <- range(dplyr::pull(fill_limits_df, !!metric_sym), na.rm = TRUE)
+
+  df_top <- df %>%
+    arrange(desc(!!metric_sym)) %>%
+    slice_head(n = top_n) %>%
+    mutate(
+      metro_lbl = fct_reorder(geo_name, !!metric_sym)
+    )
+
+  if (is.null(legend_title)) legend_title <- metric_var
+  if (is.null(y_label))      y_label      <- legend_title
+
+  ggplot(df_top, aes(x = metro_lbl, y = !!metric_sym, fill = !!metric_sym)) +
+    geom_col(width = 0.7, color = "grey25") +
+    geom_text(
+      aes(label = dollar(!!metric_sym, accuracy = 100)),
+      hjust = -0.05,
+      size = 3
+    ) +
+    scale_y_continuous(
+      labels = label_dollar(accuracy = 1000),
+      expand = expansion(mult = c(0, 0.15))
+    ) +
+    scale_fill_viridis_c(
+      option = "viridis",
+      name   = legend_title,
+      labels = label_dollar(accuracy = 1000),
+      limits = limits_vec
+    ) +
+    coord_flip() +
+    labs(
+      title    = title,
+      subtitle = subtitle,
+      x = NULL,
+      y = y_label
+    ) +
+    theme_minimal(base_size = 11) +
+    theme(
+      legend.position    = "right",
+      panel.grid.major.y = element_blank(),
+      axis.text.y        = element_text(size = 9),
+      plot.title         = element_text(face = "bold")
+    )
+}
+```
+
+
+## Top Metros Bar Charts
+Here we create a bar chart of the top 15 markets by Real Personal Income
+```{r Prep Data}
+metric_var <- "real_pc_income"
+
+top15_tbl <- cbsa_income %>%
+  filter(period == "2023",
+         cbsa_type == "Metropolitan Statistical Area") %>%
+  arrange(desc(.data[[metric_var]])) %>%
+  slice_head(n = 15) %>%
+  mutate(
+    metro_lbl = forcats::fct_reorder(geo_name, .data[[metric_var]])
+  )
+```
+
+```{r Real PCI}
+
+p_real_pci <- top15_tbl %>%
+  mutate(metro_lbl = forcats::fct_reorder(geo_name, .data[[metric_var]])) %>%
+  ggplot(aes(x = metro_lbl, y = .data[[metric_var]], fill = .data[[metric_var]])) +
+  geom_col(width = 0.7, color = "grey25") +
+  geom_text(
+    aes(label = dollar(.data[[metric_var]], accuracy = 100)),
+    hjust = -0.05,
+    size = 3
+  ) +
+  scale_y_continuous(
+    labels = label_dollar(accuracy = 1000),
+    expand = expansion(mult = c(0, 0.15))
+  ) +
+  scale_fill_viridis_c(
+    option = "viridis",
+    name   = "Real PCI",
+    labels = label_dollar(accuracy = 1000),
+    limits = range(cbsa_income2023[[metric_var]], na.rm = TRUE)
+    # or: limits = range(top15_tbl[[metric_var]], na.rm = TRUE)
+  ) +
+  coord_flip() +
+  labs(
+    title    = "Top 15 Metros by Real Purchasing Power (2023)",
+    subtitle = "Per-capita personal income adjusted for regional price levels (RPP)",
+    x = NULL,
+    y = "Real per-capita income (RPP-adjusted, 2023 $)"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    legend.position      = "right",
+    panel.grid.major.y   = element_blank(),
+    axis.text.y          = element_text(size = 9),
+    plot.title           = element_text(face = "bold")
+  ) + 
+  theme(
+    plot.background   = element_rect(fill = "white", color = NA),
+    panel.background  = element_rect(fill = "white", color = NA),
+    legend.background = element_rect(fill = "white", color = NA),
+    legend.key        = element_rect(fill = "white", color = NA)
+  )
+
+p_real_pci
+```
+```{r Export Real PCI Bar Chart}
+ggsave(paste0(output, "/real_pci.png"), p_real_pci,
+       width = 12, height = 8, dpi = 300,
+       bg = "white",
+  device = ragg::agg_png)
+```
+
+```{r Nominal PCI}
+p_nominal_pci <- plot_top_cbsa_bar(
+  df = cbsa_income2023,
+  metric_var = "nominal_pc_income", 
+  geo_name = "geo_name",
+  top_n        = 15,
+  title        = "Top 15 Metros by Nominal Purchasing Power (2023)",
+  subtitle     = "Per-capita personal income, current dollars",
+  legend_title = "Nominal PCI",
+  y_label      = "Nominal per-capita income (2023 $)",
+  fill_limits_df = cbsa_income2023       # optional: dataset to set global fill range
+)
+
+p_nominal_pci
+```
+
+```{r Largest Change}
+p_rank_gap_pci <- plot_top_cbsa_bar(
+  df = cbsa_income2023,
+  metric_var = "pc_real_rank_change", 
+  geo_name = "geo_name",
+  top_n        = 15,
+  title        = "Top 15 Metros by Difference in Rank of Nominal and Real PC",
+  subtitle     = "Rankings based on Personal Income",
+  legend_title = "Nominal PCI",
+  y_label      = "Nominal per-capita income (2023 $)",
+  fill_limits_df = cbsa_income2023       # optional: dataset to set global fill range
+)
+
+p_rank_gap_pci
+```
+
+
+## Scatter of all CBSAs
+```{r Scatter}
+# starting dataset: metros only, single year
+df_scatter <- cbsa_income %>%
+  filter(period == "2023",
+         cbsa_type == "Metropolitan Statistical Area")
+
+metric_x   <- "nominal_pc_income"   # nominal PCI
+metric_y   <- "real_pc_income"            # real PCI
+size_var   <- "population"
+label_var  <- "geo_name"
+rank_var   <- "real_pc_income_rank"           # label top N by real PCI
+top_n_lab  <- 20
+
+# medians (optional, if you want them for contextual labels or quadrants)
+x_med <- median(df_scatter[[metric_x]], na.rm = TRUE)
+y_med <- median(df_scatter[[metric_y]], na.rm = TRUE)
+
+# which metros to label – here: top N by real PCI
+top_lab <- df_scatter %>%
+  arrange(!!sym(rank_var)) %>%
+  slice_head(n = top_n_lab)
+
+# size scaling as before
+size_scaled <- function(x) {
+  s <- scales::rescale(x, to = c(2.2, 10))
+  pmin(s, 10)
+}
+
+p_ppp_scatter <- df_scatter %>%
+  mutate(
+    point_size = size_scaled(.data[[size_var]])
+  ) %>%
+  ggplot(aes(x = .data[[metric_x]], y = .data[[metric_y]])) +
+
+  # 45-degree "no adjustment" line
+  geom_abline(slope = 1, intercept = 0,
+              linetype = "dashed", color = "grey60", linewidth = 0.4) +
+
+  # Base points
+  geom_point(aes(size = point_size),
+             color = "grey35", fill = "#2C7FB8",
+             alpha = 0.7, shape = 21, stroke = 0.2) +
+
+  # Bold outline for labeled metros
+  geom_point(
+    data = top_lab,
+    aes(x = .data[[metric_x]], y = .data[[metric_y]]),
+    shape = 21, size = 3.6, stroke = 1.0, color = "black", fill = NA
+  ) +
+
+  # Labels for top metros
+  ggrepel::geom_label_repel(
+    data = top_lab,
+    aes(label = .data[[label_var]]),
+    size = 3, label.size = 0.2, seed = 123,
+    min.segment.length = 0, max.overlaps = Inf,
+    fill = alpha("white", 0.85), color = "black"
+  ) +
+
+  # Axes as dollars
+  scale_x_continuous(
+    labels = label_dollar(accuracy = 1000),
+    name   = "Nominal per-capita income (2023 $)"
+  ) +
+  scale_y_continuous(
+    labels = label_dollar(accuracy = 1000),
+    name   = "Real per-capita income (RPP-adjusted, 2023 $)"
+  ) +
+  scale_size_identity(guide = "none") +
+
+  theme_minimal(base_size = 11) +
+  theme(
+    panel.grid.minor = element_blank(),
+    plot.title       = element_text(face = "bold"),
+    legend.position  = "none"
+  ) +
+  labs(
+    title    = "Nominal vs Real Purchasing Power by Metro (2023)",
+    subtitle = "Each point is a metro area; the dashed line shows where nominal equals RPP-adjusted income",
+    caption  = "Notes: Points sized by population. Real income uses BEA Regional Price Parities (RPP)."
+  )
+
+p_ppp_scatter
+```
+
+```{r}
+color_var <- "census_region"
+size_var <- "population"
+
+p_ppp_scatter_hybrid <- ggplot(
+  df_scatter,
+  aes(x = .data[[metric_x]], y = .data[[metric_y]])
+) +
+  # 45-degree reference line
+  geom_abline(
+    slope = 1, intercept = 0,
+    linetype = "dashed", color = "grey60", linewidth = 0.4
+  ) +
+  
+  # Base points with mapped size + color (like p_edu)
+  geom_point(
+    aes(
+      size  = .data[[size_var]],
+      color = .data[[color_var]]
+    ),
+    alpha = 0.7
+  ) +
+  
+  # OPTIONAL: overall trend line (if we want it)
+  # geom_smooth(method = "lm", se = FALSE, color = "grey40", linetype = "dotted") +
+  
+  # Bold outline for labeled metros (from original code)
+  geom_point(
+    data = top_lab,
+    aes(x = .data[[metric_x]], y = .data[[metric_y]]),
+    shape = 21, size = 3.8, stroke = 1.0, color = "black", fill = NA
+  ) +
+  
+  # Labels for top metros (from original code)
+  ggrepel::geom_label_repel(
+    data  = top_lab,
+    aes(label = .data[[label_var]]),
+    size = 3, label.size = 0.25, seed = 123,
+    min.segment.length = 0, max.overlaps = Inf,
+    fill = alpha("white", 0.85), color = "black"
+  ) +
+  
+  # Scales: dollars + controlled size range
+  scale_x_continuous(
+    labels = scales::label_dollar(accuracy = 1000),
+    name   = "Nominal per-capita income (2023 $)"
+  ) +
+  scale_y_continuous(
+    labels = scales::label_dollar(accuracy = 1000),
+    name   = "Real per-capita income (RPP-adjusted, 2023 $)"
+  ) +
+  scale_size_continuous(
+    range  = c(2, 10),
+    breaks = c(250000, 1000000, 5000000),
+    labels = scales::label_comma(),
+    name   = "Metro population"
+  ) +
+  scale_color_brewer(palette = "Set2", name = "Region") +
+  
+  theme_minimal(base_size = 11) +
+  theme(
+    panel.grid.minor = element_blank(),
+    plot.title       = element_text(face = "bold")
+  ) +
+  labs(
+    title    = "Nominal vs Real Purchasing Power by Metro (2023)",
+    subtitle = "Color shows region; point size shows metro population. Dashed line: nominal equals real.",
+    caption  = "Notes: Real income uses BEA Regional Price Parities (RPP)."
+  )
+
+p_ppp_scatter_hybrid
+```
+
+## Maps
+```{r Ingest SF Data}
+cbsa_shapes <- core_based_statistical_areas(cb = TRUE, year = 2023) %>%
+  st_transform(crs = 5070)
+
+# Load state and county outlines
+states_sf <- states(cb = TRUE, year = 2023) %>% st_transform(4326)
+counties_sf <- counties(cb = TRUE, year = 2023) %>% st_transform(4326)
+
+# Optional: Filter to lower 48
+states_sf <- states_sf %>% filter(!STATEFP %in% c("02", "15", "72", "78", "66", "69", "60"))
+counties_sf <- counties_sf %>% filter(!STATEFP %in% c("02", "15", "72", "78", "66", "69", "60"))
+```
+
+```{r Join CBSA to Shapes}
+# Filter to 2023, all CBSA types
+cbsa_income_all_2023 <- cbsa_income %>%
+  filter(period == "2023")
+
+# Shapes is the base with CBSA Joined on
+cbsa_income_shape <- cbsa_shapes %>%
+  left_join(cbsa_income_all_2023, by = c("GEOID" = "geo_id"))
+```
+
+```{r Real PC Map}
+# Vars
+metric_var    <- "real_pc_income"     # RPP-adjusted per-capita income
+rank_var      <- "real_pc_income_rank"   # rank by real PCI
+top_n_labels  <- 15
+alpha_fill    <- 0.9
+plot_crs      <- st_crs(states_sf)
+
+cbsa_data <- cbsa_income_shape %>%
+  filter(cbsa_type == "Metropolitan Statistical Area") %>%
+  st_transform(plot_crs)
+
+# Labeled DFs
+labs_df <- cbsa_data %>%
+  filter(!is.na(.data[[rank_var]])) %>%
+  slice_min(order_by = .data[[rank_var]], n = top_n_labels, with_ties = FALSE) %>%
+  mutate(
+    label_pt = st_point_on_surface(geometry),
+    coords   = st_coordinates(label_pt),
+    x = coords[,1], y = coords[,2]
+  )
+
+topN_outline <- labs_df
+
+# Box
+bb   <- st_bbox(states_sf)
+xlim <- c(bb["xmin"], bb["xmax"])
+ylim <- c(bb["ymin"], bb["ymax"])
+
+p_ppp_map <- ggplot() +
+
+  # CBSAs filled by real per-capita income
+  geom_sf(
+    data = cbsa_data,
+    aes(fill = .data[[metric_var]]),
+    color = "white", linewidth = 0.22, alpha = alpha_fill
+  ) +
+  # State borders (double stroke)
+  geom_sf(data = states_sf, fill = NA, color = "white", linewidth = 0.7) +
+  geom_sf(data = states_sf, fill = NA, color = "grey30", linewidth = 0.35) +
+  # Subtle CBSA edge
+  geom_sf(data = cbsa_shapes, fill = NA, color = "grey25", linewidth = 0.16) +
+  # Bold outline for top-N metros
+  geom_sf(data = topN_outline, fill = NA, color = "black", linewidth = 0.45) +
+
+  # Labels for top-N metros
+  ggrepel::geom_label_repel(
+    data = labs_df, aes(x = x, y = y, label = geo_name),
+    size = 3, seed = 123,
+    fill = alpha("white", 0.75), label.size = 0.2,
+    min.segment.length = 0, max.overlaps = Inf
+  ) +
+
+  # Continuous viridis for real PCI
+  scale_fill_viridis_c(
+    option = "viridis",
+    name   = "Real per-capita income",
+    labels = scales::label_dollar(accuracy = 1000)
+  ) +
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE, clip = "on") +
+  labs(
+    title    = "Real Per-Capita Income by Metro (Contiguous U.S., 2023)",
+    subtitle = "Fill: RPP-adjusted per-capita personal income. Bold outline & labels: Top 15 metros by real purchasing power."
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    axis.text  = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank(),
+    legend.title = element_text(face = "bold")
+  )
+
+p_ppp_map
+```
+
+```{r Export Real PCI}
+ggsave(paste0(output, "/real_pci_map.png"), p_ppp_map,
+       width = 12, height = 8, dpi = 300,
+       bg = "white",
+  device = ragg::agg_png)
+```
+
+```{r Real PC Map - Quintiles}
+# Vars
+metric_var    <- "real_pc_income"          # RPP-adjusted per-capita income
+rank_var      <- "real_pc_income_rank"     # rank by real PCI (1 = highest)
+top_n_labels  <- 15
+alpha_fill    <- 0.9
+plot_crs      <- st_crs(states_sf)
+
+# Transform CBSAs to map CRS
+cbsa_data <- cbsa_income_shape %>%
+  filter(cbsa_type == "Metropolitan Statistical Area") %>%
+  st_transform(plot_crs)
+
+# (Optional) ensure states_sf is in same CRS
+states_sf <- st_transform(states_sf, plot_crs)
+
+# ---- Quintiles on real_pc_income ----
+cbsa_q <- cbsa_data %>%
+  mutate(
+    income_q10 = ntile(.data[[metric_var]], 10),
+    income_q10_lbl = factor(
+      income_q10,
+      levels = 1:10,
+      labels = c("Bottom 10%", "10–20%", "20–30%", "30–40%", "40–50%", 
+                 "50–60%", "60–70%", "70–80%", "80–90%", "Top 10%")
+    )
+  )
+
+# ---- Labeled DFs (Top-N by rank) ----
+labs_df <- cbsa_q %>%
+  filter(!is.na(.data[[rank_var]])) %>%
+  slice_min(order_by = .data[[rank_var]], n = top_n_labels, with_ties = FALSE) %>%
+  mutate(
+    label_pt = suppressWarnings(st_point_on_surface(geometry)),
+    coords   = suppressWarnings(st_coordinates(label_pt)),
+    x = coords[, 1],
+    y = coords[, 2]
+  )
+
+topN_outline <- labs_df
+
+# ---- Map extent (contiguous U.S., assuming states_sf pre-filtered) ----
+bb   <- st_bbox(states_sf)
+xlim <- c(bb["xmin"], bb["xmax"])
+ylim <- c(bb["ymin"], bb["ymax"])
+
+# ---- Plot ----
+p_ppp_quin_map <- ggplot() +
+
+  # CBSAs filled by real per-capita income quintile
+  geom_sf(
+    data = cbsa_q,
+    aes(fill = income_q10_lbl),
+    color = "white", linewidth = 0.22, alpha = alpha_fill
+  ) +
+  # State borders (double stroke)
+  geom_sf(data = states_sf, fill = NA, color = "white", linewidth = 0.7) +
+  geom_sf(data = states_sf, fill = NA, color = "grey30", linewidth = 0.35) +
+  # Subtle CBSA edge
+  geom_sf(data = cbsa_q, fill = NA, color = "grey25", linewidth = 0.16) +
+  # Bold outline for top-N metros
+  geom_sf(data = topN_outline, fill = NA, color = "black", linewidth = 0.45) +
+
+  # Labels for top-N metros
+  # ggrepel::geom_label_repel(
+  #   data = labs_df,
+  #   aes(x = x, y = y, label = geo_name),
+  #   size = 3, seed = 123,
+  #   fill = alpha("white", 0.75), label.size = 0.2,
+  #   min.segment.length = 0, max.overlaps = Inf
+  # ) +
+
+  # Discrete viridis for deciles of real PCI
+  scale_fill_viridis_d(
+    option = "viridis",
+    name   = "Real per-capita income\n(deciles)"
+  ) +
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE, clip = "on") +
+  labs(
+    title    = "Real Per-Capita Income by Metro (Contiguous U.S., 2023)",
+    subtitle = "Fill: Deciles of RPP-adjusted per-capita personal income. Bold outline & labels: Top 15 metros by real purchasing power."
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    axis.text  = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank(),
+    legend.title = element_text(face = "bold")
+  )
+
+p_ppp_quin_map
+```
+
+```{r Export Real PCI Quintiles}
+ggsave(paste0(output, "/real_pci_deciles_map.png"), p_ppp_quin_map,
+       width = 12, height = 8, dpi = 300,
+       bg = "white",
+  device = ragg::agg_png)
+```
+
+```{r Rank Change Map}
+# Vars
+metric_var    <- "pc_real_rank_change"     # RPP-adjusted per-capita income
+rank_var      <- "pc_real_rank_change"   # rank by real PCI
+top_n_labels  <- 15
+alpha_fill    <- 0.9
+plot_crs      <- st_crs(states_sf)
+
+cbsa_data <- cbsa_income_shape %>%
+  filter(cbsa_type == "Metropolitan Statistical Area") %>%
+  st_transform(plot_crs)
+
+# Labeled DFs
+labs_df <- cbsa_data %>%
+  filter(!is.na(.data[[rank_var]])) %>%
+  slice_min(order_by = .data[[rank_var]], n = top_n_labels, with_ties = FALSE) %>%
+  mutate(
+    label_pt = suppressWarnings(st_point_on_surface(geometry)),
+    coords   = suppressWarnings(st_coordinates(label_pt)),
+    x = coords[,1], y = coords[,2]
+  )
+
+topN_outline <- labs_df
+
+# Box
+bb   <- st_bbox(states_sf)
+xlim <- c(bb["xmin"], bb["xmax"])
+ylim <- c(bb["ymin"], bb["ymax"])
+
+p_rank_map <- ggplot() +
+
+  # CBSAs filled by real per-capita income
+  geom_sf(
+    data = cbsa_data,
+    aes(fill = .data[[metric_var]]),
+    color = "white", linewidth = 0.22, alpha = alpha_fill
+  ) +
+  # State borders (double stroke)
+  geom_sf(data = states_sf, fill = NA, color = "white", linewidth = 0.7) +
+  geom_sf(data = states_sf, fill = NA, color = "grey30", linewidth = 0.35) +
+  # Subtle CBSA edge
+  geom_sf(data = cbsa_shapes, fill = NA, color = "grey25", linewidth = 0.16) +
+  # Bold outline for top-N metros
+  geom_sf(data = topN_outline, fill = NA, color = "black", linewidth = 0.45) +
+
+  # Labels for top-N metros
+  ggrepel::geom_label_repel(
+    data = labs_df, aes(x = x, y = y, label = geo_name),
+    size = 3, seed = 123,
+    fill = alpha("white", 0.75), label.size = 0.2,
+    min.segment.length = 0, max.overlaps = Inf
+  ) +
+
+  # Continuous viridis for real PCI
+  scale_fill_viridis_c(
+    option = "viridis",
+    name   = "Rank Change",
+    labels = scales::label_number(accuracy = 1)
+  ) +
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE, clip = "on") +
+  labs(
+    title    = "Rank Changes (Contiguous U.S., 2023)",
+    subtitle = "Fill: Rank Change."
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    axis.text  = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank(),
+    legend.title = element_text(face = "bold")
+  )
+
+p_rank_map
+```
+
+```{r}
+# Vars
+metric_var    <- "pc_real_change"     # RPP-adjusted per-capita income
+rank_var      <- "pc_real_change"   # rank by real PCI
+top_n_labels  <- 15
+alpha_fill    <- 0.9
+plot_crs      <- st_crs(states_sf)
+
+cbsa_data <- cbsa_income_shape %>%
+  filter(cbsa_type == "Metropolitan Statistical Area") %>%
+  st_transform(plot_crs)
+
+# Labeled DFs
+labs_df <- cbsa_data %>%
+  filter(!is.na(.data[[rank_var]])) %>%
+  slice_max(order_by = .data[[rank_var]], n = top_n_labels, with_ties = FALSE) %>%
+  mutate(
+    label_pt = suppressWarnings(st_point_on_surface(geometry)),
+    coords   = suppressWarnings(st_coordinates(label_pt)),
+    x = coords[,1], y = coords[,2]
+  )
+
+topN_outline <- labs_df
+
+# Box
+bb   <- st_bbox(states_sf)
+xlim <- c(bb["xmin"], bb["xmax"])
+ylim <- c(bb["ymin"], bb["ymax"])
+
+p_change_map <- ggplot() +
+
+  # CBSAs filled by real per-capita income
+  geom_sf(
+    data = cbsa_data,
+    aes(fill = .data[[metric_var]]),
+    color = "white", linewidth = 0.22, alpha = alpha_fill
+  ) +
+  # State borders (double stroke)
+  geom_sf(data = states_sf, fill = NA, color = "white", linewidth = 0.7) +
+  geom_sf(data = states_sf, fill = NA, color = "grey30", linewidth = 0.35) +
+  # Subtle CBSA edge
+  geom_sf(data = cbsa_shapes, fill = NA, color = "grey25", linewidth = 0.16) +
+  # Bold outline for top-N metros
+  geom_sf(data = topN_outline, fill = NA, color = "black", linewidth = 0.45) +
+
+  # Labels for top-N metros
+  ggrepel::geom_label_repel(
+    data = labs_df, aes(x = x, y = y, label = geo_name),
+    size = 3, seed = 123,
+    fill = alpha("white", 0.75), label.size = 0.2,
+    min.segment.length = 0, max.overlaps = Inf
+  ) +
+
+  # Continuous viridis for real PCI
+  scale_fill_viridis_c(
+    option = "viridis",
+    name   = "Rank Change",
+    labels = scales::label_percent(accuracy = 1)
+  ) +
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE, clip = "on") +
+  labs(
+    title    = "% Change in Personal Income by CBSA (Contiguous U.S., 2023)",
+    subtitle = "Fill: % Change. Bold & Outline: Top 15 Markets by % Change"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    axis.text  = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank(),
+    legend.title = element_text(face = "bold")
+  )
+
+p_change_map
+```
+
+
+Yes, let's wrap it into a reusable function for future use. I want you to create the function, create in line comments for each piece to make is easily usable, and add that summary of what needs to updated and how it impacts the code.
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+

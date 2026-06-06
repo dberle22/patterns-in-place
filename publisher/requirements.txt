@@ -1,0 +1,11 @@
+fastapi
+duckdb
+python-dotenv
+openai
+pandas
+pydantic
+PyYAML
+networkx
+streamlit
+plotly
+altair<5

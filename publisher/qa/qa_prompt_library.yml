@@ -1,0 +1,234 @@
+version: 1
+
+# QA Prompt Library
+# categories:
+#   golden            — exact or near-exact cases we expect to always pass; regression anchors
+#   provider_paraphrase — reworded cases that must go through the LLM; tests generalization
+#   clarification     — underspecified prompts; system should ask a good clarifying question
+
+cases:
+
+  # --- BENCHMARK (3 cases) ---
+
+  - qa_case_id: qa_b_001
+    question: "Compare Florida's population to the US in 2024"
+    category: golden
+    question_type_expected: benchmark
+    metric_expected: pop_total
+    geo_level_expected: state
+    template_expected: benchmark
+    benchmark_type_expected: us
+    notes: "Basic state vs US benchmark. Weakest question type — prioritize this."
+
+  - qa_case_id: qa_b_002
+    question: "How does Texas household income stack up against the national average?"
+    category: provider_paraphrase
+    question_type_expected: benchmark
+    metric_expected: median_hh_income
+    geo_level_expected: state
+    template_expected: benchmark
+    benchmark_type_expected: us
+    notes: "Paraphrase with different metric. 'National average' should resolve to benchmark_type=us."
+
+  - qa_case_id: qa_b_003
+    question: "Is California's median home value above the US average in 2024?"
+    category: provider_paraphrase
+    question_type_expected: benchmark
+    metric_expected: median_home_value
+    geo_level_expected: state
+    template_expected: benchmark
+    benchmark_type_expected: us
+    notes: "Yes/no framing. Tests whether question type detection handles interrogative phrasing."
+
+  # --- CLARIFICATION (2 cases) ---
+
+  - qa_case_id: qa_c_001
+    question: "What are the fastest growing places?"
+    category: clarification
+    question_type_expected: ranking
+    metric_expected: null
+    geo_level_expected: null
+    template_expected: null
+    notes: "Missing geo level and window. Should request clarification on both. question_type=ranking because growth template is a ranking variant."
+
+  - qa_case_id: qa_c_002
+    question: "Show me how income compares"
+    category: clarification
+    question_type_expected: benchmark
+    metric_expected: null
+    geo_level_expected: null
+    template_expected: null
+    notes: "Completely underspecified benchmark. Should ask for geo level and benchmark target."
+
+  # --- RANKING (2 cases) ---
+
+  - qa_case_id: qa_r_001
+    question: "Which states had the highest total population in 2024?"
+    category: golden
+    question_type_expected: ranking
+    metric_expected: pop_total
+    geo_level_expected: state
+    template_expected: ranking
+    notes: "Core golden ranking case. Should hit example match and skip LLM entirely."
+
+  - qa_case_id: qa_r_002
+    question: "What are the top 10 metros by median household income in 2024?"
+    category: provider_paraphrase
+    question_type_expected: ranking
+    metric_expected: median_hh_income
+    geo_level_expected: cbsa
+    template_expected: ranking
+    notes: "Ranking paraphrase with cbsa geo level. Tests metro/cbsa resolution."
+
+  # --- TREND (2 cases) ---
+
+  - qa_case_id: qa_t_001
+    question: "Show housing unit growth over time in California, Texas, and Florida."
+    category: golden
+    question_type_expected: trend
+    metric_expected: hu_total
+    geo_level_expected: state
+    template_expected: trend
+    notes: "Multi-state trend. Should hit example match."
+
+  - qa_case_id: qa_t_002
+    question: "How has median household income changed over time for states between 2015 and 2024?"
+    category: provider_paraphrase
+    question_type_expected: trend
+    metric_expected: median_hh_income
+    geo_level_expected: state
+    template_expected: trend
+    notes: "Trend paraphrase with explicit year range. Tests start_year/end_year slot filling."
+
+  # --- DISTRIBUTION (3 cases) ---
+
+  - qa_case_id: qa_d_001
+    question: "Show the distribution of state home values in 2024."
+    category: golden
+    question_type_expected: distribution
+    metric_expected: median_home_value
+    geo_level_expected: state
+    template_expected: distribution
+    notes: "Core golden distribution case. Should hit example match."
+
+  - qa_case_id: qa_d_002
+    question: "What does the spread of median household income look like across states in 2024?"
+    category: provider_paraphrase
+    question_type_expected: distribution
+    metric_expected: median_hh_income
+    geo_level_expected: state
+    template_expected: distribution
+    notes: "Distribution paraphrase using 'spread' framing and different metric."
+
+  - qa_case_id: qa_d_003
+    question: "Show how vacancy rates are distributed across metros in 2023."
+    category: provider_paraphrase
+    question_type_expected: distribution
+    metric_expected: vacancy_rate
+    geo_level_expected: cbsa
+    template_expected: distribution
+    notes: "Distribution paraphrase with cbsa geo level and housing metric."
+
+  # --- GROWTH (5 cases) ---
+
+  - qa_case_id: qa_g_001
+    question: "Which states had the fastest population growth over 5 years ending in 2024?"
+    category: golden
+    question_type_expected: ranking
+    metric_expected: pop_total
+    geo_level_expected: state
+    template_expected: growth
+    benchmark_type_expected: null
+    notes: "Core golden growth case. Should hit example match (q16). question_type=ranking, template=growth."
+
+  - qa_case_id: qa_g_002
+    question: "What are the fastest-growing states by population over the last five years?"
+    category: provider_paraphrase
+    question_type_expected: ranking
+    metric_expected: pop_total
+    geo_level_expected: state
+    template_expected: growth
+    benchmark_type_expected: null
+    notes: "Growth paraphrase — different word order. Tests LLM resolving pop_total and 5-year window."
+
+  - qa_case_id: qa_g_003
+    question: "Which metros had the biggest gains in median household income over the past 5 years?"
+    category: provider_paraphrase
+    question_type_expected: ranking
+    metric_expected: median_hh_income
+    geo_level_expected: cbsa
+    template_expected: growth
+    benchmark_type_expected: null
+    notes: "Growth paraphrase with cbsa geo and income metric. Tests 'gains' framing and metro resolution."
+
+  - qa_case_id: qa_g_004
+    question: "Rank states by housing unit growth since 2019."
+    category: provider_paraphrase
+    question_type_expected: ranking
+    metric_expected: hu_total
+    geo_level_expected: state
+    template_expected: growth
+    benchmark_type_expected: null
+    notes: "Growth paraphrase using 'since YYYY' framing. Tests year-anchor-to-window resolution."
+
+  - qa_case_id: qa_g_005
+    question: "Which places are growing the fastest?"
+    category: clarification
+    question_type_expected: ranking
+    metric_expected: null
+    geo_level_expected: null
+    template_expected: null
+    benchmark_type_expected: null
+    notes: "Underspecified growth question — missing geo level, metric, and window. Should ask clarifying question."
+
+  # --- COMPARISON (3 cases) ---
+
+  - qa_case_id: qa_comp_001
+    question: "Compare California, Texas, and Florida on median household income in 2024."
+    category: golden
+    question_type_expected: comparison
+    metric_expected: median_hh_income
+    geo_level_expected: state
+    template_expected: compare_selected
+    benchmark_type_expected: null
+    notes: "Core golden comparison case. Should hit example match (q07). Explicit multi-geo list."
+
+  - qa_case_id: qa_comp_002
+    question: "How do New York, Illinois, and Washington compare on median home values in 2024?"
+    category: provider_paraphrase
+    question_type_expected: comparison
+    metric_expected: median_home_value
+    geo_level_expected: state
+    template_expected: compare_selected
+    benchmark_type_expected: null
+    notes: "Comparison paraphrase with different states and housing metric."
+
+  - qa_case_id: qa_comp_004
+    question: "Compare California, Texas, and Florida on median household income in 2024."
+    category: golden
+    question_type_expected: comparison
+    metric_expected: median_hh_income
+    geo_level_expected: state
+    template_expected: compare_selected
+    benchmark_type_expected: null
+    notes: "Exact-match state comparison added to the example library. Good regression anchor for 2024 income comparisons."
+
+  - qa_case_id: qa_comp_005
+    question: "How do New York, Illinois, and Washington compare on median home values in 2024?"
+    category: golden
+    question_type_expected: comparison
+    metric_expected: median_home_value
+    geo_level_expected: state
+    template_expected: compare_selected
+    benchmark_type_expected: null
+    notes: "Exact-match state comparison added to the example library. Good regression anchor for 2024 home value comparisons."
+
+  - qa_case_id: qa_comp_003
+    question: "Show me a side-by-side comparison of population trends for Austin, Nashville, and Raleigh."
+    category: provider_paraphrase
+    question_type_expected: comparison
+    metric_expected: pop_total
+    geo_level_expected: cbsa
+    template_expected: compare_selected
+    benchmark_type_expected: null
+    notes: "Multi-metro comparison using city names. Tests city-to-cbsa resolution and 'side-by-side' phrasing."

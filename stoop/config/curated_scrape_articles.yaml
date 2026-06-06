@@ -1,0 +1,441 @@
+articles:
+  - publisher: Eater
+    article_slug: best-bakeries-nyc
+    article_title: Best Bakeries
+    article_url: https://ny.eater.com/maps/best-bakeries-nyc
+    source_list_name: Eater NYC - Best Bakeries
+    category: bakeries
+    subcategory: bakeries
+    detail_level_3: ""
+    capture_mode: parser
+    parser_name: eater
+    status: loaded
+
+  - publisher: Eater
+    article_slug: best-babka-rugelach-jewish-bakeries-nyc
+    article_title: Best Jewish Bakeries
+    article_url: https://ny.eater.com/maps/best-babka-rugelach-jewish-bakeries-nyc
+    source_list_name: Eater NYC - Best Jewish Bakeries
+    category: bakeries
+    subcategory: bakeries
+    detail_level_3: ""
+    capture_mode: parser
+    parser_name: eater
+    status: loaded
+
+  - publisher: Eater
+    article_slug: best-jewish-appetizing-shop-deli-nyc
+    article_title: Jewish Delis
+    article_url: https://ny.eater.com/maps/best-jewish-appetizing-shop-deli-nyc
+    source_list_name: Eater NYC - Jewish Delis
+    category: restaurants
+    subcategory: jewish
+    detail_level_3: ""
+    capture_mode: parser
+    parser_name: eater
+    status: loaded
+
+  - publisher: Eater
+    article_slug: best-live-music-restaurants-bars-nyc
+    article_title: Top Bars with Live Music
+    article_url: https://ny.eater.com/maps/best-live-music-restaurants-bars-nyc
+    source_list_name: Eater NYC - Top Bars with Live Music
+    category: bars
+    subcategory: bars
+    detail_level_3: live_music
+    capture_mode: parser
+    parser_name: eater
+    status: loaded
+
+  - publisher: Eater
+    article_slug: best-cocktail-bars-nyc-essential-bars-manhattan-brooklyn
+    article_title: The Best Cocktail Bars of New York City, According to Eater Editors
+    article_url: https://ny.eater.com/maps/best-cocktail-bars-nyc-essential-bars-manhattan-brooklyn
+    source_list_name: Eater NYC - Best Cocktail Bars
+    category: bars
+    subcategory: cocktail
+    detail_level_3: ""
+    capture_mode: parser
+    parser_name: eater
+    status: loaded
+
+  - publisher: Eater
+    article_slug: nyc-best-new-cocktail-bars-heatmap
+    article_title: The Best New Cocktail Bars in New York City, According to Eater Editors
+    article_url: https://ny.eater.com/maps/nyc-best-new-cocktail-bars-heatmap
+    source_list_name: Eater NYC - New Cocktail Bars
+    category: bars
+    subcategory: cocktail
+    detail_level_3: new_opening
+    capture_mode: parser
+    parser_name: eater
+    status: loaded
+
+  - publisher: Eater
+    article_slug: best-wine-lists-restaurants-bars-nyc
+    article_title: The Best NYC Places to Drink Wine
+    article_url: https://ny.eater.com/maps/best-wine-lists-restaurants-bars-nyc
+    source_list_name: Eater NYC - Best Places to Drink Wine
+    category: bars
+    subcategory: wine_bar
+    detail_level_3: ""
+    capture_mode: parser
+    parser_name: eater
+    status: loaded
+
+  - publisher: Eater
+    article_slug: best-natural-wine-bars-nyc
+    article_title: 15 Knockout Natural Wine Bars in NYC
+    article_url: https://ny.eater.com/maps/best-natural-wine-bars-nyc
+    source_list_name: Eater NYC - Natural Wine Bars
+    category: bars
+    subcategory: wine_bar
+    detail_level_3: natural_wine
+    capture_mode: parser
+    parser_name: eater
+    status: loaded
+
+  - publisher: Eater
+    article_slug: best-hidden-bars-speakeasies-nyc
+    article_title: Where to Find NYC’s Top Speakeasy Style Bars
+    article_url: https://ny.eater.com/maps/best-hidden-bars-speakeasies-nyc
+    source_list_name: Eater NYC - Speakeasy Bars
+    category: bars
+    subcategory: speakeasy
+    detail_level_3: ""
+    capture_mode: parser
+    parser_name: eater
+    status: loaded
+
+  - publisher: Eater
+    article_slug: best-outdoor-bars-drinking-nyc
+    article_title: 18 Ideal Outdoor Drinking Spots in NYC
+    article_url: https://ny.eater.com/maps/best-outdoor-bars-drinking-nyc
+    source_list_name: Eater NYC - Outdoor Drinking Spots
+    category: bars
+    subcategory: bars
+    detail_level_3: outdoor
+    capture_mode: parser
+    parser_name: eater
+    status: loaded
+
+  - publisher: Eater
+    article_slug: best-new-york-restaurants-38-map
+    article_title: 38 Best Restaurants
+    article_url: https://ny.eater.com/maps/best-new-york-restaurants-38-map
+    source_list_name: Eater NYC - 38 Best Restaurants
+    category: restaurants
+    subcategory: mixed_restaurants
+    detail_level_3: ""
+    capture_mode: parser
+    parser_name: eater
+    status: loaded
+
+  - publisher: Time Out
+    article_slug: best-live-music-venues-in-new-york-city
+    article_title: Top Music Venues
+    article_url: https://www.timeout.com/newyork/music/best-live-music-venues-in-new-york-city
+    source_list_name: Time Out NYC - Top Music Venues
+    category: music_venues
+    subcategory: music_venues
+    detail_level_3: ""
+    capture_mode: parser
+    parser_name: timeout
+    status: loaded
+
+  - publisher: Time Out
+    article_slug: the-best-thrift-stores-in-new-york
+    article_title: Best Thrift Stores
+    article_url: https://www.timeout.com/newyork/shopping/the-best-thrift-stores-in-new-york
+    source_list_name: Time Out NYC - Best Thrift Stores
+    category: shopping
+    subcategory: thrift
+    detail_level_3: ""
+    capture_mode: parser
+    parser_name: timeout
+    status: loaded
+
+  - publisher: Time Out
+    article_slug: the-best-vintage-clothes-shops-in-new-york
+    article_title: Best Vintage
+    article_url: https://www.timeout.com/newyork/shopping/the-best-vintage-clothes-shops-in-new-york
+    source_list_name: Time Out NYC - Best Vintage
+    category: shopping
+    subcategory: vintage
+    detail_level_3: ""
+    capture_mode: parser
+    parser_name: timeout
+    status: loaded
+
+  - publisher: Time Out
+    article_slug: 100-best-new-york-restaurants
+    article_title: Best Restaurants
+    article_url: https://www.timeout.com/newyork/restaurants/100-best-new-york-restaurants
+    source_list_name: Time Out NYC - Best Restaurants
+    category: restaurants
+    subcategory: mixed_restaurants
+    detail_level_3: ""
+    capture_mode: parser
+    parser_name: timeout
+    status: loaded
+
+  - publisher: Vogue
+    article_slug: best-vintage-stores-in-new-york-city
+    article_title: Best Vintage
+    article_url: https://www.vogue.com/article/best-vintage-stores-in-new-york-city
+    source_list_name: Vogue - Best Vintage
+    category: shopping
+    subcategory: vintage
+    detail_level_3: ""
+    capture_mode: semi_manual
+    parser_name: ""
+    status: loaded
+    semi_manual_hints:
+      preferred_input: html
+      extractor_family: vogue
+      infer_item_urls: true
+      min_candidate_rows: 10
+
+  - publisher: Vogue
+    article_slug: the-best-shopping-in-nyc-according-to-vogue-staffers
+    article_title: Best Shopping
+    article_url: https://www.vogue.com/article/the-best-shopping-in-nyc-according-to-vogue-staffers
+    source_list_name: Vogue - Best Shopping
+    category: shopping
+    subcategory: shopping
+    detail_level_3: ""
+    capture_mode: semi_manual
+    parser_name: ""
+    status: loaded
+    semi_manual_hints:
+      preferred_input: html
+      extractor_family: vogue
+      infer_item_urls: true
+      min_candidate_rows: 25
+
+  - publisher: Wanderlog
+    article_slug: best-food-halls-market-halls-and-food-courts-in-new-york-city
+    article_title: 50 Best Food Halls
+    article_url: https://wanderlog.com/list/geoCategory/872217/best-food-halls-market-halls-and-food-courts-in-new-york-city
+    source_list_name: Wanderlog - 50 Best Food Halls
+    category: food_markets
+    subcategory: food_markets
+    detail_level_3: ""
+    capture_mode: semi_manual
+    parser_name: ""
+    status: loaded
+    semi_manual_hints:
+      preferred_input: html
+      extractor_family: wanderlog
+      infer_item_urls: true
+      min_candidate_rows: 10
+
+  - publisher: Michelin Guide
+    article_slug: new-york-restaurants
+    article_title: NYC List
+    article_url: https://guide.michelin.com/us/en/new-york-state/new-york/restaurants
+    source_list_name: Michelin Guide - NYC Restaurants
+    category: restaurants
+    subcategory: mixed_restaurants
+    detail_level_3: ""
+    capture_mode: semi_manual
+    parser_name: ""
+    status: loaded
+    semi_manual_hints:
+      preferred_input: html
+      extractor_family: michelin
+      infer_item_urls: true
+      min_candidate_rows: 50
+
+  - publisher: Bon Appetit
+    article_slug: nyc100
+    article_title: 100 Restaurants
+    article_url: https://www.bonappetit.com/story/nyc100
+    source_list_name: Bon Appetit - 100 Restaurants
+    category: restaurants
+    subcategory: mixed_restaurants
+    detail_level_3: ""
+    capture_mode: semi_manual
+    parser_name: ""
+    status: loaded
+    semi_manual_hints:
+      preferred_input: html
+      extractor_family: bon_appetit
+      infer_item_urls: true
+      min_candidate_rows: 80
+
+  - publisher: NY Mag
+    article_slug: search-listings
+    article_title: 1000 Best
+    article_url: https://nymag.com/listings/search
+    source_list_name: NY Mag - 1000 Best
+    category: restaurants
+    subcategory: mixed_restaurants
+    detail_level_3: ""
+    capture_mode: semi_manual
+    parser_name: ""
+    status: loaded
+    semi_manual_hints:
+      preferred_input: html
+      extractor_family: ny_mag
+      listing_type: restaurant
+      min_candidate_rows: 500
+
+  - publisher: Permanent Style
+    article_slug: new-york-a-sartorial-city-guide
+    article_title: Menswear Guide
+    article_url: https://www.permanentstyle.com/2024/05/new-york-a-sartorial-city-guide.html
+    source_list_name: Permanent Style - Menswear Guide
+    category: shopping
+    subcategory: menswear
+    detail_level_3: ""
+    capture_mode: manual_seed
+    parser_name: ""
+    status: planned
+
+  - publisher: Substack Mismatch
+    article_slug: ultimate-guide-to-the-best-menswear
+    article_title: Menswear Guide
+    article_url: https://mismatch.substack.com/p/ultimate-guide-to-the-best-menswear
+    source_list_name: Substack Mismatch - Menswear Guide
+    category: shopping
+    subcategory: menswear
+    detail_level_3: ""
+    capture_mode: manual_seed
+    parser_name: ""
+    status: planned
+
+  - publisher: Backseat Driver
+    article_slug: a-guide-to-menswear-shopping-in-nyc-for-2024
+    article_title: Menswear Guide
+    article_url: https://backseatdriver.blog/2023/12/31/a-guide-to-menswear-shopping-in-nyc-for-2024/
+    source_list_name: Backseat Driver - Menswear Guide
+    category: shopping
+    subcategory: menswear
+    detail_level_3: ""
+    capture_mode: manual_seed
+    parser_name: ""
+    status: planned
+
+  - publisher: Time Out
+    article_slug: 50-best-new-york-bars
+    article_title: The Best Bars in NYC Right Now
+    article_url: https://www.timeout.com/newyork/bars/50-best-new-york-bars
+    source_list_name: Time Out NYC - Best Bars
+    category: bars
+    subcategory: bars
+    detail_level_3: ""
+    capture_mode: parser
+    parser_name: timeout
+    status: planned
+
+  - publisher: Vogue
+    article_slug: best-rooftop-bars-in-nyc
+    article_title: The Best Rooftop Bars in New York City
+    article_url: https://www.vogue.com/article/best-rooftop-bars-in-nyc
+    source_list_name: Vogue - Best Rooftop Bars
+    category: bars
+    subcategory: bars
+    detail_level_3: rooftop
+    capture_mode: semi_manual
+    parser_name: ""
+    status: planned
+    semi_manual_hints:
+      preferred_input: html
+      extractor_family: vogue
+      infer_item_urls: true
+      min_candidate_rows: 10
+
+  - publisher: Vogue
+    article_slug: best-non-alcoholic-bars-new-york-city
+    article_title: The Best Bars for Non Alcoholic Drinks in New York City
+    article_url: https://www.vogue.com/article/best-non-alcoholic-bars-new-york-city
+    source_list_name: Vogue - Non Alcoholic Bars
+    category: bars
+    subcategory: bars
+    detail_level_3: non_alcoholic
+    capture_mode: semi_manual
+    parser_name: ""
+    status: planned
+    semi_manual_hints:
+      preferred_input: html
+      extractor_family: vogue
+      infer_item_urls: true
+      min_candidate_rows: 10
+
+  - publisher: The Infatuation
+    article_slug: the-nyc-bar-hit-list
+    article_title: "The NYC Bar Hit List: Great New Bars In NYC"
+    article_url: https://www.theinfatuation.com/new-york/guides/the-nyc-bar-hit-list
+    source_list_name: The Infatuation - NYC Bar Hit List
+    category: bars
+    subcategory: bars
+    detail_level_3: ""
+    capture_mode: manual_seed
+    parser_name: ""
+    status: planned
+
+  - publisher: Time Out
+    article_slug: 35-best-hotels-nyc-2026
+    article_title: The 35 best hotels in New York City for 2026
+    article_url: https://www.timeout.com/newyork/hotels/best-hotels-in-nyc
+    source_list_name: Time out NYC - Best Hotels
+    category: hotels
+    subcategory: hotels
+    detail_level_3: ""
+    capture_mode: parser
+    parser_name: timeout
+    status: loaded
+
+  - publisher: Vogue
+    article_slug: best-hotels-nyc-vogue
+    article_title: The Best Hotels in New York City, From Five-Star to Boutique
+    article_url: https://www.vogue.com/article/the-best-hotels-in-new-york-city-from-five-star-to-boutique
+    source_list_name: Vogue - Best Hotels
+    category: hotels
+    subcategory: hotels
+    detail_level_3: ""
+    capture_mode: semi_manual
+    parser_name: ""
+    status: loaded
+    semi_manual_hints:
+      preferred_input: html
+      extractor_family: vogue
+      infer_item_urls: true
+      min_candidate_rows: 10
+
+  - publisher: Time Out
+    article_slug: coolest-hotels-nyc-2026
+    article_title: The 15 coolest hotels in New York City for 2026
+    article_url: https://www.timeout.com/newyork/hotels/coolest-new-york-city-hotels-to-stay-in-before-you-die
+    source_list_name: Time Out - Coolest Hotels
+    category: hotels
+    subcategory: hotels
+    detail_level_3: ""
+    capture_mode: parser
+    parser_name: timeout
+    status: loaded
+
+  - publisher: Time Out
+    article_slug: cheap-hotels-nyc-2026
+    article_title: The 10 best cheap hotels in New York City for 2026
+    article_url: https://www.timeout.com/newyork/hotels/best-cheap-hotels-in-nyc
+    source_list_name: Time Out - Best Cheap Hotels
+    category: hotels
+    subcategory: budget_hotels
+    detail_level_3: ""
+    capture_mode: parser
+    parser_name: timeout
+    status: loaded
+
+  - publisher: Time Out
+    article_slug: hotels-with-views-nyc-2026
+    article_title: The 15 best hotels in New York City with a view
+    article_url: https://www.timeout.com/newyork/hotels/best-hotels-with-breathtaking-views-in-nyc
+    source_list_name: Time Out - Best Hotels with Views
+    category: hotels
+    subcategory: budget_hotels
+    detail_level_3: ""
+    capture_mode: parser
+    parser_name: timeout
+    status: loaded

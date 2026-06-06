@@ -1,0 +1,4 @@
+weights:
+  neighborhood: 0.40
+  mobility: 0.25
+  personal_fit: 0.35

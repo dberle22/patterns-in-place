@@ -1,0 +1,45 @@
+{
+  "output_mode": "presentation",
+  "title": "Housing Vacancy Is Tightest in a Handful of Coastal States",
+  "subtitle": "Contiguous 48 states plus DC, 2024 | Darker states have lower vacancy",
+  "time_window": "2024_snapshot",
+  "variant": "continuous",
+  "composition_preset": "national_compact",
+  "fill_label": "Vacancy rate (%)",
+  "legend_title": "2024 vacancy rate",
+  "continuous_palette": ["#0F4C5C", "#6BA3A5", "#EEF3F1"],
+  "fill_limits": [7, 17.5],
+  "fill_breaks": [7.5, 10, 12.5, 15, 17.5],
+  "squish_fill_limits": true,
+  "show_us_outline": false,
+  "show_state_outlines": false,
+  "border_color": "white",
+  "border_linewidth": 0.2,
+  "annotation_layout": "map",
+  "annotation_blocks": [
+    {
+      "x": -71.8,
+      "y": 40.8,
+      "label": "Tightest\nCT 7.0%\nWA 7.3%\nNJ 7.5%\nCA 7.5%\nOR 7.5%",
+      "boxed": true,
+      "hjust": 0,
+      "vjust": 1,
+      "size": 3.1
+    },
+    {
+      "x": -71.8,
+      "y": 33.9,
+      "label": "Loosest\nME 20.6%\nVT 19.4%\nWV 15.4%\nFL 14.7%\nMS 14.6%",
+      "boxed": true,
+      "hjust": 0,
+      "vjust": 1,
+      "size": 3.1
+    }
+  ],
+  "legend_position": "right",
+  "caption_side_note": "Contiguous 48 states plus DC only. Darker states have lower vacancy. Values above 17.5% are capped.",
+  "caption_methodology_note": null,
+  "width": 11,
+  "height": 7,
+  "dpi": 300
+}

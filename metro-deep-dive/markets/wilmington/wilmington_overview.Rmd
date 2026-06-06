@@ -1,0 +1,495 @@
+---
+title: "Overview - Metro Deep Dive"
+output: html_notebook
+---
+
+# Set up the Notebook
+```{r Set up environment}
+library(tidyverse)
+library(janitor)
+library(readr)
+library(lubridate)
+library(glue)
+library(scales)
+library(sf)
+library(tigris)
+library(stringr)
+library(fmsb)
+library(patchwork)
+library(viridis)
+
+# Reproducibility
+set.seed(42)
+
+# ---- 1. Parameters & Paths ----
+# Target CBSA
+metro_name <- "Wilmington, NC"      # Flexible lookup by title
+cbsa_geoid <- "48900"
+
+# Analysis window (use a window that overlaps your sources)
+analysis_years <- 2013:2023
+
+# Benchmark definition: Census Divisions we consider "Southeast"
+se_divisions <- c("South Atlantic","East South Central","West South Central")
+
+# Benchmark method: "metro_mean" (simple mean) or "pop_weighted"
+benchmark_method <- "metro_mean"
+
+
+# Set the artifacts directory
+artifacts_dir      <- "artifacts"
+
+# Create a directory if needed
+#if(!dir.exists(artifacts_dir)) dir.create(artifacts_dir, recursive = TRUE)
+```
+
+# Create Helper Functions
+```{r Helpers}
+# Generic helper to add simple % change and CAGR for multiple horizons
+# df must contain: id_cols (e.g., GEOID, NAME), a YEAR column (numeric/int), and a value_col
+add_growth_cols <- function(df, id_cols, year_col = "YEAR", value_col, horizons = c(1,3,5,10), prefix = "") {
+  stopifnot(all(c(id_cols, year_col, value_col) %in% names(df)))
+  df %>%
+    arrange(across(all_of(c(id_cols, year_col)))) %>%
+    group_by(across(all_of(id_cols))) %>%
+    mutate(
+      across(
+        all_of(value_col),
+        .fns = list(
+          !!!setNames(
+            lapply(horizons, function(h) \(x) (x / dplyr::lag(x, h) - 1)),
+            paste0(prefix, "chg_", horizons, "y")
+          ),
+          !!!setNames(
+            lapply(horizons, function(h) \(x) (x / dplyr::lag(x, h))^(1 / h) - 1),
+            paste0(prefix, "cagr_", horizons, "y")
+          )
+        ),
+        .names = "{fn}"
+      )
+    ) %>%
+    ungroup()
+}
+
+# Easily convert to PCT
+pct <- function(x, acc = 0.1) scales::percent(x, accuracy = acc)
+
+# Safe col pick by regex (first match), returns sym or NULL
+pick_col <- function(df, patterns){
+  cols <- names(df)
+  hit <- map_chr(patterns, function(p) {
+    m <- cols[str_detect(cols, regex(p, ignore_case = TRUE))]
+    if(length(m)) m[1] else NA_character_
+  }) %>% discard(is.na)
+  if(length(hit)) sym(hit[1]) else NULL
+}
+
+
+# Keep only intersecting years across sources for fair comparisons
+intersect_years <- function(...){
+  ys <- list(...)
+  reduce(ys, intersect)
+}
+
+# Simple state abbrev extractor from CBSA title "Wilmington, NC (MSA)"
+extract_state_abbrev <- function(title){
+  m <- str_match(title, ",\\s*([A-Z]{2})")[,2]
+  m
+}
+```
+
+# Load & Normalize Data
+Expect these columns (adjust if your taxonomy differs)
+acs: cbsa_geoid, cbsa_title, year, population
+gdp: cbsa_geoid, cbsa_title, year, gdp_real_m (preferred), gdp_curr_m (optional)
+income: cbsa_geoid, cbsa_title, year, personal_income_m
+cbsa_md: cbsa_geoid, cbsa_title, primary_state, [division, region optional]
+st_xwalk: state, division, region
+
+```{r Load Data}
+
+# ACS population — expected columns include: cbsa_code OR geoid, cbsa_title/name, year, population
+acs_raw <- read_csv(path_acs_pop, show_col_types = FALSE) %>% 
+  clean_names() %>%
+  mutate(geoid = as.character(geoid))
+
+# GDP summary — expected columns include: cbsa_code/geofips, cbsa_title, year, chained OR current dollars
+gdp_raw <- read_csv(path_bea_gdp_sum, show_col_types = FALSE) %>% 
+  clean_names() %>%
+  mutate(geoid = as.character(geo_fips))
+
+# Personal income — expected columns include: cbsa_code/geofips, cbsa_title, year, personal_income
+inc_raw <- read_csv(path_bea_income, show_col_types = FALSE) %>% 
+  clean_names() %>%
+  mutate(geoid = as.character(geo_fips))
+
+# CBSA County Crosswalk
+cbsa_county_crosswalk <- read_csv(path_cbsa_county_crosswalk, show_col_types = FALSE) %>% 
+  clean_names() %>%
+  mutate(geoid = as.character(cbsa_code))
+
+# CBSA Metadata
+cbsa_md  <- read_csv(path_cbsa_metadata, show_col_types = FALSE) %>% clean_names() %>%
+  mutate(geoid = as.character(geoid))
+
+# State Crosswalk
+state_crosswalk <- read_csv(path_state_crosswalk, show_col_types = FALSE) %>% clean_names()
+
+# RPP
+rpp_raw <- read_csv(path_rpp, show_col_types = FALSE) %>% clean_names() %>%
+  mutate(geoid = as.character(geo_fips))
+
+# Enrich CBSA metadata with region/division from crosswalk (if not already present)
+cbsa_md <- cbsa_md %>%
+  left_join(state_crosswalk, by = c("primary_state" = "state_abbrev")) %>%
+  clean_names()
+```
+
+Create Base Metrics tables based on our raw files.
+- Time series tables for ACS, Income, and GDP where we calculate growth
+  - For Income take total and per capita, bring in RPP to convert to Rea;
+  - For GDP take total and per capita
+- Snapshot of the final year
+- Final Metrics table that has Growth and is joined to Metadata table
+```{r Create Base Metrics Tables}
+# For now we are using Pop from ACS and will use that to calculate GDP Per Cap
+# Since we have Income Per Cap in Income and RPP we will use those, a future improvement should consider using the Pop from ACS so we have consistent Populations for the Per Capitas so we can compare GDP to Income.
+
+# Restrict to analysis window
+acs_f    <- acs_raw    %>% filter(year %in% analysis_years)
+income_f <- inc_raw %>% filter(year %in% analysis_years)
+gdp_f    <- gdp_raw    %>% filter(year %in% analysis_years) %>%
+  left_join(income_f %>% select(geoid, year, population), by = c("geoid", "year")) %>%
+  mutate(gdp_per_capita = (gdp_chained2017 * 1000) / population)
+rpp_f <- rpp_raw %>% filter(year %in% analysis_years)
+
+# Build long series by metric, then rejoin levels at the final year
+yr_max <- max(intersect(intersect(acs_f$year, gdp_f$year), income_f$year))
+
+pop_series <- acs_f %>%
+  select(geoid, year, population = pop_total_e) %>%
+  add_growth_cols(id_cols = c("geoid"), year_col = "year",
+                  value_col = "population", horizons = c(5,10), prefix = "pop_")
+
+gdp_series <- gdp_f %>%
+  select(geoid, year, gdp_real_m = gdp_chained2017, gdp_per_capita) %>%
+  add_growth_cols(id_cols = c("geoid"), year_col = "year",
+                  value_col = "gdp_real_m", horizons = c(5,10), prefix = "gdp_") %>%
+  add_growth_cols(id_cols = c("geoid"), year_col = "year",
+                  value_col = "gdp_per_capita", horizons = c(5,10), prefix = "gdp_per_cap_")
+
+inc_series <- income_f %>%
+  select(geoid, year, personal_income) %>%
+  add_growth_cols(id_cols = c("geoid"), year_col = "year",
+                  value_col = "personal_income", horizons = c(5,10), prefix = "total_inc_")
+
+inc_per_cap_series <- rpp_f %>%
+  select(geoid, year, real_per_capita_income) %>%
+  add_growth_cols(id_cols = c("geoid"), year_col = "year",
+                  value_col = "real_per_capita_income", horizons = c(5,10), prefix = "inc_per_cap_")
+
+# Snapshot at final year for each CBSA; attach levels (population, gdp, income) at yr_max
+cbsa_levels <- pop_series %>%
+  filter(year == yr_max) %>%
+  select(geoid, year, population, starts_with("pop_chg_"), starts_with("pop_cagr_")) %>%
+  left_join(gdp_series %>% filter(year == yr_max) %>% select(geoid, gdp_real_m, starts_with("gdp_chg_"), starts_with("gdp_cagr_"), gdp_per_capita, starts_with("gdp_per_cap_chg_"), starts_with("gdp_per_cap_cagr_")), by="geoid") %>%
+  left_join(inc_series %>% filter(year == yr_max) %>% select(geoid, personal_income, starts_with("total_inc_chg_"), starts_with("total_inc_cagr_")), by="geoid") %>%
+  left_join(inc_per_cap_series %>% filter(year == yr_max) %>% select(geoid, real_per_capita_income, starts_with("inc_per_cap_chg_"), starts_with("inc_per_cap_cagr_")), by="geoid")
+
+
+# Base metrics table (one row per CBSA), with region/division
+cbsa_metrics <- cbsa_levels %>%
+  left_join(cbsa_md %>% select(geoid, year, cbsa_name, cbsa_type, primary_state, division, region), by = c("geoid", "year" = "year")) %>%
+  clean_names()
+
+```
+
+Split into our Target and Benchmarks
+- Target CBSA
+- State CBSAs
+- Regional CBSAs
+- National CBSAs (No PR)
+```{r Target vs Benchmarks}
+# ---- 5) Split into Target vs. Benchmarks ----
+wilm_row <- cbsa_metrics %>% filter(geoid == cbsa_geoid)
+if (nrow(wilm_row) == 0) stop("cbsa_geoid not found in cbsa_metrics. Set the correct GEOID.")
+
+# Define benchmark groups:
+# 1) NC Metros (same state)
+bench_nc <- cbsa_metrics %>% 
+  filter(primary_state == wilm_row$primary_state[1],
+         cbsa_type == "Metro Area")
+
+# 2) Southeast Metros (by Census Divisions)
+bench_se <- cbsa_metrics %>% 
+  filter(division %in% se_divisions,
+         cbsa_type == "Metro Area")
+
+# 3) US Metros (all)
+bench_us <- cbsa_metrics %>%
+  filter(cbsa_type == "Metro Area",
+         region != "-")
+```
+
+
+# Create Benchmarks
+Create our benchmark data frames
+```{r Benchmark Function}
+bench_summary <- function(df, method = c("metro_mean","pop_weighted")) {
+  method <- match.arg(method)
+  if (method == "metro_mean") {
+    df %>%
+      summarise(
+        pop_chg_5y  = mean(pop_chg_5y,  na.rm=TRUE),
+        gdp_chg_5y  = mean(gdp_chg_5y,  na.rm=TRUE),
+        gdp_per_cap_chg_5y = mean(gdp_pc_chg_5y,  na.rm=TRUE),
+        total_inc_chg_5y  = mean(inc_chg_5y,  na.rm=TRUE),
+        inc_per_cap_chg_5y = mean(inc_pc_chg_5y,  na.rm=TRUE),
+        pop_cagr_5y = mean(pop_cagr_5y, na.rm=TRUE),
+        gdp_cagr_5y = mean(gdp_cagr_5y, na.rm=TRUE),
+        gdp_per_cap_cagr_5y = mean(gdp_pc_cagr_5y,  na.rm=TRUE),
+        total_inc_cagr_5y = mean(inc_cagr_5y, na.rm=TRUE),
+        inc_per_cap_cagr_5y = mean(inc_pc_cagr_5y,  na.rm=TRUE)
+      )
+  } else {
+    w <- df$population
+    w[is.na(w)] <- 0
+    if (sum(w) == 0) w <- rep(1, nrow(df))
+    df %>%
+      summarise(
+        pop_chg_5y  = weighted.mean(pop_chg_5y,  w, na.rm=TRUE),
+        gdp_chg_5y  = weighted.mean(gdp_chg_5y,  w, na.rm=TRUE),
+        gdp_per_cap_chg_5y  = weighted.mean(gdp_per_cap_chg_5y,  w, na.rm=TRUE),
+        total_inc_chg_5y  = weighted.mean(total_inc_chg_5y, w, na.rm=TRUE),
+        inc_per_cap_chg_5y  = weighted.mean(inc_per_cap_chg_5y,  w, na.rm=TRUE),
+        pop_cagr_5y = weighted.mean(pop_cagr_5y, w, na.rm=TRUE),
+        gdp_cagr_5y = weighted.mean(gdp_cagr_5y, w, na.rm=TRUE),
+        gdp_per_cap_cagr_5y  = weighted.mean(gdp_per_cap_cagr_5y,  w, na.rm=TRUE),
+        total_inc_cagr_5y = weighted.mean(total_inc_cagr_5y, w, na.rm=TRUE),
+        inc_per_cap_cagr_5y  = weighted.mean(inc_per_cap_cagr_5y,  w, na.rm=TRUE)
+      )
+  }
+}
+```
+
+```{r Benchmark DFs}
+bm_nc <- bench_summary(bench_nc, benchmark_method)
+bm_se <- bench_summary(bench_se, benchmark_method)
+bm_us <- bench_summary(bench_us, benchmark_method)
+```
+
+
+# Build Visual library
+- Summary Table
+- Trend Series
+- Radar Chart
+- Choropleth Map
+- Ranking Table
+
+```{r Summary Table}
+w <- wilm_row %>% select(pop_chg_5y, gdp_chg_5y, gdp_per_cap_chg_5y, total_inc_chg_5y, inc_per_cap_chg_5y, pop_cagr_5y, gdp_cagr_5y, gdp_per_cap_cagr_5y, total_inc_cagr_5y, inc_per_cap_cagr_5y)
+overview_tbl <- tibble(
+  Metric = c("Population Growth (5y)","Real GDP Growth (5y)", "GDP Per Capita Growth (5y)", "Personal Income Growth (5y)", "Income Per Capita Growth (5y)",
+             "Population CAGR (5y)","Real GDP CAGR (5y)", "GDP Per Capita CAGR (5y)","Personal Income CAGR (5y)", "Income Per Capita CAGR (5y)"),
+  Wilmington = c(w$pop_chg_5y, w$gdp_chg_5y, w$gdp_per_cap_chg_5y, w$total_inc_chg_5y, w$inc_per_cap_chg_5y, w$pop_cagr_5y, w$gdp_cagr_5y, w$gdp_per_cap_cagr_5y, w$total_inc_cagr_5y, w$inc_per_cap_cagr_5y),
+  `NC Metros Avg` = c(bm_nc$pop_chg_5y, bm_nc$gdp_chg_5y, bm_nc$gdp_per_cap_chg_5y, bm_nc$total_inc_chg_5y, bm_nc$inc_per_cap_chg_5y, bm_nc$pop_cagr_5y, bm_nc$gdp_cagr_5y, bm_nc$gdp_per_cap_cagr_5y, bm_nc$total_inc_cagr_5y, bm_nc$inc_per_cap_cagr_5y),
+  `SE Metros Avg` = c(bm_se$pop_chg_5y, bm_se$gdp_chg_5y, bm_se$gdp_per_cap_chg_5y, bm_se$total_inc_chg_5y, bm_se$inc_per_cap_chg_5y, bm_se$pop_cagr_5y, bm_se$gdp_cagr_5y, bm_se$gdp_per_cap_cagr_5y, bm_se$total_inc_cagr_5y, bm_se$inc_per_cap_cagr_5y),
+  `US Metros Avg` = c(bm_us$pop_chg_5y, bm_us$gdp_chg_5y, bm_us$gdp_per_cap_chg_5y, bm_us$total_inc_chg_5y, bm_us$inc_per_cap_chg_5y, bm_us$pop_cagr_5y, bm_us$gdp_cagr_5y, bm_us$gdp_per_cap_cagr_5y, bm_us$total_inc_cagr_5y, bm_us$inc_per_cap_cagr_5y)
+) %>%
+  mutate(across(-Metric, ~ pct(.)))
+overview_tbl
+```
+
+# Population & GDP trends (levels) for the target CBSA
+```{r Trend Lines}
+# Build Wilmington time series directly from source tables to avoid join artifacts
+wilm_series <- acs_raw %>%
+  dplyr::filter(geoid == cbsa_geoid, year %in% analysis_years) %>%
+  dplyr::select(year, population = pop_total_e) %>%
+  dplyr::left_join(
+    gdp_raw %>% dplyr::filter(geoid == cbsa_geoid, year %in% analysis_years) %>%
+      dplyr::select(year, gdp_thousands = gdp_chained2017),
+    by = "year"
+  ) %>%
+  dplyr::arrange(year) %>%
+  dplyr::mutate(gdp_millions = gdp_thousands/1000)
+
+p_pop <- wilm_series %>%
+  ggplot(aes(year, population)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  scale_x_continuous(
+    breaks = seq(min(analysis_years), max(analysis_years), by = 1),
+    limits = c(min(analysis_years), max(analysis_years)),
+    expand = c(0, 0)
+  ) +
+  scale_y_continuous(
+    labels = scales::label_number(scale_cut = scales::cut_short_scale()),
+    limits = c(0, NA),
+    expand = expansion(mult = c(0, 0.05))
+  ) +
+  labs(
+    title = glue::glue("{metro_name}: Population Trend ({min(analysis_years)}–{max(analysis_years)})"),
+    x = NULL, y = "Population"
+  ) +
+  theme_minimal(base_size = 12)
+
+p_gdp <- wilm_series %>%
+  ggplot(aes(year, gdp_millions)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  scale_x_continuous(
+    breaks = seq(min(analysis_years), max(analysis_years), by = 1),
+    limits = c(min(analysis_years), max(analysis_years)),
+    expand = c(0, 0)
+  ) +
+  scale_y_continuous(
+    labels = scales::label_number(accuracy = 1, big.mark = ","),
+    limits = c(0, NA),
+    expand = expansion(mult = c(0, 0.05))
+  ) +
+  labs(
+    title = glue::glue("{metro_name}: Real GDP (Chained 2017$) Trend ({min(analysis_years)}–{max(analysis_years)})"),
+    x = NULL, y = "GDP (Millions)"
+  ) +
+  theme_minimal(base_size = 12)
+
+p_trends_side_by_side <- p_pop | p_gdp
+p_trends_side_by_side; p_pop; p_gdp
+```
+
+# Growth comparisons vs. benchmarks (grouped bars)
+```{r Growth Bars}
+# Assemble a tidy table for 5y growth comparisons across four entities (Wilmington + 3 benchmarks)
+metrics_map <- tibble::tibble(
+  key = c("pop_chg_5y","gdp_chg_5y","gdp_per_cap_chg_5y","inc_per_cap_chg_5y"),
+  label = factor(c("Population","Real GDP","GDP per Capita","Income per Capita"),
+                 levels = c("Population","Real GDP","GDP per Capita","Income per Capita"))
+)
+
+vals <- tibble::tibble(
+  entity = c("Wilmington","NC Metros Avg","SE Metros Avg","US Metros Avg"),
+  pop_chg_5y = c(wilm_row$pop_chg_5y, bm_nc$pop_chg_5y, bm_se$pop_chg_5y, bm_us$pop_chg_5y),
+  gdp_chg_5y = c(wilm_row$gdp_chg_5y, bm_nc$gdp_chg_5y, bm_se$gdp_chg_5y, bm_us$gdp_chg_5y),
+  gdp_per_cap_chg_5y = c(wilm_row$gdp_per_cap_chg_5y, bm_nc$gdp_per_cap_chg_5y, bm_se$gdp_per_cap_chg_5y, bm_us$gdp_per_cap_chg_5y),
+  inc_per_cap_chg_5y = c(wilm_row$inc_per_cap_chg_5y, bm_nc$inc_per_cap_chg_5y, bm_se$inc_per_cap_chg_5y, bm_us$inc_per_cap_chg_5y)
+) %>%
+  tidyr::pivot_longer(-entity, names_to = "key", values_to = "value") %>%
+  dplyr::left_join(metrics_map, by = "key")
+
+p_growth_bars <- vals %>%
+  ggplot(aes(x = label, y = value, fill = entity)) +
+  geom_col(position = position_dodge(width = 0.8), width = 0.7) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 0.1)) +
+  scale_fill_viridis_d(option = "viridis", end = 0.9) +
+  labs(title = "Five-Year Growth Comparison", x = NULL, y = "% Change", fill = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+
+p_growth_bars
+```
+
+# Quality-of-growth radar (per-capita metrics preferred for benchmarking)
+```{r Radar Chart}
+radar_input <- tibble::tibble(
+  kpi = c("Population CAGR (5y)","GDP per Capita CAGR (5y)","Income per Capita CAGR (5y)"),
+  Wilmington = c(wilm_row$pop_cagr_5y, wilm_row$gdp_per_cap_cagr_5y, wilm_row$inc_per_cap_cagr_5y),
+  `NC Metros` = c(bm_nc$pop_cagr_5y, bm_nc$gdp_per_cap_cagr_5y, bm_nc$inc_per_cap_cagr_5y),
+  `SE Metros` = c(bm_se$pop_cagr_5y, bm_se$gdp_per_cap_cagr_5y, bm_se$inc_per_cap_cagr_5y),
+  `US Metros` = c(bm_us$pop_cagr_5y, bm_us$gdp_per_cap_cagr_5y, bm_us$inc_per_cap_cagr_5y)
+)
+
+radar_max <- radar_input %>% dplyr::summarise(across(where(is.numeric), ~max(., na.rm = TRUE))) %>% dplyr::mutate(kpi = "max")
+radar_min <- radar_input %>% dplyr::summarise(across(where(is.numeric), ~0)) %>% dplyr::mutate(kpi = "min")
+radar_ready <- dplyr::bind_rows(radar_max, radar_min, radar_input) %>% dplyr::relocate(kpi)
+
+op <- par(mar=c(2,2,2,2))
+fmsb::radarchart(
+  radar_ready %>% dplyr::select(-kpi) %>% as.data.frame(),
+  axistype = 1, pty = 32, plwd = 2, cglwd = 0.8, vlcex = 0.8, axislabcol = "grey30"
+)
+legend("topright", legend = names(radar_ready)[-1], lty = 1, lwd = 2, bty = "n", cex = 0.8)
+par(op)
+```
+
+# Quintile choropleth (SE/South Central) with Top-N labels
+```{r Quintile Map}
+states_sf <- tigris::states(class = "sf")
+se_sc_states <- c("FL","GA","SC","NC","TN","AL","MS","AR","LA","TX","OK","VA","WV","KY")
+
+cbsa_geo <- core_based_statistical_areas(year = 2023, class = "sf") %>%
+  janitor::clean_names() %>%
+  dplyr::transmute(geoid = cbsafp, NAME = name, geometry)
+
+cbsa_geo <- cbsa_geo %>% dplyr::left_join(cbsa_md %>% dplyr::select(geoid, year, cbsa_name, primary_state) %>% dplyr::filter(year == max(analysis_years)), by = c("geoid"))
+
+cbsa_metrics <- cbsa_metrics %>%
+  dplyr::group_by(division) %>%
+  dplyr::mutate(reg_rank_in_cbsa_type = rank(-pop_cagr_5y, ties.method = "first")) %>%
+  dplyr::ungroup()
+
+plot_crs <- 5070
+states_se <- states_sf %>% dplyr::filter(STUSPS %in% se_sc_states) %>% sf::st_transform(plot_crs)
+
+cbsa_sf <- cbsa_geo %>%
+  dplyr::left_join(cbsa_metrics, by = c("geoid", "year", "primary_state")) %>%
+  dplyr::filter(primary_state %in% se_sc_states, cbsa_type == "Metro Area", !is.na(pop_cagr_5y)) %>%
+  sf::st_transform(plot_crs)
+
+cbsa_q <- cbsa_sf %>%
+  dplyr::mutate(
+    growth_q5 = dplyr::ntile(pop_cagr_5y, 5),
+    growth_q5_lbl = factor(growth_q5, levels = 1:5,
+                           labels = c("Bottom 20%","20–40%","40–60%","60–80%","Top 20%"))
+  )
+
+labs_df <- cbsa_q %>%
+  dplyr::filter(!is.na(reg_rank_in_cbsa_type)) %>%
+  dplyr::slice_min(order_by = reg_rank_in_cbsa_type, n = 10, with_ties = FALSE) %>%
+  dplyr::mutate(label_pt = sf::st_point_on_surface(geometry), coords = sf::st_coordinates(label_pt), x = coords[,1], y = coords[,2])
+
+topN_outline <- labs_df
+bb <- sf::st_bbox(states_se); xlim <- c(bb["xmin"], bb["xmax"]); ylim <- c(bb["ymin"], bb["ymax"])
+
+p_q <- ggplot() +
+  geom_sf(data = cbsa_q, aes(fill = growth_q5_lbl), color = "white", linewidth = 0.22, alpha = 0.9) +
+  geom_sf(data = states_se, fill = NA, color = "white", linewidth = 0.7) +
+  geom_sf(data = states_se, fill = NA, color = "grey30", linewidth = 0.35) +
+  geom_sf(data = cbsa_q, fill = NA, color = "grey25", linewidth = 0.16) +
+  geom_sf(data = topN_outline, fill = NA, color = "black", linewidth = 0.45) +
+  ggrepel::geom_label_repel(data = labs_df, aes(x = x, y = y, label = NAME), size = 3, seed = 123,
+                            fill = scales::alpha("white", 0.75), label.size = 0.2,
+                            min.segment.length = 0, max.overlaps = Inf) +
+  scale_fill_viridis_d(option = "viridis", direction = 1, name = "Pop Growth Quintile") +
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE, clip = "on") +
+  labs(title = "Southeast/South Central — CBSA Population Growth (Quintiles)",
+       subtitle = "Fill: Quintiles of Pop CAGR (5y). Bold outline & labels: Top 10 metros") +
+  theme_minimal(base_size = 11) +
+  theme(axis.text = element_blank(), axis.title = element_blank(), axis.ticks = element_blank(), panel.grid = element_blank(),
+        legend.title = element_text(face = "bold"))
+
+p_q
+```
+
+# Wilmington rank summary (state / SE / US) for key growth metrics
+```{r Rank Table}
+rank_tbl <- cbsa_metrics %>%
+  dplyr::transmute(geoid, cbsa_name, primary_state, division, region,
+                   pop_chg_5y, gdp_chg_5y, gdp_per_cap_chg_5y, inc_per_cap_chg_5y) %>%
+  dplyr::arrange(dplyr::desc(pop_chg_5y)) %>%
+  dplyr::mutate(rank_us_pop = dplyr::row_number()) %>%
+  dplyr::group_by(primary_state) %>% dplyr::mutate(rank_state_pop = dplyr::row_number(dplyr::desc(pop_chg_5y))) %>% dplyr::ungroup() %>%
+  dplyr::mutate(se_flag = division %in% se_divisions) %>%
+  dplyr::group_by(se_flag) %>% dplyr::mutate(rank_se_pop = dplyr::row_number(dplyr::desc(pop_chg_5y))) %>% dplyr::ungroup() %>%
+  dplyr::filter(geoid == cbsa_geoid) %>%
+  dplyr::select(cbsa_name, primary_state, division, rank_state_pop, rank_se_pop, rank_us_pop)
+
+rank_tbl
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+

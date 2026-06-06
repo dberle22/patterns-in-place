@@ -1,0 +1,9 @@
+# Copy this file to data_sources.yaml and fill in your local paths.
+# data_sources.yaml is gitignored — never commit it.
+
+# Path to the upstream analytical DuckDB built in the metro_deep_dive repo.
+metro_duckdb_path: /path/to/your/metro_deep_dive.duckdb
+
+# Root directory containing state-level parcel geometry folders.
+# Expected structure: <parcel_geom_root>/fl/<county>_fl_geom.rds
+parcel_geom_root: /path/to/your/parcel_geom

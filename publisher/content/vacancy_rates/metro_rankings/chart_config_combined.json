@@ -1,0 +1,20 @@
+{
+  "output_mode": "presentation",
+  "title": "Tightest and Loosest Major Metro Housing Markets in 2024",
+  "subtitle": "Top 10 lowest vacancy rates, US average, and top 10 highest vacancy rates | Population filter: 250k+",
+  "y_label": "Vacancy rate (%)",
+  "label_style": "number",
+  "label_accuracy": 0.1,
+  "bar_variant": "ranked_horizontal",
+  "sort_desc": false,
+  "show_labels": true,
+  "show_axis_labels": true,
+  "show_benchmark": false,
+  "highlight_legend": false,
+  "caption_side_note": "United States is the true national row; all other bars are CBSAs with population of at least 250,000 in 2024.",
+  "caption_methodology_note": "Vacancy rate from gold.housing_core_wide. Population filter from gold.population_demographics.",
+  "right_margin_pt": 40,
+  "width": 12,
+  "height": 8.5,
+  "dpi": 300
+}
