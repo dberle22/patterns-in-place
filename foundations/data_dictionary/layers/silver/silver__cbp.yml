@@ -1,0 +1,78 @@
+table_name: cbp
+schema: silver
+grain: One row per geo_level + geo_id + period + industry_code (county source rows plus derived CBSA and state rollups from curated CBP broad sectors).
+primary_key:
+  - geo_level
+  - geo_id
+  - period
+  - industry_code
+foreign_keys: []
+time_coverage:
+  type: range
+  column: period
+  min: '2010'
+  max: '2023'
+geo_coverage:
+  notes:
+    - county_rows=789399
+    - cbsa_rows=249733
+    - state_rows=14266
+    - county_geo_ids=3209
+    - cbsa_geo_ids=925
+    - state_geo_ids=51
+quality_notes:
+  - Live key check on 2026-06-09 found zero duplicates on geo_level + geo_id + period + industry_code.
+  - Silver intentionally narrows the staged county history from 2,249 published NAICS codes to 20 curated broad-sector codes plus the all-sectors row.
+  - CBSA and state rows are derived only after the county subset is filtered to the approved analytical surface.
+  - `has_emp_flag`, `has_qp1_flag`, and `has_ap_flag` are booleanized disclosure helpers rather than raw Census flag letters.
+  - Payroll-per-employee fields are recomputed from rolled-up totals for CBSA and state rows.
+  - The first-pass CBP contract does not include a Public Administration broad row.
+sources:
+  - staging.cbp_county
+  - silver.xwalk_cbsa_county
+  - silver.xwalk_county_state
+columns:
+  - { name: geo_level, type: VARCHAR, definition: Geographic level for the row (`county`, `cbsa`, or `state`). }
+  - { name: geo_id, type: VARCHAR, definition: Geographic identifier for the row. County rows use 5-digit county FIPS, CBSA rows use 5-digit CBSA codes, and state rows use 2-digit state FIPS. }
+  - { name: geo_name, type: VARCHAR, definition: Geographic display name for the row. County names come from the county crosswalk, CBSA names come from the county-to-CBSA crosswalk, and state rows use USPS abbreviations. }
+  - { name: period, type: INTEGER, definition: Calendar year of the CBP annual observation. }
+  - { name: state_fips, type: VARCHAR, definition: Two-digit state FIPS helper carried on county and state rows. CBSA rows leave this null because CBSAs can span states. }
+  - { name: state_abbr, type: VARCHAR, definition: USPS state abbreviation helper carried on county and state rows. CBSA rows leave this null because CBSAs can span states. }
+  - { name: industry_code, type: VARCHAR, definition: Curated CBP broad-sector code for the row, including the all-sectors total row `------`. }
+  - { name: industry_title, type: VARCHAR, definition: Human-readable industry label for the curated CBP industry code. }
+  - { name: silver_rollup_family, type: VARCHAR, definition: Foundations broad industry family used to align CBP with the rest of the economics layer. }
+  - { name: is_total_row, type: BOOLEAN, definition: Whether the row is the all-sectors total row rather than an industry slice. }
+  - { name: establishments, type: DOUBLE, definition: Total establishments for the geography-year-industry row. }
+  - { name: employment_march12, type: DOUBLE, definition: Employment for the pay period including March 12 for the geography-year-industry row. }
+  - { name: first_quarter_payroll_k, type: DOUBLE, definition: First-quarter payroll in thousands of dollars for the geography-year-industry row. }
+  - { name: annual_payroll_k, type: DOUBLE, definition: Annual payroll in thousands of dollars for the geography-year-industry row. }
+  - { name: est_n_lt_5, type: DOUBLE, definition: Establishments with fewer than 5 employees. }
+  - { name: est_n_5_9, type: DOUBLE, definition: Establishments with 5 to 9 employees. }
+  - { name: est_n_10_19, type: DOUBLE, definition: Establishments with 10 to 19 employees. }
+  - { name: est_n_20_49, type: DOUBLE, definition: Establishments with 20 to 49 employees. }
+  - { name: est_n_50_99, type: DOUBLE, definition: Establishments with 50 to 99 employees. }
+  - { name: est_n_100_249, type: DOUBLE, definition: Establishments with 100 to 249 employees. }
+  - { name: est_n_250_499, type: DOUBLE, definition: Establishments with 250 to 499 employees. }
+  - { name: est_n_500_999, type: DOUBLE, definition: Establishments with 500 to 999 employees. }
+  - { name: est_n_1000_plus, type: DOUBLE, definition: Establishments with 1,000 or more employees. }
+  - { name: est_n_1000_1499, type: DOUBLE, definition: Establishments with 1,000 to 1,499 employees. }
+  - { name: est_n_1500_2499, type: DOUBLE, definition: Establishments with 1,500 to 2,499 employees. }
+  - { name: est_n_2500_4999, type: DOUBLE, definition: Establishments with 2,500 to 4,999 employees. }
+  - { name: est_n_5000_plus, type: DOUBLE, definition: Establishments with 5,000 or more employees. }
+  - { name: has_emp_flag, type: BOOLEAN, definition: Whether the employment measure for the row inherits any published Census disclosure or noise flag. }
+  - { name: has_qp1_flag, type: BOOLEAN, definition: Whether the first-quarter payroll measure for the row inherits any published Census disclosure or noise flag. }
+  - { name: has_ap_flag, type: BOOLEAN, definition: Whether the annual payroll measure for the row inherits any published Census disclosure or noise flag. }
+  - { name: annual_payroll_per_employee, type: DOUBLE, definition: Annual payroll per employee, recomputed from annual payroll and March employment for the row. }
+  - { name: first_quarter_payroll_per_employee, type: DOUBLE, definition: First-quarter payroll per employee, recomputed from first-quarter payroll and March employment for the row. }
+  - { name: source, type: VARCHAR, definition: Source system or provider for the row (`Census CBP`). }
+lineage:
+  - step: read_source
+    script: foundations/etl/staging/get_cbp.R
+    details: Downloads the annual county ZIP artifacts, normalizes the county history into `staging.cbp_county`, and preserves the full county NAICS universe.
+  - step: curate_and_roll_up
+    script: foundations/etl/silver/cbp_silver.R
+    details: Filters the staged county history to the approved broad-sector analytical subset, standardizes county rows, derives CBSA and state rollups, and recomputes payroll-per-employee metrics for rolled-up geographies.
+  - step: write_target
+    script: foundations/etl/silver/cbp_silver.R
+    details: Writes `silver.cbp` with overwrite enabled after the uniqueness check passes.
+kpi_definitions: []

@@ -1,0 +1,2898 @@
+table_name: language_base
+schema: silver
+grain: One row per geo_level + geo_id + geo_name + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - geo_name
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2016'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=165549
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 8
+    top_values:
+      - value: tract
+        count: 714268
+      - value: zcta
+        count: 300692
+      - value: place
+        count: 278953
+      - value: county
+        count: 28988
+      - value: cbsa
+        count: 8373
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: 'no'
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 165549
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 11
+    top_values:
+      - value: '1'
+        count: 27
+      - value: '01001'
+        count: 18
+      - value: '01003'
+        count: 18
+      - value: '01005'
+        count: 18
+      - value: '01007'
+        count: 18
+    definition: Geographic identifier for the row
+    needs_confirmation: 'no'
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 251070
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 81
+    top_values:
+      - value: Alexandria city, Virginia
+        count: 18
+      - value: Baltimore city, Maryland
+        count: 18
+      - value: Bristol city, Virginia
+        count: 18
+      - value: Buena Vista city, Virginia
+        count: 18
+      - value: Carson City, Nevada
+        count: 18
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: 'no'
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: 2016
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2024'
+        count: 154726
+      - value: '2023'
+        count: 154720
+      - value: '2022'
+        count: 154598
+      - value: '2021'
+        count: 154311
+      - value: '2020'
+        count: 153657
+    definition: Observation year or period year for the row.
+    needs_confirmation: 'no'
+  - name: language_totalE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 478
+    min_value: 0.0
+    max_value: 3.1614255e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '1000367.0'
+        count: 1
+      - value: '1001567.0'
+        count: 1
+      - value: '1002024.0'
+        count: 1
+    definition: Total population age 5 and older in the language-spoken-at-home universe.
+    needs_confirmation: 'no'
+  - name: language_speak_only_englishE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 478
+    min_value: 0.0
+    max_value: 2.4576704e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '1002753.0'
+        count: 1
+      - value: '1012068.0'
+        count: 1
+      - value: '1014495.0'
+        count: 1
+    definition: Population age 5 and older who speak only English at home.
+    needs_confirmation: 'no'
+  - name: language_spanishE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 478
+    min_value: 0.0
+    max_value: 4.2869908e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '10407915.0'
+        count: 1
+      - value: '10446277.0'
+        count: 1
+      - value: '10462968.0'
+        count: 1
+    definition: Population age 5 and older who speak spanish at home.
+    needs_confirmation: 'no'
+  - name: language_spanish_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 478
+    min_value: 0.0
+    max_value: 2.5651126e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '100018.0'
+        count: 1
+      - value: '1002289.0'
+        count: 1
+      - value: '10090.0'
+        count: 1
+    definition: Population age 5 and older who speak spanish at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_spanish_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 477
+    min_value: 0.0
+    max_value: 1.7218782e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '7613.0'
+        count: 2
+      - value: '100272.0'
+        count: 1
+      - value: '101199.0'
+        count: 1
+    definition: Population age 5 and older who speak spanish at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_french_incl_cajunE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 474
+    min_value: 0.0
+    max_value: 1227947.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '10970.0'
+        count: 2
+      - value: '1131.0'
+        count: 2
+      - value: '1140.0'
+        count: 2
+    definition: Population age 5 and older who speak french including cajun at home.
+    needs_confirmation: 'no'
+  - name: language_french_incl_cajun_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 475
+    min_value: 0.0
+    max_value: 974606.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '19265.0'
+        count: 2
+      - value: '21292.0'
+        count: 2
+      - value: '28891.0'
+        count: 2
+    definition: Population age 5 and older who speak french including cajun at home
+      and speak English very well.
+    needs_confirmation: 'no'
+  - name: language_french_incl_cajun_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 465
+    min_value: 0.0
+    max_value: 265024.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '1123.0'
+        count: 2
+      - value: '1432.0'
+        count: 2
+      - value: '1473.0'
+        count: 2
+    definition: Population age 5 and older who speak french including cajun at home
+      and speak English less than very well.
+    needs_confirmation: 'no'
+  - name: language_haitianE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 445
+    min_value: 0.0
+    max_value: 937751.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8376
+      - value: '116.0'
+        count: 3
+      - value: '119.0'
+        count: 3
+      - value: '174.0'
+        count: 3
+    definition: Population age 5 and older who speak haitian at home.
+    needs_confirmation: 'no'
+  - name: language_haitian_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 430
+    min_value: 0.0
+    max_value: 563856.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8378
+      - value: '342.0'
+        count: 3
+      - value: '37.0'
+        count: 3
+      - value: '477.0'
+        count: 3
+    definition: Population age 5 and older who speak haitian at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_haitian_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 376
+    min_value: 0.0
+    max_value: 374166.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8399
+      - value: '6.0'
+        count: 7
+      - value: '9.0'
+        count: 5
+      - value: '63.0'
+        count: 4
+    definition: Population age 5 and older who speak haitian at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_italianE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 459
+    min_value: 0.0
+    max_value: 635205.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '504.0'
+        count: 4
+      - value: '1105.0'
+        count: 2
+      - value: '129.0'
+        count: 2
+    definition: Population age 5 and older who speak italian at home.
+    needs_confirmation: 'no'
+  - name: language_italian_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 461
+    min_value: 0.0
+    max_value: 466377.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '420.0'
+        count: 3
+      - value: '1318.0'
+        count: 2
+      - value: '1475.0'
+        count: 2
+    definition: Population age 5 and older who speak italian at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_italian_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 401
+    min_value: 0.0
+    max_value: 168828.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8378
+      - value: '181.0'
+        count: 5
+      - value: '249.0'
+        count: 4
+      - value: '46.0'
+        count: 4
+    definition: Population age 5 and older who speak italian at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_portugueseE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 464
+    min_value: 0.0
+    max_value: 1020725.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '1418.0'
+        count: 2
+      - value: '1815.0'
+        count: 2
+      - value: '1867.0'
+        count: 2
+    definition: Population age 5 and older who speak portuguese at home.
+    needs_confirmation: 'no'
+  - name: language_portuguese_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 465
+    min_value: 0.0
+    max_value: 651492.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '199.0'
+        count: 3
+      - value: '10198.0'
+        count: 2
+      - value: '1673.0'
+        count: 2
+    definition: Population age 5 and older who speak portuguese at home and speak
+      English very well.
+    needs_confirmation: 'no'
+  - name: language_portuguese_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 439
+    min_value: 0.0
+    max_value: 369233.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8374
+      - value: '12.0'
+        count: 4
+      - value: '31.0'
+        count: 4
+      - value: '8.0'
+        count: 3
+    definition: Population age 5 and older who speak portuguese at home and speak
+      English less than very well.
+    needs_confirmation: 'no'
+  - name: language_germanE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 474
+    min_value: 0.0
+    max_value: 964441.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '2037.0'
+        count: 2
+      - value: '2053.0'
+        count: 2
+      - value: '3900.0'
+        count: 2
+    definition: Population age 5 and older who speak german at home.
+    needs_confirmation: 'no'
+  - name: language_german_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 472
+    min_value: 0.0
+    max_value: 814647.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '1691.0'
+        count: 2
+      - value: '1994.0'
+        count: 2
+      - value: '2226.0'
+        count: 2
+    definition: Population age 5 and older who speak german at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_german_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 454
+    min_value: 0.0
+    max_value: 149794.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '1023.0'
+        count: 2
+      - value: '117.0'
+        count: 2
+      - value: '1573.0'
+        count: 2
+    definition: Population age 5 and older who speak german at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_yiddish_pennsylvania_dutch_or_other_west_germanic_languagesE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 460
+    min_value: 0.0
+    max_value: 609943.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '304.0'
+        count: 3
+      - value: '1146.0'
+        count: 2
+      - value: '1390.0'
+        count: 2
+    definition: Population age 5 and older who speak yiddish pennsylvania dutch or
+      other west germanic languages at home.
+    needs_confirmation: 'no'
+  - name: language_yiddish_pennsylvania_dutch_or_other_west_germanic_languages_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 460
+    min_value: 0.0
+    max_value: 407855.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '391.0'
+        count: 3
+      - value: '1253.0'
+        count: 2
+      - value: '168.0'
+        count: 2
+    definition: Population age 5 and older who speak yiddish pennsylvania dutch or
+      other west germanic languages at home and speak English very well.
+    needs_confirmation: 'no'
+  - name: language_yiddish_pennsylvania_dutch_or_other_west_germanic_languages_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 363
+    min_value: 0.0
+    max_value: 202088.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8392
+      - value: '145.0'
+        count: 5
+      - value: '41.0'
+        count: 5
+      - value: '31.0'
+        count: 4
+    definition: Population age 5 and older who speak yiddish pennsylvania dutch or
+      other west germanic languages at home and speak English less than very well.
+    needs_confirmation: 'no'
+  - name: language_greekE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 432
+    min_value: 0.0
+    max_value: 290890.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8380
+      - value: '205.0'
+        count: 4
+      - value: '163.0'
+        count: 3
+      - value: '38.0'
+        count: 3
+    definition: Population age 5 and older who speak greek at home.
+    needs_confirmation: 'no'
+  - name: language_greek_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 434
+    min_value: 0.0
+    max_value: 216780.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8382
+      - value: '1.0'
+        count: 3
+      - value: '230.0'
+        count: 3
+      - value: '236.0'
+        count: 3
+    definition: Population age 5 and older who speak greek at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_greek_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 355
+    min_value: 0.0
+    max_value: 74110.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8393
+      - value: '17.0'
+        count: 5
+      - value: '40.0'
+        count: 5
+      - value: '9.0'
+        count: 5
+    definition: Population age 5 and older who speak greek at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_russianE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 469
+    min_value: 0.0
+    max_value: 1020261.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '1231.0'
+        count: 2
+      - value: '1338.0'
+        count: 2
+      - value: '3993.0'
+        count: 2
+    definition: Population age 5 and older who speak russian at home.
+    needs_confirmation: 'no'
+  - name: language_russian_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 467
+    min_value: 0.0
+    max_value: 597660.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '1005.0'
+        count: 2
+      - value: '1258.0'
+        count: 2
+      - value: '1294.0'
+        count: 2
+    definition: Population age 5 and older who speak russian at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_russian_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 452
+    min_value: 0.0
+    max_value: 422601.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '368.0'
+        count: 3
+      - value: '867.0'
+        count: 3
+      - value: '9.0'
+        count: 3
+    definition: Population age 5 and older who speak russian at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_polishE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 443
+    min_value: 0.0
+    max_value: 540843.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8380
+      - value: '15.0'
+        count: 4
+      - value: '383.0'
+        count: 3
+      - value: '638.0'
+        count: 3
+    definition: Population age 5 and older who speak polish at home.
+    needs_confirmation: 'no'
+  - name: language_polish_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 438
+    min_value: 0.0
+    max_value: 333734.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8383
+      - value: '390.0'
+        count: 3
+      - value: '497.0'
+        count: 3
+      - value: '103.0'
+        count: 2
+    definition: Population age 5 and older who speak polish at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_polish_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 375
+    min_value: 0.0
+    max_value: 212493.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8396
+      - value: '134.0'
+        count: 6
+      - value: '35.0'
+        count: 5
+      - value: '117.0'
+        count: 3
+    definition: Population age 5 and older who speak polish at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_serbo_croatianE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 450
+    min_value: 0.0
+    max_value: 253661.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8375
+      - value: '275.0'
+        count: 3
+      - value: '430.0'
+        count: 3
+      - value: '110.0'
+        count: 2
+    definition: Population age 5 and older who speak serbo croatian at home.
+    needs_confirmation: 'no'
+  - name: language_serbo_croatian_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 447
+    min_value: 0.0
+    max_value: 171550.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8375
+      - value: '257.0'
+        count: 3
+      - value: '521.0'
+        count: 3
+      - value: '1029.0'
+        count: 2
+    definition: Population age 5 and older who speak serbo croatian at home and speak
+      English very well.
+    needs_confirmation: 'no'
+  - name: language_serbo_croatian_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 399
+    min_value: 0.0
+    max_value: 94168.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8397
+      - value: '69.0'
+        count: 5
+      - value: '3.0'
+        count: 4
+      - value: '107.0'
+        count: 3
+    definition: Population age 5 and older who speak serbo croatian at home and speak
+      English less than very well.
+    needs_confirmation: 'no'
+  - name: language_ukrainian_or_other_slavic_languagesE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 457
+    min_value: 0.0
+    max_value: 440589.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8377
+      - value: '8.0'
+        count: 3
+      - value: '1011.0'
+        count: 2
+      - value: '1347.0'
+        count: 2
+    definition: Population age 5 and older who speak ukrainian or other slavic languages
+      at home.
+    needs_confirmation: 'no'
+  - name: language_ukrainian_or_other_slavic_languages_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 441
+    min_value: 0.0
+    max_value: 265199.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8382
+      - value: '407.0'
+        count: 3
+      - value: '630.0'
+        count: 3
+      - value: '734.0'
+        count: 3
+    definition: Population age 5 and older who speak ukrainian or other slavic languages
+      at home and speak English very well.
+    needs_confirmation: 'no'
+  - name: language_ukrainian_or_other_slavic_languages_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 415
+    min_value: 0.0
+    max_value: 175390.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8380
+      - value: '1.0'
+        count: 3
+      - value: '109.0'
+        count: 3
+      - value: '145.0'
+        count: 3
+    definition: Population age 5 and older who speak ukrainian or other slavic languages
+      at home and speak English less than very well.
+    needs_confirmation: 'no'
+  - name: language_armenianE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 345
+    min_value: 0.0
+    max_value: 252536.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8418
+      - value: '11.0'
+        count: 5
+      - value: '22.0'
+        count: 5
+      - value: '28.0'
+        count: 5
+    definition: Population age 5 and older who speak armenian at home.
+    needs_confirmation: 'no'
+  - name: language_armenian_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 330
+    min_value: 0.0
+    max_value: 151857.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8434
+      - value: '11.0'
+        count: 5
+      - value: '18.0'
+        count: 5
+      - value: '20.0'
+        count: 5
+    definition: Population age 5 and older who speak armenian at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_armenian_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 239
+    min_value: 0.0
+    max_value: 102720.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8500
+      - value: '10.0'
+        count: 8
+      - value: '15.0'
+        count: 8
+      - value: '16.0'
+        count: 7
+    definition: Population age 5 and older who speak armenian at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_persian_incl_farsi_dariE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 451
+    min_value: 0.0
+    max_value: 517451.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8377
+      - value: '1120.0'
+        count: 2
+      - value: '1143.0'
+        count: 2
+      - value: '122.0'
+        count: 2
+    definition: Population age 5 and older who speak persian including farsi dari
+      at home.
+    needs_confirmation: 'no'
+  - name: language_persian_incl_farsi_dari_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 444
+    min_value: 0.0
+    max_value: 322970.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8377
+      - value: '64.0'
+        count: 3
+      - value: '1098.0'
+        count: 2
+      - value: '1116.0'
+        count: 2
+    definition: Population age 5 and older who speak persian including farsi dari
+      at home and speak English very well.
+    needs_confirmation: 'no'
+  - name: language_persian_incl_farsi_dari_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 405
+    min_value: 0.0
+    max_value: 194481.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8385
+      - value: '114.0'
+        count: 3
+      - value: '12.0'
+        count: 3
+      - value: '13.0'
+        count: 3
+    definition: Population age 5 and older who speak persian including farsi dari
+      at home and speak English less than very well.
+    needs_confirmation: 'no'
+  - name: language_gujaratiE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 448
+    min_value: 0.0
+    max_value: 466000.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8383
+      - value: '72.0'
+        count: 3
+      - value: '107.0'
+        count: 2
+      - value: '131.0'
+        count: 2
+    definition: Population age 5 and older who speak gujarati at home.
+    needs_confirmation: 'no'
+  - name: language_gujarati_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 432
+    min_value: 0.0
+    max_value: 316922.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8388
+      - value: '12.0'
+        count: 3
+      - value: '35.0'
+        count: 3
+      - value: '42.0'
+        count: 3
+    definition: Population age 5 and older who speak gujarati at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_gujarati_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 398
+    min_value: 0.0
+    max_value: 149078.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8397
+      - value: '5.0'
+        count: 5
+      - value: '23.0'
+        count: 4
+      - value: '35.0'
+        count: 4
+    definition: Population age 5 and older who speak gujarati at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_hindiE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 469
+    min_value: 0.0
+    max_value: 930728.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '49.0'
+        count: 3
+      - value: '128.0'
+        count: 2
+      - value: '1789.0'
+        count: 2
+    definition: Population age 5 and older who speak hindi at home.
+    needs_confirmation: 'no'
+  - name: language_hindi_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 460
+    min_value: 0.0
+    max_value: 773859.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8374
+      - value: '5.0'
+        count: 3
+      - value: '108.0'
+        count: 2
+      - value: '112.0'
+        count: 2
+    definition: Population age 5 and older who speak hindi at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_hindi_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 430
+    min_value: 0.0
+    max_value: 164487.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8379
+      - value: '25.0'
+        count: 4
+      - value: '16.0'
+        count: 3
+      - value: '18.0'
+        count: 3
+    definition: Population age 5 and older who speak hindi at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_urduE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 444
+    min_value: 0.0
+    max_value: 533546.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8382
+      - value: '434.0'
+        count: 4
+      - value: '163.0'
+        count: 3
+      - value: '25.0'
+        count: 3
+    definition: Population age 5 and older who speak urdu at home.
+    needs_confirmation: 'no'
+  - name: language_urdu_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 446
+    min_value: 0.0
+    max_value: 387123.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8382
+      - value: '172.0'
+        count: 3
+      - value: '1174.0'
+        count: 2
+      - value: '129.0'
+        count: 2
+    definition: Population age 5 and older who speak urdu at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_urdu_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 377
+    min_value: 0.0
+    max_value: 146423.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8395
+      - value: '13.0'
+        count: 6
+      - value: '21.0'
+        count: 5
+      - value: '12.0'
+        count: 4
+    definition: Population age 5 and older who speak urdu at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_punjabiE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 421
+    min_value: 0.0
+    max_value: 333955.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8396
+      - value: '4.0'
+        count: 4
+      - value: '12.0'
+        count: 3
+      - value: '13.0'
+        count: 3
+    definition: Population age 5 and older who speak punjabi at home.
+    needs_confirmation: 'no'
+  - name: language_punjabi_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 390
+    min_value: 0.0
+    max_value: 203737.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8400
+      - value: '27.0'
+        count: 5
+      - value: '12.0'
+        count: 4
+      - value: '4.0'
+        count: 4
+    definition: Population age 5 and older who speak punjabi at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_punjabi_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 364
+    min_value: 0.0
+    max_value: 130218.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8439
+      - value: '24.0'
+        count: 4
+      - value: '13.0'
+        count: 3
+      - value: '38.0'
+        count: 3
+    definition: Population age 5 and older who speak punjabi at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_bengaliE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 444
+    min_value: 0.0
+    max_value: 430106.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8377
+      - value: '37.0'
+        count: 4
+      - value: '117.0'
+        count: 2
+      - value: '1209.0'
+        count: 2
+    definition: Population age 5 and older who speak bengali at home.
+    needs_confirmation: 'no'
+  - name: language_bengali_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 434
+    min_value: 0.0
+    max_value: 251536.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8380
+      - value: '37.0'
+        count: 4
+      - value: '38.0'
+        count: 3
+      - value: '1069.0'
+        count: 2
+    definition: Population age 5 and older who speak bengali at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_bengali_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 374
+    min_value: 0.0
+    max_value: 178570.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8406
+      - value: '7.0'
+        count: 7
+      - value: '82.0'
+        count: 4
+      - value: '9.0'
+        count: 4
+    definition: Population age 5 and older who speak bengali at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_nepali_marathi_or_other_indic_languagesE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 465
+    min_value: 0.0
+    max_value: 482912.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8376
+      - value: '991.0'
+        count: 3
+      - value: '128.0'
+        count: 2
+      - value: '1294.0'
+        count: 2
+    definition: Population age 5 and older who speak nepali marathi or other indic
+      languages at home.
+    needs_confirmation: 'no'
+  - name: language_nepali_marathi_or_other_indic_languages_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 453
+    min_value: 0.0
+    max_value: 324379.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8380
+      - value: '675.0'
+        count: 3
+      - value: '1222.0'
+        count: 2
+      - value: '1298.0'
+        count: 2
+    definition: Population age 5 and older who speak nepali marathi or other indic
+      languages at home and speak English very well.
+    needs_confirmation: 'no'
+  - name: language_nepali_marathi_or_other_indic_languages_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 444
+    min_value: 0.0
+    max_value: 158533.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8376
+      - value: '37.0'
+        count: 3
+      - value: '1103.0'
+        count: 2
+      - value: '1130.0'
+        count: 2
+    definition: Population age 5 and older who speak nepali marathi or other indic
+      languages at home and speak English less than very well.
+    needs_confirmation: 'no'
+  - name: language_other_indo_european_languagesE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 460
+    min_value: 0.0
+    max_value: 649098.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '1477.0'
+        count: 3
+      - value: '1099.0'
+        count: 2
+      - value: '1103.0'
+        count: 2
+    definition: Population age 5 and older who speak other indo european languages
+      at home.
+    needs_confirmation: 'no'
+  - name: language_other_indo_european_languages_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 464
+    min_value: 0.0
+    max_value: 455714.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '1002.0'
+        count: 2
+      - value: '1059.0'
+        count: 2
+      - value: '1135.0'
+        count: 2
+    definition: Population age 5 and older who speak other indo european languages
+      at home and speak English very well.
+    needs_confirmation: 'no'
+  - name: language_other_indo_european_languages_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 425
+    min_value: 0.0
+    max_value: 193384.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '19.0'
+        count: 4
+      - value: '201.0'
+        count: 4
+      - value: '47.0'
+        count: 4
+    definition: Population age 5 and older who speak other indo european languages
+      at home and speak English less than very well.
+    needs_confirmation: 'no'
+  - name: language_teluguE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 457
+    min_value: 0.0
+    max_value: 509657.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8377
+      - value: '1229.0'
+        count: 2
+      - value: '13.0'
+        count: 2
+      - value: '1383.0'
+        count: 2
+    definition: Population age 5 and older who speak telugu at home.
+    needs_confirmation: 'no'
+  - name: language_telugu_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 447
+    min_value: 0.0
+    max_value: 419269.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8379
+      - value: '1450.0'
+        count: 3
+      - value: '39.0'
+        count: 3
+      - value: '56.0'
+        count: 3
+    definition: Population age 5 and older who speak telugu at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_telugu_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 398
+    min_value: 0.0
+    max_value: 90388.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8405
+      - value: '8.0'
+        count: 5
+      - value: '30.0'
+        count: 4
+      - value: '12.0'
+        count: 3
+    definition: Population age 5 and older who speak telugu at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_tamilE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 432
+    min_value: 0.0
+    max_value: 346611.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8390
+      - value: '151.0'
+        count: 3
+      - value: '160.0'
+        count: 3
+      - value: '36.0'
+        count: 3
+    definition: Population age 5 and older who speak tamil at home.
+    needs_confirmation: 'no'
+  - name: language_tamil_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 434
+    min_value: 0.0
+    max_value: 295236.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8390
+      - value: '221.0'
+        count: 3
+      - value: '40.0'
+        count: 3
+      - value: '104.0'
+        count: 2
+    definition: Population age 5 and older who speak tamil at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_tamil_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 365
+    min_value: 0.0
+    max_value: 51375.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8415
+      - value: '13.0'
+        count: 5
+      - value: '4.0'
+        count: 5
+      - value: '12.0'
+        count: 4
+    definition: Population age 5 and older who speak tamil at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_malayalam_kannada_or_other_dravidian_languagesE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 429
+    min_value: 0.0
+    max_value: 301978.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8385
+      - value: '19.0'
+        count: 4
+      - value: '27.0'
+        count: 3
+      - value: '31.0'
+        count: 3
+    definition: Population age 5 and older who speak malayalam kannada or other dravidian
+      languages at home.
+    needs_confirmation: 'no'
+  - name: language_malayalam_kannada_or_other_dravidian_languages_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 425
+    min_value: 0.0
+    max_value: 236922.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8386
+      - value: '48.0'
+        count: 4
+      - value: '10.0'
+        count: 3
+      - value: '14.0'
+        count: 3
+    definition: Population age 5 and older who speak malayalam kannada or other dravidian
+      languages at home and speak English very well.
+    needs_confirmation: 'no'
+  - name: language_malayalam_kannada_or_other_dravidian_languages_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 342
+    min_value: 0.0
+    max_value: 65056.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8436
+      - value: '44.0'
+        count: 4
+      - value: '77.0'
+        count: 4
+      - value: '103.0'
+        count: 3
+    definition: Population age 5 and older who speak malayalam kannada or other dravidian
+      languages at home and speak English less than very well.
+    needs_confirmation: 'no'
+  - name: language_chinese_incl_mandarin_cantoneseE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 477
+    min_value: 0.0
+    max_value: 3549780.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '5209.0'
+        count: 2
+      - value: '10037.0'
+        count: 1
+      - value: '10049.0'
+        count: 1
+    definition: Population age 5 and older who speak chinese including mandarin cantonese
+      at home.
+    needs_confirmation: 'no'
+  - name: language_chinese_incl_mandarin_cantonese_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 468
+    min_value: 0.0
+    max_value: 1733859.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '1010.0'
+        count: 2
+      - value: '11774.0'
+        count: 2
+      - value: '14370.0'
+        count: 2
+    definition: Population age 5 and older who speak chinese including mandarin cantonese
+      at home and speak English very well.
+    needs_confirmation: 'no'
+  - name: language_chinese_incl_mandarin_cantonese_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 477
+    min_value: 0.0
+    max_value: 1838859.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '3578.0'
+        count: 2
+      - value: '1006.0'
+        count: 1
+      - value: '1021.0'
+        count: 1
+    definition: Population age 5 and older who speak chinese including mandarin cantonese
+      at home and speak English less than very well.
+    needs_confirmation: 'no'
+  - name: language_japaneseE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 464
+    min_value: 0.0
+    max_value: 462405.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '1001.0'
+        count: 2
+      - value: '1783.0'
+        count: 2
+      - value: '2216.0'
+        count: 2
+    definition: Population age 5 and older who speak japanese at home.
+    needs_confirmation: 'no'
+  - name: language_japanese_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 460
+    min_value: 0.0
+    max_value: 284026.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '510.0'
+        count: 3
+      - value: '1240.0'
+        count: 2
+      - value: '302.0'
+        count: 2
+    definition: Population age 5 and older who speak japanese at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_japanese_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 450
+    min_value: 0.0
+    max_value: 193431.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8376
+      - value: '496.0'
+        count: 3
+      - value: '508.0'
+        count: 3
+      - value: '128.0'
+        count: 2
+    definition: Population age 5 and older who speak japanese at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_koreanE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 469
+    min_value: 0.0
+    max_value: 1104615.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '10311.0'
+        count: 2
+      - value: '1296.0'
+        count: 2
+      - value: '2964.0'
+        count: 2
+    definition: Population age 5 and older who speak korean at home.
+    needs_confirmation: 'no'
+  - name: language_korean_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 465
+    min_value: 0.0
+    max_value: 545923.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '2116.0'
+        count: 3
+      - value: '1051.0'
+        count: 2
+      - value: '1149.0'
+        count: 2
+    definition: Population age 5 and older who speak korean at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_korean_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 457
+    min_value: 0.0
+    max_value: 597106.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8374
+      - value: '115.0'
+        count: 3
+      - value: '134.0'
+        count: 2
+      - value: '149.0'
+        count: 2
+    definition: Population age 5 and older who speak korean at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_hmongE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 359
+    min_value: 0.0
+    max_value: 238570.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8426
+      - value: '18.0'
+        count: 6
+      - value: '36.0'
+        count: 4
+      - value: '37.0'
+        count: 4
+    definition: Population age 5 and older who speak hmong at home.
+    needs_confirmation: 'no'
+  - name: language_hmong_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 334
+    min_value: 0.0
+    max_value: 141776.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8427
+      - value: '14.0'
+        count: 6
+      - value: '18.0'
+        count: 5
+      - value: '23.0'
+        count: 5
+    definition: Population age 5 and older who speak hmong at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_hmong_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 290
+    min_value: 0.0
+    max_value: 96794.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8485
+      - value: '29.0'
+        count: 5
+      - value: '4.0'
+        count: 5
+      - value: '1.0'
+        count: 4
+    definition: Population age 5 and older who speak hmong at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_vietnameseE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 476
+    min_value: 0.0
+    max_value: 1562558.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '16953.0'
+        count: 2
+      - value: '667.0'
+        count: 2
+      - value: '10.0'
+        count: 1
+    definition: Population age 5 and older who speak vietnamese at home.
+    needs_confirmation: 'no'
+  - name: language_vietnamese_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 461
+    min_value: 0.0
+    max_value: 660726.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '301.0'
+        count: 3
+      - value: '140.0'
+        count: 2
+      - value: '170.0'
+        count: 2
+    definition: Population age 5 and older who speak vietnamese at home and speak
+      English very well.
+    needs_confirmation: 'no'
+  - name: language_vietnamese_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 465
+    min_value: 0.0
+    max_value: 901832.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8378
+      - value: '11676.0'
+        count: 2
+      - value: '12014.0'
+        count: 2
+      - value: '12874.0'
+        count: 2
+    definition: Population age 5 and older who speak vietnamese at home and speak
+      English less than very well.
+    needs_confirmation: 'no'
+  - name: language_khmerE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 418
+    min_value: 0.0
+    max_value: 211213.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8390
+      - value: '109.0'
+        count: 3
+      - value: '33.0'
+        count: 3
+      - value: '82.0'
+        count: 3
+    definition: Population age 5 and older who speak khmer at home.
+    needs_confirmation: 'no'
+  - name: language_khmer_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 401
+    min_value: 0.0
+    max_value: 102127.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8406
+      - value: '12.0'
+        count: 3
+      - value: '14.0'
+        count: 3
+      - value: '20.0'
+        count: 3
+    definition: Population age 5 and older who speak khmer at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_khmer_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 390
+    min_value: 0.0
+    max_value: 109115.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8406
+      - value: '8.0'
+        count: 4
+      - value: '141.0'
+        count: 3
+      - value: '163.0'
+        count: 3
+    definition: Population age 5 and older who speak khmer at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_thai_lao_or_other_tai_kadai_languagesE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 455
+    min_value: 0.0
+    max_value: 306697.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8381
+      - value: '156.0'
+        count: 2
+      - value: '195.0'
+        count: 2
+      - value: '262.0'
+        count: 2
+    definition: Population age 5 and older who speak thai lao or other tai kadai languages
+      at home.
+    needs_confirmation: 'no'
+  - name: language_thai_lao_or_other_tai_kadai_languages_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 446
+    min_value: 0.0
+    max_value: 154236.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8381
+      - value: '162.0'
+        count: 3
+      - value: '2699.0'
+        count: 3
+      - value: '100.0'
+        count: 2
+    definition: Population age 5 and older who speak thai lao or other tai kadai languages
+      at home and speak English very well.
+    needs_confirmation: 'no'
+  - name: language_thai_lao_or_other_tai_kadai_languages_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 438
+    min_value: 0.0
+    max_value: 152829.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8382
+      - value: '90.0'
+        count: 3
+      - value: '1111.0'
+        count: 2
+      - value: '1188.0'
+        count: 2
+    definition: Population age 5 and older who speak thai lao or other tai kadai languages
+      at home and speak English less than very well.
+    needs_confirmation: 'no'
+  - name: language_other_languages_of_asiaE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 453
+    min_value: 0.0
+    max_value: 495068.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8379
+      - value: '669.0'
+        count: 3
+      - value: '277.0'
+        count: 2
+      - value: '282.0'
+        count: 2
+    definition: Population age 5 and older who speak other languages of asia at home.
+    needs_confirmation: 'no'
+  - name: language_other_languages_of_asia_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 444
+    min_value: 0.0
+    max_value: 255788.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8380
+      - value: '358.0'
+        count: 3
+      - value: '1001.0'
+        count: 2
+      - value: '1070.0'
+        count: 2
+    definition: Population age 5 and older who speak other languages of asia at home
+      and speak English very well.
+    needs_confirmation: 'no'
+  - name: language_other_languages_of_asia_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 437
+    min_value: 0.0
+    max_value: 239280.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8382
+      - value: '46.0'
+        count: 5
+      - value: '149.0'
+        count: 3
+      - value: '347.0'
+        count: 3
+    definition: Population age 5 and older who speak other languages of asia at home
+      and speak English less than very well.
+    needs_confirmation: 'no'
+  - name: language_tagalog_incl_filipinoE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 468
+    min_value: 0.0
+    max_value: 1778009.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '1250.0'
+        count: 2
+      - value: '1353.0'
+        count: 2
+      - value: '1473.0'
+        count: 2
+    definition: Population age 5 and older who speak tagalog including filipino at
+      home.
+    needs_confirmation: 'no'
+  - name: language_tagalog_incl_filipino_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 462
+    min_value: 0.0
+    max_value: 1237285.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8376
+      - value: '5807.0'
+        count: 3
+      - value: '1068.0'
+        count: 2
+      - value: '11101.0'
+        count: 2
+    definition: Population age 5 and older who speak tagalog including filipino at
+      home and speak English very well.
+    needs_confirmation: 'no'
+  - name: language_tagalog_incl_filipino_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 462
+    min_value: 0.0
+    max_value: 540724.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8375
+      - value: '349.0'
+        count: 3
+      - value: '942.0'
+        count: 3
+      - value: '1082.0'
+        count: 2
+    definition: Population age 5 and older who speak tagalog including filipino at
+      home and speak English less than very well.
+    needs_confirmation: 'no'
+  - name: language_ilocano_samoan_hawaiian_or_other_austronesian_languagesE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 457
+    min_value: 0.0
+    max_value: 483389.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8379
+      - value: '372.0'
+        count: 3
+      - value: '1018.0'
+        count: 2
+      - value: '1096.0'
+        count: 2
+    definition: Population age 5 and older who speak ilocano samoan hawaiian or other
+      austronesian languages at home.
+    needs_confirmation: 'no'
+  - name: language_ilocano_samoan_hawaiian_or_other_austronesian_languages_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 441
+    min_value: 0.0
+    max_value: 309160.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8379
+      - value: '219.0'
+        count: 3
+      - value: '859.0'
+        count: 3
+      - value: '1175.0'
+        count: 2
+    definition: Population age 5 and older who speak ilocano samoan hawaiian or other
+      austronesian languages at home and speak English very well.
+    needs_confirmation: 'no'
+  - name: language_ilocano_samoan_hawaiian_or_other_austronesian_languages_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 432
+    min_value: 0.0
+    max_value: 174229.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8382
+      - value: '125.0'
+        count: 4
+      - value: '266.0'
+        count: 3
+      - value: '73.0'
+        count: 3
+    definition: Population age 5 and older who speak ilocano samoan hawaiian or other
+      austronesian languages at home and speak English less than very well.
+    needs_confirmation: 'no'
+  - name: language_arabicE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 472
+    min_value: 0.0
+    max_value: 1422969.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '14071.0'
+        count: 2
+      - value: '1749.0'
+        count: 2
+      - value: '2435.0'
+        count: 2
+    definition: Population age 5 and older who speak arabic at home.
+    needs_confirmation: 'no'
+  - name: language_arabic_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 470
+    min_value: 0.0
+    max_value: 937192.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '1146.0'
+        count: 2
+      - value: '146.0'
+        count: 2
+      - value: '1596.0'
+        count: 2
+    definition: Population age 5 and older who speak arabic at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_arabic_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 464
+    min_value: 0.0
+    max_value: 485777.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8374
+      - value: '1092.0'
+        count: 2
+      - value: '1172.0'
+        count: 2
+      - value: '1238.0'
+        count: 2
+    definition: Population age 5 and older who speak arabic at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_hebrewE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 432
+    min_value: 0.0
+    max_value: 225539.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8375
+      - value: '17.0'
+        count: 4
+      - value: '133.0'
+        count: 3
+      - value: '137.0'
+        count: 3
+    definition: Population age 5 and older who speak hebrew at home.
+    needs_confirmation: 'no'
+  - name: language_hebrew_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 417
+    min_value: 0.0
+    max_value: 192454.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8375
+      - value: '132.0'
+        count: 4
+      - value: '17.0'
+        count: 4
+      - value: '137.0'
+        count: 3
+    definition: Population age 5 and older who speak hebrew at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_hebrew_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 278
+    min_value: 0.0
+    max_value: 33895.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8439
+      - value: '21.0'
+        count: 7
+      - value: '24.0'
+        count: 7
+      - value: '16.0'
+        count: 6
+    definition: Population age 5 and older who speak hebrew at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_amharic_somali_or_other_afro_asiatic_languagesE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 453
+    min_value: 0.0
+    max_value: 610483.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8382
+      - value: '3.0'
+        count: 3
+      - value: '112.0'
+        count: 2
+      - value: '159.0'
+        count: 2
+    definition: Population age 5 and older who speak amharic somali or other afro
+      asiatic languages at home.
+    needs_confirmation: 'no'
+  - name: language_amharic_somali_or_other_afro_asiatic_languages_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 441
+    min_value: 0.0
+    max_value: 372074.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8382
+      - value: '159.0'
+        count: 4
+      - value: '1.0'
+        count: 3
+      - value: '1177.0'
+        count: 2
+    definition: Population age 5 and older who speak amharic somali or other afro
+      asiatic languages at home and speak English very well.
+    needs_confirmation: 'no'
+  - name: language_amharic_somali_or_other_afro_asiatic_languages_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 427
+    min_value: 0.0
+    max_value: 238409.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8393
+      - value: '39.0'
+        count: 4
+      - value: '22.0'
+        count: 3
+      - value: '24.0'
+        count: 3
+    definition: Population age 5 and older who speak amharic somali or other afro
+      asiatic languages at home and speak English less than very well.
+    needs_confirmation: 'no'
+  - name: language_yoruba_twi_igbo_or_other_languages_of_western_africaE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 459
+    min_value: 0.0
+    max_value: 689265.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8377
+      - value: '1249.0'
+        count: 2
+      - value: '140.0'
+        count: 2
+      - value: '1432.0'
+        count: 2
+    definition: Population age 5 and older who speak yoruba twi igbo or other languages
+      of western africa at home.
+    needs_confirmation: 'no'
+  - name: language_yoruba_twi_igbo_or_other_languages_of_western_africa_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 449
+    min_value: 0.0
+    max_value: 548195.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8377
+      - value: '1288.0'
+        count: 3
+      - value: '210.0'
+        count: 3
+      - value: '1131.0'
+        count: 2
+    definition: Population age 5 and older who speak yoruba twi igbo or other languages
+      of western africa at home and speak English very well.
+    needs_confirmation: 'no'
+  - name: language_yoruba_twi_igbo_or_other_languages_of_western_africa_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 411
+    min_value: 0.0
+    max_value: 141070.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8390
+      - value: '2.0'
+        count: 5
+      - value: '144.0'
+        count: 3
+      - value: '152.0'
+        count: 3
+    definition: Population age 5 and older who speak yoruba twi igbo or other languages
+      of western africa at home and speak English less than very well.
+    needs_confirmation: 'no'
+  - name: language_swahili_or_other_languages_of_central_eastern_and_southern_africaE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 461
+    min_value: 0.0
+    max_value: 343853.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '368.0'
+        count: 3
+      - value: '10234.0'
+        count: 2
+      - value: '13.0'
+        count: 2
+    definition: Population age 5 and older who speak swahili or other languages of
+      central eastern and southern africa at home.
+    needs_confirmation: 'no'
+  - name: language_swahili_or_other_languages_of_central_eastern_and_southern_africa_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 460
+    min_value: 0.0
+    max_value: 232858.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8376
+      - value: '91.0'
+        count: 3
+      - value: '113.0'
+        count: 2
+      - value: '116.0'
+        count: 2
+    definition: Population age 5 and older who speak swahili or other languages of
+      central eastern and southern africa at home and speak English very well.
+    needs_confirmation: 'no'
+  - name: language_swahili_or_other_languages_of_central_eastern_and_southern_africa_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 434
+    min_value: 0.0
+    max_value: 110995.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8381
+      - value: '50.0'
+        count: 3
+      - value: '100.0'
+        count: 2
+      - value: '13.0'
+        count: 2
+    definition: Population age 5 and older who speak swahili or other languages of
+      central eastern and southern africa at home and speak English less than very
+      well.
+    needs_confirmation: 'no'
+  - name: language_navajoE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 256
+    min_value: 0.0
+    max_value: 168931.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8439
+      - value: '31.0'
+        count: 7
+      - value: '10.0'
+        count: 6
+      - value: '11.0'
+        count: 6
+    definition: Population age 5 and older who speak navajo at home.
+    needs_confirmation: 'no'
+  - name: language_navajo_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 241
+    min_value: 0.0
+    max_value: 135017.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8444
+      - value: '17.0'
+        count: 8
+      - value: '10.0'
+        count: 7
+      - value: '11.0'
+        count: 6
+    definition: Population age 5 and older who speak navajo at home and speak English
+      very well.
+    needs_confirmation: 'no'
+  - name: language_navajo_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 127
+    min_value: 0.0
+    max_value: 39609.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8581
+      - value: '1.0'
+        count: 13
+      - value: '11.0'
+        count: 11
+      - value: '2.0'
+        count: 11
+    definition: Population age 5 and older who speak navajo at home and speak English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: language_other_native_languages_of_north_americaE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 444
+    min_value: 0.0
+    max_value: 191452.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8380
+      - value: '834.0'
+        count: 3
+      - value: '1010.0'
+        count: 2
+      - value: '102.0'
+        count: 2
+    definition: Population age 5 and older who speak other native languages of north
+      america at home.
+    needs_confirmation: 'no'
+  - name: language_other_native_languages_of_north_america_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 437
+    min_value: 0.0
+    max_value: 163947.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8380
+      - value: '101.0'
+        count: 3
+      - value: '315.0'
+        count: 3
+      - value: '596.0'
+        count: 3
+    definition: Population age 5 and older who speak other native languages of north
+      america at home and speak English very well.
+    needs_confirmation: 'no'
+  - name: language_other_native_languages_of_north_america_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 320
+    min_value: 0.0
+    max_value: 27505.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8405
+      - value: '222.0'
+        count: 6
+      - value: '149.0'
+        count: 4
+      - value: '22.0'
+        count: 4
+    definition: Population age 5 and older who speak other native languages of north
+      america at home and speak English less than very well.
+    needs_confirmation: 'no'
+  - name: language_other_and_unspecified_languagesE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 463
+    min_value: 0.0
+    max_value: 330049.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '1082.0'
+        count: 2
+      - value: '1509.0'
+        count: 2
+      - value: '1567.0'
+        count: 2
+    definition: Population age 5 and older who speak other and unspecified languages
+      at home.
+    needs_confirmation: 'no'
+  - name: language_other_and_unspecified_languages_speak_english_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 451
+    min_value: 0.0
+    max_value: 234937.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '709.0'
+        count: 3
+      - value: '1015.0'
+        count: 2
+      - value: '1201.0'
+        count: 2
+    definition: Population age 5 and older who speak other and unspecified languages
+      at home and speak English very well.
+    needs_confirmation: 'no'
+  - name: language_other_and_unspecified_languages_speak_english_less_than_very_wellE
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 410
+    min_value: 0.0
+    max_value: 95112.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8375
+      - value: '104.0'
+        count: 4
+      - value: '45.0'
+        count: 4
+      - value: '62.0'
+        count: 4
+    definition: Population age 5 and older who speak other and unspecified languages
+      at home and speak English less than very well.
+    needs_confirmation: 'no'
+lineage:
+  - step: write_target
+    script: foundations/etl/silver/acs_language_silver.R
+    details: foundations/etl/silver/acs_language_silver.R writes silver.language_base
+      from staging.acs_language_* with CBSA rebasing from county data via silver.xwalk_cbsa_county.
+

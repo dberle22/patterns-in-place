@@ -1,0 +1,99 @@
+table_name: environment_wide
+schema: gold
+grain: One row per geo_level + geo_id + year.
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2016'
+  max: '2025'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=2
+    - distinct_geo_id=1626
+    - county_rows=10057
+    - cbsa_rows=5088
+    - ejscreen_rows_2024_county=977
+    - ejscreen_rows_2024_cbsa=482
+    - fema_rows_2025_county=959
+    - fema_rows_2025_cbsa=478
+quality_notes:
+  - Live key check on 2026-06-08 found zero duplicates on geo_level + geo_id + year.
+  - AQI remains the source-faithful county + CBSA backbone of the table.
+  - County rows inherit the Silver county-identification strategy: normalized EPA state and county names matched to canonical county GEOIDs, with a small documented manual alias fallback.
+  - CBSA rows inherit the source-published 5-digit `cbsa_code` as `geo_id`.
+  - Ten county rows were intentionally dropped upstream in Silver because they could not be matched to a canonical county GEOID after normalization.
+  - EJScreen indicators are rolled up from tract to county and CBSA with population-weighted averages using tract population as the weight.
+  - Because AQI remains the Gold backbone, EJScreen fields are currently populated only for AQI rows that intersect the 2024 EJScreen county / CBSA rollup.
+  - EJScreen inherits the tract-Silver supported-geography boundary, so Puerto Rico and territorial archive rows are not represented in the current Gold rollup.
+  - FEMA NRI joins from `silver.fema_nri` at the shared `geo_level + geo_id + year` grain, so the current FEMA slice only populates for `2025` AQI rows that intersect the FEMA county / CBSA contract.
+  - FEMA Silver preserves county-equivalent rows beyond the monitored AQI backbone, so only the AQI-overlapping subset appears in this Gold table.
+sources:
+  - silver.epa_aqi
+  - silver.ejscreen
+  - silver.fema_nri
+  - gold.dim_geo
+columns:
+  - { name: geo_level, type: VARCHAR, definition: Geographic level for the row (`county` or `cbsa`). }
+  - { name: geo_id, type: VARCHAR, definition: Geographic identifier for the row. County rows use 5-digit county FIPS and CBSA rows use 5-digit CBSA codes. }
+  - { name: geo_name, type: VARCHAR, definition: Geographic display name for the row. }
+  - { name: year, type: INTEGER, definition: Observation year. }
+  - { name: days_with_aqi, type: INTEGER, definition: Number of days in the year with AQI observations for the geography. }
+  - { name: good_days, type: INTEGER, definition: Number of days in the EPA Good AQI category. }
+  - { name: moderate_days, type: INTEGER, definition: Number of days in the EPA Moderate AQI category. }
+  - { name: usg_days, type: INTEGER, definition: Number of days in the EPA Unhealthy for Sensitive Groups AQI category. }
+  - { name: unhealthy_days, type: INTEGER, definition: Number of days in the EPA Unhealthy AQI category. }
+  - { name: very_unhealthy_days, type: INTEGER, definition: Number of days in the EPA Very Unhealthy AQI category. }
+  - { name: hazardous_days, type: INTEGER, definition: Number of days in the EPA Hazardous AQI category. }
+  - { name: max_aqi, type: INTEGER, definition: Maximum AQI observed in the geography during the year. }
+  - { name: aqi_p90, type: DOUBLE, definition: Annual 90th percentile AQI for the geography. }
+  - { name: aqi_median, type: DOUBLE, definition: Annual median AQI for the geography. }
+  - { name: days_ozone, type: INTEGER, definition: Number of days where ozone was the driving pollutant for AQI. }
+  - { name: days_pm25, type: INTEGER, definition: Number of days where PM2.5 was the driving pollutant for AQI. }
+  - { name: ejs_population_covered, type: DOUBLE, definition: Total tract population represented in the EJScreen rollup for the geography and year. }
+  - { name: ejs_pm25, type: DOUBLE, definition: Population-weighted tract-average EJScreen PM2.5 indicator for the geography. }
+  - { name: ejs_ozone, type: DOUBLE, definition: Population-weighted tract-average EJScreen ozone indicator for the geography. }
+  - { name: ejs_diesel_pm, type: DOUBLE, definition: Population-weighted tract-average EJScreen diesel particulate matter indicator for the geography. }
+  - { name: ejs_traffic_proximity, type: DOUBLE, definition: Population-weighted tract-average EJScreen traffic proximity indicator for the geography. }
+  - { name: ejs_superfund_proximity, type: DOUBLE, definition: Population-weighted tract-average EJScreen Superfund proximity indicator for the geography. }
+  - { name: ejs_rmp_proximity, type: DOUBLE, definition: Population-weighted tract-average EJScreen Risk Management Plan proximity indicator for the geography. }
+  - { name: ejs_wastewater_discharge, type: DOUBLE, definition: Population-weighted tract-average EJScreen wastewater discharge indicator for the geography. }
+  - { name: ejs_drinking_water_noncompliance, type: DOUBLE, definition: Population-weighted tract-average EJScreen drinking water noncompliance indicator for the geography. }
+  - { name: ejs_pctile_pm25_us, type: DOUBLE, definition: Population-weighted tract-average national percentile for the EJScreen PM2.5 indicator. }
+  - { name: ejs_pctile_ozone_us, type: DOUBLE, definition: Population-weighted tract-average national percentile for the EJScreen ozone indicator. }
+  - { name: ejs_pctile_diesel_pm_us, type: DOUBLE, definition: Population-weighted tract-average national percentile for the EJScreen diesel particulate matter indicator. }
+  - { name: ejs_pctile_traffic_us, type: DOUBLE, definition: Population-weighted tract-average national percentile for the EJScreen traffic proximity indicator. }
+  - { name: ejs_pctile_superfund_us, type: DOUBLE, definition: Population-weighted tract-average national percentile for the EJScreen Superfund proximity indicator. }
+  - { name: ejs_pctile_rmp_us, type: DOUBLE, definition: Population-weighted tract-average national percentile for the EJScreen RMP proximity indicator. }
+  - { name: ejs_pctile_wastewater_us, type: DOUBLE, definition: Population-weighted tract-average national percentile for the EJScreen wastewater discharge indicator. }
+  - { name: ejs_pctile_drinking_water_us, type: DOUBLE, definition: Population-weighted tract-average national percentile for the EJScreen drinking water noncompliance indicator. }
+  - { name: ejs_avg_high_exposure_indicators, type: DOUBLE, definition: Population-weighted tract-average count of EJScreen indicators above the 80th percentile. }
+  - { name: ejs_avg_high_exposure_supplemental, type: DOUBLE, definition: Population-weighted tract-average count of supplemental EJScreen indicators above the 80th percentile. }
+  - { name: fema_risk_score, type: DOUBLE, definition: FEMA National Risk Index composite risk score for the geography. }
+  - { name: fema_eal_score, type: DOUBLE, definition: FEMA National Risk Index composite expected annual loss score for the geography. }
+  - { name: fema_alr_national_pctile, type: DOUBLE, definition: FEMA National Risk Index national percentile for annualized loss rate. }
+  - { name: fema_alr_vra_national_pctile, type: DOUBLE, definition: FEMA National Risk Index national percentile for annualized loss rate using the socially vulnerable population adjustment. }
+  - { name: fema_social_vulnerability_score, type: DOUBLE, definition: FEMA National Risk Index social vulnerability score for the geography. }
+  - { name: fema_community_resilience_score, type: DOUBLE, definition: FEMA National Risk Index community resilience score for the geography. }
+  - { name: fema_avalanche_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for avalanche. }
+  - { name: fema_coastal_flooding_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for coastal flooding. }
+  - { name: fema_cold_wave_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for cold wave. }
+  - { name: fema_drought_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for drought. }
+  - { name: fema_earthquake_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for earthquake. }
+  - { name: fema_hail_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for hail. }
+  - { name: fema_heat_wave_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for heat wave. }
+  - { name: fema_hurricane_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for hurricane. }
+  - { name: fema_ice_storm_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for ice storm. }
+  - { name: fema_inland_flooding_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for inland flooding. }
+  - { name: fema_landslide_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for landslide. }
+  - { name: fema_lightning_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for lightning. }
+  - { name: fema_strong_wind_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for strong wind. }
+  - { name: fema_tornado_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for tornado. }
+  - { name: fema_tsunami_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for tsunami. }
+  - { name: fema_volcanic_activity_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for volcanic activity. }
+  - { name: fema_wildfire_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for wildfire. }
+  - { name: fema_winter_weather_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for winter weather. }

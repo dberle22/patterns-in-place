@@ -1,0 +1,525 @@
+table_name: language_kpi
+schema: silver
+grain: One row per geo_level + geo_id + geo_name + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - geo_name
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2016'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=165549
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 8
+    top_values:
+      - value: tract
+        count: 714268
+      - value: zcta
+        count: 300692
+      - value: place
+        count: 278953
+      - value: county
+        count: 28988
+      - value: cbsa
+        count: 8373
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: 'no'
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 165549
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 11
+    top_values:
+      - value: '1'
+        count: 27
+      - value: '01001'
+        count: 18
+      - value: '01003'
+        count: 18
+      - value: '01005'
+        count: 18
+      - value: '01007'
+        count: 18
+    definition: Geographic identifier for the row
+    needs_confirmation: 'no'
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 251070
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 81
+    top_values:
+      - value: Alexandria city, Virginia
+        count: 18
+      - value: Baltimore city, Maryland
+        count: 18
+      - value: Bristol city, Virginia
+        count: 18
+      - value: Buena Vista city, Virginia
+        count: 18
+      - value: Carson City, Nevada
+        count: 18
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: 'no'
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: 2016
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2024'
+        count: 154726
+      - value: '2023'
+        count: 154720
+      - value: '2022'
+        count: 154598
+      - value: '2021'
+        count: 154311
+      - value: '2020'
+        count: 153657
+    definition: Observation year or period year for the row.
+    needs_confirmation: 'no'
+  - name: language_total
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 478
+    min_value: 0.0
+    max_value: 3.1614255e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '1000367.0'
+        count: 1
+      - value: '1001567.0'
+        count: 1
+      - value: '1002024.0'
+        count: 1
+    definition: Total population age 5 and older in the language-spoken-at-home universe.
+    needs_confirmation: 'no'
+  - name: language_english_only
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 478
+    min_value: 0.0
+    max_value: 2.4576704e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '1002753.0'
+        count: 1
+      - value: '1012068.0'
+        count: 1
+      - value: '1014495.0'
+        count: 1
+    definition: Population age 5 and older who speak only English at home.
+    needs_confirmation: 'no'
+  - name: language_non_english
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 478
+    min_value: 0.0
+    max_value: 7.0375509e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '100557.0'
+        count: 1
+      - value: '1016077.0'
+        count: 1
+      - value: '103247.0'
+        count: 1
+    definition: Population age 5 and older who speak a language other than English
+      at home.
+    needs_confirmation: 'no'
+  - name: language_limited_english
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 478
+    min_value: 0.0
+    max_value: 2.7139643e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '100442.0'
+        count: 1
+      - value: '100626.0'
+        count: 1
+      - value: '100828.0'
+        count: 1
+    definition: Population age 5 and older who speak a language other than English
+      at home and speak English less than very well.
+    needs_confirmation: 'no'
+  - name: language_spanish
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 478
+    min_value: 0.0
+    max_value: 4.2869908e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '10407915.0'
+        count: 1
+      - value: '10446277.0'
+        count: 1
+      - value: '10462968.0'
+        count: 1
+    definition: Population age 5 and older who speak Spanish at home.
+    needs_confirmation: 'no'
+  - name: language_other_indo_european
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 478
+    min_value: 0.0
+    max_value: 1.2249474e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '100325.0'
+        count: 1
+      - value: '100733.0'
+        count: 1
+      - value: '100894.0'
+        count: 1
+    definition: Population age 5 and older who speak a non-Spanish Indo-European language
+      at home.
+    needs_confirmation: 'no'
+  - name: language_asian_pacific
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 477
+    min_value: 0.0
+    max_value: 1.1320253e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '4681.0'
+        count: 2
+      - value: '10096.0'
+        count: 1
+      - value: '10172370.0'
+        count: 1
+    definition: Population age 5 and older who speak an Asian or Pacific language
+      at home.
+    needs_confirmation: 'no'
+  - name: language_middle_eastern_african
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 476
+    min_value: 0.0
+    max_value: 3292109.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '12844.0'
+        count: 2
+      - value: '5851.0'
+        count: 2
+      - value: '100358.0'
+        count: 1
+    definition: Population age 5 and older who speak an Arabic, Afro-Asiatic, or African
+      language at home.
+    needs_confirmation: 'no'
+  - name: language_native_north_american
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 437
+    min_value: 0.0
+    max_value: 359459.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8380
+      - value: '58.0'
+        count: 4
+      - value: '1072.0'
+        count: 3
+      - value: '608.0'
+        count: 3
+    definition: Population age 5 and older who speak a Native North American language
+      at home.
+    needs_confirmation: 'no'
+  - name: language_other_unspecified
+    type: DOUBLE
+    null_pct: 99.3355
+    distinct_count: 463
+    min_value: 0.0
+    max_value: 330049.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1323018
+      - value: '0.0'
+        count: 8373
+      - value: '1082.0'
+        count: 2
+      - value: '1509.0'
+        count: 2
+      - value: '1567.0'
+        count: 2
+    definition: Population age 5 and older who speak another or unspecified language
+      at home.
+    needs_confirmation: 'no'
+  - name: pct_english_only
+    type: DOUBLE
+    null_pct: 99.9642
+    distinct_count: 477
+    min_value: 0.0452772
+    max_value: 0.9755444
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1331391
+      - value: '0.04527721296352453'
+        count: 1
+      - value: '0.0489460993763958'
+        count: 1
+      - value: '0.05048354093441852'
+        count: 1
+      - value: '0.05146574370331206'
+        count: 1
+    definition: Share of the language-spoken-at-home universe that speaks only English
+      at home.
+    needs_confirmation: 'no'
+  - name: pct_non_english
+    type: DOUBLE
+    null_pct: 99.9642
+    distinct_count: 477
+    min_value: 0.0244556
+    max_value: 0.9547228
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1331391
+      - value: '0.024455562027859448'
+        count: 1
+      - value: '0.02458062516490974'
+        count: 1
+      - value: '0.02470040858963384'
+        count: 1
+      - value: '0.024780273366929458'
+        count: 1
+    definition: Share of the language-spoken-at-home universe that speaks a language
+      other than English at home.
+    needs_confirmation: 'no'
+  - name: pct_limited_english
+    type: DOUBLE
+    null_pct: 99.9642
+    distinct_count: 477
+    min_value: 0.0064761
+    max_value: 0.7811008
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1331391
+      - value: '0.006476069576174622'
+        count: 1
+      - value: '0.006673140021496572'
+        count: 1
+      - value: '0.006675723472574382'
+        count: 1
+      - value: '0.007002849178139894'
+        count: 1
+    definition: Share of the language-spoken-at-home universe that speaks English
+      less than very well.
+    needs_confirmation: 'no'
+  - name: pct_spanish
+    type: DOUBLE
+    null_pct: 99.9642
+    distinct_count: 477
+    min_value: 0.0087293
+    max_value: 0.9532193
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1331391
+      - value: '0.008729320499751872'
+        count: 1
+      - value: '0.00883735040655288'
+        count: 1
+      - value: '0.009022143824563539'
+        count: 1
+      - value: '0.009035964098973805'
+        count: 1
+    definition: Share of the language-spoken-at-home universe that speaks Spanish
+      at home.
+    needs_confirmation: 'no'
+  - name: pct_other_indo_european
+    type: DOUBLE
+    null_pct: 99.9642
+    distinct_count: 477
+    min_value: 0.0009118
+    max_value: 0.0926083
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1331391
+      - value: '0.0009117739491877244'
+        count: 1
+      - value: '0.0009413334439908197'
+        count: 1
+      - value: '0.0009424144456511605'
+        count: 1
+      - value: '0.0009495559383465998'
+        count: 1
+    definition: Share of the language-spoken-at-home universe that speaks a non-Spanish
+      Indo-European language at home.
+    needs_confirmation: 'no'
+  - name: pct_asian_pacific
+    type: DOUBLE
+    null_pct: 99.9642
+    distinct_count: 477
+    min_value: 0.0003664
+    max_value: 0.2224951
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1331391
+      - value: '0.000366446522109685'
+        count: 1
+      - value: '0.000422218037319137'
+        count: 1
+      - value: '0.00042696079521448106'
+        count: 1
+      - value: '0.00042702713248029064'
+        count: 1
+    definition: Share of the language-spoken-at-home universe that speaks an Asian
+      or Pacific language at home.
+    needs_confirmation: 'no'
+  - name: pct_middle_eastern_african
+    type: DOUBLE
+    null_pct: 99.9642
+    distinct_count: 477
+    min_value: 0.0001192
+    max_value: 0.0269653
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1331391
+      - value: '0.00011916487997744647'
+        count: 1
+      - value: '0.00013191701119405643'
+        count: 1
+      - value: '0.00015955039547871792'
+        count: 1
+      - value: '0.0001601516693279485'
+        count: 1
+    definition: Share of the language-spoken-at-home universe that speaks an Arabic,
+      Afro-Asiatic, or African language at home.
+    needs_confirmation: 'no'
+  - name: pct_native_north_american
+    type: DOUBLE
+    null_pct: 99.9642
+    distinct_count: 471
+    min_value: 0.0
+    max_value: 0.0498142
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1331391
+      - value: '0.0'
+        count: 7
+      - value: '0.00010027406251818886'
+        count: 1
+      - value: '0.00010137373448882232'
+        count: 1
+      - value: '0.00010245545002111222'
+        count: 1
+    definition: Share of the language-spoken-at-home universe that speaks a Native
+      North American language at home.
+    needs_confirmation: 'no'
+  - name: pct_other_unspecified
+    type: DOUBLE
+    null_pct: 99.9642
+    distinct_count: 477
+    min_value: 1.8815507e-05
+    max_value: 0.0100993
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1331391
+      - value: '0.00010302769048049181'
+        count: 1
+      - value: '0.0001076229207501997'
+        count: 1
+      - value: '0.00013677657956415054'
+        count: 1
+      - value: '0.00013732476714912737'
+        count: 1
+    definition: Share of the language-spoken-at-home universe that speaks another
+      or unspecified language at home.
+    needs_confirmation: 'no'
+lineage:
+  - step: write_target
+    script: foundations/etl/silver/acs_language_silver.R
+    details: foundations/etl/silver/acs_language_silver.R writes silver.language_kpi
+      from staging.acs_language_* with CBSA rebasing from county data via silver.xwalk_cbsa_county.
+

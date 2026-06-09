@@ -1,0 +1,386 @@
+table_name: broadband_base
+schema: silver
+grain: One row per geo_level + geo_id + geo_name + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - geo_name
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2017'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=165542
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 8
+    top_values:
+      - value: tract
+        count: 641212
+      - value: zcta
+        count: 267572
+      - value: place
+        count: 249379
+      - value: county
+        count: 25768
+      - value: cbsa
+        count: 7445
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: 'no'
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 165542
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 11
+    top_values:
+      - value: '1'
+        count: 24
+      - value: '01001'
+        count: 16
+      - value: '01003'
+        count: 16
+      - value: '01005'
+        count: 16
+      - value: '01007'
+        count: 16
+    definition: Geographic identifier for the row
+    needs_confirmation: 'no'
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 251047
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 81
+    top_values:
+      - value: Alexandria city, Virginia
+        count: 16
+      - value: Baltimore city, Maryland
+        count: 16
+      - value: Bristol city, Virginia
+        count: 16
+      - value: Buena Vista city, Virginia
+        count: 16
+      - value: Carson City, Nevada
+        count: 16
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: 'no'
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 8
+    min_value: 2017
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2024'
+        count: 154726
+      - value: '2023'
+        count: 154720
+      - value: '2022'
+        count: 154598
+      - value: '2021'
+        count: 154311
+      - value: '2020'
+        count: 153657
+    definition: Observation year or period year for the row.
+    needs_confirmation: 'no'
+  - name: internet_total_hhE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 37184
+    min_value: 0.0
+    max_value: 1.292275e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 17432
+      - value: '32.0'
+        count: 992
+      - value: '43.0'
+        count: 945
+      - value: '33.0'
+        count: 943
+      - value: '46.0'
+        count: 943
+    definition: Total households in the broadband and internet-access universe.
+    needs_confirmation: 'no'
+  - name: internet_with_subscriptionE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 34236
+    min_value: 0.0
+    max_value: 1.1774964e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 20242
+      - value: '15.0'
+        count: 1273
+      - value: '16.0'
+        count: 1254
+      - value: '22.0'
+        count: 1253
+      - value: '14.0'
+        count: 1239
+    definition: Households with an internet subscription of any kind.
+    needs_confirmation: 'no'
+  - name: internet_dial_up_onlyE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 2149
+    min_value: 0.0
+    max_value: 732848.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 765443
+      - value: '9.0'
+        count: 21706
+      - value: '8.0'
+        count: 21685
+      - value: '2.0'
+        count: 20657
+      - value: '7.0'
+        count: 19059
+    definition: Households with dial-up internet service only.
+    needs_confirmation: 'no'
+  - name: internet_broadband_anyE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 34248
+    min_value: 0.0
+    max_value: 1.1757307e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 20356
+      - value: '15.0'
+        count: 1282
+      - value: '14.0'
+        count: 1260
+      - value: '16.0'
+        count: 1260
+      - value: '21.0'
+        count: 1247
+    definition: Households with a broadband internet subscription of any kind.
+    needs_confirmation: 'no'
+  - name: internet_cellular_data_onlyE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 31431
+    min_value: 0.0
+    max_value: 1.1009698e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 23773
+      - value: '9.0'
+        count: 1672
+      - value: '8.0'
+        count: 1671
+      - value: '13.0'
+        count: 1666
+      - value: '14.0'
+        count: 1655
+    definition: Households with only a cellular data plan and no other internet subscription.
+    needs_confirmation: 'no'
+  - name: internet_cellular_and_otherE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 11735
+    min_value: 0.0
+    max_value: 1.4818703e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 64403
+      - value: '9.0'
+        count: 6229
+      - value: '10.0'
+        count: 6102
+      - value: '8.0'
+        count: 6079
+      - value: '7.0'
+        count: 6054
+    definition: Households with a cellular data plan plus one or more non-broadband
+      internet subscriptions.
+    needs_confirmation: 'no'
+  - name: internet_broadband_and_cellularE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 31115
+    min_value: 0.0
+    max_value: 9.7727353e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 27677
+      - value: '9.0'
+        count: 1881
+      - value: '10.0'
+        count: 1833
+      - value: '12.0'
+        count: 1828
+      - value: '16.0'
+        count: 1815
+    definition: Households with a broadband subscription and a cellular data plan.
+    needs_confirmation: 'no'
+  - name: internet_broadband_no_cellularE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 12439
+    min_value: 0.0
+    max_value: 3.0809298e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 80782
+      - value: '9.0'
+        count: 7755
+      - value: '8.0'
+        count: 7605
+      - value: '10.0'
+        count: 7491
+      - value: '7.0'
+        count: 7325
+    definition: Households with a broadband subscription and no cellular data plan.
+    needs_confirmation: 'no'
+  - name: internet_satellite_onlyE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 9040
+    min_value: 0.0
+    max_value: 8561203.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 87473
+      - value: '9.0'
+        count: 10342
+      - value: '8.0'
+        count: 10208
+      - value: '7.0'
+        count: 9980
+      - value: '10.0'
+        count: 9966
+    definition: Households with a satellite internet subscription only.
+    needs_confirmation: 'no'
+  - name: internet_satellite_and_otherE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 2970
+    min_value: 0.0
+    max_value: 1562113.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 606769
+      - value: '8.0'
+        count: 22409
+      - value: '9.0'
+        count: 22017
+      - value: '10.0'
+        count: 20022
+      - value: '7.0'
+        count: 19957
+    definition: Households with satellite internet plus another non-cellular subscription
+      type.
+    needs_confirmation: 'no'
+  - name: internet_other_serviceE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 1438
+    min_value: 0.0
+    max_value: 264731.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 990077
+      - value: '2.0'
+        count: 11878
+      - value: '3.0'
+        count: 10657
+      - value: '8.0'
+        count: 10623
+      - value: '9.0'
+        count: 10362
+    definition: Households with another internet service type not captured by the
+      named categories.
+    needs_confirmation: 'no'
+  - name: internet_access_no_subscriptionE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 6600
+    min_value: 0.0
+    max_value: 4343333.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 239842
+      - value: '9.0'
+        count: 19431
+      - value: '8.0'
+        count: 19211
+      - value: '10.0'
+        count: 18222
+      - value: '7.0'
+        count: 17790
+    definition: Households with internet access but no paid internet subscription.
+    needs_confirmation: 'no'
+  - name: internet_no_accessE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 12507
+    min_value: 0.0
+    max_value: 2.0936125e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 70110
+      - value: '9.0'
+        count: 7139
+      - value: '10.0'
+        count: 6756
+      - value: '8.0'
+        count: 6685
+      - value: '11.0'
+        count: 6615
+    definition: Households with no internet access.
+    needs_confirmation: 'no'
+lineage:
+  - step: write_target
+    script: foundations/etl/silver/acs_broadband_silver.R
+    details: foundations/etl/silver/acs_broadband_silver.R writes silver.broadband_base
+      from staging.acs_broadband_* with CBSA rebasing from county data via silver.xwalk_cbsa_county.
+

@@ -21,9 +21,12 @@ These docs sit above the layer contracts and answer the higher-level questions t
 
 - [source__acs.md](./source__acs.md)
 - [source__bea.md](./source__bea.md)
+- [source__bfs.md](./source__bfs.md)
 - [source__bls.md](./source__bls.md)
 - [source__bps.md](./source__bps.md)
+- [source__cbp.md](./source__cbp.md)
 - [source__hud.md](./source__hud.md)
+- [source__epa.md](./source__epa.md)
 - [source__irs.md](./source__irs.md)
 - [source__zillow.md](./source__zillow.md)
 
@@ -44,6 +47,8 @@ Each source spec should follow the same 9-section pattern:
 7. `Data Quality Expectations`
 8. `Operational Notes`
 9. `Known Gaps`
+
+Some newer specs also add a short `Source References` section when the live upstream URLs are important to preserve explicitly.
 
 For large providers like ACS or BEA, topic groups should be handled inside one provider file rather than split into many repetitive child docs unless the operating rules diverge materially.
 

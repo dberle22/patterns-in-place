@@ -1,0 +1,61 @@
+table_name: usda_food_atlas
+schema: silver
+grain: One row per geo_level + geo_id + year (tract-native USDA Food Access Research Atlas baseline with derived county and CBSA rollups).
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2019'
+  max: '2019'
+geo_coverage:
+  notes:
+    - tract_rows_source_native=true
+quality_notes:
+  - The USDA Atlas is already tract-native, so Silver keeps tract rows source faithful and derives counties directly from the first 5 digits of tract GEOID.
+  - The build stops if any county GEOID derived from tract keys fails to resolve to `silver.xwalk_county_state`.
+  - CBSA rows are derived from county rows through `silver.xwalk_cbsa_county`.
+  - The Atlas is a single-vintage 2019 baseline built on 2010 tract polygons rather than a recurring annual panel.
+  - The first-pass county contract keeps the 8 legacy Connecticut county GEOIDs via an explicit manual name map so the 2019 USDA rollups align with the county geography contract already in use elsewhere in Foundations. Alaska county-equivalent `02261` remains excluded from county and CBSA rollups because the current county crosswalk no longer carries that retired geography.
+  - Population burden shares are recomputed from summed burdens and summed population rather than averaged from tract-level percentages.
+sources:
+  - staging.usda_food_atlas
+  - silver.xwalk_county_state
+  - silver.xwalk_cbsa_county
+columns:
+  - { name: geo_level, type: VARCHAR, definition: Geographic level for the row (`tract`, `county`, or `cbsa`). }
+  - { name: geo_id, type: VARCHAR, definition: Geographic identifier for the row. Tract rows use 11-digit tract GEOIDs, county rows use 5-digit county GEOIDs, and CBSA rows use 5-digit CBSA codes. }
+  - { name: geo_name, type: VARCHAR, definition: Geographic display name for the row. }
+  - { name: year, type: INTEGER, definition: USDA Food Access Research Atlas baseline year (`2019`). }
+  - { name: population_total, type: DOUBLE, definition: Total population represented by the geography. }
+  - { name: population_low_access_1, type: DOUBLE, definition: Population count with low food access at the 1-mile threshold. }
+  - { name: population_low_access_1_10, type: DOUBLE, definition: Population count with low food access under the main 1-mile urban / 10-mile rural Atlas threshold. }
+  - { name: population_low_income_low_access_1, type: DOUBLE, definition: Low-income population count with low food access at the 1-mile threshold. }
+  - { name: population_low_income_low_access_1_10, type: DOUBLE, definition: Low-income population count with low food access under the main 1-mile urban / 10-mile rural Atlas threshold. }
+  - { name: total_tract_count, type: INTEGER, definition: Number of tracts represented by the row. }
+  - { name: lila_tract_count_1_10, type: INTEGER, definition: Number of tracts designated low income and low access under the main Atlas threshold. }
+  - { name: low_income_tract_count, type: INTEGER, definition: Number of tracts designated low income. }
+  - { name: low_access_tract_count_1_10, type: INTEGER, definition: Number of tracts designated low access under the main Atlas threshold. }
+  - { name: pct_lila_tracts_1_and_10, type: DOUBLE, definition: Share of tracts designated low income and low access under the main Atlas threshold. }
+  - { name: pct_low_income_tracts, type: DOUBLE, definition: Share of tracts designated low income. }
+  - { name: pct_low_access_tracts_1_and_10, type: DOUBLE, definition: Share of tracts designated low access under the main Atlas threshold. }
+  - { name: pct_population_low_access_1, type: DOUBLE, definition: Share of population with low food access at the 1-mile threshold. }
+  - { name: pct_population_low_access_1_10, type: DOUBLE, definition: Share of population with low food access under the main 1-mile urban / 10-mile rural Atlas threshold. }
+  - { name: pct_population_low_income_low_access_1, type: DOUBLE, definition: Share of population that is both low income and low access at the 1-mile threshold. }
+  - { name: pct_population_low_income_low_access_1_10, type: DOUBLE, definition: Share of population that is both low income and low access under the main Atlas threshold. }
+  - { name: poverty_rate, type: DOUBLE, definition: Population-weighted poverty rate context field. }
+  - { name: median_family_income, type: DOUBLE, definition: Population-weighted median family income context field. }
+lineage:
+  - step: read_source
+    script: foundations/etl/staging/get_usda_food_atlas.R
+    details: Downloads the USDA workbook, reads the tract sheet, normalizes the approved compact field set, and writes `staging.usda_food_atlas`.
+  - step: derive_rollups
+    script: foundations/etl/silver/usda_food_atlas_silver.R
+    details: Keeps tract rows source-native, derives county GEOIDs from tract prefixes, rolls counties to CBSAs, recomputes tract-share and population-burden rates, and writes `silver.usda_food_atlas`.
+  - step: write_target
+    script: foundations/etl/silver/usda_food_atlas_silver.R
+    details: Writes `silver.usda_food_atlas` with overwrite enabled after county coverage and uniqueness checks pass.
+kpi_definitions: []

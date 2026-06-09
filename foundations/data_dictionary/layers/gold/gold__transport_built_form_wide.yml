@@ -16,7 +16,7 @@ geo_coverage:
     - distinct_geo_levels=9
     - distinct_geo_id=115976
 quality_notes:
-  - Live key check on 2026-04-10 found zero duplicates on geo_level + geo_id + year.
+  - Live key check on 2026-06-08 found zero duplicates on geo_level + geo_id + year.
   - Density fields are intentionally partial because they depend on tract geometry support.
   - Non-null density rows are currently concentrated in tract, county, cbsa, and a subset of state rows.
 sources:

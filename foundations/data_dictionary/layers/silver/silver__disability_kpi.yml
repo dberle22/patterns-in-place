@@ -1,0 +1,890 @@
+table_name: disability_kpi
+schema: silver
+grain: One row per geo_level + geo_id + geo_name + year (inferred).
+primary_key:
+  - geo_level
+  - geo_id
+  - geo_name
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2012'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=198456
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 8
+    top_values:
+      - value: tract
+        count: 1006492
+      - value: zcta
+        count: 433172
+      - value: place
+        count: 397094
+      - value: county
+        count: 41870
+      - value: cbsa
+        count: 12085
+    definition: Geographic level (US, region, division, state, county, place, zcta,
+      tract, cbsa)
+    needs_confirmation: 'no'
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 198456
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 11
+    top_values:
+      - value: '1'
+        count: 39
+      - value: '2'
+        count: 26
+      - value: '3'
+        count: 26
+      - value: '4'
+        count: 26
+      - value: '01001'
+        count: 25
+    definition: Geographic identifier for the row
+    needs_confirmation: 'no'
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 251188
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 81
+    top_values:
+      - value: Alexandria city, Virginia
+        count: 26
+      - value: Baltimore city, Maryland
+        count: 26
+      - value: Bristol city, Virginia
+        count: 26
+      - value: Buena Vista city, Virginia
+        count: 26
+      - value: Carson City, Nevada
+        count: 26
+    definition: Geographic name (from ACS NAME)
+    needs_confirmation: 'no'
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 13
+    min_value: 2012
+    max_value: 2024
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '2024'
+        count: 154726
+      - value: '2023'
+        count: 154720
+      - value: '2022'
+        count: 154598
+      - value: '2021'
+        count: 154311
+      - value: '2020'
+        count: 153657
+    definition: Observation year or period year for the row.
+    needs_confirmation: 'no'
+  - name: disability_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 80081
+    min_value: 0.0
+    max_value: 3.2998075e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 21493
+      - value: '61.0'
+        count: 627
+      - value: '74.0'
+        count: 623
+      - value: '64.0'
+        count: 614
+      - value: '69.0'
+        count: 609
+    definition: Total civilian noninstitutionalized population in the disability-status
+      universe.
+    needs_confirmation: 'no'
+  - name: disability_with
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 26141
+    min_value: 0.0
+    max_value: 4.3869797e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 40822
+      - value: '10.0'
+        count: 3575
+      - value: '14.0'
+        count: 3451
+      - value: '8.0'
+        count: 3446
+      - value: '9.0'
+        count: 3444
+    definition: Population with a disability.
+    needs_confirmation: 'no'
+  - name: disability_without
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 74148
+    min_value: 0.0
+    max_value: 2.8611096e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 23189
+      - value: '58.0'
+        count: 750
+      - value: '56.0'
+        count: 728
+      - value: '35.0'
+        count: 727
+      - value: '87.0'
+        count: 726
+    definition: Population without a disability.
+    needs_confirmation: 'no'
+  - name: disability_male_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 52594
+    min_value: 0.0
+    max_value: 1.6227103e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 23807
+      - value: '42.0'
+        count: 1180
+      - value: '32.0'
+        count: 1174
+      - value: '44.0'
+        count: 1171
+      - value: '41.0'
+        count: 1170
+    definition: Male civilian noninstitutionalized population in the disability-status
+      universe.
+    needs_confirmation: 'no'
+  - name: disability_male_with
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 18268
+    min_value: 0.0
+    max_value: 2.1240802e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 57511
+      - value: '9.0'
+        count: 6358
+      - value: '8.0'
+        count: 6344
+      - value: '12.0'
+        count: 6212
+      - value: '10.0'
+        count: 6201
+    definition: Male population with a disability.
+    needs_confirmation: 'no'
+  - name: disability_female_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 53981
+    min_value: 0.0
+    max_value: 1.6770972e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 24132
+      - value: '49.0'
+        count: 1240
+      - value: '43.0'
+        count: 1227
+      - value: '56.0'
+        count: 1215
+      - value: '31.0'
+        count: 1198
+    definition: Female civilian noninstitutionalized population in the disability-status
+      universe.
+    needs_confirmation: 'no'
+  - name: disability_female_with
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 18920
+    min_value: 0.0
+    max_value: 2.2628995e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 62219
+      - value: '8.0'
+        count: 6946
+      - value: '9.0'
+        count: 6785
+      - value: '10.0'
+        count: 6679
+      - value: '11.0'
+        count: 6504
+    definition: Female population with a disability.
+    needs_confirmation: 'no'
+  - name: disability_under_5_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 18334
+    min_value: 0.0
+    max_value: 2.013514e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 118227
+      - value: '8.0'
+        count: 7474
+      - value: '10.0'
+        count: 7320
+      - value: '4.0'
+        count: 7275
+      - value: '9.0'
+        count: 7243
+    definition: Population under age 5 in the disability-status universe.
+    needs_confirmation: 'no'
+  - name: disability_under_5_with
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 1969
+    min_value: 0.0
+    max_value: 161265.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 1639628
+      - value: '9.0'
+        count: 9500
+      - value: '3.0'
+        count: 9480
+      - value: '4.0'
+        count: 9323
+      - value: '8.0'
+        count: 9236
+    definition: Population under age 5 with a disability.
+    needs_confirmation: 'no'
+  - name: disability_5_17_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 30226
+    min_value: 0.0
+    max_value: 5.4684151e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 65130
+      - value: '12.0'
+        count: 3645
+      - value: '10.0'
+        count: 3600
+      - value: '14.0'
+        count: 3460
+      - value: '9.0'
+        count: 3444
+    definition: Population ages 5 to 17 in the disability-status universe.
+    needs_confirmation: 'no'
+  - name: disability_5_17_with
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 7816
+    min_value: 0.0
+    max_value: 3449147.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 440130
+      - value: '9.0'
+        count: 28016
+      - value: '8.0'
+        count: 27665
+      - value: '10.0'
+        count: 27392
+      - value: '11.0'
+        count: 26303
+    definition: Population ages 5 to 17 with a disability.
+    needs_confirmation: 'no'
+  - name: disability_18_34_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 36360
+    min_value: 0.0
+    max_value: 7.4890315e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 51987
+      - value: '16.0'
+        count: 2972
+      - value: '12.0'
+        count: 2941
+      - value: '15.0'
+        count: 2928
+      - value: '9.0'
+        count: 2922
+    definition: Population ages 18 to 34 in the disability-status universe.
+    needs_confirmation: 'no'
+  - name: disability_18_34_with
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 9758
+    min_value: 0.0
+    max_value: 6058471.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 278492
+      - value: '2.0'
+        count: 23168
+      - value: '9.0'
+        count: 21423
+      - value: '8.0'
+        count: 21379
+      - value: '10.0'
+        count: 20965
+    definition: Population ages 18 to 34 with a disability.
+    needs_confirmation: 'no'
+  - name: disability_35_64_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 45863
+    min_value: 0.0
+    max_value: 1.2563791e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 30041
+      - value: '27.0'
+        count: 1518
+      - value: '34.0'
+        count: 1515
+      - value: '22.0'
+        count: 1486
+      - value: '37.0'
+        count: 1482
+    definition: Population ages 35 to 64 in the disability-status universe.
+    needs_confirmation: 'no'
+  - name: disability_35_64_with
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 16651
+    min_value: 0.0
+    max_value: 1.5837938e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 80755
+      - value: '10.0'
+        count: 8218
+      - value: '8.0'
+        count: 8161
+      - value: '9.0'
+        count: 8140
+      - value: '11.0'
+        count: 7911
+    definition: Population ages 35 to 64 with a disability.
+    needs_confirmation: 'no'
+  - name: disability_65_74_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 21281
+    min_value: 0.0
+    max_value: 3.3677758e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 56978
+      - value: '8.0'
+        count: 5232
+      - value: '10.0'
+        count: 5212
+      - value: '9.0'
+        count: 5155
+      - value: '12.0'
+        count: 4966
+    definition: Population ages 65 to 74 in the disability-status universe.
+    needs_confirmation: 'no'
+  - name: disability_65_74_with
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 11150
+    min_value: 0.0
+    max_value: 8071051.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 131989
+      - value: '9.0'
+        count: 15461
+      - value: '8.0'
+        count: 15379
+      - value: '10.0'
+        count: 15215
+      - value: '6.0'
+        count: 14709
+    definition: Population ages 65 to 74 with a disability.
+    needs_confirmation: 'no'
+  - name: disability_75_plus_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 18064
+    min_value: 0.0
+    max_value: 2.2561941e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 77997
+      - value: '9.0'
+        count: 7285
+      - value: '10.0'
+        count: 7283
+      - value: '8.0'
+        count: 7240
+      - value: '11.0'
+        count: 6924
+    definition: Population age 75 and older in the disability-status universe.
+    needs_confirmation: 'no'
+  - name: disability_75_plus_with
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 12938
+    min_value: 0.0
+    max_value: 1.0416723e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 119822
+      - value: '9.0'
+        count: 12415
+      - value: '8.0'
+        count: 12409
+      - value: '10.0'
+        count: 12269
+      - value: '6.0'
+        count: 12024
+    definition: Population age 75 and older with a disability.
+    needs_confirmation: 'no'
+  - name: disability_under_18_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 35667
+    min_value: 0.0
+    max_value: 7.410594e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 57492
+      - value: '12.0'
+        count: 2772
+      - value: '10.0'
+        count: 2704
+      - value: '14.0'
+        count: 2641
+      - value: '9.0'
+        count: 2621
+    definition: Population under age 18 in the disability-status universe.
+    needs_confirmation: 'no'
+  - name: disability_under_18_with
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 7958
+    min_value: 0.0
+    max_value: 3578121.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 425396
+      - value: '9.0'
+        count: 27340
+      - value: '8.0'
+        count: 26990
+      - value: '10.0'
+        count: 26689
+      - value: '11.0'
+        count: 25730
+    definition: Population under age 18 with a disability.
+    needs_confirmation: 'no'
+  - name: disability_18_64_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 60628
+    min_value: 0.0
+    max_value: 2.0030357e+08
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 25612
+      - value: '37.0'
+        count: 1051
+      - value: '40.0'
+        count: 1022
+      - value: '57.0'
+        count: 1022
+      - value: '36.0'
+        count: 1011
+    definition: Population ages 18 to 64 in the disability-status universe.
+    needs_confirmation: 'no'
+  - name: disability_18_64_with
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 18970
+    min_value: 0.0
+    max_value: 2.1803902e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 68117
+      - value: '10.0'
+        count: 6651
+      - value: '9.0'
+        count: 6639
+      - value: '8.0'
+        count: 6567
+      - value: '7.0'
+        count: 6381
+    definition: Population ages 18 to 64 with a disability.
+    needs_confirmation: 'no'
+  - name: disability_65_plus_total
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 27878
+    min_value: 0.0
+    max_value: 5.6239699e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 44262
+      - value: '19.0'
+        count: 3189
+      - value: '15.0'
+        count: 3182
+      - value: '17.0'
+        count: 3159
+      - value: '16.0'
+        count: 3143
+    definition: Population age 65 and older in the disability-status universe.
+    needs_confirmation: 'no'
+  - name: disability_65_plus_with
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 16794
+    min_value: 0.0
+    max_value: 1.8487774e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 75057
+      - value: '8.0'
+        count: 7781
+      - value: '9.0'
+        count: 7722
+      - value: '10.0'
+        count: 7498
+      - value: '11.0'
+        count: 7209
+    definition: Population age 65 and older with a disability.
+    needs_confirmation: 'no'
+  - name: pct_disabled
+    type: DOUBLE
+    null_pct: 1.1363
+    distinct_count: 1077258
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 21493
+      - value: '0.0'
+        count: 19329
+      - value: '1.0'
+        count: 1696
+      - value: '0.2'
+        count: 1388
+      - value: '0.16666666666666666'
+        count: 1335
+    definition: Share of the disability-status universe with a disability.
+    needs_confirmation: 'no'
+  - name: pct_disabled_male
+    type: DOUBLE
+    null_pct: 1.2586
+    distinct_count: 726820
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 33704
+      - value: ~
+        count: 23807
+      - value: '1.0'
+        count: 3244
+      - value: '0.16666666666666666'
+        count: 2310
+      - value: '0.2'
+        count: 2208
+    definition: Share of the male disability-status universe with a disability.
+    needs_confirmation: 'no'
+  - name: pct_disabled_female
+    type: DOUBLE
+    null_pct: 1.2758
+    distinct_count: 741320
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 38087
+      - value: ~
+        count: 24132
+      - value: '1.0'
+        count: 2805
+      - value: '0.16666666666666666'
+        count: 2198
+      - value: '0.14285714285714285'
+        count: 2156
+    definition: Share of the female disability-status universe with a disability.
+    needs_confirmation: 'no'
+  - name: pct_disabled_under_5
+    type: DOUBLE
+    null_pct: 6.2502
+    distinct_count: 80643
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 1521401
+      - value: ~
+        count: 118227
+      - value: '1.0'
+        count: 464
+      - value: '0.1111111111111111'
+        count: 441
+      - value: '0.08333333333333333'
+        count: 436
+    definition: Share of the under-5 disability-status universe with a disability.
+    needs_confirmation: 'no'
+  - name: pct_disabled_5_17
+    type: DOUBLE
+    null_pct: 3.4432
+    distinct_count: 292414
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 375000
+      - value: ~
+        count: 65130
+      - value: '0.08333333333333333'
+        count: 2090
+      - value: '0.1'
+        count: 2088
+      - value: '0.09090909090909091'
+        count: 2057
+    definition: Share of the ages 5 to 17 disability-status universe with a disability.
+    needs_confirmation: 'no'
+  - name: pct_disabled_18_34
+    type: DOUBLE
+    null_pct: 2.7484
+    distinct_count: 365337
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 226505
+      - value: ~
+        count: 51987
+      - value: '1.0'
+        count: 2934
+      - value: '0.1'
+        count: 2200
+      - value: '0.1111111111111111'
+        count: 2172
+    definition: Share of the ages 18 to 34 disability-status universe with a disability.
+    needs_confirmation: 'no'
+  - name: pct_disabled_35_64
+    type: DOUBLE
+    null_pct: 1.5882
+    distinct_count: 656093
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 50714
+      - value: ~
+        count: 30041
+      - value: '1.0'
+        count: 2908
+      - value: '0.16666666666666666'
+        count: 2475
+      - value: '0.2'
+        count: 2466
+    definition: Share of the ages 35 to 64 disability-status universe with a disability.
+    needs_confirmation: 'no'
+  - name: pct_disabled_65_74
+    type: DOUBLE
+    null_pct: 3.0122
+    distinct_count: 271299
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 75011
+      - value: ~
+        count: 56978
+      - value: '1.0'
+        count: 14076
+      - value: '0.3333333333333333'
+        count: 9247
+      - value: '0.5'
+        count: 8477
+    definition: Share of the ages 65 to 74 disability-status universe with a disability.
+    needs_confirmation: 'no'
+  - name: pct_disabled_75_plus
+    type: DOUBLE
+    null_pct: 4.1234
+    distinct_count: 228262
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 77997
+      - value: '1.0'
+        count: 50792
+      - value: '0.0'
+        count: 41825
+      - value: '0.5'
+        count: 19820
+      - value: '0.6666666666666666'
+        count: 9171
+    definition: Share of the age 75 and older disability-status universe with a disability.
+    needs_confirmation: 'no'
+  - name: pct_disabled_under_18
+    type: DOUBLE
+    null_pct: 3.0394
+    distinct_count: 329768
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 367904
+      - value: ~
+        count: 57492
+      - value: '0.05263157894736842'
+        count: 1573
+      - value: '0.06666666666666667'
+        count: 1535
+      - value: '0.07692307692307693'
+        count: 1535
+    definition: Share of the under-18 disability-status universe with a disability.
+    needs_confirmation: 'no'
+  - name: pct_disabled_18_64
+    type: DOUBLE
+    null_pct: 1.354
+    distinct_count: 823722
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 42505
+      - value: ~
+        count: 25612
+      - value: '1.0'
+        count: 1792
+      - value: '0.14285714285714285'
+        count: 1714
+      - value: '0.16666666666666666'
+        count: 1658
+    definition: Share of the ages 18 to 64 disability-status universe with a disability.
+    needs_confirmation: 'no'
+  - name: pct_disabled_65_plus
+    type: DOUBLE
+    null_pct: 2.34
+    distinct_count: 396800
+    min_value: 0.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 44262
+      - value: '0.0'
+        count: 30795
+      - value: '1.0'
+        count: 13536
+      - value: '0.5'
+        count: 8932
+      - value: '0.3333333333333333'
+        count: 7521
+    definition: Share of the age 65 and older disability-status universe with a disability.
+    needs_confirmation: 'no'
+lineage:
+  - step: write_target
+    script: foundations/etl/silver/acs_disability_silver.R
+    details: foundations/etl/silver/acs_disability_silver.R writes silver.disability_kpi
+      from staging.acs_disability_* with CBSA rebasing from county data via silver.xwalk_cbsa_county.
+

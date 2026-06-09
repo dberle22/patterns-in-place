@@ -1,0 +1,58 @@
+table_name: epa_aqi
+schema: silver
+grain: One row per geo_level + geo_id + year (EPA AQI annual summaries normalized from county and CBSA staging rows).
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2016'
+  max: '2025'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=2
+    - distinct_geo_id=1626
+    - county_rows=10057
+    - cbsa_rows=5088
+quality_notes:
+  - Live key check on 2026-06-08 found zero duplicates on geo_level + geo_id + year.
+  - County rows are normalized from EPA state and county name strings into canonical county GEOIDs via normalized aliases built from the county-state crosswalk, with a very small manual fallback for known legacy-name edge cases.
+  - CBSA rows use the source-published 5-digit CBSA code directly, with names backfilled from the county-to-CBSA crosswalk where available.
+  - County rows that still cannot be assigned a canonical county GEOID after normalization are dropped from Silver rather than retained with ambiguous geography.
+  - The AQI day-bucket columns are validated upstream in staging so `good_days + moderate_days + usg_days + unhealthy_days + very_unhealthy_days + hazardous_days = days_with_aqi`.
+  - EPA AQI coverage is intentionally sparse relative to the full U.S. county universe because only monitored geographies with sufficient AQI summaries appear in the source files.
+sources:
+  - staging.epa_aqi
+  - silver.xwalk_county_state
+  - silver.xwalk_cbsa_county
+columns:
+  - { name: geo_level, type: VARCHAR, definition: Geographic level for the row (`county` or `cbsa`). }
+  - { name: geo_id, type: VARCHAR, definition: Geographic identifier for the row. County rows use 5-digit county FIPS and CBSA rows use 5-digit CBSA codes. }
+  - { name: geo_name, type: VARCHAR, definition: Geographic display name for the row. County names are normalized from county crosswalk metadata and CBSA names are normalized from the CBSA crosswalk where available. }
+  - { name: year, type: INTEGER, definition: Calendar year of the EPA annual AQI summary. }
+  - { name: days_with_aqi, type: INTEGER, definition: Number of days in the year with AQI observations for the geography. }
+  - { name: good_days, type: INTEGER, definition: Number of days in the EPA Good AQI category. }
+  - { name: moderate_days, type: INTEGER, definition: Number of days in the EPA Moderate AQI category. }
+  - { name: usg_days, type: INTEGER, definition: Number of days in the EPA Unhealthy for Sensitive Groups AQI category. }
+  - { name: unhealthy_days, type: INTEGER, definition: Number of days in the EPA Unhealthy AQI category. }
+  - { name: very_unhealthy_days, type: INTEGER, definition: Number of days in the EPA Very Unhealthy AQI category. }
+  - { name: hazardous_days, type: INTEGER, definition: Number of days in the EPA Hazardous AQI category. }
+  - { name: max_aqi, type: INTEGER, definition: Maximum AQI observed in the geography during the year. }
+  - { name: aqi_p90, type: DOUBLE, definition: Annual 90th percentile AQI for the geography. }
+  - { name: aqi_median, type: DOUBLE, definition: Annual median AQI for the geography. }
+  - { name: days_ozone, type: INTEGER, definition: Number of days where ozone was the driving pollutant for AQI. }
+  - { name: days_pm25, type: INTEGER, definition: Number of days where PM2.5 was the driving pollutant for AQI. }
+lineage:
+  - step: read_source
+    script: foundations/etl/staging/get_epa_aqi.R
+    details: Downloads the annual EPA county and CBSA AQI ZIP files for 2016 through 2025, preserves source-native geography strings and AQI metrics, validates AQI day-bucket totals, and materializes `staging.epa_aqi`.
+  - step: standardize_geography
+    script: foundations/etl/silver/epa_aqi_silver.R
+    details: Reads county and CBSA staging slices separately, assigns canonical county GEOIDs through a normalized state-name and county-name crosswalk, uses source-published CBSA codes directly, narrows the metric set to the approved analytical AQI columns, and row-binds the normalized slices.
+  - step: write_target
+    script: foundations/etl/silver/epa_aqi_silver.R
+    details: Writes `silver.epa_aqi` with overwrite enabled.
+kpi_definitions: []

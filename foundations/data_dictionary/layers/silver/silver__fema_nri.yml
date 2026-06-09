@@ -1,0 +1,106 @@
+table_name: fema_nri
+schema: silver
+grain: One row per geo_level + geo_id + year (county-equivalent FEMA NRI rows plus derived CBSA rollups).
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2025'
+  max: '2025'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=2
+    - distinct_geo_id=4167
+    - county_rows=3232
+    - cbsa_rows=935
+quality_notes:
+  - Live key check on 2026-06-08 found zero duplicates on geo_level + geo_id + year.
+  - County rows preserve FEMA's full county-equivalent coverage rather than filtering to literal `County` records, so parishes, municipios, boroughs, planning regions, and other county-equivalent designations remain in scope.
+  - County `geo_id` uses FEMA `stcofips` after zero-padding and validation in staging; `nri_id` remains a source QA field rather than the canonical Silver key.
+  - CBSA rows are derived from county-equivalent staging rows through `silver.xwalk_cbsa_county` using staged `population` as the first-pass weight for all promoted FEMA score and frequency fields.
+  - The Silver contract intentionally keeps a compact analytical subset: composite risk/loss/vulnerability/resilience scores plus, for each FEMA hazard family, risk score, expected annual loss score, and annualized frequency.
+  - The tract FEMA release is staged separately in `staging.fema_nri_tract` and is intentionally not promoted into this first-pass Silver contract.
+sources:
+  - staging.fema_nri
+  - silver.xwalk_county_state
+  - silver.xwalk_cbsa_county
+columns:
+  - { name: geo_level, type: VARCHAR, definition: Geographic level for the row (`county` or `cbsa`). }
+  - { name: geo_id, type: VARCHAR, definition: Geographic identifier for the row. County rows use 5-digit county-equivalent FIPS and CBSA rows use 5-digit CBSA codes. }
+  - { name: geo_name, type: VARCHAR, definition: Geographic display name for the row. County-equivalent names are normalized from the county-state crosswalk where available and CBSA names come from the CBSA crosswalk. }
+  - { name: year, type: INTEGER, definition: FEMA National Risk Index release year. }
+  - { name: risk_score, type: DOUBLE, definition: FEMA National Risk Index composite risk score. }
+  - { name: eal_score, type: DOUBLE, definition: FEMA National Risk Index composite expected annual loss score. }
+  - { name: alr_national_pctile, type: DOUBLE, definition: FEMA National Risk Index national percentile for annualized loss rate. }
+  - { name: alr_vra_national_pctile, type: DOUBLE, definition: FEMA National Risk Index national percentile for annualized loss rate using the socially vulnerable population adjustment. }
+  - { name: social_vulnerability_score, type: DOUBLE, definition: FEMA National Risk Index social vulnerability score. }
+  - { name: community_resilience_score, type: DOUBLE, definition: FEMA National Risk Index community resilience score. }
+  - { name: avalanche_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for avalanche. }
+  - { name: coastal_flooding_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for coastal flooding. }
+  - { name: cold_wave_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for cold wave. }
+  - { name: drought_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for drought. }
+  - { name: earthquake_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for earthquake. }
+  - { name: hail_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for hail. }
+  - { name: heat_wave_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for heat wave. }
+  - { name: hurricane_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for hurricane. }
+  - { name: ice_storm_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for ice storm. }
+  - { name: inland_flooding_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for inland flooding. }
+  - { name: landslide_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for landslide. }
+  - { name: lightning_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for lightning. }
+  - { name: strong_wind_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for strong wind. }
+  - { name: tornado_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for tornado. }
+  - { name: tsunami_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for tsunami. }
+  - { name: volcanic_activity_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for volcanic activity. }
+  - { name: wildfire_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for wildfire. }
+  - { name: winter_weather_risk_score, type: DOUBLE, definition: FEMA National Risk Index hazard risk score for winter weather. }
+  - { name: avalanche_expected_annual_loss_score, type: DOUBLE, definition: FEMA National Risk Index expected annual loss score for avalanche. }
+  - { name: coastal_flooding_expected_annual_loss_score, type: DOUBLE, definition: FEMA National Risk Index expected annual loss score for coastal flooding. }
+  - { name: cold_wave_expected_annual_loss_score, type: DOUBLE, definition: FEMA National Risk Index expected annual loss score for cold wave. }
+  - { name: drought_expected_annual_loss_score, type: DOUBLE, definition: FEMA National Risk Index expected annual loss score for drought. }
+  - { name: earthquake_expected_annual_loss_score, type: DOUBLE, definition: FEMA National Risk Index expected annual loss score for earthquake. }
+  - { name: hail_expected_annual_loss_score, type: DOUBLE, definition: FEMA National Risk Index expected annual loss score for hail. }
+  - { name: heat_wave_expected_annual_loss_score, type: DOUBLE, definition: FEMA National Risk Index expected annual loss score for heat wave. }
+  - { name: hurricane_expected_annual_loss_score, type: DOUBLE, definition: FEMA National Risk Index expected annual loss score for hurricane. }
+  - { name: ice_storm_expected_annual_loss_score, type: DOUBLE, definition: FEMA National Risk Index expected annual loss score for ice storm. }
+  - { name: inland_flooding_expected_annual_loss_score, type: DOUBLE, definition: FEMA National Risk Index expected annual loss score for inland flooding. }
+  - { name: landslide_expected_annual_loss_score, type: DOUBLE, definition: FEMA National Risk Index expected annual loss score for landslide. }
+  - { name: lightning_expected_annual_loss_score, type: DOUBLE, definition: FEMA National Risk Index expected annual loss score for lightning. }
+  - { name: strong_wind_expected_annual_loss_score, type: DOUBLE, definition: FEMA National Risk Index expected annual loss score for strong wind. }
+  - { name: tornado_expected_annual_loss_score, type: DOUBLE, definition: FEMA National Risk Index expected annual loss score for tornado. }
+  - { name: tsunami_expected_annual_loss_score, type: DOUBLE, definition: FEMA National Risk Index expected annual loss score for tsunami. }
+  - { name: volcanic_activity_expected_annual_loss_score, type: DOUBLE, definition: FEMA National Risk Index expected annual loss score for volcanic activity. }
+  - { name: wildfire_expected_annual_loss_score, type: DOUBLE, definition: FEMA National Risk Index expected annual loss score for wildfire. }
+  - { name: winter_weather_expected_annual_loss_score, type: DOUBLE, definition: FEMA National Risk Index expected annual loss score for winter weather. }
+  - { name: avalanche_annualized_frequency, type: DOUBLE, definition: FEMA National Risk Index annualized frequency for avalanche. }
+  - { name: coastal_flooding_annualized_frequency, type: DOUBLE, definition: FEMA National Risk Index annualized frequency for coastal flooding. }
+  - { name: cold_wave_annualized_frequency, type: DOUBLE, definition: FEMA National Risk Index annualized frequency for cold wave. }
+  - { name: drought_annualized_frequency, type: DOUBLE, definition: FEMA National Risk Index annualized frequency for drought. }
+  - { name: earthquake_annualized_frequency, type: DOUBLE, definition: FEMA National Risk Index annualized frequency for earthquake. }
+  - { name: hail_annualized_frequency, type: DOUBLE, definition: FEMA National Risk Index annualized frequency for hail. }
+  - { name: heat_wave_annualized_frequency, type: DOUBLE, definition: FEMA National Risk Index annualized frequency for heat wave. }
+  - { name: hurricane_annualized_frequency, type: DOUBLE, definition: FEMA National Risk Index annualized frequency for hurricane. }
+  - { name: ice_storm_annualized_frequency, type: DOUBLE, definition: FEMA National Risk Index annualized frequency for ice storm. }
+  - { name: inland_flooding_annualized_frequency, type: DOUBLE, definition: FEMA National Risk Index annualized frequency for inland flooding. }
+  - { name: landslide_annualized_frequency, type: DOUBLE, definition: FEMA National Risk Index annualized frequency for landslide. }
+  - { name: lightning_annualized_frequency, type: DOUBLE, definition: FEMA National Risk Index annualized frequency for lightning. }
+  - { name: strong_wind_annualized_frequency, type: DOUBLE, definition: FEMA National Risk Index annualized frequency for strong wind. }
+  - { name: tornado_annualized_frequency, type: DOUBLE, definition: FEMA National Risk Index annualized frequency for tornado. }
+  - { name: tsunami_annualized_frequency, type: DOUBLE, definition: FEMA National Risk Index annualized frequency for tsunami. }
+  - { name: volcanic_activity_annualized_frequency, type: DOUBLE, definition: FEMA National Risk Index annualized frequency for volcanic activity. }
+  - { name: wildfire_annualized_frequency, type: DOUBLE, definition: FEMA National Risk Index annualized frequency for wildfire. }
+  - { name: winter_weather_annualized_frequency, type: DOUBLE, definition: FEMA National Risk Index annualized frequency for winter weather. }
+lineage:
+  - step: read_source
+    script: foundations/etl/staging/get_fema_nri.R
+    details: Downloads the FEMA county-equivalent and tract NRI ZIP bundles, preserves the full source-faithful hazard matrices in staging, pads and validates the published FIPS helper fields, and materializes `staging.fema_nri` plus `staging.fema_nri_tract`.
+  - step: standardize_geography
+    script: foundations/etl/silver/fema_nri_silver.R
+    details: Keeps the county-equivalent FEMA release at county grain, assigns canonical display names through the county-state crosswalk where possible, narrows the measure set to the approved compact analytical subset, and derives CBSA rows from county-equivalent staging with population-weighted averages.
+  - step: write_target
+    script: foundations/etl/silver/fema_nri_silver.R
+    details: Writes `silver.fema_nri` with overwrite enabled.
+kpi_definitions: []

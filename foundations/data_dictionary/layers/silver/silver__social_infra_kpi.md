@@ -37,6 +37,7 @@
 | `pct_hh_other_family` | `DOUBLE` | 1.4024 | 579,947 | min 0, max 1 | 0.0 (48462); NULL (20641); 0.16666666666666666 (1813); 0.2 (1710); 0.14285714285714285 (1689) | Share of households that are other family households. |
 | `pct_hh_nonfamily` | `DOUBLE` | 1.4024 | 657,164 | min 0, max 1 | NULL (20641); 0.0 (16427); 1.0 (5209); 0.3333333333333333 (3283); 0.5 (2560) | Share of households that are nonfamily households. |
 | `pct_single_households` | `DOUBLE` | 1.4024 | 625,029 | min 0, max 1 | 0.0 (20670); NULL (20641); 1.0 (3836); 0.3333333333333333 (3020); 0.25 (2736) | Share of households with one person living alone. |
+| `pct_hh_single_person` | `DOUBLE` | 1.4024 | 625,029 | min 0, max 1 | 0.0 (20670); NULL (20641); 1.0 (3836); 0.3333333333333333 (3020); 0.25 (2736) | Alias for the share of households with one person living alone, named to match the household-structure Gold contract. |
 | `pct_nonfamily_alone` | `DOUBLE` | 2.5185 | 280,781 | min 0, max 1 | 1.0 (109137); NULL (37068); 0.0 (4243); 0.8 (3893); 0.8333333333333334 (3722) | Share of nonfamily households that are one-person households. |
 | `pct_nonfamily_not_alone` | `DOUBLE` | 2.5185 | 280,781 | min 0, max 1 | 0.0 (109137); NULL (37068); 1.0 (4243); 0.2 (3893); 0.16666666666666666 (3722) | Share of nonfamily households with two or more people. |
 | `ins_total` | `DOUBLE` | 0.0000 | 72,360 | min 0, max 329980753 | 0.0 (17427); 44.0 (490); 64.0 (489); 61.0 (486); 69.0 (480) | Total civilian noninstitutionalized population in the health insurance coverage universe. |

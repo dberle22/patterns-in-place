@@ -1,0 +1,46 @@
+table_name: social_infra_wide
+schema: gold
+grain: One row per geo_level + geo_id + year (annual ACS social infrastructure headline metrics).
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2015'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=9
+    - distinct_geo_id=165557
+quality_notes:
+  - This table uses `silver.social_infra_kpi` as the row spine, so the Gold contract spans 2015 to 2024 even though broadband begins in 2017.
+  - Broadband fields are intentionally null before 2017; the remaining 2017+ nulls are concentrated in tract, zcta, and place rows.
+  - Broadband comes from the dedicated `silver.broadband_kpi` family rather than the older commented-out broadband stub in `acs_social_infra`.
+  - ACS broadband wording changed in 2019, so breakpoint-sensitive analysis should treat pre-2019 and post-2019 values with caution.
+  - Single-parent household metrics are not included yet because `B11003` is not currently landed in `staging.acs_social_infra_*`.
+sources:
+  - silver.social_infra_kpi
+  - silver.broadband_kpi
+columns:
+  - { name: geo_level, type: VARCHAR, definition: Geographic level for the row. }
+  - { name: geo_id, type: VARCHAR, definition: Geographic identifier for the row. }
+  - { name: geo_name, type: VARCHAR, definition: Geographic display name for the row. }
+  - { name: year, type: INTEGER, definition: ACS 5-year end year represented by the row. }
+  - { name: hh_total, type: DOUBLE, definition: Total households in the geography. }
+  - { name: single_households, type: DOUBLE, definition: Count of households with one person living alone. }
+  - { name: pct_hh_single_person, type: DOUBLE, definition: Share of households with one person living alone. }
+  - { name: ins_total, type: DOUBLE, definition: Total population in the health insurance coverage universe. }
+  - { name: ins_insured, type: DOUBLE, definition: Population with at least one form of health insurance coverage. }
+  - { name: ins_uninsured, type: DOUBLE, definition: Population without health insurance coverage. }
+  - { name: pct_health_insured, type: DOUBLE, definition: Share of the health insurance universe with coverage. }
+  - { name: pct_health_uninsured, type: DOUBLE, definition: Share of the health insurance universe without coverage. }
+  - { name: internet_total_hh, type: DOUBLE, definition: Total households in the ACS internet access universe. }
+  - { name: internet_broadband_subscription, type: DOUBLE, definition: Households with a broadband internet subscription. }
+  - { name: internet_cellular_only, type: DOUBLE, definition: Households relying on cellular data service without a wired broadband subscription. }
+  - { name: internet_no_access, type: DOUBLE, definition: Households reporting no internet access. }
+  - { name: pct_broadband_subscription, type: DOUBLE, definition: Share of households with a broadband internet subscription. }
+  - { name: pct_cellular_only, type: DOUBLE, definition: Share of households relying on cellular-only internet access. }
+  - { name: pct_no_internet_access, type: DOUBLE, definition: Share of households with no internet access. }

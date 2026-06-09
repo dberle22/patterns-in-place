@@ -16,6 +16,7 @@ geo_coverage:
     - base_spine=silver.age_kpi filtered to county,cbsa,state
     - geo_levels=cbsa,county,state
     - row_count=54631
+    - cbp_populated_rows=49327
     - qcew_populated_rows=54586
 columns:
   - name: geo_level
@@ -37,6 +38,122 @@ columns:
   - name: pop_total
     type: DOUBLE
     definition: Total population from the Gold base geography spine in `silver.age_kpi`.
+    needs_confirmation: no
+  - name: cbp_total_estabs
+    type: DOUBLE
+    definition: CBP all-sector establishment count from the Silver total row `industry_code = '------'`.
+    needs_confirmation: no
+  - name: cbp_total_emp_march12
+    type: DOUBLE
+    definition: CBP all-sector March-12 employment from the Silver total row `industry_code = '------'`.
+    needs_confirmation: no
+  - name: cbp_total_annual_payroll_k
+    type: DOUBLE
+    definition: CBP all-sector annual payroll in thousands of dollars from the Silver total row.
+    needs_confirmation: no
+  - name: cbp_total_first_quarter_payroll_k
+    type: DOUBLE
+    definition: CBP all-sector first-quarter payroll in thousands of dollars from the Silver total row.
+    needs_confirmation: no
+  - name: cbp_estabs_ag_mining
+    type: DOUBLE
+    definition: CBP establishment count for the aligned agriculture and mining family.
+    needs_confirmation: no
+  - name: cbp_estabs_construction
+    type: DOUBLE
+    definition: CBP establishment count for construction.
+    needs_confirmation: no
+  - name: cbp_estabs_manufacturing
+    type: DOUBLE
+    definition: CBP establishment count for manufacturing.
+    needs_confirmation: no
+  - name: cbp_estabs_wholesale
+    type: DOUBLE
+    definition: CBP establishment count for wholesale trade.
+    needs_confirmation: no
+  - name: cbp_estabs_retail
+    type: DOUBLE
+    definition: CBP establishment count for retail trade.
+    needs_confirmation: no
+  - name: cbp_estabs_transport_util
+    type: DOUBLE
+    definition: CBP establishment count for transportation, warehousing, and utilities.
+    needs_confirmation: no
+  - name: cbp_estabs_information
+    type: DOUBLE
+    definition: CBP establishment count for information.
+    needs_confirmation: no
+  - name: cbp_estabs_finance_real
+    type: DOUBLE
+    definition: CBP establishment count for finance and real estate.
+    needs_confirmation: no
+  - name: cbp_estabs_professional
+    type: DOUBLE
+    definition: CBP establishment count for professional and business services.
+    needs_confirmation: no
+  - name: cbp_estabs_educ_health
+    type: DOUBLE
+    definition: CBP establishment count for education and health services.
+    needs_confirmation: no
+  - name: cbp_estabs_arts_accomm_food
+    type: DOUBLE
+    definition: CBP establishment count for arts, accommodation, and food services.
+    needs_confirmation: no
+  - name: cbp_estabs_other_services
+    type: DOUBLE
+    definition: CBP establishment count for other services.
+    needs_confirmation: no
+  - name: cbp_estabs_per_1000_residents
+    type: DOUBLE
+    definition: CBP all-sector establishments per 1,000 residents using `pop_total` as the denominator.
+    needs_confirmation: no
+  - name: pct_cbp_estabs_ag_mining
+    type: DOUBLE
+    definition: Share of CBP establishments in the aligned agriculture and mining family.
+    needs_confirmation: no
+  - name: pct_cbp_estabs_construction
+    type: DOUBLE
+    definition: Share of CBP establishments in construction.
+    needs_confirmation: no
+  - name: pct_cbp_estabs_manufacturing
+    type: DOUBLE
+    definition: Share of CBP establishments in manufacturing.
+    needs_confirmation: no
+  - name: pct_cbp_estabs_wholesale
+    type: DOUBLE
+    definition: Share of CBP establishments in wholesale trade.
+    needs_confirmation: no
+  - name: pct_cbp_estabs_retail
+    type: DOUBLE
+    definition: Share of CBP establishments in retail trade.
+    needs_confirmation: no
+  - name: pct_cbp_estabs_transport_util
+    type: DOUBLE
+    definition: Share of CBP establishments in transportation, warehousing, and utilities.
+    needs_confirmation: no
+  - name: pct_cbp_estabs_information
+    type: DOUBLE
+    definition: Share of CBP establishments in information.
+    needs_confirmation: no
+  - name: pct_cbp_estabs_finance_real
+    type: DOUBLE
+    definition: Share of CBP establishments in finance and real estate.
+    needs_confirmation: no
+  - name: pct_cbp_estabs_professional
+    type: DOUBLE
+    definition: Share of CBP establishments in professional and business services.
+    needs_confirmation: no
+  - name: pct_cbp_estabs_educ_health
+    type: DOUBLE
+    definition: Share of CBP establishments in education and health services.
+    needs_confirmation: no
+  - name: pct_cbp_estabs_arts_accomm_food
+    type: DOUBLE
+    definition: Share of CBP establishments in arts, accommodation, and food services.
+    needs_confirmation: no
+  - name: pct_cbp_estabs_other_services
+    type: DOUBLE
+    definition: Share of CBP establishments in other services.
     needs_confirmation: no
   - name: acs_ind_total_emp
     type: DOUBLE

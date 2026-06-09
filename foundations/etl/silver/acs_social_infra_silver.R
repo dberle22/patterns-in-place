@@ -74,6 +74,8 @@ build_social_infra_silver <- function(materialize = FALSE) {
     )
   }
 
+  # Social infrastructure needs a county-derived CBSA panel because ACS does not
+  # publish all of these household and insurance tables directly at the metro grain.
   cbsa_base <- county_acs_clean %>%
     inner_join(
       cbsa_county_xwalk %>% select(cbsa_code, cbsa_name, county_geoid),
@@ -115,6 +117,8 @@ build_social_infra_silver <- function(materialize = FALSE) {
   ) %>%
     select(-any_of("state"))
 
+  # The KPI layer keeps the source-faithful household and insurance counts, then
+  # adds a small set of rates that downstream Gold marts can use directly.
   social_infra_kpi <- social_infra_base %>%
     mutate(
       hh_total = hh_totalE,
@@ -147,6 +151,7 @@ build_social_infra_silver <- function(materialize = FALSE) {
       pct_hh_other_family = dplyr::if_else(hh_total > 0, hh_other_family / hh_total, NA_real_),
       pct_hh_nonfamily = dplyr::if_else(hh_total > 0, hh_nonfamily / hh_total, NA_real_),
       pct_single_households = dplyr::if_else(hh_total > 0, single_households / hh_total, NA_real_),
+      pct_hh_single_person = dplyr::if_else(hh_total > 0, single_households / hh_total, NA_real_),
       pct_nonfamily_alone = dplyr::if_else(hh_nonfamily > 0, hh_nonfam_alone / hh_nonfamily, NA_real_),
       pct_nonfamily_not_alone = dplyr::if_else(
         hh_nonfamily > 0,
@@ -185,7 +190,7 @@ build_social_infra_silver <- function(materialize = FALSE) {
       hh_total, hh_family, hh_married, hh_other_family, hh_nonfamily,
       hh_nonfam_alone, hh_nonfam_not_alone, single_households,
       pct_hh_family, pct_hh_married, pct_hh_other_family, pct_hh_nonfamily,
-      pct_single_households, pct_nonfamily_alone, pct_nonfamily_not_alone,
+      pct_single_households, pct_hh_single_person, pct_nonfamily_alone, pct_nonfamily_not_alone,
       ins_total, ins_insured, ins_uninsured,
       pct_health_insured, pct_health_uninsured,
       ins_u19_total, ins_u19_covered, ins_u19_uncovered = ins_u19_uncoveredE,

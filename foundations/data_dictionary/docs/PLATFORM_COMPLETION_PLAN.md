@@ -231,28 +231,36 @@ Decisions recorded 2026-06-04:
 
 ---
 
-## Track 6 — New Source: EPA EJScreen (Environmental Justice)
+## Track 6 — New Source: EPA AQI & EJScreen (Environmental Justice)
 
 **Priority: Medium — AQI first as simpler precursor; EJScreen is the full target**
 
-AQI (annual county CSV) is a straightforward first pass that unblocks the `gold.environment_wide` table. EJScreen (block-group → tract aggregate) adds the pollution-burden and proximity indicators the arch doc identifies for the Climate & Environmental Risk topic. Both land in the same Gold table.
+AQI (annual county CSV) is a straightforward first pass that unblocks the `gold.environment_wide` table. EJScreen adds the pollution-burden and proximity indicators the arch doc identifies for the Climate & Environmental Risk topic. The archived Harvard Dataverse snapshot includes both block-group and tract CSVs for 2024, so the recommended first-pass ingest is tract-first rather than block-group-first; block groups can remain a later expansion if we need finer geography. Both land in the same Gold table.
 
-- [ ] **6.1** Research & spec: verify annual AQI county CSV download URL and column names; review EJScreen block-group CSV structure and indicator list; document crosswalk approach for EPA name → FIPS; write `foundations/data_dictionary/sources/source__epa.md` covering both AQI and EJScreen; update `SOURCES.md`
-- [ ] **6.2** Write `foundations/etl/staging/get_epa_aqi.R` — download `annual_aqi_by_county_<year>.zip` for relevant years, parse to `staging.epa_aqi`; retain state/county name strings for crosswalk
-- [ ] **6.3** Write staging contract: `layers/staging/staging__epa_aqi.md`
-- [ ] **6.4** Write `foundations/etl/silver/epa_aqi_silver.R` — apply state+county name → FIPS crosswalk, standardize to county/CBSA grain with `aqi_median`, `aqi_days_unhealthy`, `pm25_days` columns; produce `silver.epa_aqi`
-- [ ] **6.5** Write Silver YAML + Markdown: `layers/silver/silver__epa_aqi.yml` + `.md`
-- [ ] **6.6** Write `foundations/etl/gold/gold_environment_wide.sql` — new Gold table at county/CBSA grain with EPA AQI columns; designed as extension point for FEMA NRI (Track 7) and EJScreen columns
-- [ ] **6.7** Write Gold data dictionary: `layers/gold/gold__environment_wide.yml` + `.md`
-- [ ] **6.8** Add EPA AQI row to `source_topic_checklist.md` (Ingested — AQI only)
-- [ ] **6.9** Add EPA to `create_DB.R` / `pipeline_manifest.yml`
-- [ ] **6.10** Write `foundations/etl/staging/get_ejscreen.R` — download EPA EJScreen block-group CSV, parse to `staging.ejscreen`; retain block-group FIPS for tract aggregation
-- [ ] **6.11** Write staging contract: `layers/staging/staging__ejscreen.md`
-- [ ] **6.12** Write `foundations/etl/silver/ejscreen_silver.R` — aggregate block groups → tract and county/CBSA grain; retain `pm25`, `ozone`, `diesel_pm`, `superfund_proximity`, `wastewater_discharge`, `pollution_burden_score`; produce `silver.ejscreen`
-- [ ] **6.13** Write Silver YAML + Markdown: `layers/silver/silver__ejscreen.yml` + `.md`
-- [ ] **6.14** Update `gold/gold_environment_wide.sql` to add EJScreen columns alongside AQI
-- [ ] **6.15** Update Gold data dictionary for EJScreen columns
-- [ ] **6.16** Add EJScreen row to `source_topic_checklist.md` (Ingested)
+- [x] **6.1** Research & spec: verified live AQI county + CBSA annual ZIP URLs and 2025 column names; documented county name → FIPS crosswalk approach; wrote `foundations/data_dictionary/sources/source__epa.md` with AQI-first scope plus archival EJScreen notes; updated `SOURCES.md`
+- [x] **6.2** Write `foundations/etl/staging/get_epa_aqi.R` — downloads 2016–2025 `annual_aqi_by_county_<year>.zip` and `annual_aqi_by_cbsa_<year>.zip`, row-binds each geography family, normalizes to the unified `staging.epa_aqi` contract, validates annual AQI bucket totals, and loads the combined county + CBSA table
+- [x] **6.3** Write staging contract: `layers/staging/staging__epa_aqi.md`
+- [x] **6.4** Write `foundations/etl/silver/epa_aqi_silver.R` — reads county and CBSA staging slices separately, normalizes county `geo_id` via state+county name crosswalk and CBSA `geo_id` via source `cbsa_code`, row-binds the approved AQI metric set, and writes `silver.epa_aqi`
+- [x] **6.5** Write Silver YAML + Markdown: `layers/silver/silver__epa_aqi.yml` + `.md`
+- [x] **6.6** Write `foundations/etl/gold/gold_environment_wide.sql` — new Gold table at county/CBSA grain with EPA AQI columns; designed as extension point for FEMA NRI (Track 7) and EJScreen columns
+- [x] **6.7** Write Gold data dictionary: `layers/gold/gold__environment_wide.yml` + `.md`
+- [x] **6.8** Add EPA AQI row to `source_topic_checklist.md` (Ingested — AQI only)
+- [x] **6.9** Add EPA to `create_DB.R` / `pipeline_manifest.yml`
+- [x] **6.10** Write `foundations/etl/staging/get_ejscreen.R` — download archived Harvard Dataverse EJScreen tract CSV (preferred first pass), clean the column names, validate the tract key, and parse to `staging.ejscreen`
+- [x] **6.11** Write staging contract: `layers/staging/staging__ejscreen.md`
+- [x] **6.12** Write `foundations/etl/silver/ejscreen_silver.R` — audit archived tract GEOIDs against `silver.xwalk_tract_county` and `gold.dim_geo`, keep the agreed core tract-level indicators, exclude unsupported Puerto Rico / territorial rows plus unresolved tract IDs, and produce `silver.ejscreen`
+- [x] **6.13** Write Silver YAML + Markdown: `layers/silver/silver__ejscreen.yml` + `.md`
+- Track 6 EJScreen tract-first summary: archived 2024 staging landed `86,082` tract rows; first-pass Silver materialized `84,121` canonical tract rows after excluding `1,667` Puerto Rico / territorial archive rows outside the current geo backbone and `294` additional unmatched supported-state tracts.
+- [x] **6.14** Update `gold/gold_environment_wide.sql` to add EJScreen columns alongside AQI using tract-to-county / tract-to-CBSA population-weighted rollups
+- [x] **6.15** Update Gold data dictionary for EJScreen columns
+- [x] **6.16** Add EJScreen row to `source_topic_checklist.md` (Ingested)
+
+Track 6 reusables for the next source waves:
+- Stage first, and keep staging source-faithful even when the source is awkward or archival. That gave us one reliable place to inspect EJScreen before modeling anything.
+- Treat canonical geography validation as a dedicated Silver concern. The tract audit against `xwalk` / `dim_geo` prevented us from silently shipping stale or unsupported archive rows.
+- Separate unsupported-geography exclusions from true data-quality failures. Puerto Rico and territorial misses were a backbone-coverage issue, not proof that the archive was unusable.
+- Prefer the simplest trustworthy geography path. AQI was fastest when we used native county and CBSA files; EJScreen was safest when we started from tract instead of block group.
+- Document exclusion policy and weighting rules in the contracts as soon as they become real. That turned the EJScreen tract rollup into a reusable pattern for future small-area archive sources.
 
 ---
 
@@ -260,15 +268,46 @@ AQI (annual county CSV) is a straightforward first pass that unblocks the `gold.
 
 **Priority: Medium — NRI first; defer NFIP and disaster declarations**
 
-- [ ] **7.1** Research & spec: read `notes/.../Sources/FEMA.md`, verify NRI county CSV download URL, confirm `STCOFIPS`, `RISK_SCORE`, `EAL_SCORE`, individual hazard score columns, document in source spec and `SOURCES.md`
-- [ ] **7.2** Write `foundations/etl/staging/get_fema_nri.R` — download NRI county CSV, produce `staging.fema_nri`
-- [ ] **7.3** Write staging contract: `layers/staging/staging__fema_nri.md`
-- [ ] **7.4** Write `foundations/etl/silver/fema_nri_silver.R` — standardize to county/CBSA grain, retain `risk_score`, `eal_score`, and individual hazard scores; produce `silver.fema_nri`
-- [ ] **7.5** Write Silver YAML + Markdown: `layers/silver/silver__fema_nri.yml` + `.md`
-- [ ] **7.6** Update `gold/gold_environment_wide.sql` to add FEMA NRI risk columns alongside EPA AQI (or create environment Gold table here if EPA track not yet done)
-- [ ] **7.7** Update Gold data dictionary for FEMA columns
-- [ ] **7.8** Add FEMA row to `source_topic_checklist.md` (Ingested — NRI only)
-- [ ] **7.9** Add FEMA to `create_DB.R` / `pipeline_manifest.yml`
+- Completed 2026-06-08:
+  verified the live FEMA NRI county and tract ZIP URLs for release `v120`, inspected the packaged `NRIDataDictionary.csv` and `NRI_HazardInfo.csv`, confirmed the county geography behavior (`NRI_ID = C + county GEOID`, `STCOFIPS` as the real county FIPS needing zero-padding), and wrote `foundations/data_dictionary/sources/source__fema.md` plus the corresponding `SOURCES.md` entry.
+  Documented the first-pass column-selection strategy: keep the county geography backbone, composite risk/loss/vulnerability/resilience metrics, and a compact 7-field hazard family for all 18 FEMA hazard prefixes; defer the much wider exposure/component-loss fields and keep tract as a documented follow-on.
+
+- [x] **7.1** Research & spec: read `notes/.../Sources/FEMA.md`, verify NRI county CSV download URL, confirm `STCOFIPS`, `RISK_SCORE`, `EAL_SCORE`, individual hazard score columns, document in source spec and `SOURCES.md`
+- Completed 2026-06-08:
+  wrote `foundations/etl/staging/get_fema_nri.R` to cache both the county and tract ZIPs under the raw FEMA directory, extract the bundled CSV + sidecar metadata files, preserve both full source-faithful hazard matrices, normalize the county-equivalent and tract FIPS backbone fields, validate `NRI_ID = C + STCOFIPS` for county plus `NRI_ID = T + TRACTFIPS` for tract, and materialize both `staging.fema_nri` and `staging.fema_nri_tract`.
+  Live staging load succeeded with `3,232` county-equivalent rows and `467` columns in `staging.fema_nri`, plus `85,154` tract rows and `469` columns in `staging.fema_nri_tract`; parse-problem checks returned zero rows for both files.
+
+- [x] **7.2** Write `foundations/etl/staging/get_fema_nri.R` — download NRI county CSV, produce `staging.fema_nri`
+- Completed 2026-06-08:
+  wrote `foundations/data_dictionary/layers/staging/staging__fema_nri.md` as the family staging contract for both `staging.fema_nri` and `staging.fema_nri_tract`, documenting the county-equivalent vs tract grains, the shared hazard matrix, and the live landed shapes.
+
+- [x] **7.3** Write staging contract: `layers/staging/staging__fema_nri.md`
+- Completed 2026-06-08:
+  wrote `foundations/etl/silver/fema_nri_silver.R` to standardize the county-equivalent FEMA staging rows into a compact county + derived CBSA analytical table, keeping the selected composite scores plus, for each of the 18 hazards, risk score, expected annual loss score, and annualized frequency.
+  County rows keep all `3,232` staged county-equivalent observations; CBSA rows are derived with `silver.xwalk_cbsa_county` using staged population as the first-pass weight. The landed Silver table has `4,167` rows total (`3,232` county + `935` cbsa) and `64` columns.
+
+- [x] **7.4** Write `foundations/etl/silver/fema_nri_silver.R` — standardize to county/CBSA grain, retain `risk_score`, `eal_score`, and individual hazard scores; produce `silver.fema_nri`
+- Completed 2026-06-08:
+  wrote `foundations/data_dictionary/layers/silver/silver__fema_nri.yml` and `.md` from the landed county + CBSA Silver profile, documenting the compact FEMA contract, county-equivalent coverage, hazard families, and the tract-staged-only boundary.
+
+- [x] **7.5** Write Silver YAML + Markdown: `layers/silver/silver__fema_nri.yml` + `.md`
+- Completed 2026-06-08:
+  extended `foundations/etl/gold/gold_environment_wide.sql` so the AQI backbone now carries the approved FEMA slice from `silver.fema_nri`: composite FEMA risk/loss/vulnerability/resilience metrics plus 18 hazard-specific FEMA risk scores, all joined at `geo_level + geo_id + year`.
+  Rebuilt `gold.environment_wide` successfully after the transient DuckDB lock cleared. The refreshed Gold mart remains `15,145` rows and now has `59` columns, with FEMA fields populated for `2025` overlap rows (`959` county, `478` cbsa).
+
+- [x] **7.6** Update `gold/gold_environment_wide.sql` to add FEMA NRI risk columns alongside EPA AQI (or create environment Gold table here if EPA track not yet done)
+- Completed 2026-06-08:
+  refreshed the Gold YAML / Markdown dictionary artifacts for `gold.environment_wide` to describe the live FEMA join behavior, the 2025-only non-null window, and the compact FEMA column group promoted into Gold.
+
+- [x] **7.7** Update Gold data dictionary for FEMA columns
+- Completed 2026-06-08:
+  updated `foundations/data_dictionary/sources/source_topic_checklist.md` so FEMA is now marked Ingested for the NRI scope, with current staging / Silver / Gold coverage and the remaining NFIP / disaster-declaration gap called out explicitly.
+
+- [x] **7.8** Add FEMA row to `source_topic_checklist.md` (Ingested — NRI only)
+- Completed 2026-06-08:
+  added FEMA staging and Silver steps to `foundations/etl/pipeline_manifest.yml` and added the corresponding script calls to `foundations/etl/create_DB.R`, keeping the source in the documented build path after geo crosswalks and before Gold environment assembly.
+
+- [x] **7.9** Add FEMA to `create_DB.R` / `pipeline_manifest.yml`
 
 ---
 
@@ -286,15 +325,21 @@ _No ETL work planned for this track._
 
 The EPA Smart Location Database (SLD) provides 90+ built-environment indicators at block-group grain (2021 vintage): transit accessibility scores, intersection density, land use mix, employment accessibility by auto and transit, and walkability. It is the primary source for the Transportation topic beyond ACS commute metrics. Aggregate block groups → tract and county/CBSA for grain consistency with the rest of Foundations.
 
-- [ ] **9.1** Research & spec: verify EPA SLD download URL and geodatabase/CSV format, confirm `GEOID10` block-group identifier, select the ~15 highest-signal indicators for Foundations (transit accessibility, intersection density, land use mix, walkability index, employment density); write `foundations/data_dictionary/sources/source__epa_sld.md`; update `SOURCES.md`
-- [ ] **9.2** Write `foundations/etl/staging/get_epa_sld.R` — download EPA SLD national block-group file, parse selected indicator columns to `staging.epa_sld`; retain block-group GEOID for tract aggregation
-- [ ] **9.3** Write staging contract: `layers/staging/staging__epa_sld.md`
-- [ ] **9.4** Write `foundations/etl/silver/epa_sld_silver.R` — aggregate block groups → tract and county/CBSA grain using population-weighted means where appropriate; produce `silver.epa_sld` with `transit_access_score`, `intersection_density`, `land_use_mix`, `walkability_index`, `employment_density` and companions
-- [ ] **9.5** Write Silver YAML + Markdown: `layers/silver/silver__epa_sld.yml` + `.md`
-- [ ] **9.6** Update `gold/gold_transport_built_form_wide.sql` to add SLD indicators alongside existing ACS commute columns; the Gold table is already the home for this topic
-- [ ] **9.7** Update Gold data dictionary `layers/gold/gold__transport_built_form_wide.yml` + `.md` for SLD columns
-- [ ] **9.8** Add EPA SLD row to `source_topic_checklist.md` (Ingested)
-- [ ] **9.9** Add EPA SLD to `create_DB.R` / `pipeline_manifest.yml`
+- [x] **9.1** Research & spec: verified EPA Smart Location Mapping bulk download and ArcGIS REST service, confirmed `GEOID10` as the first-pass block-group identifier with `GEOID20` retained for QA, selected a compact ~15-field keep list for Foundations, wrote `foundations/data_dictionary/sources/source__epa_smart_location.md`, and updated `SOURCES.md`
+- [x] **9.2** Write `foundations/etl/staging/get_epa_sld.R` — downloads the direct EPA SLD CSV (`EPA_SmartLocationDatabase_V3_Jan_2021_Final.csv`), normalizes the approved compact indicator set into `staging.epa_sld`, reconstructs canonical 12-digit block-group GEOIDs from `STATEFP + COUNTYFP + TRACTCE + BLKGRPCE` because the delivered `GEOID10` / `GEOID20` fields are scientific-notation strings, and lands `220,740` rows in staging
+- [x] **9.3** Write staging contract: `layers/staging/staging__epa_sld.md` documenting the direct CSV path, reconstructed block-group GEOIDs, retained `TotEmp` helper, and current landed shape of `220,740` rows and `31` columns
+- [x] **9.4** Write `foundations/etl/silver/epa_sld_silver.R` — aggregated block groups → county grain for the first-pass modeled contract using summed numerators / denominators where exact recomputation is possible and documented weighted means elsewhere; landed `silver.epa_sld` with county `2021` coverage, kept the 8 legacy Connecticut county GEOIDs through an explicit manual fallback so the SLD rows align with 2021 ACS county transport geography, excluded Alaska `02261`, and documented tract-level recovery as a future follow-on
+- [x] **9.5** Write Silver YAML + Markdown: `layers/silver/silver__epa_sld.yml` + `.md` documenting the county-only first pass, the metric-specific aggregation rules, and the deferred tract fix
+- [x] **9.6** Gold placement decision and SQL: kept the recurring ACS transport panel clean by removing SLD from `gold.transport_built_form_wide` and instead created a dedicated county-only baseline table `gold.transport_built_form_sld` promoted directly from `silver.epa_sld`
+- [x] **9.7** Update Gold data dictionary artifacts: refreshed `gold__transport_built_form_wide.yml` + `.md` to remove SLD enrichment and added `gold__transport_built_form_sld.yml` + `.md` documenting the separate county-only 2021 baseline mart
+- [x] **9.8** Add EPA SLD row to `source_topic_checklist.md` (Ingested)
+- [x] **9.9** Add EPA SLD to `create_DB.R` / `pipeline_manifest.yml`
+
+Track 9 lessons learned:
+- The direct EPA CSV is good enough for staging and county modeling, but not trustworthy enough for tract-first canonical modeling because the delivered `GEOID10` / `GEOID20` keys are scientific-notation strings and a meaningful tract share still needs a 2010/2020 bridge.
+- `TotEmp` is worth retaining in staging because it lets us recompute employment density exactly instead of carrying a weighted average of density fields.
+- Connecticut needs explicit geography handling. For 2021, the right operational choice was to keep the legacy county GEOIDs so SLD aligns with the ACS county transport contract already in use.
+- SLD behaves like a baseline context layer, not a recurring annual panel. Keeping it in a dedicated Gold table is clearer than mixing sparse 2021-only source fields into the broader multi-year ACS transport mart.
 
 ---
 
@@ -318,13 +363,31 @@ The EPA Smart Location Database (SLD) provides 90+ built-environment indicators 
 
 **Priority: Medium — add to next ACS ingestion cycle**
 
-Three ACS tables not yet in the pipeline: B28002 (broadband subscription), B18101 (disability by age/sex), B16001 (language spoken at home). All three follow the established ACS silver pattern and can be added incrementally to existing silver scripts or as a new combined `acs_social_context` step. They feed into `gold.population_demographics` or a new Quality of Life gold extension.
+Three ACS tables not yet in the pipeline: B28002 (broadband subscription), B18101 (disability by age/sex), B16001 (language spoken at home). We are treating them as three separate ACS topic families rather than widening `acs_social_infra`, so each topic gets its own staging and Silver contract. They feed into `gold.population_demographics` or a new Quality of Life gold extension.
 
-- [ ] **11.1** Research & spec: confirm current ACS variable IDs for B28002, B18101, B16001; decide whether these extend `acs_social_infra_silver.R` or live in a new script; document decision
-- [ ] **11.2** Extend or write the appropriate staging `get_acs_*.R` script to pull the three new table sets across the standard geo grains (tract → US)
-- [ ] **11.3** Extend or write the silver script to produce `social_infra_base`/`social_infra_kpi` additions or new `silver.social_context_base` / `silver.social_context_kpi`
-- [ ] **11.4** Update or write Silver YAML + Markdown for affected tables
-- [ ] **11.5** Decide which Gold table receives these fields (`gold.population_demographics` extension vs. new `gold.quality_of_life_wide`); document decision
+Completed 2026-06-08:
+confirmed the current ACS 5-year variable IDs for B28002, B18101, and B16001 using the 2024 `tidycensus` variable catalog.
+Decided to model Track 11 as three separate ACS family ingests instead of extending `acs_social_infra`.
+Added `foundations/etl/staging/get_acs_broadband.R`, `get_acs_disability.R`, and `get_acs_language.R` following the existing geography-replica staging pattern.
+Broadband staging uses `2017–2024` because B28002 is not present in the ACS 5-year catalog before 2017. Disability keeps the standard `2012–2024` ACS family range, while language uses `2016–2024` because `B16001_120` through `B16001_128` are not present in the ACS 5-year catalog before 2016.
+
+Completed 2026-06-09:
+wrote `foundations/etl/silver/acs_broadband_silver.R`, `acs_disability_silver.R`, and `acs_language_silver.R`, each following the existing ACS base-plus-KPI pattern with county-to-CBSA rebasing through `silver.xwalk_cbsa_county`.
+Materialized six new Silver tables:
+`silver.broadband_base`, `silver.broadband_kpi`, `silver.disability_base`, `silver.disability_kpi`, `silver.language_base`, and `silver.language_kpi`.
+Landed KPI table coverage:
+`silver.broadband_kpi` spans `2017–2024` with `1,191,904` rows,
+`silver.disability_kpi` spans `2012–2024` with `1,891,571` rows,
+and `silver.language_kpi` spans `2016–2024` with `1,331,868` rows.
+Generated the companion Silver data dictionary artifacts for all six tables under `foundations/data_dictionary/layers/silver/`.
+Decided Gold placement: disability and language stay on the `gold.population_demographics` path, while broadband lands in a new `gold.social_infra_wide` mart alongside household structure and insurance coverage.
+Built `foundations/etl/gold/gold_social_infra_wide.sql` and materialized `gold.social_infra_wide` with `1,471,832` rows at the `2015–2024` `geo_level + geo_id + year` grain, using `silver.social_infra_kpi` as the row spine and joining broadband for `2017+`.
+
+- [x] **11.1** Research & spec: confirm current ACS variable IDs for B28002, B18101, B16001; decide whether these extend `acs_social_infra_silver.R` or live in a new script; document decision
+- [x] **11.2** Extend or write the appropriate staging `get_acs_*.R` script to pull the three new table sets across the standard geo grains (tract → US)
+- [x] **11.3** Extend or write the silver script to produce `social_infra_base`/`social_infra_kpi` additions or new `silver.social_context_base` / `silver.social_context_kpi`
+- [x] **11.4** Update or write Silver YAML + Markdown for affected tables
+- [x] **11.5** Decide which Gold table receives these fields (`gold.population_demographics` extension vs. new `gold.quality_of_life_wide`); document decision
 - [ ] **11.6** Update the appropriate Gold SQL and data dictionary
 - [ ] **11.7** Add ACS broadband/disability/language to `source_topic_checklist.md` (Ingested)
 - [ ] **11.8** Update `pipeline_manifest.yml` with any new steps
@@ -337,17 +400,35 @@ Three ACS tables not yet in the pipeline: B28002 (broadband subscription), B1810
 
 County Business Patterns (CBP) provides establishment count, employment, and payroll by NAICS at county grain. Business Formation Statistics (BFS) provides new business applications and startup activity at county/state grain. Both are Census products with no API key required, and both extend the Economics topic alongside BLS QCEW.
 
-- [ ] **12.1** Research & spec: confirm CBP annual ZIP download URL and column layout; confirm BFS CSV download URL; document NAICS crosswalk approach for CBP → industry rollup families consistent with QCEW; write `foundations/data_dictionary/sources/source__cbp.md` and `source__bfs.md`; update `SOURCES.md`
-- [ ] **12.2** Write `foundations/etl/staging/get_cbp.R` — download CBP county annual ZIP, parse to `staging.cbp_county`; retain NAICS code, establishment size classes, employment, payroll
-- [ ] **12.3** Write `foundations/etl/staging/get_bfs.R` — download BFS county/state CSV, parse to `staging.bfs`; retain application type, NAICS sector, year
+Completed 2026-06-09:
+verified the live CBP `2023` annual geography file inventory and exact download URLs, then downloaded the county ZIP locally and confirmed the archive contains a quoted comma-delimited `cbp23co.txt` with the expected county columns.
+Documented a county-first CBP ingest strategy in `foundations/data_dictionary/sources/source__cbp.md`, including why ZIP totals and ZIP industry detail should stay out of the first pass and how CBP NAICS rows should roll into the same broad industry families already used in `gold.economics_industry_wide`.
+verified that the BFS county source is an annual XLSX workbook rather than a CSV, inspected the live workbook header and county data dictionary, and documented the narrow BA-only county contract in `foundations/data_dictionary/sources/source__bfs.md`.
+Updated `foundations/etl/staging/SOURCES.md` plus the source-spec index/checklist to reflect the new Track 12 provider specs and the current ingestion assumptions.
+Refined the implementation decision after spec review: CBP stays county-first until the ingest -> Silver -> Gold path is stable, then ZIP industry detail becomes the next geography expansion, but only for the most recent release year and in a separate ZIP staging / Silver surface; BFS Silver can retain monthly published series in a normalized table, but Gold will remain annual-only and will use CBP all-sector establishments as the preferred denominator for `business_application_rate_per_1000_establishments`.
+Polled the live CBP geography files directly to lock the first-pass staging boundary: county `2023` is `1,100,961` rows and `23` columns, MSA is `576,818` rows and the same compact shape, state is `348,204` rows but a different `73`-column shape with `lfo`, ZIP totals is `34,954` rows, and ZIP detail is `2,974,116` rows.
+Recorded the resulting staging decision: keep the full county payload in staging, but do not stage state / MSA / ZIP history yet because those are either derivable rollups, divergent raw shapes, or scale-heavy follow-ons. When we add ZIP, the approved first pass is latest-year ZIP industry detail only in a separate ZIP path.
+Recorded the historical note more precisely as well: once the county-first path is stable for the current release, backfill county CBP for the approved first-pass annual range from `2010` forward; keep SIC-era `1997` and earlier as a separate future decision and leave the deeper `1998-2009` NAICS history as a later expansion if we want it.
+Completed the county staging load and validated the landed shape in DuckDB: `staging.cbp_county` now contains `22,577,676` rows for `2010-2023`, spanning `3,209` counties and `2,249` distinct published NAICS codes.
+Materialized `silver.cbp` from the landed county history after fixing the first rollup bug in the CBSA/state aggregation step. The live Silver table now has `1,053,398` rows: `789,399` county rows, `249,733` CBSA rows, and `14,266` state rows, all at `geo_level + geo_id + period + industry_code` grain across the curated 20-code broad-sector surface.
+Wrote the first-pass CBP layer contracts at `layers/staging/staging__cbp.md`, `layers/silver/silver__cbp.md`, and `layers/silver/silver__cbp.yml`, using the landed table profile rather than draft estimates.
+Extended `gold.economics_industry_wide` with the first-pass CBP establishment surface: total establishments, broad-family establishment counts and shares, and `cbp_estabs_per_1000_residents`, all sourced from `silver.cbp`.
+Added a separate latest-year ZIP industry-detail staging script at `foundations/etl/staging/get_cbp_zip.R`, wired both county and ZIP CBP into `create_DB.R` and `pipeline_manifest.yml`, and successfully landed `staging.cbp_zip_detail` as a separate latest-year staging surface.
+Documented the ZIP staging surface in `layers/staging/staging__cbp_zip_detail.md`; the current `2023` source artifact contains `2,974,116` ZIP-by-industry rows.
+
+- [x] **12.1** Research & spec: confirm CBP annual ZIP download URL and column layout; confirm BFS annual county XLSX download URL and layout; document NAICS crosswalk approach for CBP → industry rollup families consistent with QCEW; write `foundations/data_dictionary/sources/source__cbp.md` and `source__bfs.md`; update `SOURCES.md`
+- [x] **12.2** Write `foundations/etl/staging/get_cbp.R` — download CBP county annual ZIP, parse to `staging.cbp_county`; retain NAICS code, establishment size classes, employment, payroll
+- [ ] **12.3** Write `foundations/etl/staging/get_bfs.R` — stage the annual county BFS workbook to `staging.bfs_county`; if we add the monthly BFS release files in the same pass, land them as `staging.bfs_monthly` so Silver can retain the richer monthly series without widening Gold
 - [ ] **12.4** Write staging contracts: `layers/staging/staging__cbp.md`, `staging__bfs.md`
-- [ ] **12.5** Write `foundations/etl/silver/cbp_silver.R` — standardize to county/CBSA grain, curate NAICS rollup to major sectors consistent with QCEW families; produce `silver.cbp`
-- [ ] **12.6** Write `foundations/etl/silver/bfs_silver.R` — standardize to county/CBSA grain, produce `silver.bfs` with `total_applications`, `high_propensity_applications`, `business_formation_rate`
-- [ ] **12.7** Write Silver YAML + Markdown: `silver__cbp.yml` + `.md`, `silver__bfs.yml` + `.md`
-- [ ] **12.8** Update `gold/gold_economy_industry.sql` (or write `gold_economy_business_wide.sql`) to add CBP establishment density and BFS formation rate columns; document Gold placement decision
-- [ ] **12.9** Update Gold data dictionary for new columns
+  ZIP note: after the county path is stable, add a separate latest-year ZIP industry-detail staging table and separate latest-year `silver.cbp_zip`; do not fold ZIP into the `2010+` county history path
+- [x] **12.5** Write `foundations/etl/silver/cbp_silver.R` — standardize to county/CBSA/state grain, curate NAICS rollup to major sectors consistent with QCEW families; produce `silver.cbp`
+- [ ] **12.6** Write `foundations/etl/silver/bfs_silver.R` — standardize BFS into one normalized Silver table that can retain monthly published series plus annual county / county-derived CBSA rows; compute annual `business_application_rate_per_1000_establishments` from CBP all-sector establishments for the annual county / CBSA / state surface
+- [ ] **12.7** Write Silver YAML + Markdown: `silver__cbp.yml` + `.md`, `silver__bfs.yml` + `.md`; document that monthly BFS is Silver-only and Gold is annual-only
+- [x] **12.8** Update `gold/gold_economy_industry.sql` (or write `gold_economy_business_wide.sql`) to add CBP establishment density and annual BFS business-application metrics only; document Gold placement decision
+- [x] **12.9** Update Gold data dictionary for new columns
 - [ ] **12.10** Add CBP and BFS rows to `source_topic_checklist.md` (Ingested)
 - [ ] **12.11** Add CBP and BFS to `pipeline_manifest.yml`
+- [ ] **12.12** After the first stable current-release county CBP pipeline lands, backfill historical annual county CBP files for the approved first-pass range (`2010+`) and document the approved year range for ongoing refreshes; keep SIC-era `1997` and earlier as a separate follow-on decision
 
 ---
 
@@ -369,21 +450,23 @@ HMDA (via CFPB) provides mortgage originations, denial rates, and lending equity
 
 ---
 
-## Track 14 — JEC Social Capital Index
+## Track 14 — Opportunity Insights (Social Capital Atlas + Opportunity Atlas)
 
-**Priority: Low — add later, low complexity, strong editorial angle**
+**Priority: High — preferred social capital source; also delivers intergenerational mobility**
 
-The Joint Economic Committee Social Capital Project publishes a county-level index covering civic engagement, social trust, family structure, and associational density. Single CSV download, county grain, no API required. Extends the Quality of Life topic.
+_Replaces the originally planned JEC Social Capital track. JEC's index uses 2018 data and is a single composite; Opportunity Insights publishes more recent data with decomposed sub-indices (economic connectedness, cohesion, civic engagement) and a separate Opportunity Atlas with intergenerational mobility estimates. Both datasets are county-grain CSV downloads from the same source, making this a single ingestion pipeline that delivers two high-value metric map items: Social Capital (Character / Social Fabric) and Intergenerational Mobility (Opportunity / Resident Opportunity)._
 
-- [ ] **14.1** Research & spec: confirm JEC Social Capital CSV download URL and column layout; verify county FIPS identifier; document the four sub-index dimensions in `foundations/data_dictionary/sources/source__jec_social_capital.md`; update `SOURCES.md`
-- [ ] **14.2** Write `foundations/etl/staging/get_jec_social_capital.R` — download CSV, parse to `staging.jec_social_capital`
-- [ ] **14.3** Write staging contract: `layers/staging/staging__jec_social_capital.md`
-- [ ] **14.4** Write `foundations/etl/silver/jec_social_capital_silver.R` — standardize county FIPS, derive CBSA rollup rows (population-weighted), produce `silver.jec_social_capital` with `social_capital_index`, `family_unity_index`, `community_health_index`, `institutional_health_index`, `collective_efficacy_index`
-- [ ] **14.5** Write Silver YAML + Markdown: `layers/silver/silver__jec_social_capital.yml` + `.md`
-- [ ] **14.6** Decide Gold placement: extend `gold.health_wide` (given civic/social scope) or new `gold.quality_of_life_wide`; document decision
+_JEC Social Capital remains available as a future cross-reference if the sub-index decomposition proves analytically useful, but it is not the primary ingestion target._
+
+- [ ] **14.1** Research & spec: confirm Opportunity Insights Social Capital Atlas download URL and column layout (economic connectedness, cohesion, civic engagement sub-indices at county grain); confirm Opportunity Atlas download URL and column layout (upward mobility, income rank by parent income percentile at county grain); document both in `foundations/data_dictionary/sources/source__opportunity_insights.md`; update `SOURCES.md`
+- [ ] **14.2** Write `foundations/etl/staging/get_opportunity_insights.R` — download Social Capital Atlas CSV and Opportunity Atlas CSV, parse to `staging.opportunity_insights_social_capital` and `staging.opportunity_insights_opportunity_atlas`
+- [ ] **14.3** Write staging contracts: `layers/staging/staging__opportunity_insights_social_capital.md`, `staging__opportunity_insights_opportunity_atlas.md`
+- [ ] **14.4** Write `foundations/etl/silver/opportunity_insights_silver.R` — standardize county FIPS for both tables, derive CBSA rollup rows (population-weighted); produce `silver.opportunity_insights_social_capital` with `economic_connectedness`, `cohesion_index`, `civic_engagement_index` and `silver.opportunity_insights_opportunity_atlas` with `p25_household_income`, `p75_household_income`, `upward_mobility_rate` (probability of reaching top quintile from bottom quintile)
+- [ ] **14.5** Write Silver YAML + Markdown: `layers/silver/silver__opportunity_insights_social_capital.yml` + `.md`, `silver__opportunity_insights_opportunity_atlas.yml` + `.md`
+- [ ] **14.6** Decide Gold placement: Social Capital sub-indices extend `gold.health_wide` or land in a new `gold.social_fabric_wide`; Opportunity Atlas metrics extend `gold.economics_income_wide` or same new table; document decision
 - [ ] **14.7** Update or write the appropriate Gold SQL and data dictionary
-- [ ] **14.8** Add JEC Social Capital row to `source_topic_checklist.md` (Ingested)
-- [ ] **14.9** Add JEC to `pipeline_manifest.yml`
+- [ ] **14.8** Add Opportunity Insights rows to `source_topic_checklist.md` (Ingested)
+- [ ] **14.9** Add Opportunity Insights to `pipeline_manifest.yml`
 
 ---
 
@@ -448,12 +531,150 @@ _Depends on: Track 16 (Points layer schema), Stoop migration, and a first target
 
 ---
 
+## Track 19 — Existing Table Updates (CHR Extension + Derived Gold Columns)
+
+**Priority: High — no new ingestion pipelines; closes open items in existing gold tables**
+
+_This track covers updates to already-ingested sources and derived column additions that don't require new staging scripts. All items here are small ETL changes to existing scripts or SQL files._
+
+### 19.1 CHR Silver Contract Extension (Health Behavior Fields)
+
+Three CHR fields are present in the `staging.chr_health_rankings` download but were excluded from the original 22-measure Silver contract in `chr_silver.R`. Adding them requires updating `measure_columns` in the silver script and rebuilding `gold.health_wide`.
+
+- [ ] **19.1.1** Add `physical_inactivity`, `adult_obesity`, and `poor_mental_health_days` to `measure_columns` in `foundations/etl/silver/chr_silver.R`
+- [ ] **19.1.2** Re-run `chr_silver.R` to rebuild `silver.chr_health_outcomes` with the three new columns
+- [ ] **19.1.3** Re-run `gold_health_wide.sql` to promote the three new columns to `gold.health_wide`
+- [ ] **19.1.4** Update `foundations/data_dictionary/layers/silver/silver__chr_health_outcomes.md` + `.yml` to document the three new fields
+- [ ] **19.1.5** Update `foundations/data_dictionary/layers/gold/gold__health_wide.md` + `.yml` for the three new columns
+
+### 19.2 CHR Trends File (Health Time Series)
+
+The current CHR Silver contract is a single-year 2025 snapshot. CHR publishes a separate Trends CSV with 15 measures going back to ~1997. Without this, no health metric supports trend analysis. This is the most analytically significant gap in the current health data.
+
+- [ ] **19.2.1** Research & spec: download and inspect the CHR Trends CSV; document which of our 22+ Silver measures have Trends coverage and the available year range; note any column name differences from the analytic CSV
+- [ ] **19.2.2** Extend `foundations/etl/staging/get_chr.R` to also download and stage the Trends CSV as `staging.chr_health_trends`
+- [ ] **19.2.3** Extend `foundations/etl/silver/chr_silver.R` to process `staging.chr_health_trends` into a long-format `silver.chr_health_trends` at `geo_level + geo_id + year + measure` grain with CBSA rollup rows
+- [ ] **19.2.4** Decide Gold placement: extend `gold.health_wide` with a multi-year panel (breaking the current single-year grain) or create a separate `gold.health_trends_long`; document decision
+- [ ] **19.2.5** Update or write the appropriate Gold SQL and data dictionary artifacts
+- [ ] **19.2.6** Update `silver__chr_health_outcomes.md` to note that multi-year coverage now exists via the companion trends table
+
+### 19.3 Social Infra Silver Promotion (Household Structure)
+
+ACS household structure promotion can now move forward for single-person households, but the current `acs_social_infra` staging family does not yet land the `B11003` single-parent fields even though the earlier plan assumed it did.
+
+- [x] **19.3.1** Confirm current staged coverage: `B11001` household-alone fields are present in `staging.acs_social_infra_*`, while `B11003` single-parent fields are not currently landed
+- [x] **19.3.2** Add `pct_hh_single_person` KPI derivation to `foundations/etl/silver/acs_social_infra_silver.R`
+- [ ] **19.3.2b** Add `pct_family_single_parent` KPI derivation after `B11003` is staged
+- [x] **19.3.3** Rebuild `silver.social_infra_kpi` with the promoted single-person household column
+- [x] **19.3.4** Decide Gold placement: land household structure in the new `gold.social_infra_wide` table
+- [x] **19.3.5** Update silver and gold data dictionary artifacts for the promoted single-person household column
+
+### 19.4 Broadband Promotion (ACS B28002)
+
+ACS broadband variables (B28002) are commented out in `get_acs_social_infra.R` with a note that historical coverage is incomplete. The data exists from ~2016 onward with consistent enough methodology to be useful.
+
+Completed 2026-06-09 via the dedicated Track 11 broadband family:
+`silver.broadband_kpi` now provides the recurring broadband panel, and `gold.social_infra_wide` consumes that family directly instead of backfilling the older `acs_social_infra` staging path.
+
+- [x] **19.4.1** Deprecated / superseded: do not backfill B28002 into `acs_social_infra`; use the dedicated broadband staging family from Track 11 instead
+- [x] **19.4.2** Deprecated / superseded: no re-run needed for `staging.acs_social_infra_*` because broadband now lands through `staging.acs_broadband_*`
+- [x] **19.4.3** Deprecated / superseded: do not derive broadband KPIs inside `silver.social_infra_kpi`; use `silver.broadband_kpi`
+- [x] **19.4.4** Deprecated / superseded: no rebuild needed for `silver.social_infra_kpi` because broadband is modeled in its own Silver contract
+- [x] **19.4.5** Extend the appropriate Gold table (same destination decision as 19.3.4)
+- [x] **19.4.6** Update data dictionary artifacts; note 2016+ coverage start and 2019 question-wording change in the definition
+
+### 19.5 Derived Gold Columns (Poverty Trend, LQ, Attainment Trend)
+
+Three metric map items are derivable from existing gold time series — no new ingestion, just new computed columns in gold ETL scripts.
+
+- [ ] **19.5.1** Add `pov_rate_change_1yr` and `pov_rate_change_5yr` to `foundations/etl/gold/gold_economy_income.sql` (derived from the `pov_rate` time series already in `gold.economics_income_wide`); update gold data dictionary
+- [ ] **19.5.2** Add `pct_ba_plus_change_5yr` to `foundations/etl/gold/gold_population_wide.sql` (derived from `pct_ba_plus` time series in `gold.population_demographics`); update gold data dictionary
+- [ ] **19.5.3** Add location quotient columns (`lq_professional`, `lq_manufacturing`, `lq_information`, etc.) to `foundations/etl/gold/gold_economy_industry.sql` — derived as `pct_qcew_private_emp_* / national_pct_qcew_private_emp_*` joining the `geo_level = 'us'` row; update gold data dictionary
+
+---
+
+## Track 20 — USDA Food Access Research Atlas
+
+**Priority: Medium — feeds Livability / Access & Infrastructure**
+
+The USDA Economic Research Service Food Access Research Atlas provides tract-level food desert designation, threshold-based low-access measures, and low-income + low-access population counts. Published approximately every 5 years (most recent 2019). Candidate Gold destination is a dedicated access-oriented mart rather than the recurring ACS transport panel.
+
+- [x] **20.1** Research & spec: confirmed ERS download and ArcGIS REST service for the current `2019` Food Access Research Atlas, verified tract `GEOID10` and key fields including `LILATracts_1And10`, `lapop1`, and `LA1and10`, documented the first-pass keep list in `foundations/data_dictionary/sources/source__usda_food_atlas.md`, and updated `SOURCES.md`
+- [x] **20.2** Write `foundations/etl/staging/get_usda_food_atlas.R` — downloaded the current USDA workbook, kept the approved compact tract field set, validated `tract_geoid`, and materialized `staging.usda_food_atlas` with `72,531` rows and `37` columns
+- [x] **20.3** Write staging contract: `layers/staging/staging__usda_food_atlas.md`; documented the 2019 vintage, tract-native workbook path, and the live landed staging shape
+- [x] **20.4** Write `foundations/etl/silver/usda_food_atlas_silver.R` — kept tract rows source-native, derived county GEOIDs directly from tract prefixes, rolled counties to CBSAs through `silver.xwalk_cbsa_county`, and materialized `silver.usda_food_atlas` with `72,531` tract rows, `3,141` county rows, and `918` CBSA rows
+- [x] **20.5** Write Silver YAML + Markdown: `layers/silver/silver__usda_food_atlas.yml` + `.md`
+- [x] **20.6** Gold placement decision: followed the Track 9 lesson and kept this source out of the recurring ACS transport panel by creating a dedicated baseline mart `gold.food_access_wide`
+- [x] **20.7** Update or write the appropriate Gold SQL and data dictionary: added `gold/gold_food_access_wide.sql` plus `gold__food_access_wide.yml` + `.md`
+- [x] **20.8** Add USDA Food Atlas to `source_topic_checklist.md` (Ingested)
+- [x] **20.9** Add USDA Food Atlas to `pipeline_manifest.yml` and `create_DB.R`
+
+Track 20 lessons learned:
+- The workbook path is the right operational ingest surface. It already publishes the tract table cleanly enough that we do not need to lean on the ArcGIS service except for schema QA.
+- The Atlas is tract-native and based on 2010 tracts, but we can still get stable county rollups without a tract-backbone rescue step by deriving county GEOIDs directly from the tract key prefix.
+- The county geography edge case matches Track 9: keep the 8 legacy Connecticut county GEOIDs explicitly for alignment with the current county contract, and exclude Alaska county-equivalent `02261` from the first-pass county / CBSA rollups.
+- Like EPA SLD, this behaves better as a specialty baseline mart than as a sparse enrichment inside a broader recurring Gold panel.
+
+---
+
+## Track 21 — Social Fabric Sources (MIT Election Lab + IRS Business Master File)
+
+**Priority: Medium — two lightweight ingestions bundled; both feed Character / Social Fabric**
+
+Two small standalone ingestions with no shared dependencies, bundled into one track for efficiency. MIT Election Lab provides county-level midterm election turnout normalized to voting-age population. IRS Business Master File provides nonprofit organization counts by county, used to compute nonprofits per 100K residents as a proxy for organized civic life.
+
+### 21.1 MIT Election Lab (Voting Rates)
+
+- [ ] **21.1.1** Research & spec: confirm MIT Election Lab county-level returns download URL and column layout; verify county FIPS identifier, election year, total votes cast, and VAP denominator source (CVAP from Census); document in `foundations/data_dictionary/sources/source__mit_election_lab.md`
+- [ ] **21.1.2** Write `foundations/etl/staging/get_mit_election_lab.R` — download county returns for midterm election years (2010, 2014, 2018, 2022), parse to `staging.mit_election_lab`; retain county FIPS, year, total votes, office type filter (House or Governor as midterm proxy)
+- [ ] **21.1.3** Write staging contract: `layers/staging/staging__mit_election_lab.md`; note that VAP denominator comes from Census CVAP, not raw population
+- [ ] **21.1.4** Write `foundations/etl/silver/mit_election_lab_silver.R` — standardize county FIPS, compute `voter_turnout_rate` as total votes ÷ CVAP (join to ACS working-age population as proxy if CVAP not yet ingested), derive CBSA rollup rows (population-weighted); produce `silver.mit_election_lab`
+- [ ] **21.1.5** Write Silver YAML + Markdown: `layers/silver/silver__mit_election_lab.yml` + `.md`
+
+### 21.2 IRS Business Master File (Nonprofits per 100K)
+
+- [ ] **21.2.1** Research & spec: confirm IRS BMF extract download URL (IRS publishes monthly; confirm most recent annual snapshot); verify county FIPS derivation from zip code (requires zip-to-county crosswalk); identify relevant NTEE codes for non-religious nonprofits; document in `foundations/data_dictionary/sources/source__irs_bmf.md`
+- [ ] **21.2.2** Write `foundations/etl/staging/get_irs_bmf.R` — download IRS BMF CSV, filter to active organizations, parse to `staging.irs_bmf`; retain EIN, zip code, NTEE code, ruling year
+- [ ] **21.2.3** Write staging contract: `layers/staging/staging__irs_bmf.md`; note zip-to-county crosswalk dependency and NTEE exclusion logic for religious organizations
+- [ ] **21.2.4** Write `foundations/etl/silver/irs_bmf_silver.R` — crosswalk zip → county via HUD USPS crosswalk or Census zip-county relationship file, aggregate to county and CBSA grain, compute `nonprofits_per_100k`; produce `silver.irs_bmf`
+- [ ] **21.2.5** Write Silver YAML + Markdown: `layers/silver/silver__irs_bmf.yml` + `.md`
+
+### 21.3 Gold Promotion (Both Sources)
+
+- [ ] **21.3.1** Decide Gold placement for both: extend `gold.health_wide` (social context group) or new `gold.social_fabric_wide` alongside Opportunity Insights (Track 14); document decision — consistent placement with Track 14 and Track 19.3 decisions
+- [ ] **21.3.2** Update or write the appropriate Gold SQL to include `voter_turnout_rate` (midterm) and `nonprofits_per_100k`
+- [ ] **21.3.3** Update Gold data dictionary for both new columns
+- [ ] **21.3.4** Add MIT Election Lab and IRS BMF to `source_topic_checklist.md` (Ingested)
+- [ ] **21.3.5** Add both to `pipeline_manifest.yml`
+
+---
+
+## Track 22 — Stanford SEDA (K–12 Learning Rates)
+
+**Priority: Low — future ingestion; crosswalk complexity warrants separate track**
+
+The Stanford Education Data Archive (SEDA) provides district-level standardized test score averages and learning rate estimates (growth per grade level) derived from state assessment data. It is more analytically useful than CHR's test score indices because it measures learning rates rather than proficiency levels, and it covers a longer time series (approximately 2009–2018). The primary challenge is crosswalking school districts to counties and CBSAs, since districts do not nest cleanly into counties.
+
+_Depends on: Track 15 (NCES CCD) completing first, since CCD provides the district-to-county relationship file needed for the crosswalk._
+
+- [ ] **22.1** Research & spec: confirm Stanford SEDA download URL and most recent release year; review available measures (mean test scores, learning rates, trend estimates); confirm district NCES ID as the join key; document crosswalk approach (NCES district → county via NCES geographic relationship files) in `foundations/data_dictionary/sources/source__stanford_seda.md`; update `SOURCES.md`
+- [ ] **22.2** Write `foundations/etl/staging/get_stanford_seda.R` — download SEDA district-level CSV, parse to `staging.stanford_seda`; retain NCES district ID, grade-level mean scores, learning rate estimates, year range
+- [ ] **22.3** Write staging contract: `layers/staging/staging__stanford_seda.md`; document coverage years and note that learning rates are more reliable than single-year score averages
+- [ ] **22.4** Write `foundations/etl/silver/stanford_seda_silver.R` — join NCES district ID to county via NCES geographic relationship file (enrollment-weighted where multiple counties share a district); aggregate to county and CBSA grain; produce `silver.stanford_seda` with `avg_learning_rate`, `avg_test_score_grade3`, `avg_test_score_grade8`, `score_trend_5yr`
+- [ ] **22.5** Write Silver YAML + Markdown: `layers/silver/silver__stanford_seda.yml` + `.md`; document district-to-county crosswalk methodology and enrollment-weighting approach
+- [ ] **22.6** Decide Gold placement: extend `gold.health_wide` (education group alongside CHR graduation and test scores) or new `gold.education_k12_wide`; document decision — coordinate with Track 15 (NCES CCD) Gold placement decision
+- [ ] **22.7** Update or write the appropriate Gold SQL and data dictionary
+- [ ] **22.8** Add Stanford SEDA to `source_topic_checklist.md` (Ingested)
+- [ ] **22.9** Add Stanford SEDA to `pipeline_manifest.yml`
+
+---
+
 ## Track 18 — Final Integration and Documentation Sync
 
 These tasks close out the plan after all tracks above are complete.
 
 - [ ] **18.1** Update `source_topic_checklist.md` — verify all status fields are accurate; move any remaining Planned rows with evidence of partial work to Partial
-- [ ] **18.2** Update `foundations/data_dictionary/sources/checklist.md` — add new source entries for all tracks: FHFA, CHR, OZ, EPA AQI, EPA EJScreen, EPA SLD, FEMA NRI, IPEDS, ACS expansions, CBP, BFS, HMDA, JEC Social Capital, NCES CCD, HIFLD, IMLS, USDA farmers markets, Overture, OSM, Transitland
+- [ ] **18.2** Update `foundations/data_dictionary/sources/checklist.md` — add new source entries for all tracks: FHFA, CHR, OZ, EPA AQI, EPA EJScreen, EPA SLD, FEMA NRI, IPEDS, ACS expansions, CBP, BFS, HMDA, Opportunity Insights (Social Capital Atlas + Opportunity Atlas), USDA Food Atlas, MIT Election Lab, IRS BMF, Stanford SEDA, NCES CCD, HIFLD, IMLS, USDA farmers markets, Overture, OSM, Transitland
 - [ ] **18.3** Update `foundations/data_dictionary/README.md` — add new Gold themes (health, environment, transportation built form, postsecondary education, lending, social capital, policy designations, points layer) to the main themes table
 - [ ] **18.4** Update `foundations/etl/pipeline_manifest.yml` — verify all new scripts are present with correct `depends_on` entries and `enabled: true`
 - [ ] **18.5** Update `foundations/etl/create_DB.R` — confirm new staging/silver/gold scripts are sourced in correct sequence order
@@ -471,13 +692,17 @@ Recommended execution order:
 3. **Tracks 3–5** (FHFA, CHR, OZ + FHFA Underserved) — complete
 
 **Places layer (remaining):**
-4. **Tracks 6–7** (EPA EJScreen/AQI, FEMA NRI) — Climate & Environmental Risk; run in parallel, both feed `gold.environment_wide`
-5. **Track 9** (EPA Smart Location Database) — Transportation; extends `gold.transport_built_form_wide`
-6. **Track 10** (IPEDS) — Postsecondary education; can run in parallel with 6–9
-7. **Track 11** (ACS broadband/disability/language) — next ACS ingestion cycle; extends existing silver scripts
-8. **Tracks 12–13** (CBP/BFS, HMDA) — Economics and Housing extensions; run in parallel
-9. **Track 14** (JEC Social Capital) — Quality of Life; lowest priority among Places tracks, run last
-10. **Track 8** (FBI UCR) — Skipped
+4. **Track 19** (existing table updates: CHR extension, CHR trends, social infra promotion, broadband, derived gold columns) — no new ingestion; highest-value/lowest-effort work; run first among remaining tracks
+5. **Tracks 6–7** (EPA EJScreen/AQI, FEMA NRI) — Climate & Environmental Risk; run in parallel, both feed `gold.environment_wide`
+6. **Track 9** (EPA Smart Location Database) — Transportation baseline; now lands in dedicated `gold.transport_built_form_sld`; run alongside Track 20
+7. **Track 20** (USDA Food Access Research Atlas) — Access & Infrastructure; can run in parallel with Track 9
+8. **Track 10** (IPEDS) — Postsecondary education; can run in parallel with 6–9
+9. **Track 11** (ACS broadband/disability/language) — next ACS ingestion cycle; extends existing silver scripts; coordinate broadband with Track 19.4
+10. **Tracks 12–13** (CBP/BFS, HMDA) — Economics and Housing extensions; run in parallel
+11. **Track 14** (Opportunity Insights — Social Capital Atlas + Opportunity Atlas) — Social Fabric and Resident Opportunity; high priority, can run in parallel with Tracks 6–13
+12. **Track 21** (MIT Election Lab + IRS BMF) — Social Fabric; lightweight, run in parallel with any other track
+13. **Track 22** (Stanford SEDA) — Education; depends on Track 15 (NCES CCD) for the district-county crosswalk
+14. **Track 8** (FBI UCR) — Skipped
 
 **Points/Parcels/Polygons layer (after Stoop migration):**
 11. **Track 15** (NCES CCD) — Depends on Track 16 schema decisions; national-once, can proceed once schema is finalized

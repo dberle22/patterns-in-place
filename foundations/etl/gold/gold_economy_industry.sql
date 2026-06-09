@@ -188,6 +188,32 @@ qcew_industry as (
     group by 1, 2, 3, 4
 ),
 
+cbp_industry as (
+    select
+        lower(geo_level) as geo_level,
+        geo_id,
+        geo_name,
+        period as year,
+        max(case when is_total_row then establishments end) as cbp_total_estabs,
+        max(case when is_total_row then employment_march12 end) as cbp_total_emp_march12,
+        max(case when is_total_row then annual_payroll_k end) as cbp_total_annual_payroll_k,
+        max(case when is_total_row then first_quarter_payroll_k end) as cbp_total_first_quarter_payroll_k,
+        sum(case when silver_rollup_family = 'ag_mining' then establishments else 0 end) as cbp_estabs_ag_mining,
+        sum(case when silver_rollup_family = 'construction' then establishments else 0 end) as cbp_estabs_construction,
+        sum(case when silver_rollup_family = 'manufacturing' then establishments else 0 end) as cbp_estabs_manufacturing,
+        sum(case when silver_rollup_family = 'wholesale' then establishments else 0 end) as cbp_estabs_wholesale,
+        sum(case when silver_rollup_family = 'retail' then establishments else 0 end) as cbp_estabs_retail,
+        sum(case when silver_rollup_family = 'transport_util' then establishments else 0 end) as cbp_estabs_transport_util,
+        sum(case when silver_rollup_family = 'information' then establishments else 0 end) as cbp_estabs_information,
+        sum(case when silver_rollup_family = 'finance_real' then establishments else 0 end) as cbp_estabs_finance_real,
+        sum(case when silver_rollup_family = 'professional' then establishments else 0 end) as cbp_estabs_professional,
+        sum(case when silver_rollup_family = 'educ_health' then establishments else 0 end) as cbp_estabs_educ_health,
+        sum(case when silver_rollup_family = 'arts_accomm_food' then establishments else 0 end) as cbp_estabs_arts_accomm_food,
+        sum(case when silver_rollup_family = 'other_services' then establishments else 0 end) as cbp_estabs_other_services
+    from patterns_in_place.silver.cbp
+    group by 1, 2, 3, 4
+),
+
 final as (
     select
         b.geo_level,
@@ -256,6 +282,22 @@ final as (
         q.qcew_private_avg_wkly_wage_arts_accomm_food,
         q.qcew_private_avg_wkly_wage_other_services,
         q.qcew_public_admin_avg_wkly_wage,
+        c.cbp_total_estabs,
+        c.cbp_total_emp_march12,
+        c.cbp_total_annual_payroll_k,
+        c.cbp_total_first_quarter_payroll_k,
+        c.cbp_estabs_ag_mining,
+        c.cbp_estabs_construction,
+        c.cbp_estabs_manufacturing,
+        c.cbp_estabs_wholesale,
+        c.cbp_estabs_retail,
+        c.cbp_estabs_transport_util,
+        c.cbp_estabs_information,
+        c.cbp_estabs_finance_real,
+        c.cbp_estabs_professional,
+        c.cbp_estabs_educ_health,
+        c.cbp_estabs_arts_accomm_food,
+        c.cbp_estabs_other_services,
         bea.real_gdp_total,
         bea.real_gdp_natural_resources,
         bea.real_gdp_manufacturing,
@@ -292,10 +334,27 @@ final as (
         on b.geo_level = q.geo_level
        and b.geo_id = q.geo_id
        and b.year = q.year
+    left join cbp_industry c
+        on b.geo_level = c.geo_level
+       and b.geo_id = c.geo_id
+       and b.year = c.year
 )
 
 select
     *,
+    cbp_total_estabs / nullif(pop_total, 0) * 1000.0 as cbp_estabs_per_1000_residents,
+    cbp_estabs_ag_mining / nullif(cbp_total_estabs, 0) as pct_cbp_estabs_ag_mining,
+    cbp_estabs_construction / nullif(cbp_total_estabs, 0) as pct_cbp_estabs_construction,
+    cbp_estabs_manufacturing / nullif(cbp_total_estabs, 0) as pct_cbp_estabs_manufacturing,
+    cbp_estabs_wholesale / nullif(cbp_total_estabs, 0) as pct_cbp_estabs_wholesale,
+    cbp_estabs_retail / nullif(cbp_total_estabs, 0) as pct_cbp_estabs_retail,
+    cbp_estabs_transport_util / nullif(cbp_total_estabs, 0) as pct_cbp_estabs_transport_util,
+    cbp_estabs_information / nullif(cbp_total_estabs, 0) as pct_cbp_estabs_information,
+    cbp_estabs_finance_real / nullif(cbp_total_estabs, 0) as pct_cbp_estabs_finance_real,
+    cbp_estabs_professional / nullif(cbp_total_estabs, 0) as pct_cbp_estabs_professional,
+    cbp_estabs_educ_health / nullif(cbp_total_estabs, 0) as pct_cbp_estabs_educ_health,
+    cbp_estabs_arts_accomm_food / nullif(cbp_total_estabs, 0) as pct_cbp_estabs_arts_accomm_food,
+    cbp_estabs_other_services / nullif(cbp_total_estabs, 0) as pct_cbp_estabs_other_services,
     qcew_private_emp_ag_mining / nullif(qcew_private_emp_total, 0) as pct_qcew_private_emp_ag_mining,
     qcew_private_emp_construction / nullif(qcew_private_emp_total, 0) as pct_qcew_private_emp_construction,
     qcew_private_emp_manufacturing / nullif(qcew_private_emp_total, 0) as pct_qcew_private_emp_manufacturing,

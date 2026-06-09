@@ -58,6 +58,70 @@ steps:
       - seed_staging
     enabled: true
 
+  - id: epa_aqi_staging
+    layer: staging
+    script: foundations/etl/staging/get_epa_aqi.R
+    outputs:
+      - staging.epa_aqi
+    depends_on:
+      - seed_staging
+    enabled: true
+
+  - id: epa_sld_staging
+    layer: staging
+    script: foundations/etl/staging/get_epa_sld.R
+    outputs:
+      - staging.epa_sld
+    depends_on:
+      - seed_staging
+    enabled: true
+
+  - id: cbp_county_staging
+    layer: staging
+    script: foundations/etl/staging/get_cbp.R
+    outputs:
+      - staging.cbp_county
+    depends_on:
+      - seed_staging
+    enabled: true
+
+  - id: cbp_zip_staging
+    layer: staging
+    script: foundations/etl/staging/get_cbp_zip.R
+    outputs:
+      - staging.cbp_zip_detail
+    depends_on:
+      - seed_staging
+    enabled: true
+
+  - id: usda_food_atlas_staging
+    layer: staging
+    script: foundations/etl/staging/get_usda_food_atlas.R
+    outputs:
+      - staging.usda_food_atlas
+    depends_on:
+      - seed_staging
+    enabled: true
+
+  - id: ejscreen_staging
+    layer: staging
+    script: foundations/etl/staging/get_ejscreen.R
+    outputs:
+      - staging.ejscreen
+    depends_on:
+      - seed_staging
+    enabled: true
+
+  - id: fema_nri_staging
+    layer: staging
+    script: foundations/etl/staging/get_fema_nri.R
+    outputs:
+      - staging.fema_nri
+      - staging.fema_nri_tract
+    depends_on:
+      - seed_staging
+    enabled: true
+
   - id: bea_metric_dictionary
     layer: silver
     script: foundations/etl/silver/bea_metric_dictionary.R
@@ -184,6 +248,67 @@ steps:
       - silver.fhfa_underserved
     depends_on:
       - fhfa_underserved_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: epa_aqi
+    layer: silver
+    script: foundations/etl/silver/epa_aqi_silver.R
+    outputs:
+      - silver.epa_aqi
+    depends_on:
+      - epa_aqi_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: epa_sld
+    layer: silver
+    script: foundations/etl/silver/epa_sld_silver.R
+    outputs:
+      - silver.epa_sld
+    depends_on:
+      - epa_sld_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: cbp
+    layer: silver
+    script: foundations/etl/silver/cbp_silver.R
+    outputs:
+      - silver.cbp
+    depends_on:
+      - cbp_county_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: usda_food_atlas
+    layer: silver
+    script: foundations/etl/silver/usda_food_atlas_silver.R
+    outputs:
+      - silver.usda_food_atlas
+    depends_on:
+      - usda_food_atlas_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: ejscreen
+    layer: silver
+    script: foundations/etl/silver/ejscreen_silver.R
+    outputs:
+      - silver.ejscreen
+    depends_on:
+      - ejscreen_staging
+      - geo_crosswalks
+      - gold_dim_geo
+    enabled: true
+
+  - id: fema_nri
+    layer: silver
+    script: foundations/etl/silver/fema_nri_silver.R
+    outputs:
+      - silver.fema_nri
+    depends_on:
+      - fema_nri_staging
       - geo_crosswalks
     enabled: true
 
@@ -480,6 +605,17 @@ steps:
       - chr_health
     enabled: true
 
+  - id: gold_environment_wide
+    layer: gold
+    script: foundations/etl/gold/gold_environment_wide.sql
+    outputs:
+      - gold.environment_wide
+    depends_on:
+      - epa_aqi
+      - ejscreen
+      - fema_nri
+    enabled: true
+
   - id: gold_affordability_wide
     layer: gold
     script: foundations/etl/gold/gold_affordability_wide.sql
@@ -513,6 +649,26 @@ steps:
       - geo_crosswalks
     enabled: true
     notes: Requires geo.tracts_all_us for land area and density calculations.
+
+  - id: gold_transport_built_form_sld
+    layer: gold
+    script: foundations/etl/gold/gold_transport_built_form_sld.sql
+    outputs:
+      - gold.transport_built_form_sld
+    depends_on:
+      - epa_sld
+    enabled: true
+    notes: County-only 2021 EPA Smart Location baseline mart kept separate from the recurring ACS transport panel.
+
+  - id: gold_food_access_wide
+    layer: gold
+    script: foundations/etl/gold/gold_food_access_wide.sql
+    outputs:
+      - gold.food_access_wide
+    depends_on:
+      - usda_food_atlas
+    enabled: true
+    notes: Dedicated tract/county/CBSA 2019 USDA food-access baseline mart kept separate from the recurring ACS transport panel.
 
   - id: gold_economy_wide
     layer: gold

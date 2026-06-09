@@ -1,7 +1,7 @@
 # Gold Layer Coverage Checklist
 
 Schema: `gold`
-Table count: 12
+Table count: 13
 
 ## Housing
 - [x] Dictionary: [gold__housing_core_wide.md](./gold__housing_core_wide.md)
@@ -16,6 +16,10 @@ Table count: 12
 ## Transport / Built Form
 - [x] Dictionary: [gold__transport_built_form_wide.md](./gold__transport_built_form_wide.md)
 - [x] `transport_built_form_wide`
+- [x] Dictionary: [gold__transport_built_form_sld.md](./gold__transport_built_form_sld.md)
+- [x] `transport_built_form_sld`
+- [x] Dictionary: [gold__food_access_wide.md](./gold__food_access_wide.md)
+- [x] `food_access_wide`
 
 ## Affordability
 - [x] Dictionary: [gold__affordability_wide.md](./gold__affordability_wide.md)
@@ -34,6 +38,10 @@ Table count: 12
 ## Population
 - [x] Dictionary: [gold__population_demographics.md](./gold__population_demographics.md)
 - [x] `population_demographics`
+
+## Social Infrastructure
+- [x] Dictionary: [gold__social_infra_wide.md](./gold__social_infra_wide.md)
+- [x] `social_infra_wide`
 
 ## Geography
 - [x] Dictionary: [gold__dim_geo.md](./gold__dim_geo.md)

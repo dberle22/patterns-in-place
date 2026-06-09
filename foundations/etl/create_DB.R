@@ -22,7 +22,14 @@ if (is.na(db_path)) {
 
 staging_scripts <- c(
   "get_opportunity_zones.R",
-  "get_fhfa_underserved.R"
+  "get_fhfa_underserved.R",
+  "get_epa_aqi.R",
+  "get_epa_sld.R",
+  "get_cbp.R",
+  "get_cbp_zip.R",
+  "get_usda_food_atlas.R",
+  "get_ejscreen.R",
+  "get_fema_nri.R"
 )
 
 silver_scripts <- c(
@@ -30,6 +37,11 @@ silver_scripts <- c(
   "bea_metric_dictionary.R",
   "opportunity_zones_silver.R",
   "fhfa_underserved_silver.R",
+  "epa_aqi_silver.R",
+  "epa_sld_silver.R",
+  "usda_food_atlas_silver.R",
+  "ejscreen_silver.R",
+  "fema_nri_silver.R",
   "acs_age_silver.R",
   "acs_edu_silver.R",
   "acs_housing_silver.R",
@@ -50,6 +62,7 @@ silver_scripts <- c(
   "zillow_silver.R",
   "fhfa_hpi_silver.R",
   "chr_silver.R",
+  "cbp_silver.R",
   "acs_variable_dictionary_silver.R",
   "acs_metadata_silver.R"
 )
@@ -65,9 +78,12 @@ gold_scripts <- c(
   "gold_housing_core.sql",
   "gold_housing_market_wide.sql",
   "gold_health_wide.sql",
+  "gold_environment_wide.sql",
   "gold_affordability_wide.sql",
   "gold_migration_wide.sql",
-  "gold_transport_built_form_wide.sql"
+  "gold_transport_built_form_wide.sql",
+  "gold_transport_built_form_sld.sql",
+  "gold_food_access_wide.sql"
 )
 
 setup_con <- dbConnect(duckdb::duckdb(), dbdir = db_path, read_only = FALSE)

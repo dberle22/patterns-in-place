@@ -1,0 +1,60 @@
+table_name: ejscreen
+schema: silver
+grain: One row per geo_level + geo_id + year (tract-level archived EJScreen environmental indicators).
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2024'
+  max: '2024'
+geo_coverage:
+  notes:
+    - distinct_geo_levels=1
+quality_notes:
+  - The Silver build audits tract GEOID coverage against both `silver.xwalk_tract_county` and `gold.dim_geo` before writing any rows.
+  - Puerto Rico and territorial archive rows are kept in staging but excluded from the first-pass Silver output because the current Foundations tract backbone does not model them canonically.
+  - After excluding unsupported archive geographies, supported-state tract coverage must clear a 99 percent match rate in both canonical references or the script stops for reassessment.
+  - The modeled contract intentionally keeps only the agreed core EJScreen environmental indicators and their national percentile fields.
+sources:
+  - staging.ejscreen
+  - silver.xwalk_tract_county
+  - gold.dim_geo
+columns:
+  - { name: geo_level, type: VARCHAR, definition: Geographic level for the row (`tract`). }
+  - { name: geo_id, type: VARCHAR, definition: Canonical 11-digit tract GEOID. }
+  - { name: geo_name, type: VARCHAR, definition: Canonical tract display name from `gold.dim_geo` or the tract crosswalk fallback. }
+  - { name: year, type: INTEGER, definition: Archive observation year. }
+  - { name: total_population, type: DOUBLE, definition: EJScreen tract total population used as a downstream weighting field. }
+  - { name: pm25, type: DOUBLE, definition: EJScreen PM2.5 indicator. }
+  - { name: ozone, type: DOUBLE, definition: EJScreen ozone indicator. }
+  - { name: diesel_pm, type: DOUBLE, definition: EJScreen diesel particulate matter indicator. }
+  - { name: traffic_proximity, type: DOUBLE, definition: EJScreen traffic proximity indicator. }
+  - { name: superfund_proximity, type: DOUBLE, definition: EJScreen Superfund proximity indicator. }
+  - { name: rmp_proximity, type: DOUBLE, definition: EJScreen Risk Management Plan facility proximity indicator. }
+  - { name: wastewater_discharge, type: DOUBLE, definition: EJScreen wastewater discharge indicator. }
+  - { name: drinking_water_noncompliance, type: DOUBLE, definition: EJScreen drinking water noncompliance indicator. }
+  - { name: pctile_pm25_us, type: DOUBLE, definition: National percentile for the PM2.5 indicator. }
+  - { name: pctile_ozone_us, type: DOUBLE, definition: National percentile for the ozone indicator. }
+  - { name: pctile_diesel_pm_us, type: DOUBLE, definition: National percentile for the diesel PM indicator. }
+  - { name: pctile_traffic_us, type: DOUBLE, definition: National percentile for the traffic proximity indicator. }
+  - { name: pctile_superfund_us, type: DOUBLE, definition: National percentile for the Superfund proximity indicator. }
+  - { name: pctile_rmp_us, type: DOUBLE, definition: National percentile for the RMP proximity indicator. }
+  - { name: pctile_wastewater_us, type: DOUBLE, definition: National percentile for the wastewater discharge indicator. }
+  - { name: pctile_drinking_water_us, type: DOUBLE, definition: National percentile for the drinking water noncompliance indicator. }
+  - { name: count_high_exposure_indicators, type: INTEGER, definition: Count of EJScreen indicators above the 80th percentile. }
+  - { name: count_high_exposure_supplemental, type: INTEGER, definition: Count of supplemental EJScreen indicators above the 80th percentile. }
+lineage:
+  - step: read_source
+    script: foundations/etl/staging/get_ejscreen.R
+    details: Downloads the archived Harvard Dataverse tract CSV, cleans the column names, pads tract GEOIDs, and materializes `staging.ejscreen`.
+  - step: audit_and_standardize
+    script: foundations/etl/silver/ejscreen_silver.R
+    details: Audits tract-key coverage against `silver.xwalk_tract_county` and `gold.dim_geo`, excludes archive geographies outside the current canonical tract backbone, then narrows staging to the approved tract-level EJScreen indicators and percentile fields.
+  - step: write_target
+    script: foundations/etl/silver/ejscreen_silver.R
+    details: Writes `silver.ejscreen` with overwrite enabled after the tract-quality audit passes.
+kpi_definitions: []
