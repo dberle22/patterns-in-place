@@ -1,4 +1,4 @@
-# In this script we normalize County Health Rankings staging rows into the
+# In this script we normalize the curated CHR historical staging panel into the
 # approved Silver contract for county and derived CBSA health outcomes.
 
 getwd()
@@ -56,6 +56,9 @@ measure_columns <- c(
   "child_mortality_rate",
   "infant_mortality_rate",
   "drug_overdose_death_rate",
+  "poor_mental_health_days",
+  "adult_obesity",
+  "physical_inactivity",
   "pct_uninsured_adults",
   "primary_care_ratio",
   "mental_health_provider_ratio",
@@ -78,7 +81,7 @@ school_age_columns <- c("reading_score_index", "math_score_index")
 population_columns <- setdiff(measure_columns, school_age_columns)
 
 # 3. Read staging and reference data ----
-chr_stage <- DBI::dbGetQuery(con, "SELECT * FROM staging.chr_health_rankings")
+chr_stage <- DBI::dbGetQuery(con, "SELECT * FROM staging.chr_health_rankings_history")
 cbsa_county_xwalk <- DBI::dbGetQuery(con, "SELECT * FROM silver.xwalk_cbsa_county") %>%
   transmute(
     county_geoid = as.character(county_geoid),
@@ -123,16 +126,14 @@ population_weights <- DBI::dbGetQuery(
   )
 
 # 4. Standardize county rows ----
-# The CHR analytic file carries one national row plus state summary rows keyed to
-# pseudo-FIPS values ending in `000`. Silver keeps only true county rows here and
-# leaves the broader source-fidelity surface in staging.
+# The historical staging panel is already curated to county and county-equivalent
+# rows only, so Silver can standardize directly from that annual panel.
 chr_county <- chr_stage %>%
   mutate(
     state_fips = as.character(state_fips),
     county_fips = as.character(county_fips),
     fips5 = as.character(fips5)
   ) %>%
-  filter(county_fips != "000") %>%
   left_join(
     county_state_xwalk,
     by = c("fips5" = "county_geoid")
@@ -145,28 +146,31 @@ chr_county <- chr_stage %>%
       dplyr::coalesce(state_abbr.y, state_abbr.x)
     ),
     year = as.integer(release_year),
-    life_expectancy = as.double(life_expectancy_raw_value),
-    premature_death_rate = as.double(premature_death_raw_value),
-    premature_age_adjusted_mortality = as.double(premature_age_adjusted_mortality_raw_value),
-    child_mortality_rate = as.double(child_mortality_raw_value),
-    infant_mortality_rate = as.double(infant_mortality_raw_value),
-    drug_overdose_death_rate = as.double(drug_overdose_deaths_raw_value),
-    pct_uninsured_adults = as.double(uninsured_adults_raw_value),
-    primary_care_ratio = as.double(ratio_of_population_to_primary_care_physicians),
-    mental_health_provider_ratio = as.double(ratio_of_population_to_mental_health_providers),
-    preventable_hospital_stay_rate = as.double(preventable_hospital_stays_raw_value),
-    food_insecurity_rate = as.double(food_insecurity_raw_value),
-    social_associations_per_10k = as.double(social_associations_raw_value),
-    child_care_cost_burden_rate = as.double(child_care_cost_burden_raw_value),
-    hs_graduation_rate = as.double(high_school_graduation_raw_value),
-    air_pollution_pm25 = as.double(air_pollution_particulate_matter_raw_value),
-    adverse_climate_events = as.double(adverse_climate_events_raw_value),
-    pct_access_to_parks = as.double(access_to_parks_raw_value),
-    homicide_rate = as.double(homicides_raw_value),
-    firearm_fatality_rate = as.double(firearm_fatalities_raw_value),
-    motor_vehicle_crash_rate = as.double(motor_vehicle_crash_deaths_raw_value),
-    reading_score_index = as.double(reading_scores_raw_value),
-    math_score_index = as.double(math_scores_raw_value)
+    life_expectancy = as.double(life_expectancy),
+    premature_death_rate = as.double(premature_death_rate),
+    premature_age_adjusted_mortality = as.double(premature_age_adjusted_mortality),
+    child_mortality_rate = as.double(child_mortality_rate),
+    infant_mortality_rate = as.double(infant_mortality_rate),
+    drug_overdose_death_rate = as.double(drug_overdose_death_rate),
+    poor_mental_health_days = as.double(poor_mental_health_days),
+    adult_obesity = as.double(adult_obesity),
+    physical_inactivity = as.double(physical_inactivity),
+    pct_uninsured_adults = as.double(pct_uninsured_adults),
+    primary_care_ratio = as.double(primary_care_ratio),
+    mental_health_provider_ratio = as.double(mental_health_provider_ratio),
+    preventable_hospital_stay_rate = as.double(preventable_hospital_stay_rate),
+    food_insecurity_rate = as.double(food_insecurity_rate),
+    social_associations_per_10k = as.double(social_associations_per_10k),
+    child_care_cost_burden_rate = as.double(child_care_cost_burden_rate),
+    hs_graduation_rate = as.double(hs_graduation_rate),
+    air_pollution_pm25 = as.double(air_pollution_pm25),
+    adverse_climate_events = as.double(adverse_climate_events),
+    pct_access_to_parks = as.double(pct_access_to_parks),
+    homicide_rate = as.double(homicide_rate),
+    firearm_fatality_rate = as.double(firearm_fatality_rate),
+    motor_vehicle_crash_rate = as.double(motor_vehicle_crash_rate),
+    reading_score_index = as.double(reading_score_index),
+    math_score_index = as.double(math_score_index)
   ) %>%
   filter(dplyr::if_any(dplyr::all_of(measure_columns), ~ !is.na(.x))) %>%
   distinct()

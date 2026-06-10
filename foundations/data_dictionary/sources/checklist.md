@@ -2,7 +2,7 @@
 
 Coverage unit: upstream source spec.
 
-Source spec count: 10
+Source spec count: 11
 
 | Status | Source | Spec | Scope |
 | --- | --- | --- | --- |
@@ -15,6 +15,7 @@ Source spec count: 10
 | [x] | HUD | [source__hud.md](./source__hud.md) | Provider-level spec for HUD CHAS plus FMR / SAFMR rent families |
 | [x] | EPA | [source__epa.md](./source__epa.md) | Provider-level spec for AQI-first environmental coverage plus an archival EJScreen follow-on path |
 | [x] | IRS | [source__irs.md](./source__irs.md) | Provider-level spec for IRS migration inflow staging and partial downstream modeling |
+| [x] | IRS EO BMF | [source__irs_bmf.md](./source__irs_bmf.md) | Child topic spec for EO Business Master File nonprofit headquarters-density modeling via ZIP5-to-county allocation |
 | [x] | Zillow | [source__zillow.md](./source__zillow.md) | Provider-level spec for ZHVI and ZORI staged monthly series |
 
 ## Authoring Rule

@@ -27,6 +27,8 @@
 | `median_hh_income` | `DOUBLE` | 0.0139 | 31076 |  | 48750.0 (24); 47500.0 (20); 51250.0 (18); 55000.0 (18); 50000.0 (16) | Median household income in the past 12 months. |
 | `acs_income_pc` | `DOUBLE` | 0.0020 | 24931 |  | 21716.0 (13); 22589.0 (13); 23895.0 (13); 24864.0 (12); 21109.0 (11) | Per capita income calculated from ACS data as total income divided by total population. |
 | `pov_rate` | `DOUBLE` | 0.0020 | 43244 |  | 0.1 (7); 0.1111111111111111 (6); 0.16666666666666666 (4); 0.05128205128205128 (3); 0.07547169811320754 (3) | Poverty Rate, dervied from pov_below and pov_universe. (from silver.kpi_dictionary). |
+| `pov_rate_change_1yr` | `DOUBLE` | 16.1804 | 1506635 | min -1, max 1 | NULL (306042); 0.0 (34713); -1.0 (68); 1.0 (60); -0.25 (46) | One-year absolute change in poverty rate for the same geography. |
+| `pov_rate_change_5yr` | `DOUBLE` | 56.1307 | 791766 | min -1, max 1 | NULL (1061796); 0.0 (9857); 1.0 (335); -1.0 (323); 0.5 (70) | Five-year absolute change in poverty rate for the same geography. |
 | `gini_index` | `DOUBLE` | 0.0020 | 7358 |  | 0.4401 (73); 0.4291 (72); 0.4434 (71); 0.4439 (71); 0.4286 (70) | Ratio of Gini Index, a meaure of economic equality (0=perfect equality, 1=perfect inequality). |
 | `pi_total` | `DOUBLE` | 4.7916 | 40797 | min 1899000, max 1785029500000 | NULL (2416); 1148796000.0 (4); 1295315000.0 (4); 2049858000.0 (4); 2626563000.0 (4) | Total Personal Income (PI) in current dollars, from BEA regional data. |
 | `calc_income_pc` | `DOUBLE` | 4.7916 | 41021 | min 5462.2932196, max 469206.3960956 | NULL (2416); 100136.09954304376 (2); 100162.93746414228 (2); 101283.17448680352 (2); 101436.26774999069 (2) | Per capita income calculated from BEA data as total personal income divided by total population. |
@@ -38,7 +40,7 @@
 | `pi_wages_salary` | `DOUBLE` | 17.6034 | 39235 | min 823000, max 967137050000 | NULL (8876); 208158000.0 (4); 113541000.0 (3); 11481000.0 (3); 161140000.0 (3) | Personal Income from Wages and Salaries, from BEA regional data. |
 | `pi_wage_share` | `DOUBLE` | 17.6907 | 39894 | min 0.0673574, max 8.0698739 | NULL (8920); 0.19686943960018466 (2); 0.19739961855332705 (2); 0.20343434031821442 (2); 0.2045612824028012 (2) | Share of total personal income that is from Wages and Salaries. |
 ## Data Quality Notes
-- Columns with non-zero null rates: median_hh_income=0.0139%, acs_income_pc=0.002%, pov_rate=0.002%, gini_index=0.002%, pi_total=4.7916%, calc_income_pc=4.7916%, income_pc_growth_1yr=12.7325%, income_pc_growth_5yr=44.4925%, income_pc_cagr_5yr=44.4925%, income_pc_growth_10yr=84.1696% ...
+- Columns with non-zero null rates: median_hh_income=0.0139%, acs_income_pc=0.002%, pov_rate=0.002%, pov_rate_change_1yr=16.1804%, pov_rate_change_5yr=56.1307%, gini_index=0.002%, pi_total=4.7916%, calc_income_pc=4.7916%, income_pc_growth_1yr=12.7325%, income_pc_growth_5yr=44.4925%, income_pc_cagr_5yr=44.4925%, income_pc_growth_10yr=84.1696% ...
 - Key uniqueness check for recommended PK (`geo_level + geo_id + year`) returns zero duplicates in current snapshot.
 - Primary/foreign keys are not enforced as DB constraints in current pipeline.
 

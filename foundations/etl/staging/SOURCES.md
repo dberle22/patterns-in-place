@@ -19,6 +19,7 @@ This file tracks where each staging script gets its data and what is needed to r
 | `get_hud_chas.R` | CSV download | HUD source file |
 | `get_hud_fmr.R` | CSV download | HUD source file |
 | `get_irs_migration.R` | CSV download | IRS SOI source file |
+| `get_opportunity_insights_social_capital.R` | CSV download | Opportunity Insights Social Capital Atlas county and ZIP CSV releases hosted via Humdata; no API key required |
 | `get_tea.R` | CSV download | Texas Education Agency |
 | `get_tiger_geos.R` | API (`tigris`) | No key required |
 | `get_usda_food_atlas.R` | XLSX / ZIP download | USDA ERS Food Access Research Atlas current public release is 2019; ArcGIS REST service available for schema / QA |

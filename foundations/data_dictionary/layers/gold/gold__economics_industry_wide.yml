@@ -17,6 +17,8 @@ geo_coverage:
     - geo_levels=cbsa,county,state
     - row_count=54631
     - cbp_populated_rows=49327
+    - bfs_populated_rows=53472
+    - bfs_rate_populated_rows=49327
     - qcew_populated_rows=54586
 columns:
   - name: geo_level
@@ -38,6 +40,22 @@ columns:
   - name: pop_total
     type: DOUBLE
     definition: Total population from the Gold base geography spine in `silver.age_kpi`.
+    needs_confirmation: no
+  - name: bfs_business_applications
+    type: DOUBLE
+    definition: Annual BFS business applications from `silver.bfs` for `series_code = 'BA'`.
+    needs_confirmation: no
+  - name: bfs_business_applications_yoy_pct
+    type: DOUBLE
+    definition: Year-over-year percent change in annual BFS business applications carried from `silver.bfs`.
+    needs_confirmation: no
+  - name: bfs_business_application_rate_per_1000_establishments
+    type: DOUBLE
+    definition: Annual BFS business applications per 1,000 CBP all-sector establishments, carried from `silver.bfs`.
+    needs_confirmation: no
+  - name: bfs_business_applications_per_1000_residents
+    type: DOUBLE
+    definition: Annual BFS business applications per 1,000 residents using `pop_total` as the denominator.
     needs_confirmation: no
   - name: cbp_total_estabs
     type: DOUBLE
@@ -347,6 +365,54 @@ columns:
     type: DOUBLE
     definition: Share of curated private-sector QCEW employment in other services.
     needs_confirmation: no
+  - name: lq_ag_mining
+    type: DOUBLE
+    definition: Location quotient for agriculture and mining, calculated as local private-sector QCEW employment share divided by the national share aggregated from state QCEW rows for the same year.
+    needs_confirmation: no
+  - name: lq_construction
+    type: DOUBLE
+    definition: Location quotient for construction, calculated as local private-sector QCEW employment share divided by the national share aggregated from state QCEW rows for the same year.
+    needs_confirmation: no
+  - name: lq_manufacturing
+    type: DOUBLE
+    definition: Location quotient for manufacturing, calculated as local private-sector QCEW employment share divided by the national share aggregated from state QCEW rows for the same year.
+    needs_confirmation: no
+  - name: lq_wholesale
+    type: DOUBLE
+    definition: Location quotient for wholesale trade, calculated as local private-sector QCEW employment share divided by the national share aggregated from state QCEW rows for the same year.
+    needs_confirmation: no
+  - name: lq_retail
+    type: DOUBLE
+    definition: Location quotient for retail trade, calculated as local private-sector QCEW employment share divided by the national share aggregated from state QCEW rows for the same year.
+    needs_confirmation: no
+  - name: lq_transport_util
+    type: DOUBLE
+    definition: Location quotient for transportation, warehousing, and utilities, calculated as local private-sector QCEW employment share divided by the national share aggregated from state QCEW rows for the same year.
+    needs_confirmation: no
+  - name: lq_information
+    type: DOUBLE
+    definition: Location quotient for information, calculated as local private-sector QCEW employment share divided by the national share aggregated from state QCEW rows for the same year.
+    needs_confirmation: no
+  - name: lq_finance_real
+    type: DOUBLE
+    definition: Location quotient for finance and real estate, calculated as local private-sector QCEW employment share divided by the national share aggregated from state QCEW rows for the same year.
+    needs_confirmation: no
+  - name: lq_professional
+    type: DOUBLE
+    definition: Location quotient for professional and business services, calculated as local private-sector QCEW employment share divided by the national share aggregated from state QCEW rows for the same year.
+    needs_confirmation: no
+  - name: lq_educ_health
+    type: DOUBLE
+    definition: Location quotient for education and health services, calculated as local private-sector QCEW employment share divided by the national share aggregated from state QCEW rows for the same year.
+    needs_confirmation: no
+  - name: lq_arts_accomm_food
+    type: DOUBLE
+    definition: Location quotient for arts, accommodation, and food services, calculated as local private-sector QCEW employment share divided by the national share aggregated from state QCEW rows for the same year.
+    needs_confirmation: no
+  - name: lq_other_services
+    type: DOUBLE
+    definition: Location quotient for other services, calculated as local private-sector QCEW employment share divided by the national share aggregated from state QCEW rows for the same year.
+    needs_confirmation: no
   - name: pct_qcew_private_emp_of_total_covered
     type: DOUBLE
     definition: Share of total covered QCEW employment accounted for by the curated private-sector subset.
@@ -388,6 +454,8 @@ column_groups:
     definition: ACS industry employment levels from `silver.labor_kpi`, aligned to the broad industry families used throughout this mart.
   - prefix: pct_acs_ind_
     definition: ACS industry employment shares from `silver.labor_kpi`.
+  - prefix: lq_
+    definition: QCEW location quotients comparing local private-sector employment shares to a state-aggregated national benchmark for the same year.
   - prefix: real_gdp_
     definition: BEA real GDP levels from `silver.bea_regional_cagdp9_wide`.
   - prefix: pct_real_gdp_

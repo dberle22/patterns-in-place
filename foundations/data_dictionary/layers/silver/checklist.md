@@ -1,7 +1,7 @@
 # Silver Layer Coverage Checklist
 
 Schema: `silver`
-Table count: 51
+Table count: 52
 
 - [x] `acs_tx_school_metrics`
 - [x] `age_base`
@@ -31,6 +31,7 @@ Table count: 51
 - [x] `hud_rent50_wide`
 - [x] `income_base`
 - [x] `income_kpi`
+- [x] `irs_bmf`
 - [x] `kpi_dictionary`
 - [x] `labor_base`
 - [x] `labor_kpi`

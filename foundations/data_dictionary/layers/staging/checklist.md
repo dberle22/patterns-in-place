@@ -3,7 +3,7 @@
 Coverage unit: source/theme family contract.
 Replica tables listed in a family doc's coverage matrix are considered documented there and should not be tracked as missing standalone dictionaries.
 
-Contract family count: 22
+Contract family count: 23
 
 | Status | Source | Theme | Contract dictionary | Materialized coverage |
 | --- | --- | --- | --- | --- |
@@ -26,6 +26,7 @@ Contract family count: 22
 | [x] | BPS | Building Permits Survey | [staging__bps.md](./staging__bps.md) | `bps_region, bps_division, bps_state, bps_county, bps_place` |
 | [x] | HUD | CHAS | [staging__hud_chas.md](./staging__hud_chas.md) | `hud_chas_state, hud_chas_county, hud_chas_place` |
 | [x] | HUD | FMR | [staging__hud_fmr.md](./staging__hud_fmr.md) | `hud_fmr_county, hud_fmr_zip, hud_rent50_county` |
+| [x] | IRS | EO BMF | [staging__irs_bmf.md](./staging__irs_bmf.md) | `irs_bmf` |
 | [x] | IRS | Migration | [staging__irs_migration.md](./staging__irs_migration.md) | `irs_inflow_migration_county, irs_inflow_migration_state` |
 | [x] | Zillow | ZHVI | [staging__zillow_zhvi.md](./staging__zillow_zhvi.md) | `zillow_zhvi_state, zillow_zhvi_county, zillow_zhvi_city, zillow_zhvi_zip_code` |
 | [x] | Zillow | ZORI | [staging__zillow_zori.md](./staging__zillow_zori.md) | `zillow_zori_county, zillow_zori_city, zillow_zori_zip_code` |

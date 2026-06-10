@@ -1,0 +1,49 @@
+table_name: social_fabric_wide
+schema: gold
+grain: One row per geo_level + geo_id for the static social-fabric baseline.
+primary_key:
+  - geo_level
+  - geo_id
+foreign_keys: []
+time_coverage:
+  type: static
+  notes:
+    - This Gold table is intentionally a static baseline mart rather than a recurring annual fact table.
+geo_coverage:
+  notes:
+    - geo_levels=county,state,cbsa,zcta
+sources:
+  - silver.opportunity_insights_social_capital
+  - silver.irs_bmf
+columns:
+  - { name: geo_level, type: VARCHAR, definition: Geographic level for the row (`county`, `state`, `cbsa`, or `zcta`). }
+  - { name: geo_id, type: VARCHAR, definition: Geographic identifier for the row. }
+  - { name: geo_name, type: VARCHAR, definition: Geographic display name for the row. }
+  - { name: population_total, type: DOUBLE, definition: 2018 population context field published with the Social Capital Atlas source slice for the geography. }
+  - { name: children_below_p50, type: DOUBLE, definition: Count of children with below-national-median parental household income published with the Social Capital Atlas source slice for the geography. }
+  - { name: economic_connectedness, type: DOUBLE, definition: Baseline economic connectedness measure for the geography. }
+  - { name: childhood_economic_connectedness, type: DOUBLE, definition: Childhood economic connectedness measure assigned using high-school location. Null for ZCTA rows. }
+  - { name: neighborhood_economic_connectedness, type: DOUBLE, definition: Neighborhood-only economic connectedness measure from the ZIP release. Null for county, state, and CBSA rows. }
+  - { name: economic_exposure, type: DOUBLE, definition: Exposure to higher-SES peers measure used in the economic connectedness decomposition. }
+  - { name: childhood_economic_exposure, type: DOUBLE, definition: Childhood exposure to higher-parental-SES peers. Null for ZCTA rows. }
+  - { name: neighborhood_economic_exposure, type: DOUBLE, definition: Neighborhood-only exposure measure from the ZIP release. Null for county, state, and CBSA rows. }
+  - { name: friending_bias, type: DOUBLE, definition: Friending-bias measure used in the economic connectedness decomposition. }
+  - { name: childhood_friending_bias, type: DOUBLE, definition: Childhood friending-bias measure. Null for ZCTA rows. }
+  - { name: neighborhood_friending_bias, type: DOUBLE, definition: Neighborhood-only friending-bias measure from the ZIP release. Null for county, state, and CBSA rows. }
+  - { name: cohesion_clustering, type: DOUBLE, definition: Cohesiveness measure based on the clustering of friendship networks. }
+  - { name: cohesion_support_ratio, type: DOUBLE, definition: Cohesiveness measure based on the share of friendships supported by a mutual friend. }
+  - { name: civic_engagement_volunteering_rate, type: DOUBLE, definition: Share of users participating in volunteering or activism groups. }
+  - { name: civic_organizations_per_1000, type: DOUBLE, definition: Public-good Facebook pages per 1,000 users in the geography. }
+  - { name: irs_bmf_snapshot_date, type: VARCHAR, definition: IRS EO BMF posting date used for the nonprofit-density snapshot. Populated for county and CBSA rows only. }
+  - { name: irs_bmf_population_year, type: INTEGER, definition: ACS denominator year used for the IRS nonprofit per-capita metrics. Populated for county and CBSA rows only. }
+  - { name: nonprofit_org_count_est, type: DOUBLE, definition: Estimated total active exempt-organization count from the IRS EO BMF after ZIP5-to-county allocation. Populated for county and CBSA rows only. }
+  - { name: nonprofit_org_count_nonreligious_est, type: DOUBLE, definition: Estimated active non-religious organization count from the IRS EO BMF after the first-pass exclusion rule and ZIP5-to-county allocation. Populated for county and CBSA rows only. }
+  - { name: nonprofits_per_100k, type: DOUBLE, definition: Estimated non-religious EO BMF organization count per 100,000 residents. Populated for county and CBSA rows only. }
+  - { name: nonprofits_total_per_100k, type: DOUBLE, definition: Estimated total active EO BMF organization count per 100,000 residents. Populated for county and CBSA rows only. }
+  - { name: nonprofit_source_zip5_count, type: INTEGER, definition: Number of distinct staged ZIP5 groups contributing to the IRS nonprofit-density estimate for the geography. Populated for county and CBSA rows only. }
+  - { name: nonprofit_weight_method, type: VARCHAR, definition: ZIP allocation weighting method used for the IRS nonprofit-density estimate for the geography. Populated for county and CBSA rows only. }
+quality_notes:
+  - This Gold table is intentionally separate from the recurring year-based fact marts because the Social Capital Atlas is a static research release rather than an annual panel.
+  - County, state, and CBSA rows all share the same county-based metric family; ZCTA rows add the neighborhood-only variants published in the ZIP release.
+  - State and CBSA rows inherit population-weighted county rollups from Silver.
+  - IRS EO BMF metrics are a latest-snapshot headquarters-density proxy and therefore populate county and CBSA rows only; state and ZCTA rows intentionally remain null for those columns.

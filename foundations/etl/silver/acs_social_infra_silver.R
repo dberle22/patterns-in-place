@@ -87,12 +87,18 @@ build_social_infra_silver <- function(materialize = FALSE) {
     pop_pattern = "hh_"
   )
 
+  cbsa_families_with_children <- sum_pops_by_cbsa(
+    df = cbsa_base,
+    pop_pattern = "family_with_children_"
+  )
+
   cbsa_insurance <- sum_pops_by_cbsa(
     df = cbsa_base,
     pop_pattern = "ins_"
   )
 
   cbsa_acs_clean <- cbsa_households %>%
+    left_join(cbsa_families_with_children, by = c("cbsa_code", "cbsa_name", "year")) %>%
     left_join(cbsa_insurance, by = c("cbsa_code", "cbsa_name", "year")) %>%
     mutate(geo_level = "cbsa") %>%
     select(
@@ -101,6 +107,9 @@ build_social_infra_silver <- function(materialize = FALSE) {
       geo_name = cbsa_name,
       year,
       hh_totalE:hh_nonfam_not_aloneE,
+      family_with_children_married_coupleE,
+      family_with_children_single_fatherE,
+      family_with_children_single_motherE,
       ins_totalE:ins_65u_uncoveredE
     )
 
@@ -129,6 +138,12 @@ build_social_infra_silver <- function(materialize = FALSE) {
       hh_nonfam_alone = hh_nonfam_aloneE,
       hh_nonfam_not_alone = hh_nonfam_not_aloneE,
       single_households = hh_nonfam_aloneE,
+      family_with_children_married_couple = family_with_children_married_coupleE,
+      family_with_children_single_father = family_with_children_single_fatherE,
+      family_with_children_single_mother = family_with_children_single_motherE,
+      family_with_children_total = family_with_children_married_coupleE +
+        family_with_children_single_fatherE + family_with_children_single_motherE,
+      family_with_children_single_parent = family_with_children_single_fatherE + family_with_children_single_motherE,
       ins_total = ins_totalE,
       ins_u19_total = ins_u19_one_planE + ins_u19_two_plansE + ins_u19_uncoveredE,
       ins_19_34_total = ins_19_34_one_planE + ins_19_34_two_plansE + ins_19_34_uncoveredE,
@@ -152,6 +167,11 @@ build_social_infra_silver <- function(materialize = FALSE) {
       pct_hh_nonfamily = dplyr::if_else(hh_total > 0, hh_nonfamily / hh_total, NA_real_),
       pct_single_households = dplyr::if_else(hh_total > 0, single_households / hh_total, NA_real_),
       pct_hh_single_person = dplyr::if_else(hh_total > 0, single_households / hh_total, NA_real_),
+      pct_family_single_parent = dplyr::if_else(
+        family_with_children_total > 0,
+        family_with_children_single_parent / family_with_children_total,
+        NA_real_
+      ),
       pct_nonfamily_alone = dplyr::if_else(hh_nonfamily > 0, hh_nonfam_alone / hh_nonfamily, NA_real_),
       pct_nonfamily_not_alone = dplyr::if_else(
         hh_nonfamily > 0,
@@ -189,8 +209,12 @@ build_social_infra_silver <- function(materialize = FALSE) {
       geo_level, geo_id, geo_name, year,
       hh_total, hh_family, hh_married, hh_other_family, hh_nonfamily,
       hh_nonfam_alone, hh_nonfam_not_alone, single_households,
+      family_with_children_total, family_with_children_married_couple,
+      family_with_children_single_father, family_with_children_single_mother,
+      family_with_children_single_parent,
       pct_hh_family, pct_hh_married, pct_hh_other_family, pct_hh_nonfamily,
-      pct_single_households, pct_hh_single_person, pct_nonfamily_alone, pct_nonfamily_not_alone,
+      pct_single_households, pct_hh_single_person, pct_family_single_parent,
+      pct_nonfamily_alone, pct_nonfamily_not_alone,
       ins_total, ins_insured, ins_uninsured,
       pct_health_insured, pct_health_uninsured,
       ins_u19_total, ins_u19_covered, ins_u19_uncovered = ins_u19_uncoveredE,
@@ -223,10 +247,21 @@ build_social_infra_silver <- function(materialize = FALSE) {
     insurance_component_mismatches = social_infra_kpi %>%
       filter(abs(ins_total - (ins_u19_total + ins_19_34_total + ins_35_64_total + ins_65u_total)) > 1e-6) %>%
       nrow(),
+    single_parent_over_total_rows = social_infra_kpi %>%
+      filter(family_with_children_single_parent - family_with_children_total > 1e-6) %>%
+      nrow(),
     negative_insured_rows = social_infra_kpi %>%
       filter(ins_insured < 0) %>%
       nrow()
   )
+
+  if (validation$single_parent_over_total_rows > 0) {
+    stop(
+      "Single-parent family numerator exceeds total families-with-children denominator in ",
+      validation$single_parent_over_total_rows,
+      " rows."
+    )
+  }
 
   if (isTRUE(materialize)) {
     DBI::dbWriteTable(

@@ -15,7 +15,7 @@
 
 ## Column Groups
 - **Keys**: `geo_level`, `geo_id`, `geo_name`, `year`
-- **Household structure**: `hh_total`, `single_households`, `pct_hh_single_person`
+- **Household structure**: `hh_total`, `single_households`, `pct_hh_single_person`, `pct_family_single_parent`
 - **Insurance coverage**: `ins_total`, `ins_insured`, `ins_uninsured`, `pct_health_insured`, `pct_health_uninsured`
 - **Broadband access**: `internet_total_hh`, `internet_broadband_subscription`, `internet_cellular_only`, `internet_no_access`, `pct_broadband_subscription`, `pct_cellular_only`, `pct_no_internet_access`
 
@@ -24,7 +24,8 @@
 - Broadband fields are null for the pre-2017 rows by design. In the current snapshot, broadband is populated for the large majority of `2017+` rows, with the remaining `17,432` null rows concentrated in `tract`, `zcta`, and `place`.
 - The broadband metrics come from the dedicated `silver.broadband_kpi` family rather than the older commented-out `acs_social_infra` broadband stub.
 - ACS broadband question wording changed in `2019`, so breakpoint-sensitive analysis should treat pre-2019 and post-2019 values with caution even though the headline series is still useful.
-- Single-parent household metrics are intentionally not included yet because the needed `B11003` fields are not currently landed in `staging.acs_social_infra_*`.
+- `pct_family_single_parent` is now included from ACS `B11003` and is null in the `55,998` rows where the families-with-children denominator is zero.
+- In the current snapshot, `pct_family_single_parent` stays within the expected `0–1` range for all rows, and the U.S. series runs from `0.3273` in `2015` to `0.3183` in `2024`.
 
 ## Lineage
 1. `foundations/etl/silver/acs_social_infra_silver.R` builds `silver.social_infra_kpi` from `staging.acs_social_infra_*`.
@@ -32,5 +33,4 @@
 3. `foundations/etl/gold/gold_social_infra_wide.sql` joins those two recurring panels and materializes `gold.social_infra_wide`.
 
 ## Known Gaps / To-Dos
-- Add `pct_family_single_parent` after `B11003` is staged into the social infrastructure family or promoted through a separate household-structure path.
 - Decide later whether limited-English access metrics belong here or remain only in `gold.population_demographics`.

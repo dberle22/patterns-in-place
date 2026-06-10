@@ -188,6 +188,26 @@ qcew_industry as (
     group by 1, 2, 3, 4
 ),
 
+national_qcew_shares as (
+    select
+        year,
+        sum(qcew_private_emp_ag_mining) / nullif(sum(qcew_private_emp_total), 0) as national_pct_qcew_private_emp_ag_mining,
+        sum(qcew_private_emp_construction) / nullif(sum(qcew_private_emp_total), 0) as national_pct_qcew_private_emp_construction,
+        sum(qcew_private_emp_manufacturing) / nullif(sum(qcew_private_emp_total), 0) as national_pct_qcew_private_emp_manufacturing,
+        sum(qcew_private_emp_wholesale) / nullif(sum(qcew_private_emp_total), 0) as national_pct_qcew_private_emp_wholesale,
+        sum(qcew_private_emp_retail) / nullif(sum(qcew_private_emp_total), 0) as national_pct_qcew_private_emp_retail,
+        sum(qcew_private_emp_transport_util) / nullif(sum(qcew_private_emp_total), 0) as national_pct_qcew_private_emp_transport_util,
+        sum(qcew_private_emp_information) / nullif(sum(qcew_private_emp_total), 0) as national_pct_qcew_private_emp_information,
+        sum(qcew_private_emp_finance_real) / nullif(sum(qcew_private_emp_total), 0) as national_pct_qcew_private_emp_finance_real,
+        sum(qcew_private_emp_professional) / nullif(sum(qcew_private_emp_total), 0) as national_pct_qcew_private_emp_professional,
+        sum(qcew_private_emp_educ_health) / nullif(sum(qcew_private_emp_total), 0) as national_pct_qcew_private_emp_educ_health,
+        sum(qcew_private_emp_arts_accomm_food) / nullif(sum(qcew_private_emp_total), 0) as national_pct_qcew_private_emp_arts_accomm_food,
+        sum(qcew_private_emp_other_services) / nullif(sum(qcew_private_emp_total), 0) as national_pct_qcew_private_emp_other_services
+    from qcew_industry
+    where geo_level = 'state'
+    group by 1
+),
+
 cbp_industry as (
     select
         lower(geo_level) as geo_level,
@@ -212,6 +232,21 @@ cbp_industry as (
         sum(case when silver_rollup_family = 'other_services' then establishments else 0 end) as cbp_estabs_other_services
     from patterns_in_place.silver.cbp
     group by 1, 2, 3, 4
+),
+
+bfs_annual as (
+    select
+        lower(geo_level) as geo_level,
+        geo_id,
+        geo_name,
+        year,
+        business_applications as bfs_business_applications,
+        business_applications_yoy_pct as bfs_business_applications_yoy_pct,
+        business_application_rate_per_1000_establishments
+            as bfs_business_application_rate_per_1000_establishments
+    from patterns_in_place.silver.bfs
+    where period_type = 'annual'
+      and series_code = 'BA'
 ),
 
 final as (
@@ -282,6 +317,18 @@ final as (
         q.qcew_private_avg_wkly_wage_arts_accomm_food,
         q.qcew_private_avg_wkly_wage_other_services,
         q.qcew_public_admin_avg_wkly_wage,
+        nat.national_pct_qcew_private_emp_ag_mining,
+        nat.national_pct_qcew_private_emp_construction,
+        nat.national_pct_qcew_private_emp_manufacturing,
+        nat.national_pct_qcew_private_emp_wholesale,
+        nat.national_pct_qcew_private_emp_retail,
+        nat.national_pct_qcew_private_emp_transport_util,
+        nat.national_pct_qcew_private_emp_information,
+        nat.national_pct_qcew_private_emp_finance_real,
+        nat.national_pct_qcew_private_emp_professional,
+        nat.national_pct_qcew_private_emp_educ_health,
+        nat.national_pct_qcew_private_emp_arts_accomm_food,
+        nat.national_pct_qcew_private_emp_other_services,
         c.cbp_total_estabs,
         c.cbp_total_emp_march12,
         c.cbp_total_annual_payroll_k,
@@ -298,6 +345,9 @@ final as (
         c.cbp_estabs_educ_health,
         c.cbp_estabs_arts_accomm_food,
         c.cbp_estabs_other_services,
+        bfs.bfs_business_applications,
+        bfs.bfs_business_applications_yoy_pct,
+        bfs.bfs_business_application_rate_per_1000_establishments,
         bea.real_gdp_total,
         bea.real_gdp_natural_resources,
         bea.real_gdp_manufacturing,
@@ -334,15 +384,22 @@ final as (
         on b.geo_level = q.geo_level
        and b.geo_id = q.geo_id
        and b.year = q.year
+    left join national_qcew_shares nat
+        on b.year = nat.year
     left join cbp_industry c
         on b.geo_level = c.geo_level
        and b.geo_id = c.geo_id
        and b.year = c.year
+    left join bfs_annual bfs
+        on b.geo_level = bfs.geo_level
+       and b.geo_id = bfs.geo_id
+       and b.year = bfs.year
 )
 
 select
     *,
     cbp_total_estabs / nullif(pop_total, 0) * 1000.0 as cbp_estabs_per_1000_residents,
+    bfs_business_applications / nullif(pop_total, 0) * 1000.0 as bfs_business_applications_per_1000_residents,
     cbp_estabs_ag_mining / nullif(cbp_total_estabs, 0) as pct_cbp_estabs_ag_mining,
     cbp_estabs_construction / nullif(cbp_total_estabs, 0) as pct_cbp_estabs_construction,
     cbp_estabs_manufacturing / nullif(cbp_total_estabs, 0) as pct_cbp_estabs_manufacturing,
@@ -367,6 +424,18 @@ select
     qcew_private_emp_educ_health / nullif(qcew_private_emp_total, 0) as pct_qcew_private_emp_educ_health,
     qcew_private_emp_arts_accomm_food / nullif(qcew_private_emp_total, 0) as pct_qcew_private_emp_arts_accomm_food,
     qcew_private_emp_other_services / nullif(qcew_private_emp_total, 0) as pct_qcew_private_emp_other_services,
+    (qcew_private_emp_ag_mining / nullif(qcew_private_emp_total, 0)) / nullif(national_pct_qcew_private_emp_ag_mining, 0) as lq_ag_mining,
+    (qcew_private_emp_construction / nullif(qcew_private_emp_total, 0)) / nullif(national_pct_qcew_private_emp_construction, 0) as lq_construction,
+    (qcew_private_emp_manufacturing / nullif(qcew_private_emp_total, 0)) / nullif(national_pct_qcew_private_emp_manufacturing, 0) as lq_manufacturing,
+    (qcew_private_emp_wholesale / nullif(qcew_private_emp_total, 0)) / nullif(national_pct_qcew_private_emp_wholesale, 0) as lq_wholesale,
+    (qcew_private_emp_retail / nullif(qcew_private_emp_total, 0)) / nullif(national_pct_qcew_private_emp_retail, 0) as lq_retail,
+    (qcew_private_emp_transport_util / nullif(qcew_private_emp_total, 0)) / nullif(national_pct_qcew_private_emp_transport_util, 0) as lq_transport_util,
+    (qcew_private_emp_information / nullif(qcew_private_emp_total, 0)) / nullif(national_pct_qcew_private_emp_information, 0) as lq_information,
+    (qcew_private_emp_finance_real / nullif(qcew_private_emp_total, 0)) / nullif(national_pct_qcew_private_emp_finance_real, 0) as lq_finance_real,
+    (qcew_private_emp_professional / nullif(qcew_private_emp_total, 0)) / nullif(national_pct_qcew_private_emp_professional, 0) as lq_professional,
+    (qcew_private_emp_educ_health / nullif(qcew_private_emp_total, 0)) / nullif(national_pct_qcew_private_emp_educ_health, 0) as lq_educ_health,
+    (qcew_private_emp_arts_accomm_food / nullif(qcew_private_emp_total, 0)) / nullif(national_pct_qcew_private_emp_arts_accomm_food, 0) as lq_arts_accomm_food,
+    (qcew_private_emp_other_services / nullif(qcew_private_emp_total, 0)) / nullif(national_pct_qcew_private_emp_other_services, 0) as lq_other_services,
     qcew_private_emp_total / nullif(qcew_total_covered_emp, 0) as pct_qcew_private_emp_of_total_covered,
     qcew_public_admin_emp / nullif(qcew_total_covered_emp, 0) as pct_qcew_public_admin_emp_of_total_covered,
     real_gdp_natural_resources

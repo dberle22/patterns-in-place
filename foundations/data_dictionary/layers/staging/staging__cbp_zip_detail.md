@@ -57,5 +57,5 @@
 - The source file volume for the current `2023` release is `2,974,116` rows; the staging script completed successfully against that artifact.
 
 ## Known Gaps / To-Dos
-- This staging table does not yet have a companion `silver.cbp_zip` analytical contract.
-- We still need to decide whether downstream ZIP outputs should remain ZIP-native or be reconciled to a ZCTA-style contract later.
+- `silver.cbp_zip` now provides the first analytical ZIP surface, but the ZIP geography is still ZIP-native rather than reconciled to a ZCTA-style contract.
+- We still need to decide whether any future Gold output should consume ZIP detail directly or whether ZIP should remain a Silver-only business-presence surface.

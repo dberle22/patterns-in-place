@@ -58,6 +58,25 @@ steps:
       - seed_staging
     enabled: true
 
+  - id: social_capital_atlas_staging
+    layer: staging
+    script: foundations/etl/staging/get_opportunity_insights_social_capital.R
+    outputs:
+      - staging.opportunity_insights_social_capital_county
+      - staging.opportunity_insights_social_capital_zip
+    depends_on:
+      - seed_staging
+    enabled: true
+
+  - id: irs_bmf_staging
+    layer: staging
+    script: foundations/etl/staging/get_irs_bmf.R
+    outputs:
+      - staging.irs_bmf
+    depends_on:
+      - seed_staging
+    enabled: true
+
   - id: epa_aqi_staging
     layer: staging
     script: foundations/etl/staging/get_epa_aqi.R
@@ -279,6 +298,56 @@ steps:
     depends_on:
       - cbp_county_staging
       - geo_crosswalks
+    enabled: true
+
+  - id: cbp_zip
+    layer: silver
+    script: foundations/etl/silver/cbp_zip_silver.R
+    outputs:
+      - silver.cbp_zip
+    depends_on:
+      - cbp_zip_staging
+    enabled: true
+
+  - id: bfs_county_staging
+    layer: staging
+    script: foundations/etl/staging/get_bfs.R
+    outputs:
+      - staging.bfs_county
+    depends_on:
+      - seed_staging
+    enabled: true
+
+  - id: bfs
+    layer: silver
+    script: foundations/etl/silver/bfs_silver.R
+    outputs:
+      - silver.bfs
+    depends_on:
+      - bfs_county_staging
+      - cbp
+      - geo_crosswalks
+    enabled: true
+
+  - id: opportunity_insights_social_capital
+    layer: silver
+    script: foundations/etl/silver/opportunity_insights_social_capital_silver.R
+    outputs:
+      - silver.opportunity_insights_social_capital
+    depends_on:
+      - social_capital_atlas_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: irs_bmf
+    layer: silver
+    script: foundations/etl/silver/irs_bmf_silver.R
+    outputs:
+      - silver.irs_bmf
+    depends_on:
+      - irs_bmf_staging
+      - geo_crosswalks
+      - acs_age
     enabled: true
 
   - id: usda_food_atlas
@@ -668,7 +737,17 @@ steps:
     depends_on:
       - usda_food_atlas
     enabled: true
-    notes: Dedicated tract/county/CBSA 2019 USDA food-access baseline mart kept separate from the recurring ACS transport panel.
+
+  - id: gold_social_fabric_wide
+    layer: gold
+    script: foundations/etl/gold/gold_social_fabric_wide.sql
+    outputs:
+      - gold.social_fabric_wide
+    depends_on:
+      - opportunity_insights_social_capital
+      - irs_bmf
+    enabled: true
+    notes: Dedicated static social-fabric baseline mart combining Opportunity Insights with IRS EO BMF nonprofit-density enrichment for county and CBSA rows.
 
   - id: gold_economy_wide
     layer: gold

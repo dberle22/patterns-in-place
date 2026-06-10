@@ -9,22 +9,23 @@ foreign_keys: []
 time_coverage:
   type: range
   column: year
-  min: '2025'
+  min: '2016'
   max: '2025'
 geo_coverage:
   notes:
     - distinct_geo_levels=2
-    - distinct_geo_id=4077
-    - county_rows=3152
-    - cbsa_rows=925
+    - distinct_geo_id=4084
+    - county_rows=31423
+    - cbsa_rows=9187
 quality_notes:
-  - Live key check on 2026-06-04 found zero duplicates on geo_level + geo_id + year.
-  - County rows come directly from CHR county and county-equivalent observations; staged national and state summary rows are intentionally excluded from Silver.
+  - Live key check on 2026-06-09 found zero duplicates on geo_level + geo_id + year.
+  - County rows come from the curated annual historical staging panel, which intentionally excludes the staged national and state summary rows and keeps county plus county-equivalent observations only.
   - Provider access fields use CHR's published ratio helper columns (`population:provider`) rather than the paired per-100k raw values.
   - CBSA rows are derived with `silver.xwalk_cbsa_county` plus ACS `silver.age_kpi` weights: total population for most measures and school-age population for reading/math.
   - `air_pollution_pm25` and `adverse_climate_events` are intentional holdover fields pending direct EPA and FEMA source coverage in later tracks.
+  - Several CHR measures were introduced after 2016, so older years legitimately carry structural nulls for newer columns such as `adverse_climate_events` and `pct_access_to_parks`.
 sources:
-  - staging.chr_health_rankings
+  - staging.chr_health_rankings_history
   - silver.xwalk_cbsa_county
   - silver.xwalk_county_state
   - silver.age_kpi
@@ -39,6 +40,9 @@ columns:
   - { name: child_mortality_rate, type: DOUBLE, definition: Child Mortality raw value from CHR. }
   - { name: infant_mortality_rate, type: DOUBLE, definition: Infant Mortality raw value from CHR. }
   - { name: drug_overdose_death_rate, type: DOUBLE, definition: Drug Overdose Deaths raw value from CHR. }
+  - { name: poor_mental_health_days, type: DOUBLE, definition: Poor Mental Health Days raw value from CHR, measured as the average number of mentally unhealthy days reported in the past 30 days. }
+  - { name: adult_obesity, type: DOUBLE, definition: Adult Obesity raw value from CHR. }
+  - { name: physical_inactivity, type: DOUBLE, definition: Physical Inactivity raw value from CHR. }
   - { name: pct_uninsured_adults, type: DOUBLE, definition: Uninsured Adults raw value from CHR. }
   - { name: primary_care_ratio, type: DOUBLE, definition: Published CHR ratio of population to primary care physicians. Lower values indicate better provider access. }
   - { name: mental_health_provider_ratio, type: DOUBLE, definition: Published CHR ratio of population to mental health providers. Lower values indicate better provider access. }
@@ -58,10 +62,10 @@ columns:
 lineage:
   - step: read_source
     script: foundations/etl/staging/get_chr.R
-    details: Downloads the live CHR analytic CSV, removes the repeated embedded header artifact, preserves source-faithful wide staging columns, and materializes `staging.chr_health_rankings`.
+    details: Resolves annual CHR analytic CSV downloads for 2016-2025, preserves the source-faithful 2025 wide table, and materializes the curated county-only historical panel `staging.chr_health_rankings_history`.
   - step: standardize_and_rebase
     script: foundations/etl/silver/chr_silver.R
-    details: Filters staging to county rows, selects the approved 22-measure CHR contract, normalizes county names from crosswalk metadata, and derives CBSA rows with county-to-CBSA crosswalk joins plus ACS population weights.
+    details: Reads the curated historical county panel, standardizes the approved 25-measure CHR contract, normalizes county names from crosswalk metadata, and derives CBSA rows with county-to-CBSA crosswalk joins plus ACS population weights.
   - step: write_target
     script: foundations/etl/silver/chr_silver.R
     details: Writes `silver.chr_health_outcomes` with overwrite enabled.

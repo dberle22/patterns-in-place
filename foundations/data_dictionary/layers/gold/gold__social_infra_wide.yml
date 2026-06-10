@@ -20,7 +20,7 @@ quality_notes:
   - Broadband fields are intentionally null before 2017; the remaining 2017+ nulls are concentrated in tract, zcta, and place rows.
   - Broadband comes from the dedicated `silver.broadband_kpi` family rather than the older commented-out broadband stub in `acs_social_infra`.
   - ACS broadband wording changed in 2019, so breakpoint-sensitive analysis should treat pre-2019 and post-2019 values with caution.
-  - Single-parent household metrics are not included yet because `B11003` is not currently landed in `staging.acs_social_infra_*`.
+  - `pct_family_single_parent` is derived from ACS table `B11003` as the share of families with own children under age 18 that are headed by a single parent; rows are null where the families-with-children denominator is zero.
 sources:
   - silver.social_infra_kpi
   - silver.broadband_kpi
@@ -32,6 +32,7 @@ columns:
   - { name: hh_total, type: DOUBLE, definition: Total households in the geography. }
   - { name: single_households, type: DOUBLE, definition: Count of households with one person living alone. }
   - { name: pct_hh_single_person, type: DOUBLE, definition: Share of households with one person living alone. }
+  - { name: pct_family_single_parent, type: DOUBLE, definition: Share of families with own children of the householder under age 18 that are headed by a single parent. }
   - { name: ins_total, type: DOUBLE, definition: Total population in the health insurance coverage universe. }
   - { name: ins_insured, type: DOUBLE, definition: Population with at least one form of health insurance coverage. }
   - { name: ins_uninsured, type: DOUBLE, definition: Population without health insurance coverage. }

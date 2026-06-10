@@ -9,19 +9,21 @@ foreign_keys: []
 time_coverage:
   type: range
   column: year
-  min: '2025'
+  min: '2016'
   max: '2025'
 geo_coverage:
   notes:
     - distinct_geo_levels=2
-    - distinct_geo_id=4077
-    - county_rows=3152
-    - cbsa_rows=925
+    - distinct_geo_id=4084
+    - county_rows=31423
+    - cbsa_rows=9187
 quality_notes:
-  - Live key check on 2026-06-04 found zero duplicates on geo_level + geo_id + year.
-  - This first-pass Gold mart is intentionally the approved CHR Silver contract carried through directly at county + CBSA grain.
+  - Live key check on 2026-06-09 found zero duplicates on geo_level + geo_id + year.
+  - This Gold mart is intentionally the approved CHR Silver contract carried through directly at county + CBSA grain.
+  - Derived trend columns are simple absolute deltas, not percent changes. They populate only when the same geography has a comparable observation exactly 1 or 5 years earlier.
   - `air_pollution_pm25` and `adverse_climate_events` remain lagged holdover fields pending direct EPA and FEMA/environment source coverage in later tracks.
   - Provider access fields use CHR's published ratio helper columns (`population:provider`) rather than per-100k raw values.
+  - The historical panel inherits structural nulls for measures that CHR introduced after 2016, especially `adverse_climate_events` and `pct_access_to_parks`.
 sources:
   - silver.chr_health_outcomes
 columns:
@@ -30,20 +32,35 @@ columns:
   - { name: geo_name, type: VARCHAR, definition: Geographic display name for the row. }
   - { name: year, type: INTEGER, definition: Observation year. }
   - { name: life_expectancy, type: DOUBLE, definition: Life Expectancy raw value from CHR. }
+  - { name: life_expectancy_change_1yr, type: DOUBLE, definition: One-year absolute change in life expectancy for the same geography. Populates only when the prior-year observation exists. }
+  - { name: life_expectancy_change_5yr, type: DOUBLE, definition: Five-year absolute change in life expectancy for the same geography. Populates only when the five-years-prior observation exists. }
   - { name: premature_death_rate, type: DOUBLE, definition: Premature Death raw value from CHR. }
+  - { name: premature_death_rate_change_1yr, type: DOUBLE, definition: One-year absolute change in premature death rate for the same geography. Populates only when the prior-year observation exists. }
+  - { name: premature_death_rate_change_5yr, type: DOUBLE, definition: Five-year absolute change in premature death rate for the same geography. Populates only when the five-years-prior observation exists. }
   - { name: premature_age_adjusted_mortality, type: DOUBLE, definition: Premature Age-Adjusted Mortality raw value from CHR. }
   - { name: child_mortality_rate, type: DOUBLE, definition: Child Mortality raw value from CHR. }
   - { name: infant_mortality_rate, type: DOUBLE, definition: Infant Mortality raw value from CHR. }
   - { name: drug_overdose_death_rate, type: DOUBLE, definition: Drug Overdose Deaths raw value from CHR. }
+  - { name: poor_mental_health_days, type: DOUBLE, definition: Poor Mental Health Days raw value from CHR, measured as the average number of mentally unhealthy days reported in the past 30 days. }
+  - { name: poor_mental_health_days_change_5yr, type: DOUBLE, definition: Five-year absolute change in poor mental health days for the same geography. Populates only when the five-years-prior observation exists. }
+  - { name: adult_obesity, type: DOUBLE, definition: Adult Obesity raw value from CHR. }
+  - { name: adult_obesity_change_5yr, type: DOUBLE, definition: Five-year absolute change in adult obesity for the same geography. Populates only when the five-years-prior observation exists. }
+  - { name: physical_inactivity, type: DOUBLE, definition: Physical Inactivity raw value from CHR. }
+  - { name: physical_inactivity_change_5yr, type: DOUBLE, definition: Five-year absolute change in physical inactivity for the same geography. Populates only when the five-years-prior observation exists. }
   - { name: pct_uninsured_adults, type: DOUBLE, definition: Uninsured Adults raw value from CHR. }
+  - { name: pct_uninsured_adults_change_1yr, type: DOUBLE, definition: One-year absolute change in uninsured adults for the same geography. Populates only when the prior-year observation exists. }
+  - { name: pct_uninsured_adults_change_5yr, type: DOUBLE, definition: Five-year absolute change in uninsured adults for the same geography. Populates only when the five-years-prior observation exists. }
   - { name: primary_care_ratio, type: DOUBLE, definition: Published CHR ratio of population to primary care physicians. Lower values indicate better access. }
+  - { name: primary_care_ratio_change_5yr, type: DOUBLE, definition: Five-year absolute change in the published primary care access ratio for the same geography. Populates only when the five-years-prior observation exists. }
   - { name: mental_health_provider_ratio, type: DOUBLE, definition: Published CHR ratio of population to mental health providers. Lower values indicate better access. }
   - { name: preventable_hospital_stay_rate, type: DOUBLE, definition: Preventable Hospital Stays raw value from CHR. }
+  - { name: preventable_hospital_stay_rate_change_5yr, type: DOUBLE, definition: Five-year absolute change in preventable hospital stay rate for the same geography. Populates only when the five-years-prior observation exists. }
   - { name: food_insecurity_rate, type: DOUBLE, definition: Food Insecurity raw value from CHR. }
   - { name: social_associations_per_10k, type: DOUBLE, definition: Social Associations raw value from CHR, measured per 10,000 residents. }
   - { name: child_care_cost_burden_rate, type: DOUBLE, definition: Child Care Cost Burden raw value from CHR. }
   - { name: hs_graduation_rate, type: DOUBLE, definition: High School Graduation raw value from CHR. }
   - { name: air_pollution_pm25, type: DOUBLE, definition: Air Pollution: Particulate Matter raw value from CHR. Lagged holdover field pending direct EPA coverage. }
+  - { name: air_pollution_pm25_change_5yr, type: DOUBLE, definition: Five-year absolute change in air pollution PM2.5 for the same geography. Populates only when the five-years-prior observation exists. }
   - { name: adverse_climate_events, type: DOUBLE, definition: Adverse Climate Events raw value from CHR. Holdover field pending direct FEMA/environment coverage. }
   - { name: pct_access_to_parks, type: DOUBLE, definition: Access to Parks raw value from CHR. }
   - { name: homicide_rate, type: DOUBLE, definition: Homicides raw value from CHR. }

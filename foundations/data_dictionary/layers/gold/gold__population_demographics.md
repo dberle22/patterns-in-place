@@ -51,9 +51,10 @@
 | `pct_hs_or_less` | `DOUBLE` | 0.0000 | 641733 |  | -nan (11750); 0.0 (8892); 1.0 (7464); 0.5 (2973); 0.6666666666666666 (915) | Percent of population age 25+ with high school education or less. Share / percentage; denominator is education_total. (from silver.kpi_dictionary). |
 | `pct_ba` | `DOUBLE` | 0.0000 | 544390 |  | 0.0 (48312); -nan (11750); 0.125 (1100); 0.1111111111111111 (1008); 0.16666666666666666 (984) | Percent of population age 25+ with Bachelor's degree or higher. Share / percentage; denominator is education_total. (from silver.kpi_dictionary). |
 | `pct_ba_plus` | `DOUBLE` | 0.0000 | 611757 |  | 0.0 (34980); -nan (11750); 1.0 (1985); 0.14285714285714285 (1103); 0.125 (1011) | Percent of population age 25+ with Graduate degree or higher. Share / percentage; denominator is education_total. (from silver.kpi_dictionary). |
+| `pct_ba_plus_change_5yr` | `DOUBLE` | 46.4387 | 971404 | min -1, max 1 | NULL (878435); 0.0 (7738); 1.0 (254); -1.0 (251); 0.5 (108) | Five-year absolute change in the share of population age 25+ with a bachelor's degree or higher for the same geography. |
 | `pct_grad_plus` | `DOUBLE` | 0.0000 | 506098 |  | 0.0 (93456); -nan (11750); 0.05555555555555555 (662); 0.058823529411764705 (643); 0.06666666666666667 (641) | Percent of population age 25+ with Graduate degree or higher. Share / percentage; denominator is education_total. (from silver.kpi_dictionary). |
 ## Data Quality Notes
-- Columns with non-zero null rates: pop_growth_1yr=12.4866%, pop_growth_3yr=28.8685%, pop_growth_5yr=45.1145%, pop_growth_10yr=81.7148%, pop_cagr_3yr=28.8685%, pop_cagr_5yr=45.1145%, pop_cagr_10yr=81.7148%, median_age=1.7624%, youth_dependency=2.2042%, old_age_dependency=2.2042%
+- Columns with non-zero null rates: pop_growth_1yr=12.4866%, pop_growth_3yr=28.8685%, pop_growth_5yr=45.1145%, pop_growth_10yr=81.7148%, pop_cagr_3yr=28.8685%, pop_cagr_5yr=45.1145%, pop_cagr_10yr=81.7148%, median_age=1.7624%, youth_dependency=2.2042%, old_age_dependency=2.2042%, pct_ba_plus_change_5yr=46.4387%
 - Key uniqueness check for recommended PK (`geo_level + geo_id + year`) returns zero duplicates in current snapshot.
 - Primary/foreign keys are not enforced as DB constraints in current pipeline.
 

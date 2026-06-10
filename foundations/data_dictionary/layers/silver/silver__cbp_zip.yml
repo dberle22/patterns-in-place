@@ -1,0 +1,61 @@
+table_name: cbp_zip
+schema: silver
+grain: One row per geo_level + geo_id + period + industry_code (latest-year ZIP-native CBP industry-detail rows filtered to the curated broad-sector subset).
+primary_key:
+  - geo_level
+  - geo_id
+  - period
+  - industry_code
+foreign_keys: []
+time_coverage:
+  type: range
+  column: period
+  min: '2023'
+  max: '2023'
+geo_coverage:
+  notes:
+    - zip_rows=294824
+    - zip_geo_ids=34954
+quality_notes:
+  - Live key check on 2026-06-09 found zero duplicates on geo_level + geo_id + period + industry_code.
+  - Silver intentionally narrows the staged ZIP detail file to 20 curated broad-sector codes plus the all-sectors row.
+  - ZIP geography remains ZIP-native in this first pass; no ZIP-to-ZCTA reconciliation is applied.
+  - The ZIP source is establishment-only, so the Silver contract does not include employment or payroll fields.
+sources:
+  - staging.cbp_zip_detail
+columns:
+  - { name: geo_level, type: VARCHAR, definition: Geographic level for the row (`zip`). }
+  - { name: geo_id, type: VARCHAR, definition: Geographic identifier for the row. ZIP rows use 5-digit ZIP codes. }
+  - { name: geo_name, type: VARCHAR, definition: Geographic display name for the row, using the published ZIP name where available and falling back to the ZIP code otherwise. }
+  - { name: period, type: INTEGER, definition: Calendar year of the CBP ZIP detail observation. }
+  - { name: zip_code, type: VARCHAR, definition: Five-digit ZIP code for the row. }
+  - { name: zip_name, type: VARCHAR, definition: Published ZIP area name from the CBP ZIP detail file. }
+  - { name: city, type: VARCHAR, definition: Published city helper from the CBP ZIP detail file. }
+  - { name: state_abbr, type: VARCHAR, definition: USPS state abbreviation published with the ZIP row. }
+  - { name: county_name, type: VARCHAR, definition: Published county-name helper from the ZIP detail file. }
+  - { name: industry_code, type: VARCHAR, definition: Curated CBP broad-sector code for the row, including the all-sectors total row `------`. }
+  - { name: industry_title, type: VARCHAR, definition: Human-readable industry label for the curated CBP industry code. }
+  - { name: silver_rollup_family, type: VARCHAR, definition: Foundations broad industry family used to align ZIP detail with the county CBP and broader economics layer. }
+  - { name: is_total_row, type: BOOLEAN, definition: Whether the row is the all-sectors total row rather than an industry slice. }
+  - { name: establishments, type: DOUBLE, definition: Total establishments for the ZIP-year-industry row. }
+  - { name: est_n_lt_5, type: DOUBLE, definition: Establishments with fewer than 5 employees. }
+  - { name: est_n_5_9, type: DOUBLE, definition: Establishments with 5 to 9 employees. }
+  - { name: est_n_10_19, type: DOUBLE, definition: Establishments with 10 to 19 employees. }
+  - { name: est_n_20_49, type: DOUBLE, definition: Establishments with 20 to 49 employees. }
+  - { name: est_n_50_99, type: DOUBLE, definition: Establishments with 50 to 99 employees. }
+  - { name: est_n_100_249, type: DOUBLE, definition: Establishments with 100 to 249 employees. }
+  - { name: est_n_250_499, type: DOUBLE, definition: Establishments with 250 to 499 employees. }
+  - { name: est_n_500_999, type: DOUBLE, definition: Establishments with 500 to 999 employees. }
+  - { name: est_n_1000_plus, type: DOUBLE, definition: Establishments with 1,000 or more employees. }
+  - { name: source, type: VARCHAR, definition: Source system or provider for the row (`Census CBP ZIP Detail`). }
+lineage:
+  - step: read_source
+    script: foundations/etl/staging/get_cbp_zip.R
+    details: Downloads the latest ZIP industry-detail artifact and lands the source-faithful staged ZIP detail table.
+  - step: curate_zip_surface
+    script: foundations/etl/silver/cbp_zip_silver.R
+    details: Filters staged ZIP detail to the approved broad-sector analytical subset, keeps ZIP geography native, and writes `silver.cbp_zip`.
+  - step: write_target
+    script: foundations/etl/silver/cbp_zip_silver.R
+    details: Writes `silver.cbp_zip` with overwrite enabled after the uniqueness check passes.
+kpi_definitions: []

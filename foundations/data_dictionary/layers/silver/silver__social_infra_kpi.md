@@ -32,12 +32,18 @@
 | `hh_nonfam_alone` | `DOUBLE` | 0.0000 | 20,960 | min 0, max 37140836 | 0.0 (41311); 9.0 (3958); 10.0 (3918); 11.0 (3871); 13.0 (3857) | Nonfamily households with one person living alone. |
 | `hh_nonfam_not_alone` | `DOUBLE` | 0.0000 | 11,135 | min 0, max 9096132 | 0.0 (146205); 2.0 (14089); 6.0 (13756); 8.0 (13670); 5.0 (13393) | Nonfamily households with two or more people. |
 | `single_households` | `DOUBLE` | 0.0000 | 20,960 | min 0, max 37140836 | 0.0 (41311); 9.0 (3958); 10.0 (3918); 11.0 (3871); 13.0 (3857) | Households with one person living alone. |
+| `family_with_children_total` | `DOUBLE` | 0.0000 | 29,154 | min 0, max 74389827 | 0.0 (25850); 17.0 (1827); 16.0 (1815); 15.0 (1758); 19.0 (1742) | Total families with own children of the householder under age 18, derived as married-couple plus single-father plus single-mother families. |
+| `family_with_children_married_couple` | `DOUBLE` | 0.0000 | 27,245 | min 0, max 60637388 | 0.0 (29945); 17.0 (2370); 13.0 (2329); 15.0 (2329); 16.0 (2323) | Married-couple families with own children of the householder under age 18. |
+| `family_with_children_single_father` | `DOUBLE` | 0.0000 | 9,090 | min 0, max 6572819 | 0.0 (157828); 8.0 (14265); 6.0 (14115); 9.0 (14054); 7.0 (13853) | Male-householder families with own children of the householder under age 18 and no spouse present. |
+| `family_with_children_single_mother` | `DOUBLE` | 0.0000 | 6,440 | min 0, max 2940092 | 0.0 (358350); 9.0 (22859); 10.0 (22288); 8.0 (22101); 7.0 (21473) | Female-householder families with own children of the householder under age 18 and no spouse present. |
+| `family_with_children_single_parent` | `DOUBLE` | 0.0000 | 15,259 | min 0, max 11044811 | 0.0 (154329); 9.0 (11548); 8.0 (11294); 10.0 (11236); 7.0 (11168) | Single-parent families with own children of the householder under age 18, derived as single-father plus single-mother families. |
 | `pct_hh_family` | `DOUBLE` | 1.4024 | 657,164 | min 0, max 1 | NULL (20641); 1.0 (16427); 0.0 (5209); 0.6666666666666666 (3283); 0.5 (2560) | Share of households that are family households. |
 | `pct_hh_married` | `DOUBLE` | 1.4024 | 699,718 | min 0, max 1 | NULL (20641); 0.0 (9304); 1.0 (9151); 0.5 (4373); 0.6666666666666666 (1863) | Share of households that are married-couple family households. |
 | `pct_hh_other_family` | `DOUBLE` | 1.4024 | 579,947 | min 0, max 1 | 0.0 (48462); NULL (20641); 0.16666666666666666 (1813); 0.2 (1710); 0.14285714285714285 (1689) | Share of households that are other family households. |
 | `pct_hh_nonfamily` | `DOUBLE` | 1.4024 | 657,164 | min 0, max 1 | NULL (20641); 0.0 (16427); 1.0 (5209); 0.3333333333333333 (3283); 0.5 (2560) | Share of households that are nonfamily households. |
 | `pct_single_households` | `DOUBLE` | 1.4024 | 625,029 | min 0, max 1 | 0.0 (20670); NULL (20641); 1.0 (3836); 0.3333333333333333 (3020); 0.25 (2736) | Share of households with one person living alone. |
 | `pct_hh_single_person` | `DOUBLE` | 1.4024 | 625,029 | min 0, max 1 | 0.0 (20670); NULL (20641); 1.0 (3836); 0.3333333333333333 (3020); 0.25 (2736) | Alias for the share of households with one person living alone, named to match the household-structure Gold contract. |
+| `pct_family_single_parent` | `DOUBLE` | 3.8047 | 290,816 | min 0, max 1 | 0.0 (131978); NULL (55998); 0.125 (1628); 0.14285714285714285 (1622); 0.16666666666666666 (1600) | Share of families with own children of the householder under age 18 that are headed by a single parent. |
 | `pct_nonfamily_alone` | `DOUBLE` | 2.5185 | 280,781 | min 0, max 1 | 1.0 (109137); NULL (37068); 0.0 (4243); 0.8 (3893); 0.8333333333333334 (3722) | Share of nonfamily households that are one-person households. |
 | `pct_nonfamily_not_alone` | `DOUBLE` | 2.5185 | 280,781 | min 0, max 1 | 0.0 (109137); NULL (37068); 1.0 (4243); 0.2 (3893); 0.16666666666666666 (3722) | Share of nonfamily households with two or more people. |
 | `ins_total` | `DOUBLE` | 0.0000 | 72,360 | min 0, max 329980753 | 0.0 (17427); 44.0 (490); 64.0 (489); 61.0 (486); 69.0 (480) | Total civilian noninstitutionalized population in the health insurance coverage universe. |
@@ -66,7 +72,7 @@
 | `pct_65u_covered` | `DOUBLE` | 2.3732 | 129,771 | min 0, max 1 | 1.0 (1070871); NULL (34929); 0.9545454545454546 (272); 0.9583333333333334 (269); 0.975 (269) | Share of the age 65 and older insurance universe with insurance coverage. |
 | `pct_65u_uncovered` | `DOUBLE` | 2.3732 | 129,771 | min 0, max 1 | 0.0 (1070871); NULL (34929); 0.045454545454545456 (272); 0.025 (269); 0.041666666666666664 (269) | Share of the age 65 and older insurance universe without health insurance coverage. |
 ## Data Quality Notes
-- Columns with non-zero null rates: pct_hh_family=1.4024%, pct_hh_married=1.4024%, pct_hh_other_family=1.4024%, pct_hh_nonfamily=1.4024%, pct_single_households=1.4024%, pct_nonfamily_alone=2.5185%, pct_nonfamily_not_alone=2.5185%, pct_health_insured=1.1840%, pct_health_uninsured=1.1840%, pct_u19_covered=3.0296%, ...
+- Columns with non-zero null rates: pct_hh_family=1.4024%, pct_hh_married=1.4024%, pct_hh_other_family=1.4024%, pct_hh_nonfamily=1.4024%, pct_single_households=1.4024%, pct_family_single_parent=3.8047%, pct_nonfamily_alone=2.5185%, pct_nonfamily_not_alone=2.5185%, pct_health_insured=1.1840%, pct_health_uninsured=1.1840%, pct_u19_covered=3.0296%, ...
 - Key uniqueness check for recommended PK (`geo_level + geo_id + geo_name + year`) returns zero duplicates in current snapshot.
 - Primary/foreign keys are not enforced as DB constraints in current pipeline.
 

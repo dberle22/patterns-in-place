@@ -703,6 +703,27 @@ columns:
     definition: Percent of population age 25+ with Graduate degree or higher. Share / percentage;
       denominator is education_total. (from silver.kpi_dictionary).
     needs_confirmation: no
+  - name: pct_ba_plus_change_5yr
+    type: DOUBLE
+    null_pct: 46.4387
+    distinct_count: 971404
+    min_value: -1.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 878435
+      - value: '0.0'
+        count: 7738
+      - value: '1.0'
+        count: 254
+      - value: '-1.0'
+        count: 251
+      - value: '0.5'
+        count: 108
+    definition: Five-year absolute change in the share of population age 25+ with a bachelor's degree or higher for the same geography.
+    needs_confirmation: no
   - name: pct_grad_plus
     type: DOUBLE
     null_pct: 0.0

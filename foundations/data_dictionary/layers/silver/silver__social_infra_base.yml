@@ -249,6 +249,69 @@ columns:
         count: 13393
     definition: Nonfamily households with two or more people.
     needs_confirmation: 'no'
+  - name: family_with_children_married_coupleE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 27245
+    min_value: 0.0
+    max_value: 6.0637388e+07
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 29945
+      - value: '17.0'
+        count: 2370
+      - value: '13.0'
+        count: 2329
+      - value: '15.0'
+        count: 2329
+      - value: '16.0'
+        count: 2323
+    definition: Married-couple families with own children of the householder under age 18.
+    needs_confirmation: 'no'
+  - name: family_with_children_single_fatherE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 9090
+    min_value: 0.0
+    max_value: 6572819.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 157828
+      - value: '8.0'
+        count: 14265
+      - value: '6.0'
+        count: 14115
+      - value: '9.0'
+        count: 14054
+      - value: '7.0'
+        count: 13853
+    definition: Male-householder families with own children of the householder under age 18 and no spouse present.
+    needs_confirmation: 'no'
+  - name: family_with_children_single_motherE
+    type: DOUBLE
+    null_pct: 0.0
+    distinct_count: 6440
+    min_value: 0.0
+    max_value: 2940092.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 358350
+      - value: '9.0'
+        count: 22859
+      - value: '10.0'
+        count: 22288
+      - value: '8.0'
+        count: 22101
+      - value: '7.0'
+        count: 21473
+    definition: Female-householder families with own children of the householder under age 18 and no spouse present.
+    needs_confirmation: 'no'
   - name: ins_totalE
     type: DOUBLE
     null_pct: 0.0
@@ -533,4 +596,3 @@ lineage:
     details: 'Table write/create reference(s): scripts/etl/silver/acs_social_infra_silver.R:225-235
       writes silver.social_infra_base from staging.acs_social_infra_* with CBSA rebasing
       from county data via silver.xwalk_cbsa_county.'
-

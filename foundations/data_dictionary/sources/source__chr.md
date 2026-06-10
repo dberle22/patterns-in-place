@@ -5,8 +5,9 @@
 - Source: County Health Rankings & Roadmaps (Robert Wood Johnson Foundation + University of Wisconsin Population Health Institute)
 - Access pattern: public annual CSV bulk downloads — no API, no key required
 - Primary dependency: public CHR data portal files plus local raw-data and DuckDB paths
-- Scope in Foundations: CHR provides the primary health, safety, and select social/environment signals for the Livability Health sub-score. The source aggregates CDC, ACS, EPA, and other agency data into a consistent county-level annual release, making it a high-value convenience layer for metrics that would otherwise require multi-source ingestion. Current planned coverage is the 2025 analytic file as a single-year snapshot for Silver/Gold; the Trends CSV is documented separately as a candidate for future multi-year extension.
+- Scope in Foundations: CHR provides the primary health, safety, and select social/environment signals for the Livability Health sub-score. The source aggregates CDC, ACS, EPA, and other agency data into a consistent county-level annual release, making it a high-value convenience layer for metrics that would otherwise require multi-source ingestion. The current landed coverage uses annual analytic backfill for `2016-2025`; the provider Trends CSV is documented separately as a narrower optional helper surface rather than the main historical backbone.
 - Documentation goal: this file is the provider-level spec for CHR as it will be represented in Foundations, including a full measure inventory with inclusion decisions.
+  As of 2026-06-09, the landed Foundations implementation now uses annual analytic backfill for `2016-2025`, with a source-faithful current-year wide staging table plus a curated historical staging panel.
 
 ---
 
@@ -22,7 +23,7 @@
 | Safety | [../layers/staging/staging__chr_health_rankings.md](../layers/staging/staging__chr_health_rankings.md) | `silver.chr_health_outcomes` (selected columns) |
 | Education | [../layers/staging/staging__chr_health_rankings.md](../layers/staging/staging__chr_health_rankings.md) | `silver.chr_health_outcomes` (selected columns) |
 
-All topic groups share a single staging table and feed a single unified Silver table at the `geo_level + geo_id + year` grain.
+All topic groups share the same staging family and feed a single unified Silver table at the `geo_level + geo_id + year` grain.
 
 ---
 
@@ -33,7 +34,7 @@ All topic groups share a single staging table and feed a single unified Silver t
 - Retrieval interface: direct CSV downloads, no authentication required
 - Annual release cadence: typically published March–April each year
 - Common geography pattern: county-focused analytic file with one national summary row, one state summary row per state, and ~3,150 county/county-equivalent rows; no sub-county or CBSA native grain
-- Common time pattern: single-year cross-section per analytic file; multi-year panel available via separate Trends CSV (see Section 9)
+- Common time pattern: single-year cross-section per analytic file; Foundations now stitches those annual files into a multi-year `2016-2025` panel, while the provider also offers a separate narrower Trends CSV (see Section 9)
 
 **Key files:**
 
@@ -80,7 +81,7 @@ The 2025 analytic file contains ~50 distinct measures. The table below documents
 | **Child Mortality** | **Include** | Deaths per 100k children ages 1–14; no equivalent in current ACS or BLS coverage |
 | **Infant Mortality** | **Include** | Deaths per 1,000 live births; CDC WONDER source; no equivalent in current Foundations coverage |
 | Poor Physical Health Days | Staging only | Composite self-report; less interpretable than mortality measures at national scale |
-| Poor Mental Health Days | Staging only | Retained in staging; mental health provider ratio is a more actionable signal for our use case |
+| **Poor Mental Health Days** | **Include** | Useful prevalence signal for recurring mental-health strain that complements the provider access ratio rather than replacing it |
 | Poor or Fair Health | Staging only | Overlaps conceptually with premature death and life expectancy already in Silver |
 | Frequent Physical Distress | Staging only | Redundant with poor physical health days; both in staging for potential future use |
 | Frequent Mental Distress | Staging only | Staging only; mental health provider ratio covers the access angle more cleanly |
@@ -92,8 +93,8 @@ The 2025 analytic file contains ~50 distinct measures. The table below documents
 | --- | --- | --- |
 | **Drug Overdose Deaths** | **Include** | Strong signal for county distress and public health crisis; CDC WONDER source; suppression flag retained alongside raw value |
 | Adult Smoking | Staging only | Health behavior signal; interesting but not a primary differentiator for market or livability scoring at national scale |
-| Adult Obesity | Staging only | Health behavior; staging only for potential future use |
-| Physical Inactivity | Staging only | Correlated with obesity and built environment signals we cover via ACS transport |
+| **Adult Obesity** | **Include** | Widely used chronic-disease risk and livability signal; distinct enough to keep even with overlapping built-environment context elsewhere |
+| **Physical Inactivity** | **Include** | Important behavioral health signal that complements obesity and park access rather than duplicating them |
 | Excessive Drinking | Staging only | Staging only |
 | Insufficient Sleep | Staging only | Self-report behavioral measure; staging only |
 | Alcohol-Impaired Driving Deaths | Staging only | Overlaps with safety signals; covered by motor vehicle crash deaths already in Silver |
@@ -177,7 +178,7 @@ The 2025 analytic file contains ~50 distinct measures. The table below documents
 
 ## 5. Final Silver Column Set
 
-**22 columns** promoted from staging to `silver.chr_health_outcomes`: `20` raw-value measures plus `2` provider-ratio helper fields. All other measures remain in staging as raw provenance.
+**25 columns** promoted from staging to `silver.chr_health_outcomes`: `23` raw-value measures plus `2` provider-ratio helper fields. All other measures remain in staging as raw provenance.
 
 | Column | Category | Source measure |
 | --- | --- | --- |
@@ -187,6 +188,9 @@ The 2025 analytic file contains ~50 distinct measures. The table below documents
 | `child_mortality_rate` | Health outcomes | Child Mortality raw value |
 | `infant_mortality_rate` | Health outcomes | Infant Mortality raw value |
 | `drug_overdose_death_rate` | Health behaviors | Drug Overdose Deaths raw value |
+| `poor_mental_health_days` | Health behaviors | Poor Mental Health Days raw value |
+| `adult_obesity` | Health behaviors | Adult Obesity raw value |
+| `physical_inactivity` | Health behaviors | Physical Inactivity raw value |
 | `pct_uninsured_adults` | Clinical care | Uninsured Adults raw value |
 | `primary_care_ratio` | Clinical care | Ratio of population to primary care physicians |
 | `mental_health_provider_ratio` | Clinical care | Ratio of population to mental health providers |
@@ -234,7 +238,7 @@ Single staging table — all measures land in one wide table preserving source c
 CHR handoff pattern:
 1. Download annual analytic CSV and cache locally.
 2. Parse all columns into `staging.chr_health_rankings` with snake_cased names.
-3. Silver selects the `22` approved raw-value measures defined in Section 5.
+3. Silver selects the `25` approved measures defined in Section 5.
    The only exceptions to the raw-value pattern are the provider access columns, which use CHR's published ratio helper fields (`population:provider`) instead of the corresponding per-100k raw values.
 4. Standardize to `geo_level='county'`, `geo_id=fips5`, `geo_name`, `year=release_year`.
 5. Derive CBSA rows via `silver.xwalk_cbsa_county` using population-weighted averages for rate/ratio columns; sum-based aggregation is not appropriate for rates.
@@ -250,40 +254,93 @@ CHR feeds a new `gold.health_wide` table at county + CBSA grain. This is the fir
 **Planned Gold table:** `gold.health_wide`
 - Grain: one row per `geo_level + geo_id + year`
 - Geo levels: `county`, `cbsa`
-- Year coverage: 2025 (single-year snapshot; extendable via Trends CSV)
+- Year coverage: `2016-2025` in the current landed build
 
 ---
 
-## 9. CHR Trends CSV — Multi-Year Coverage
+## 9. Historical Extension Strategy
 
-The Trends CSV (`chr_trends_csv_<year>.csv`) is a separate long-format file with a subset of measures going back to approximately 1997. It uses a different structure: one row per `county × measure × yearspan`.
+As of **June 9, 2026**, the official CHR data documentation pages expose two distinct historical download surfaces:
+
+- The current data page includes the `2025 CHR CSV Analytic Data`, the `2025 CHR CSV Trends Data`, and a **supplemental analytic release dated March 2026**.
+- The archive page `National data & documentation: 2010-2023` exposes annual analytic CSVs for each release year from `2010` through `2023`, while the live page separately exposes `2024` and `2025`.
+
+This means we can backfill historical county observations directly from annual analytic files without relying on the more limited Trends extract.
+
+### 9.1 Trends CSV research findings
+
+The Trends CSV (`chr_trends_csv_<year>.csv`) is a separate long-format file with one row per `county × measure × yearspan`.
+
+**2025 trends file layout (from the official Trends documentation):**
+
+| Column | Meaning |
+| --- | --- |
+| `yearspan` | Year or rolling multi-year span represented by the estimate |
+| `measurename` | Provider measure label |
+| `statecode`, `countycode` | Source FIPS components |
+| `county`, `state` | Geography labels |
+| `numerator`, `denominator` | Underlying measure counts where available |
+| `rawvalue` | Published measure value |
+| `cilow`, `cihigh` | Confidence interval bounds |
+| `measureid` | CHR measure identifier |
+| `chrreleaseyear` | CHR release year |
+| `differflag` | Flag that the estimate differs from the Annual Data Release |
+| `trendbreak` | Flag that the observation begins a new trend and should not be compared to earlier years |
 
 **Measures available in the 2025 Trends file (15 total):**
 
 | Measure | Notes |
 | --- | --- |
-| Premature death | Available back to ~1997–1999 rolling 3-year windows; annual from ~2010 |
-| Uninsured | Annual from ~2010 |
-| Uninsured adults | Annual from ~2010 |
-| Uninsured children | Annual from ~2010 |
-| Primary care physicians | Annual from ~2010 |
-| Flu vaccinations | Annual from recent years |
-| Preventable hospital stays | Annual from ~2010 |
-| Dentists | Annual from ~2010 |
-| Mammography screening | Annual from recent years |
-| Air pollution — particulate matter | Annual from ~2010 |
-| Sexually transmitted infections | Annual from ~2010 |
-| Alcohol-impaired driving deaths | Annual from ~2010 |
-| Children in poverty | Annual from ~2010 |
-| Unemployment rate | Annual from ~2010 |
-| School funding | Recent years |
+| Premature death | Rolling 3-year windows from `1997-1999` through `2020-2022` |
+| Uninsured | Release years included `2012-2025` |
+| Uninsured adults | Release years included `2010-2025` |
+| Uninsured children | Release years included `2013-2025` |
+| Primary care physicians | Release years included `2013-2024` |
+| Flu vaccinations | Medicare-based recent-year series |
+| Preventable hospital stays | Release years included `2019-2025` |
+| Dentists | Release years included `2013-2024` |
+| Mammography screening | Release years included `2019-2025` |
+| Air pollution — particulate matter | Release years included `2013-2025` |
+| Sexually transmitted infections | Included in trends file |
+| Alcohol-impaired driving deaths | Included in trends file |
+| Children in poverty | Release years included `2010-2025`; source break noted between `2002-2004` and `2005-2023` |
+| Unemployment rate | Included in trends file |
+| School funding adequacy | Recent-year series |
 
-**Year span coverage:** rolling 3-year windows (e.g., 1997–1999) through approximately 2010, then single-year observations through 2023.
+**Overlap with the current 25-column Silver contract:** only `5` current Silver measures appear in the documented Trends coverage:
 
-**Assessment for Track 4:**
-- Only 3 of the 22 Silver measures have Trends coverage: `premature_death_rate`, `pct_uninsured_adults`, and `air_pollution_pm25`.
-- The Trends file does not cover Life Expectancy, Mortality, Child/Infant Mortality, Drug Overdose, Clinical Care ratios, or Safety measures.
-- **Decision: ingest single-year 2025 analytic file for initial Track 4 implementation.** The Trends CSV is not worth the modeling complexity for the current Silver contract given only 3 overlapping measures. Revisit if multi-year health trajectories become a product requirement.
+- `premature_death_rate`
+- `pct_uninsured_adults`
+- `primary_care_ratio`
+- `preventable_hospital_stay_rate`
+- `air_pollution_pm25`
+
+The Trends file does **not** cover most of the current CHR contract, including life expectancy, child and infant mortality, overdose deaths, obesity, physical inactivity, poor mental health days, food insecurity, social associations, graduation, parks, safety measures, or test scores.
+
+### 9.2 Recommended historical ingest path
+
+**Recommendation:** do **not** use the Trends CSV as the primary historical ingest for Foundations. Instead, backfill the annual analytic CSVs for a recent rolling window and keep only the fields we actually model.
+
+Recommended first-pass scope:
+
+- Backfill annual analytic CSVs for release years `2016-2025`
+- Keep a **curated historical staging table** rather than a source-faithful full-wide archive
+- Retain only:
+  - geography keys and labels
+  - `release_year`
+  - the approved CHR Silver measure columns we want historically
+- Prefer raw-value columns only for the historical panel unless a downstream calculation clearly requires numerator, denominator, or CI fields
+
+This approach keeps the historical pipeline aligned with our existing `chr_silver.R` mapping logic and avoids storing ten years of 2,000+ unused provenance columns.
+
+### 9.3 Recommended Silver / Gold behavior
+
+- Rebuild `silver.chr_health_outcomes` as a **multi-year annual panel** at the existing `geo_level + geo_id + year` grain rather than creating a separate long trends table
+- Keep `gold.health_wide` as the same schema and grain, simply extending time coverage beyond `2025`
+- Preserve the provider Trends CSV as an optional future QA/helper ingest only if we later want CHR-native trend-break metadata for the small subset of covered measures
+
+**Implementation status:** completed on `2026-06-09`.
+`staging.chr_health_rankings_history` now materializes the curated county-only panel for `2016-2025`, and both `silver.chr_health_outcomes` and `gold.health_wide` now use that annual analytic backfill.
 
 ---
 
@@ -291,6 +348,9 @@ The Trends CSV (`chr_trends_csv_<year>.csv`) is a separate long-format file with
 
 - Staging entrypoint: [../../etl/staging/get_chr.R](../../etl/staging/get_chr.R)
 - Required local environment wiring: `DATA` for cached CHR CSVs and `DB_PATH` for DuckDB materialization
+- Official historical download surfaces verified on **June 9, 2026**:
+  - current documentation page for `2024-2025`
+  - archive page covering annual national data documentation for `2010-2023`
 - The analytic CSV URL pattern changes with each release year (`analytic_data2025_v3.csv`, `analytic_data2024.csv`). The version suffix (`_v3`) is not consistent — verify the current URL against the documentation page before each annual refresh
 - The `County Clustered` column (col 7) flags counties that CHR groups together for ranking due to small population; these counties have valid raw values but no county rank. Note this in Silver quality checks
 - The live 2025 CSV includes one repeated embedded header row after the true file header. The staging ingest drops that artifact before validating FIPS keys and materializing staging.
@@ -302,10 +362,10 @@ The Trends CSV (`chr_trends_csv_<year>.csv`) is a separate long-format file with
 **Decision date:** 2026-06-04
 
 ### Single-year vs. multi-year
-Ingest 2025 analytic file as single-year snapshot. Trends CSV covers only 3 of the 22 Silver measures and uses a different long-format structure that would require a separate ingest path. Defer Trends CSV to a future iteration if health trajectories become a product requirement.
+The initial Track 4 implementation used the `2025` analytic file as a single-year snapshot. After the historical review completed on **2026-06-09**, the implementation path changed and was carried through: annual analytic CSVs now provide the multi-year backbone for `2016-2025`, while the Trends CSV remains a secondary helper only. The annual analytic files preserve the broader CHR measure set we already model, while the Trends file covers only `5` of the current `25` Silver columns.
 
 ### Silver column scope
-22 measures promoted to Silver: 20 raw-value measures plus the published provider-ratio helper fields for primary care and mental health access. All other measures remain in staging as wide provenance columns. Rationale: CHR's 2,388-column analytic file is almost entirely CI bounds, race breakdowns, and numerator/denominator detail that adds storage without analytical value in Gold. We only need the headline measure value per metric downstream, with the provider-ratio helpers kept because they are more interpretable for downstream product use than the paired per-100k raw values. The live 2025 analytic CSV does not ship a standalone overdose suppression flag, so Silver stays measure-only.
+25 measures promoted to Silver: 23 raw-value measures plus the published provider-ratio helper fields for primary care and mental health access. All other measures remain in staging as wide provenance columns. Rationale: CHR's 2,388-column analytic file is almost entirely CI bounds, race breakdowns, and numerator/denominator detail that adds storage without analytical value in Gold. We only need the headline measure value per metric downstream, with the provider-ratio helpers kept because they are more interpretable for downstream product use than the paired per-100k raw values. The live 2025 analytic CSV does not ship a standalone overdose suppression flag, so Silver stays measure-only.
 
 ### CBSA derivation
 County-to-CBSA rollup via population-weighted averages using `silver.xwalk_cbsa_county` and ACS population weights. CHR does not publish CBSA-native data. Rates and ratios are weighted by county population; index scores (reading, math) are weighted by county school-age population if available, otherwise total population.

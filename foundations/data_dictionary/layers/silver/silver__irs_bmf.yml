@@ -1,0 +1,38 @@
+table_name: irs_bmf
+schema: silver
+grain: One row per geo_level + geo_id for the latest IRS EO BMF nonprofit-density snapshot.
+primary_key:
+  - geo_level
+  - geo_id
+foreign_keys: []
+time_coverage:
+  type: static_snapshot
+  notes:
+    - The current Silver contract models the latest landed EO BMF snapshot as a static civic-infrastructure baseline rather than a monthly panel.
+geo_coverage:
+  notes:
+    - geo_levels=county,cbsa
+columns:
+  - { name: geo_level, type: VARCHAR, definition: Geographic level for the row (`county` or `cbsa`). }
+  - { name: geo_id, type: VARCHAR, definition: Geographic identifier for the row. County rows use 5-digit county FIPS and CBSA rows use 5-digit CBSA codes. }
+  - { name: geo_name, type: VARCHAR, definition: Geographic display name for the row. }
+  - { name: snapshot_date, type: VARCHAR, definition: IRS EO BMF posting date used for the landed snapshot. }
+  - { name: population_year, type: INTEGER, definition: ACS denominator year used for the per-capita nonprofit rate calculations. }
+  - { name: population_total, type: DOUBLE, definition: ACS total population for the geography in `population_year`. }
+  - { name: nonprofit_org_count_est, type: DOUBLE, definition: Estimated total active exempt-organization count after ZIP5-to-county allocation and county / CBSA aggregation. }
+  - { name: nonprofit_org_count_nonreligious_est, type: DOUBLE, definition: Estimated active non-religious organization count after the first-pass exclusion rule and ZIP5-to-county allocation. }
+  - { name: nonprofits_per_100k, type: DOUBLE, definition: Estimated non-religious organization count per 100,000 residents. }
+  - { name: nonprofits_total_per_100k, type: DOUBLE, definition: Estimated total active exempt-organization count per 100,000 residents. }
+  - { name: source_zip5_count, type: INTEGER, definition: Number of distinct staged ZIP5 groups contributing to the geography after ZIP-level aggregation and allocation. }
+  - { name: weight_method, type: VARCHAR, definition: ZIP allocation weighting method used for the geography (`zip5_bus_ratio` or the documented HUD fallback variant when business weights are unavailable). }
+lineage:
+  - step: read_source
+    script: foundations/etl/staging/get_irs_bmf.R
+    details: Downloads the four IRS EO BMF regional CSVs, filters to active U.S. rows, derives `zip5`, and writes `staging.irs_bmf`.
+  - step: aggregate_zip_and_allocate
+    script: foundations/etl/silver/irs_bmf_silver.R
+    details: Aggregates staged organizations to ZIP5, allocates ZIP counts to counties using `silver.xwalk_zcta_county` with business-ratio preference and housing/population fallback, then rolls county counts to CBSA.
+  - step: write_target
+    script: foundations/etl/silver/irs_bmf_silver.R
+    details: Writes `silver.irs_bmf` with overwrite enabled.
+kpi_definitions: []

@@ -18,7 +18,7 @@ CBP is not just a "current snapshot" in the sense of a one-off latest-state file
 | --- | --- | --- | --- |
 | CBP county annual core | `staging__cbp.md` | `silver.cbp` | landed extension in `gold.economics_industry_wide` |
 | CBP ZIP totals | supporting helper file if needed alongside ZIP detail | optional helper or QA-only use | none in first pass |
-| CBP ZIP industry detail | latest-year-only `staging.cbp_zip_detail` | planned separate `silver.cbp_zip` latest-year surface | possible later ZIP / ZCTA business-presence outputs |
+| CBP ZIP industry detail | latest-year-only `staging.cbp_zip_detail` | landed `silver.cbp_zip` latest-year surface | possible later ZIP / ZCTA business-presence outputs |
 
 The Census release page also publishes U.S., state, CSA, and MSA files. For Foundations, those are useful as QA references, but they do not need to be first-pass staged if Silver is going to derive `cbsa` and `state` from county rows for consistency with QCEW.
 
@@ -72,6 +72,10 @@ The Census release page also publishes U.S., state, CSA, and MSA files. For Foun
 **Historical boundary recommendation**
 
 If we backfill historical county CBP for the first managed annual series, the approved first-pass floor is `2010` rather than the full `1998` NAICS-era span. That keeps the history useful for current Gold time series without widening the initial ingestion burden more than necessary.
+
+Current landed managed history:
+- `staging.cbp_county` and `silver.cbp` now cover annual county-based CBP for `2010-2023`
+- `gold.economics_industry_wide` currently inherits the overlapping `2012-2023` portion because the Gold geography-year spine comes from ACS
 
 **Recommended ingestion path**
 
@@ -215,6 +219,15 @@ Current Gold use of CBP:
 4. Publish establishment shares and overall `cbp_estabs_per_1000_residents` alongside the existing ACS, QCEW, and BEA industry structure metrics.
 
 This keeps CBP focused on the business-structure story it adds most cleanly to Gold rather than duplicating the fuller employment-and-wage role already served by QCEW.
+
+Current ZIP Silver output:
+- `silver.cbp_zip`
+
+Current ZIP Silver use of CBP ZIP detail:
+1. Read `staging.cbp_zip_detail`.
+2. Keep the all-sectors row plus the same broad sector rows used in county CBP.
+3. Preserve ZIP geography as ZIP-native in this first pass.
+4. Publish establishments and establishment-size buckets only, since ZIP detail does not carry payroll or employment.
 
 ## 6. Transformation Notes
 

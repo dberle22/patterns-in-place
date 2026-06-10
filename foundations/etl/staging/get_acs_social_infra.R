@@ -35,6 +35,14 @@ vars <- c(
   hh_nonfamily    = "B11001_007",
   hh_nonfam_alone        = "B11001_008",
   hh_nonfam_not_alone    = "B11001_009",
+
+  # A2) Family type by presence of own children (B11003)
+  # B11003 does not provide one direct "all families with own children" field,
+  # so we stage only the three component counts we actually need and let Silver
+  # derive the total denominator from those pieces.
+  family_with_children_married_couple = "B11003_003",
+  family_with_children_single_father = "B11003_010",
+  family_with_children_single_mother = "B11003_016",
   
   # B) Internet / broadband (B28002) # Historical Data is not full
   # inet_total_hh   = "B28002_001",
@@ -187,68 +195,68 @@ dbWriteTable(con,
 
 # Legacy: preserve existing state-level tract ingest tables for compatibility
 
-# FL
-tract_fl_acs_raw <- acs_ingest(
-  geography = "tract",
-  state = 'FL',
-  years     = 2015:2024,
-  variables = vars,
-  survey    = "acs5",
-  output    = "wide"
-)
+# # FL
+# tract_fl_acs_raw <- acs_ingest(
+#   geography = "tract",
+#   state = 'FL',
+#   years     = 2015:2024,
+#   variables = vars,
+#   survey    = "acs5",
+#   output    = "wide"
+# )
+# 
+# # Name tables Source <> KPI <> Gran
+# dbWriteTable(con, 
+#              DBI::Id(schema = "staging", table = "acs_social_infra_tract_fl"),
+#              tract_fl_acs_raw, 
+#              overwrite = TRUE)
+# 
+# # NC
+# tract_nc_acs_raw <- acs_ingest(
+#   geography = "tract",
+#   state = 'NC',
+#   years     = 2015:2024,
+#   variables = vars,
+#   survey    = "acs5",
+#   output    = "wide"
+# )
+# 
+# # Name tables Source <> KPI <> Gran
+# dbWriteTable(con, 
+#              DBI::Id(schema = "staging", table = "acs_social_infra_tract_nc"),
+#              tract_nc_acs_raw, 
+#              overwrite = TRUE)
+# 
+# # GA
+# tract_ga_acs_raw <- acs_ingest(
+#   geography = "tract",
+#   state = 'GA',
+#   years     = 2015:2024,
+#   variables = vars,
+#   survey    = "acs5",
+#   output    = "wide"
+# )
+# 
+# # Name tables Source <> KPI <> Gran
+# dbWriteTable(con, 
+#              DBI::Id(schema = "staging", table = "acs_social_infra_tract_ga"),
+#              tract_ga_acs_raw, 
+#              overwrite = TRUE)
+# 
+# # SC
+# tract_sc_acs_raw <- acs_ingest(
+#   geography = "tract",
+#   state = 'SC',
+#   years     = 2015:2024,
+#   variables = vars,
+#   survey    = "acs5",
+#   output    = "wide"
+# )
 
 # Name tables Source <> KPI <> Gran
-dbWriteTable(con, 
-             DBI::Id(schema = "staging", table = "acs_social_infra_tract_fl"),
-             tract_fl_acs_raw, 
-             overwrite = TRUE)
-
-# NC
-tract_nc_acs_raw <- acs_ingest(
-  geography = "tract",
-  state = 'NC',
-  years     = 2015:2024,
-  variables = vars,
-  survey    = "acs5",
-  output    = "wide"
-)
-
-# Name tables Source <> KPI <> Gran
-dbWriteTable(con, 
-             DBI::Id(schema = "staging", table = "acs_social_infra_tract_nc"),
-             tract_nc_acs_raw, 
-             overwrite = TRUE)
-
-# GA
-tract_ga_acs_raw <- acs_ingest(
-  geography = "tract",
-  state = 'GA',
-  years     = 2015:2024,
-  variables = vars,
-  survey    = "acs5",
-  output    = "wide"
-)
-
-# Name tables Source <> KPI <> Gran
-dbWriteTable(con, 
-             DBI::Id(schema = "staging", table = "acs_social_infra_tract_ga"),
-             tract_ga_acs_raw, 
-             overwrite = TRUE)
-
-# SC
-tract_sc_acs_raw <- acs_ingest(
-  geography = "tract",
-  state = 'SC',
-  years     = 2015:2024,
-  variables = vars,
-  survey    = "acs5",
-  output    = "wide"
-)
-
-# Name tables Source <> KPI <> Gran
-dbWriteTable(con, 
-             DBI::Id(schema = "staging", table = "acs_social_infra_tract_sc"),
-             tract_sc_acs_raw, 
-             overwrite = TRUE)
+# dbWriteTable(con, 
+#              DBI::Id(schema = "staging", table = "acs_social_infra_tract_sc"),
+#              tract_sc_acs_raw, 
+#              overwrite = TRUE)
 
 dbDisconnect(con, shutdown = TRUE)

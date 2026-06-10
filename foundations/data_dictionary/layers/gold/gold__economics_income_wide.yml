@@ -181,6 +181,48 @@ columns:
         count: 3
     definition: Poverty Rate, dervied from pov_below and pov_universe. (from silver.kpi_dictionary).
     needs_confirmation: no
+  - name: pov_rate_change_1yr
+    type: DOUBLE
+    null_pct: 16.1804
+    distinct_count: 1506635
+    min_value: -1.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 306042
+      - value: '0.0'
+        count: 34713
+      - value: '-1.0'
+        count: 68
+      - value: '1.0'
+        count: 60
+      - value: '-0.25'
+        count: 46
+    definition: One-year absolute change in poverty rate for the same geography.
+    needs_confirmation: no
+  - name: pov_rate_change_5yr
+    type: DOUBLE
+    null_pct: 56.1307
+    distinct_count: 791766
+    min_value: -1.0
+    max_value: 1.0
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: ~
+        count: 1061796
+      - value: '0.0'
+        count: 9857
+      - value: '1.0'
+        count: 335
+      - value: '-1.0'
+        count: 323
+      - value: '0.5'
+        count: 70
+    definition: Five-year absolute change in poverty rate for the same geography.
+    needs_confirmation: no
   - name: gini_index
     type: DOUBLE
     null_pct: 0.002

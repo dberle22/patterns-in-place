@@ -4,10 +4,10 @@
 
 - Source: U.S. Census Bureau
 - Program: Business Formation Statistics (BFS)
-- Access pattern in current Track 12 scope: public annual county XLSX workbook plus public monthly BFS release files for broader series coverage; no key required
+- Access pattern in current first-pass scope: public annual county XLSX workbook; monthly BFS release files are documented as a later optional sibling feed, not part of the current ingest
 - Current county annual release as of `June 9, 2026`: years `2005-2024`, released `June 11, 2025`
 - Native geography in current first-pass file: county
-- Scope in Foundations: a mixed-grain BFS analytical layer where Silver can retain monthly BFS series where Census publishes them, while county and county-derived CBSA annual business-application metrics flow to Gold
+- Scope in Foundations: annual county business applications first, with county and county-derived CBSA annual business-application metrics flowing downstream; monthly BFS remains a documented later option rather than part of the current implementation
 - Documentation goal: define the real shape of the annual county file and set a simple ingest architecture that does not overpromise fields the source does not actually contain
 
 The key practical finding is that the annual county BFS file is much narrower than the broader monthly BFS product family. The annual county workbook contains only Business Applications (`BA`) by county and year. It does not include county-level HBA, WBA, CBA, or business formation (`BF*`) series, so those richer series must come from separate monthly BFS files if we want them in Silver.
@@ -16,12 +16,12 @@ The key practical finding is that the annual county BFS file is much narrower th
 
 | Topic group | Staging family contracts | Silver outputs | Gold outputs |
 | --- | --- | --- | --- |
-| BFS annual county business applications | planned `staging__bfs.md` | planned `silver.bfs` | planned annual Gold promotion for county / CBSA / state |
-| BFS monthly national / state / regional application + formation series | same provider family, staged as a second BFS feed when implemented | planned `silver.bfs` | staged and silvered only; not promoted directly to Gold monthly |
+| BFS annual county business applications | `staging__bfs.md` | `silver.bfs` | landed annual Gold promotion in `gold.economics_industry_wide` for county / CBSA / state |
+| BFS monthly national / state / regional application + formation series | documented later sibling feed, not currently staged | possible later `silver.bfs` expansion | staged and silvered only if later implemented; not promoted directly to Gold monthly |
 
-This spec now treats BFS as a two-surface source family:
-- annual county BA for county / CBSA / state annual business-dynamics metrics
-- monthly BFS series for richer trend coverage in Silver only
+This spec now treats BFS as:
+- a current annual county BA source family that is now staged
+- a documented later option for monthly BFS series if we decide we need richer trend coverage
 
 ## 3. Source Contract
 
@@ -66,8 +66,8 @@ Sample data row pattern:
 2. Read the `County Data` sheet.
 3. Skip the first two title / disclosure rows.
 4. Pivot `BA2005` ... `BA2024` into a long county-year table.
-5. Add a second BFS staging feed for monthly released BFS series when we implement the richer Silver contract.
-6. Treat annual county BA and monthly BFS series as sibling staging surfaces under one provider family rather than trying to force them into one raw file shape.
+5. Note the monthly BFS release files as a later sibling staging feed if we decide to expand the Silver contract.
+6. Treat annual county BA and monthly BFS series as separate raw surfaces under one provider family rather than trying to force them into one raw file shape.
 
 Shared source references:
 - [../../etl/staging/SOURCES.md](../../etl/staging/SOURCES.md)
@@ -80,7 +80,7 @@ Preferred first-pass staging output:
 - one row per `county_fips + year`
 - no need to preserve the original wide workbook structure after raw read
 
-Preferred follow-on staging output for richer Silver coverage:
+Preferred later staging output if we add richer Silver coverage:
 - `staging.bfs_monthly`
 - one row per published `geo_level + geo_id + period_month + series_code`
 - limited to the monthly BFS files that expose BA / HBA / WBA / CBA and formation series
@@ -116,19 +116,19 @@ If we add the monthly BFS release files, `staging.bfs_monthly` should use a norm
 
 ## 5. Staging To Silver
 
-Preferred first-pass Silver output:
+Current first-pass Silver output:
 - `silver.bfs`
-- one normalized long table that can hold both monthly and annual BFS rows
+- one normalized annual table in the current implementation
 - county annual rows pass through directly from the annual county workbook
 - `cbsa` and `state` annual rows are derived from counties
-- monthly rows are retained where Census publishes them natively, but they are not forced onto county / CBSA if the source does not support that geography
+- monthly rows are not currently included, but the contract leaves room for them later if we decide to add a sibling monthly feed
 
 Handoff pattern:
 1. Read `staging.bfs_county`.
 2. Standardize county keys and years.
 3. Roll county annual rows to `cbsa` using `silver.xwalk_cbsa_county`.
 4. Roll county annual rows to `state` using `silver.xwalk_county_state`.
-5. Read `staging.bfs_monthly` when the monthly feed is implemented and append those rows into the same normalized Silver contract.
+5. Read `staging.bfs_monthly` only if the monthly feed is implemented later and append those rows into the same normalized Silver contract.
 6. Compute annual rate metrics from annual county-derived rows only.
 
 Recommended Silver fields:
@@ -159,7 +159,7 @@ The simplest correct architecture is:
 
 1. One raw workbook download.
 2. One county-year long staging table.
-3. One normalized Silver table that can hold county annual rows plus richer monthly BFS series.
+3. One normalized Silver table that can hold county annual rows now and richer monthly BFS series later if we choose to add them.
 4. One annual-only Gold enrichment that treats BFS as a business-applications signal.
 
 That is enough to support platform metrics like local entrepreneurial activity while still leaving room for richer monthly BFS analysis in Silver.
@@ -184,6 +184,7 @@ That means:
 - promote annual county-derived CBSA and state rows
 - do not push monthly BFS rows into Gold
 - if a monthly series is ever summarized into Gold, it should first be annualized explicitly
+- current landed Gold fields are `bfs_business_applications`, `bfs_business_applications_yoy_pct`, `bfs_business_application_rate_per_1000_establishments`, and `bfs_business_applications_per_1000_residents`
 
 ### Interpretation note
 
@@ -205,14 +206,14 @@ BFS business applications are not the same thing as new employer establishments.
 - The annual county workbook is small, about `496 KB`, so this is one of the lightest ingestion tracks in the plan.
 - Census explicitly notes county-equivalent behavior and geographic-boundary reference dates in the county data dictionary; that should be preserved in staging notes rather than normalized away silently.
 - Because the workbook is annual and already wide by year, the ETL should pivot to long immediately instead of materializing one column per year in DuckDB.
-- Monthly BFS belongs in a sibling staging family and shared Silver contract, not in the county annual workbook contract.
+- Monthly BFS belongs in a later sibling staging family and shared Silver contract, not in the county annual workbook contract.
 - The preferred annual intensity denominator is CBP all-sector establishments, which means annual BFS Gold should depend on the stabilized CBP path.
 
 ## 9. Known Gaps
 
 - County / CBSA monthly BFS is not source-native in the verified annual county file; if we want monthly Silver at those geographies, we will need to decide whether that should remain state-and-above only or whether we should avoid presenting implied county monthly coverage entirely.
-- Track 12.3 still needs to be rewritten from "county/state CSV" into the agreed two-surface BFS ingest path.
-- `business_application_rate_per_1000_establishments` is the preferred Gold metric name, but we still need to confirm the exact CBP join year logic when a source updates on a different annual schedule.
+- Track 12.3 is now the annual county workbook ingest; monthly BFS remains deferred by choice rather than by ambiguity.
+- `business_application_rate_per_1000_establishments` is now implemented in Gold wherever annual CBP overlap exists, which currently means the rate is expected to stop one year earlier than raw BFS until the next CBP release lands.
 
 ## 10. Source References
 

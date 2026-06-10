@@ -1,0 +1,46 @@
+table_name: opportunity_insights_social_capital
+schema: silver
+grain: One row per geo_level + geo_id for the static Opportunity Insights Social Capital Atlas surface.
+primary_key:
+  - geo_level
+  - geo_id
+foreign_keys: []
+time_coverage:
+  type: static
+  notes:
+    - The current Silver contract models the published 2022 public Social Capital Atlas release as a static snapshot rather than a recurring annual series.
+geo_coverage:
+  notes:
+    - geo_levels=county,state,cbsa,zcta
+columns:
+  - { name: geo_level, type: VARCHAR, definition: Geographic level for the row (`county`, `state`, `cbsa`, or `zcta`). }
+  - { name: geo_id, type: VARCHAR, definition: Geographic identifier for the row. County rows use 5-digit county FIPS, state rows use 2-digit state FIPS, CBSA rows use 5-digit CBSA codes, and ZCTA rows use 5-digit ZIP/ZCTA codes. }
+  - { name: geo_name, type: VARCHAR, definition: Geographic display name for the row. }
+  - { name: population_total, type: DOUBLE, definition: 2018 population context field published with the Social Capital Atlas source slice for the geography. }
+  - { name: children_below_p50, type: DOUBLE, definition: Count of children with below-national-median parental household income published with the Social Capital Atlas source slice for the geography. }
+  - { name: economic_connectedness, type: DOUBLE, definition: Baseline economic connectedness measure for the geography. }
+  - { name: economic_connectedness_se, type: DOUBLE, definition: Provider-published standard error for baseline economic connectedness on source-native county and ZCTA rows. Null for derived state and CBSA rollups. }
+  - { name: childhood_economic_connectedness, type: DOUBLE, definition: Childhood economic connectedness measure assigned using high-school location. Populated for county rows and population-weighted county-derived state and CBSA rollups. Null for ZCTA rows. }
+  - { name: childhood_economic_connectedness_se, type: DOUBLE, definition: Provider-published standard error for childhood economic connectedness on source-native county rows. Null for derived state and CBSA rollups and for ZCTA rows. }
+  - { name: neighborhood_economic_connectedness, type: DOUBLE, definition: Neighborhood-only economic connectedness measure published in the ZIP release. Populated for ZCTA rows only. }
+  - { name: economic_exposure, type: DOUBLE, definition: Exposure to higher-SES peers measure used in the economic connectedness decomposition. }
+  - { name: childhood_economic_exposure, type: DOUBLE, definition: Childhood exposure to higher-parental-SES peers. Populated for county rows and county-derived state and CBSA rollups. Null for ZCTA rows. }
+  - { name: neighborhood_economic_exposure, type: DOUBLE, definition: Neighborhood-only exposure measure from the ZIP release. Populated for ZCTA rows only. }
+  - { name: friending_bias, type: DOUBLE, definition: Friending-bias measure used in the economic connectedness decomposition. }
+  - { name: childhood_friending_bias, type: DOUBLE, definition: Childhood friending-bias measure. Populated for county rows and county-derived state and CBSA rollups. Null for ZCTA rows. }
+  - { name: neighborhood_friending_bias, type: DOUBLE, definition: Neighborhood-only friending-bias measure from the ZIP release. Populated for ZCTA rows only. }
+  - { name: cohesion_clustering, type: DOUBLE, definition: Cohesiveness measure based on the clustering of friendship networks. }
+  - { name: cohesion_support_ratio, type: DOUBLE, definition: Cohesiveness measure based on the share of friendships supported by a mutual friend. }
+  - { name: civic_engagement_volunteering_rate, type: DOUBLE, definition: Share of users participating in volunteering or activism groups. }
+  - { name: civic_organizations_per_1000, type: DOUBLE, definition: Public-good Facebook pages per 1,000 users in the geography. }
+lineage:
+  - step: read_source
+    script: foundations/etl/staging/get_opportunity_insights_social_capital.R
+    details: Downloads the public county and ZIP Social Capital Atlas CSVs and writes separate source-faithful staging tables.
+  - step: standardize_and_roll_up
+    script: foundations/etl/silver/opportunity_insights_social_capital_silver.R
+    details: Standardizes county and ZCTA rows, derives state and CBSA rollups from counties with population-weighted aggregation, and preserves the neighborhood-only ZIP metrics on ZCTA rows.
+  - step: write_target
+    script: foundations/etl/silver/opportunity_insights_social_capital_silver.R
+    details: Writes `silver.opportunity_insights_social_capital` with overwrite enabled.
+kpi_definitions: []

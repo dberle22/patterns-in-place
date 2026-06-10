@@ -31,6 +31,9 @@
 | `hh_nonfamilyE` | `DOUBLE` | 0.0000 | 23,574 | min 0, max 46236968 | 0.0 (37068); 10.0 (3389); 16.0 (3349); 9.0 (3343); 15.0 (3306) | Nonfamily households. |
 | `hh_nonfam_aloneE` | `DOUBLE` | 0.0000 | 20,960 | min 0, max 37140836 | 0.0 (41311); 9.0 (3958); 10.0 (3918); 11.0 (3871); 13.0 (3857) | Nonfamily households with one person living alone. |
 | `hh_nonfam_not_aloneE` | `DOUBLE` | 0.0000 | 11,135 | min 0, max 9096132 | 0.0 (146205); 2.0 (14089); 6.0 (13756); 8.0 (13670); 5.0 (13393) | Nonfamily households with two or more people. |
+| `family_with_children_married_coupleE` | `DOUBLE` | 0.0000 | 27,245 | min 0, max 60637388 | 0.0 (29945); 17.0 (2370); 13.0 (2329); 15.0 (2329); 16.0 (2323) | Married-couple families with own children of the householder under age 18. |
+| `family_with_children_single_fatherE` | `DOUBLE` | 0.0000 | 9,090 | min 0, max 6572819 | 0.0 (157828); 8.0 (14265); 6.0 (14115); 9.0 (14054); 7.0 (13853) | Male-householder families with own children of the householder under age 18 and no spouse present. |
+| `family_with_children_single_motherE` | `DOUBLE` | 0.0000 | 6,440 | min 0, max 2940092 | 0.0 (358350); 9.0 (22859); 10.0 (22288); 8.0 (22101); 7.0 (21473) | Female-householder families with own children of the householder under age 18 and no spouse present. |
 | `ins_totalE` | `DOUBLE` | 0.0000 | 72,360 | min 0, max 329980753 | 0.0 (17427); 44.0 (490); 64.0 (489); 61.0 (486); 69.0 (480) | Total civilian noninstitutionalized population in the health insurance coverage universe. |
 | `ins_u19_one_planE` | `DOUBLE` | 0.0000 | 30,345 | min 0, max 69406764 | 0.0 (48328); 9.0 (2280); 10.0 (2268); 14.0 (2225); 18.0 (2172) | Population under age 19 with one type of health insurance coverage. |
 | `ins_u19_two_plansE` | `DOUBLE` | 0.0000 | 8,303 | min 0, max 5731722 | 0.0 (303605); 8.0 (16701); 10.0 (16446); 9.0 (16175); 6.0 (15964) | Population under age 19 with two or more types of health insurance coverage. |

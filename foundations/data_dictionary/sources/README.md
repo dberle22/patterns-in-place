@@ -25,9 +25,11 @@ These docs sit above the layer contracts and answer the higher-level questions t
 - [source__bls.md](./source__bls.md)
 - [source__bps.md](./source__bps.md)
 - [source__cbp.md](./source__cbp.md)
+- [source__social_capital_atlas.md](./source__social_capital_atlas.md)
 - [source__hud.md](./source__hud.md)
 - [source__epa.md](./source__epa.md)
 - [source__irs.md](./source__irs.md)
+- [source__opportunity_atlas.md](./source__opportunity_atlas.md)
 - [source__zillow.md](./source__zillow.md)
 
 Coverage tracking:

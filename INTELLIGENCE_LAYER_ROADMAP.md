@@ -28,7 +28,7 @@ Every entry in `foundations/semantic_layer/intelligence_catalog.yml` is currentl
 **Work:**
 - Walk each frame's metric list from `DEEP_DIVE_EXPLORATION.md` against the Gold table columns in `foundations/data_dictionary/layers/gold/`
 - Flag any metric that lacks a Gold column (data gap) vs. those that are query-ready
-- Document the mapping in a single reference file: `exploration/intelligence/metric_map.md`
+- Document the mapping in a single reference file: `exploration/intelligence_framework/docs/metric_map.md`
 
 **Output:** A confirmed, gap-annotated metric map per frame. Any missing metric is flagged for Track 6–14 foundations work or deferred to Phase 2.
 
@@ -281,14 +281,13 @@ Phases 3, 4, and 5 can run in parallel after Phase 2. Phase 6 can start as soon 
 
 ## File Structure
 
-All Intelligence Layer work lives in `exploration/intelligence/`:
-
 ```
 exploration/
-  intelligence/
-    metric_map.md                   ← Phase 0 output
-    metric_selections.md            ← Phase 2 output
-    intelligence_calibration_notes.md ← Phase 8 summary
+  intelligence_framework/
+    docs/
+      metric_map.md                   ← Phase 0 output (complete)
+      metric_selections.md            ← Phase 2 output
+      intelligence_calibration_notes.md ← Phase 8 summary
     character_variance.Rmd          ← Phase 1
     livability_variance.Rmd         ← Phase 1
     opportunity_variance.Rmd        ← Phase 1

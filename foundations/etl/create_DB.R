@@ -23,10 +23,13 @@ if (is.na(db_path)) {
 staging_scripts <- c(
   "get_opportunity_zones.R",
   "get_fhfa_underserved.R",
+  "get_opportunity_insights_social_capital.R",
+  "get_irs_bmf.R",
   "get_epa_aqi.R",
   "get_epa_sld.R",
   "get_cbp.R",
   "get_cbp_zip.R",
+  "get_bfs.R",
   "get_usda_food_atlas.R",
   "get_ejscreen.R",
   "get_fema_nri.R"
@@ -63,6 +66,10 @@ silver_scripts <- c(
   "fhfa_hpi_silver.R",
   "chr_silver.R",
   "cbp_silver.R",
+  "cbp_zip_silver.R",
+  "bfs_silver.R",
+  "opportunity_insights_social_capital_silver.R",
+  "irs_bmf_silver.R",
   "acs_variable_dictionary_silver.R",
   "acs_metadata_silver.R"
 )
@@ -83,7 +90,8 @@ gold_scripts <- c(
   "gold_migration_wide.sql",
   "gold_transport_built_form_wide.sql",
   "gold_transport_built_form_sld.sql",
-  "gold_food_access_wide.sql"
+  "gold_food_access_wide.sql",
+  "gold_social_fabric_wide.sql"
 )
 
 setup_con <- dbConnect(duckdb::duckdb(), dbdir = db_path, read_only = FALSE)
