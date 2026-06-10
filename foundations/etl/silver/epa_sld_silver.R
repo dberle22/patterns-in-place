@@ -1,8 +1,7 @@
 # In this script we aggregate block-group EPA Smart Location Database staging
-# rows into a county-only analytical Silver table. We recompute densities from
-# summed numerators and denominators where we can do so exactly, and use
-# documented weighted means for the remaining index-like and accessibility
-# measures.
+# rows into county, CBSA, and state analytical Silver tables. County remains
+# the first rollup off staging, and the broader geographies are derived from
+# that county base so we do not reopen the deferred tract-recovery problem.
 
 getwd()
 
@@ -50,11 +49,65 @@ safe_ratio <- function(num, den) {
   num / den
 }
 
+single_value_or_na <- function(x) {
+  values <- unique(stats::na.omit(x))
+
+  if (length(values) == 1) {
+    return(values[[1]])
+  }
+
+  NA_character_
+}
+
+aggregate_epa_sld_metrics <- function(df) {
+  df %>%
+    summarise(
+      walkability_index = safe_weighted_mean(walkability_index, total_population),
+      employment_housing_mix = safe_weighted_mean(employment_housing_mix, households),
+      employment_mix = safe_weighted_mean(employment_mix, total_employment),
+      street_intersection_density = safe_weighted_mean(street_intersection_density, land_acres_unprotected),
+      auto_oriented_intersection_share = safe_weighted_mean(auto_oriented_intersection_share, land_acres_unprotected),
+      transit_service_density = safe_weighted_mean(transit_service_density, total_population),
+      transit_frequency_peak = safe_weighted_mean(transit_frequency_peak, total_population),
+      distance_to_transit = safe_weighted_mean(distance_to_transit, total_population),
+      jobs_access_45min_transit = safe_weighted_mean(jobs_access_45min_transit, total_population),
+      workers_access_45min_transit = safe_weighted_mean(workers_access_45min_transit, total_population),
+      jobs_access_45min_auto = safe_weighted_mean(jobs_access_45min_auto, total_population),
+      workers_access_45min_auto = safe_weighted_mean(workers_access_45min_auto, total_population),
+      total_population = sum(total_population, na.rm = TRUE),
+      total_employment = sum(total_employment, na.rm = TRUE),
+      housing_units = sum(housing_units, na.rm = TRUE),
+      households = sum(households, na.rm = TRUE),
+      land_acres_unprotected = sum(land_acres_unprotected, na.rm = TRUE),
+      block_group_count = sum(block_group_count, na.rm = TRUE),
+      block_group_count_transit_non_null = sum(block_group_count_transit_non_null, na.rm = TRUE),
+      block_group_count_walkability_non_null = sum(block_group_count_walkability_non_null, na.rm = TRUE),
+      transit_metric_population_covered = sum(transit_metric_population_covered, na.rm = TRUE),
+      walkability_metric_population_covered = sum(walkability_metric_population_covered, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    mutate(
+      employment_density_gross = purrr::map2_dbl(total_employment, land_acres_unprotected, safe_ratio),
+      population_density_gross = purrr::map2_dbl(total_population, land_acres_unprotected, safe_ratio),
+      housing_density_gross = purrr::map2_dbl(housing_units, land_acres_unprotected, safe_ratio),
+      transit_population_coverage_share = purrr::map2_dbl(
+        transit_metric_population_covered,
+        total_population,
+        safe_ratio
+      ),
+      walkability_population_coverage_share = purrr::map2_dbl(
+        walkability_metric_population_covered,
+        total_population,
+        safe_ratio
+      )
+    )
+}
+
 unsupported_county_geoids <- c(
   "02261"
 )
 
-# 3. Read staging and canonical county references ----
+# 3. Read staging and canonical geography references ----
 epa_sld_stage <- DBI::dbGetQuery(con, "SELECT * FROM staging.epa_sld") %>%
   mutate(
     year = as.integer(year),
@@ -70,6 +123,22 @@ county_xwalk <- DBI::dbGetQuery(con, "SELECT * FROM silver.xwalk_county_state") 
     county_name_long = as.character(county_name_long),
     state_abbr = as.character(state_abbr),
     state_fips = as.character(state_fip)
+  ) %>%
+  distinct()
+
+state_xwalk <- DBI::dbGetQuery(con, "SELECT * FROM silver.xwalk_state_region") %>%
+  transmute(
+    state_fips = as.character(state_fips),
+    state_abbr = as.character(state_abbr),
+    state_name = as.character(state_name)
+  ) %>%
+  distinct()
+
+cbsa_xwalk <- DBI::dbGetQuery(con, "SELECT * FROM silver.xwalk_cbsa_county") %>%
+  transmute(
+    county_geoid = as.character(county_geoid),
+    cbsa_code = as.character(cbsa_code),
+    cbsa_name = as.character(cbsa_name)
   ) %>%
   distinct()
 
@@ -90,7 +159,7 @@ county_lookup <- county_xwalk %>%
   bind_rows(county_manual_lookup) %>%
   distinct(county_geoid, .keep_all = TRUE)
 
-# 4. Audit county-key coverage before modeling ----
+# 4. Audit coverage before modeling ----
 county_match_audit <- epa_sld_stage %>%
   distinct(county_geoid) %>%
   left_join(
@@ -115,73 +184,194 @@ if (nrow(unmatched_counties) > 0) {
   )
 }
 
-# 5. Aggregate block groups to county ----
-epa_sld_county <- epa_sld_stage %>%
+duplicate_cbsa_counties <- cbsa_xwalk %>%
+  count(county_geoid, name = "cbsa_count") %>%
+  filter(cbsa_count > 1)
+
+if (nrow(duplicate_cbsa_counties) > 0) {
+  stop(
+    sprintf(
+      paste(
+        "EPA SLD CBSA rollup requires a one-county-to-one-CBSA crosswalk.",
+        "%s county GEOIDs resolve to multiple CBSAs."
+      ),
+      nrow(duplicate_cbsa_counties)
+    ),
+    call. = FALSE
+  )
+}
+
+# 5. Standardize the block-group rollup base ----
+epa_sld_rollup_base <- epa_sld_stage %>%
   filter(!county_geoid %in% unsupported_county_geoids) %>%
   left_join(
     county_xwalk,
     by = c("county_geoid", "state_fips")
   ) %>%
   left_join(
-    county_manual_lookup %>% rename(manual_county_name_long = county_name_long, manual_state_abbr = state_abbr),
+    county_manual_lookup %>%
+      rename(
+        manual_county_name_long = county_name_long,
+        manual_state_abbr = state_abbr
+      ),
     by = "county_geoid"
   ) %>%
-  group_by(county_geoid, year) %>%
-  summarise(
-    geo_level = "county",
-    geo_id = dplyr::first(county_geoid),
-    geo_name = dplyr::first(dplyr::coalesce(county_name_long, manual_county_name_long, county_geoid)),
-    state_abbr = dplyr::first(dplyr::coalesce(state_abbr, manual_state_abbr)),
-    walkability_index = safe_weighted_mean(walkability_index, total_population),
-    employment_housing_mix = safe_weighted_mean(employment_housing_mix, households),
-    employment_mix = safe_weighted_mean(employment_mix, total_employment),
-    street_intersection_density = safe_weighted_mean(street_intersection_density, land_acres_unprotected),
-    auto_oriented_intersection_share = safe_weighted_mean(auto_oriented_intersection_share, land_acres_unprotected),
-    transit_service_density = safe_weighted_mean(transit_service_density, total_population),
-    transit_frequency_peak = safe_weighted_mean(transit_frequency_peak, total_population),
-    distance_to_transit = safe_weighted_mean(distance_to_transit, total_population),
-    jobs_access_45min_transit = safe_weighted_mean(jobs_access_45min_transit, total_population),
-    workers_access_45min_transit = safe_weighted_mean(workers_access_45min_transit, total_population),
-    jobs_access_45min_auto = safe_weighted_mean(jobs_access_45min_auto, total_population),
-    workers_access_45min_auto = safe_weighted_mean(workers_access_45min_auto, total_population),
-    total_population_sum = sum(total_population, na.rm = TRUE),
-    total_employment_sum = sum(total_employment, na.rm = TRUE),
-    housing_units_sum = sum(housing_units, na.rm = TRUE),
-    households_sum = sum(households, na.rm = TRUE),
-    land_acres_unprotected_sum = sum(land_acres_unprotected, na.rm = TRUE),
-    block_group_count = dplyr::n(),
-    block_group_count_transit_non_null = sum(!is.na(transit_service_density)),
-    block_group_count_walkability_non_null = sum(!is.na(walkability_index)),
-    transit_metric_population_covered_sum = sum(
-      ifelse(!is.na(transit_service_density), dplyr::coalesce(total_population, 0), 0),
-      na.rm = TRUE
-    ),
-    walkability_metric_population_covered_sum = sum(
-      ifelse(!is.na(walkability_index), dplyr::coalesce(total_population, 0), 0),
-      na.rm = TRUE
-    ),
-    .groups = "drop"
-  ) %>%
   mutate(
-    total_population = total_population_sum,
-    total_employment = total_employment_sum,
-    housing_units = housing_units_sum,
-    households = households_sum,
-    land_acres_unprotected = land_acres_unprotected_sum,
-    employment_density_gross = purrr::map2_dbl(total_employment_sum, land_acres_unprotected_sum, safe_ratio),
-    population_density_gross = purrr::map2_dbl(total_population_sum, land_acres_unprotected_sum, safe_ratio),
-    housing_density_gross = purrr::map2_dbl(housing_units_sum, land_acres_unprotected_sum, safe_ratio),
-    transit_population_coverage_share = purrr::map2_dbl(
-      transit_metric_population_covered_sum,
-      total_population_sum,
-      safe_ratio
+    county_name_long = dplyr::coalesce(county_name_long, manual_county_name_long, county_geoid),
+    state_abbr = dplyr::coalesce(state_abbr, manual_state_abbr),
+    block_group_count = 1L,
+    block_group_count_transit_non_null = as.integer(!is.na(transit_service_density)),
+    block_group_count_walkability_non_null = as.integer(!is.na(walkability_index)),
+    transit_metric_population_covered = ifelse(
+      !is.na(transit_service_density),
+      dplyr::coalesce(total_population, 0),
+      0
     ),
-    walkability_population_coverage_share = purrr::map2_dbl(
-      walkability_metric_population_covered_sum,
-      total_population_sum,
-      safe_ratio
+    walkability_metric_population_covered = ifelse(
+      !is.na(walkability_index),
+      dplyr::coalesce(total_population, 0),
+      0
     )
+  )
+
+# 6. Aggregate block groups to county ----
+epa_sld_county <- epa_sld_rollup_base %>%
+  group_by(county_geoid, county_name_long, state_fips, state_abbr, year) %>%
+  aggregate_epa_sld_metrics() %>%
+  transmute(
+    geo_level = "county",
+    geo_id = county_geoid,
+    geo_name = county_name_long,
+    year = year,
+    state_abbr = state_abbr,
+    state_fips = state_fips,
+    total_population,
+    total_employment,
+    housing_units,
+    households,
+    land_acres_unprotected,
+    block_group_count,
+    block_group_count_transit_non_null,
+    block_group_count_walkability_non_null,
+    transit_metric_population_covered,
+    walkability_metric_population_covered,
+    transit_population_coverage_share,
+    walkability_population_coverage_share,
+    walkability_index,
+    employment_housing_mix,
+    employment_mix,
+    street_intersection_density,
+    auto_oriented_intersection_share,
+    transit_service_density,
+    transit_frequency_peak,
+    distance_to_transit,
+    jobs_access_45min_transit,
+    workers_access_45min_transit,
+    jobs_access_45min_auto,
+    workers_access_45min_auto,
+    employment_density_gross,
+    population_density_gross,
+    housing_density_gross
+  )
+
+# 7. Aggregate counties to CBSAs ----
+epa_sld_cbsa <- epa_sld_county %>%
+  inner_join(cbsa_xwalk, by = c("geo_id" = "county_geoid")) %>%
+  group_by(cbsa_code, cbsa_name, year) %>%
+  aggregate_epa_sld_metrics() %>%
+  left_join(
+    epa_sld_county %>%
+      inner_join(cbsa_xwalk, by = c("geo_id" = "county_geoid")) %>%
+      group_by(cbsa_code, cbsa_name, year) %>%
+      summarise(state_abbr = single_value_or_na(state_abbr), .groups = "drop"),
+    by = c("cbsa_code", "cbsa_name", "year")
   ) %>%
+  transmute(
+    geo_level = "cbsa",
+    geo_id = cbsa_code,
+    geo_name = cbsa_name,
+    year = year,
+    state_abbr = state_abbr,
+    state_fips = NA_character_,
+    total_population,
+    total_employment,
+    housing_units,
+    households,
+    land_acres_unprotected,
+    block_group_count,
+    block_group_count_transit_non_null,
+    block_group_count_walkability_non_null,
+    transit_metric_population_covered,
+    walkability_metric_population_covered,
+    transit_population_coverage_share,
+    walkability_population_coverage_share,
+    walkability_index,
+    employment_housing_mix,
+    employment_mix,
+    street_intersection_density,
+    auto_oriented_intersection_share,
+    transit_service_density,
+    transit_frequency_peak,
+    distance_to_transit,
+    jobs_access_45min_transit,
+    workers_access_45min_transit,
+    jobs_access_45min_auto,
+    workers_access_45min_auto,
+    employment_density_gross,
+    population_density_gross,
+    housing_density_gross
+  )
+
+# 8. Aggregate counties to states ----
+epa_sld_state <- epa_sld_county %>%
+  left_join(state_xwalk, by = "state_fips", suffix = c("", "_state")) %>%
+  mutate(
+    state_abbr = dplyr::coalesce(state_abbr_state, state_abbr)
+  ) %>%
+  group_by(state_fips, state_abbr, state_name, year) %>%
+  aggregate_epa_sld_metrics() %>%
+  transmute(
+    geo_level = "state",
+    geo_id = state_fips,
+    geo_name = state_name,
+    year = year,
+    state_abbr = state_abbr,
+    state_fips = state_fips,
+    total_population,
+    total_employment,
+    housing_units,
+    households,
+    land_acres_unprotected,
+    block_group_count,
+    block_group_count_transit_non_null,
+    block_group_count_walkability_non_null,
+    transit_metric_population_covered,
+    walkability_metric_population_covered,
+    transit_population_coverage_share,
+    walkability_population_coverage_share,
+    walkability_index,
+    employment_housing_mix,
+    employment_mix,
+    street_intersection_density,
+    auto_oriented_intersection_share,
+    transit_service_density,
+    transit_frequency_peak,
+    distance_to_transit,
+    jobs_access_45min_transit,
+    workers_access_45min_transit,
+    jobs_access_45min_auto,
+    workers_access_45min_auto,
+    employment_density_gross,
+    population_density_gross,
+    housing_density_gross
+  )
+
+# 9. Materialize unified Silver table ----
+epa_sld_silver <- bind_rows(
+  epa_sld_county,
+  epa_sld_cbsa,
+  epa_sld_state
+) %>%
   select(
     geo_level,
     geo_id,
@@ -214,15 +404,14 @@ epa_sld_county <- epa_sld_stage %>%
     population_density_gross,
     housing_density_gross
   ) %>%
-  arrange(geo_id, year)
+  arrange(geo_level, geo_id, year)
 
-check_unique_annual_grain(epa_sld_county, "silver.epa_sld")
+check_unique_annual_grain(epa_sld_silver, "silver.epa_sld")
 
-# 6. Materialize to Silver ----
 DBI::dbWriteTable(
   con,
   DBI::Id(schema = "silver", table = "epa_sld"),
-  epa_sld_county,
+  epa_sld_silver,
   overwrite = TRUE
 )
 

@@ -1,0 +1,999 @@
+---
+title: "Variable Selection — Character"
+subtitle: "Subject, topic, and KPI diagnostic for Character frame inputs"
+date: today
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 3
+    code-fold: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE
+)
+
+library(here)
+library(tidyr)
+library(glue)
+source(here("exploration/intelligence_framework/R/utils.R"))
+con <- db_connect()
+
+metric_labels <- c(
+  median_age = "Median age",
+  pct_age_under_18 = "Under-18 share",
+  pct_age_18_64 = "Age 18-64 share",
+  pct_age_over_64 = "65+ share",
+  pct_foreign_born = "Foreign-born share",
+  pct_non_citizen = "Non-citizen share",
+  pct_hs_or_less = "HS-or-less share",
+  pct_ba = "BA share",
+  pct_ba_plus = "BA+ share",
+  pct_grad_plus = "Graduate-degree share",
+  diversity_index = "Diversity index",
+  pct_white_nh = "White NH share",
+  pct_black_nh = "Black NH share",
+  pct_aian_nh = "AIAN NH share",
+  pct_hispanic = "Hispanic share",
+  pct_asian_nh = "Asian NH share",
+  pct_nhpi_nh = "NHPI NH share",
+  pct_same_house = "Same-house share",
+  mobility_rate = "Mobility rate",
+  pct_moved_same_cnty = "Moved within county",
+  pct_moved_same_st = "Moved within state",
+  pct_moved_diff_st = "Moved from other state",
+  pct_moved_abroad = "Moved from abroad",
+  irs_net_migration = "IRS net migration",
+  irs_net_migration_rate = "IRS net migration rate",
+  irs_inflow_agi = "IRS inflow AGI",
+  irs_outflow_agi = "IRS outflow AGI",
+  irs_net_agi = "IRS net AGI",
+  economic_connectedness = "Economic connectedness",
+  childhood_economic_connectedness = "Childhood economic connectedness",
+  friending_bias = "Friending bias",
+  childhood_friending_bias = "Childhood friending bias",
+  cohesion_clustering = "Cohesion clustering",
+  cohesion_support_ratio = "Cohesion support ratio",
+  civic_engagement_volunteering_rate = "Volunteering rate",
+  civic_organizations_per_1000 = "Civic orgs per 1k",
+  nonprofits_per_100k = "Nonprofits per 100k",
+  nonprofits_total_per_100k = "Total nonprofits per 100k",
+  pct_hh_single_person = "Single-person HH share",
+  pct_family_single_parent = "Single-parent family share",
+  social_associations_per_10k = "Social associations per 10k",
+  homicide_rate = "Homicide rate",
+  pct_struct_multifam = "Multifamily share",
+  pop_weighted_density_sqmi = "Pop-weighted density",
+  gross_density_sqmi = "Gross density",
+  owner_occ_rate = "Owner-occupancy rate"
+)
+
+metric_catalog <- tibble::tribble(
+  ~metric, ~subject, ~topic,
+  "pct_white_nh", "Demographics", "Race & ethnicity",
+  "pct_black_nh", "Demographics", "Race & ethnicity",
+  "pct_aian_nh", "Demographics", "Race & ethnicity",
+  "pct_asian_nh", "Demographics", "Race & ethnicity",
+  "pct_nhpi_nh", "Demographics", "Race & ethnicity",
+  "pct_hispanic", "Demographics", "Race & ethnicity",
+  "diversity_index", "Demographics", "Race & ethnicity",
+  "median_age", "Demographics", "Age structure",
+  "pct_age_under_18", "Demographics", "Age structure",
+  "pct_age_18_64", "Demographics", "Age structure",
+  "pct_age_over_64", "Demographics", "Age structure",
+  "pct_hs_or_less", "Demographics", "Educational attainment",
+  "pct_ba", "Demographics", "Educational attainment",
+  "pct_ba_plus", "Demographics", "Educational attainment",
+  "pct_grad_plus", "Demographics", "Educational attainment",
+  "pct_foreign_born", "Demographics", "Nativity & citizenship",
+  "pct_non_citizen", "Demographics", "Nativity & citizenship",
+  "pop_weighted_density_sqmi", "Demographics", "Population density",
+  "gross_density_sqmi", "Demographics", "Population density",
+  "economic_connectedness", "Social Fabric", "Social capital",
+  "childhood_economic_connectedness", "Social Fabric", "Social capital",
+  "friending_bias", "Social Fabric", "Social capital",
+  "childhood_friending_bias", "Social Fabric", "Social capital",
+  "cohesion_clustering", "Social Fabric", "Social capital",
+  "cohesion_support_ratio", "Social Fabric", "Social capital",
+  "civic_engagement_volunteering_rate", "Social Fabric", "Social capital",
+  "civic_organizations_per_1000", "Social Fabric", "Social capital",
+  "nonprofits_per_100k", "Social Fabric", "Nonprofits & civic organizations",
+  "nonprofits_total_per_100k", "Social Fabric", "Nonprofits & civic organizations",
+  "pct_same_house", "Social Fabric", "Residential stability",
+  "mobility_rate", "Social Fabric", "Residential stability",
+  "pct_moved_same_cnty", "Social Fabric", "Residential stability",
+  "pct_moved_same_st", "Social Fabric", "Residential stability",
+  "pct_moved_diff_st", "Social Fabric", "Residential stability",
+  "pct_moved_abroad", "Social Fabric", "Residential stability",
+  "irs_net_migration", "Social Fabric", "Residential stability",
+  "irs_net_migration_rate", "Social Fabric", "Residential stability",
+  "irs_inflow_agi", "Social Fabric", "Residential stability",
+  "irs_outflow_agi", "Social Fabric", "Residential stability",
+  "irs_net_agi", "Social Fabric", "Residential stability",
+  "pct_hh_single_person", "Social Fabric", "Household structure",
+  "pct_family_single_parent", "Social Fabric", "Household structure",
+  "social_associations_per_10k", "Social Fabric", "Social associations",
+  "homicide_rate", "Social Fabric", "Safety proxy",
+  "pct_struct_multifam", "Social Fabric", "Built form",
+  "owner_occ_rate", "Social Fabric", "Built form"
+)
+```
+
+## Goal
+
+Build a Character input set for Phase 2 clustering that is easy to defend at three levels:
+
+1. **Subject**: do `Demographics` and `Social Fabric` both contribute meaningful separation?
+2. **Topic**: within each subject, which topics behave like real dimensions instead of thin or redundant sub-buckets?
+3. **KPI**: within each topic, which specific metrics are the strongest representatives for Phase 1?
+
+Candidate inputs (from `docs/metric_map.md`):
+
+| Subject | Topics |
+|---|---|
+| Demographics | race / ethnicity, age structure, educational attainment, nativity / citizenship, population density |
+| Social Fabric | social capital, nonprofits & civic organizations, residential stability, household structure, social associations, safety proxy, built form |
+
+Decision rules used in this notebook:
+
+- **Coverage**: below `90%` coverage is a caution flag.
+- **Variance**: below `CV = 0.2` is a weak differentiator at CBSA scale.
+- **Correlation**: above `|r| = 0.75` means we should avoid carrying every KPI in a topic at full weight.
+- **PCA**: used as a diagnostic only, to see how many independent dimensions remain after the basic screens.
+
+## Universe and data pull
+
+```{r data}
+df <- dbGetQuery(con, "
+with population_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            geo_name,
+            year as population_year,
+            pop_total,
+            median_age,
+            pct_age_under_18,
+            pct_age_18_64,
+            pct_age_over_64,
+            pct_hs_or_less,
+            pct_ba,
+            pct_ba_plus,
+            pct_grad_plus,
+            diversity_index,
+            pct_white_nh,
+            pct_black_nh,
+            pct_aian_nh,
+            pct_hispanic,
+            pct_asian_nh,
+            pct_nhpi_nh,
+            row_number() over (
+                partition by geo_id
+                order by year desc
+            ) as rn
+        from gold.population_demographics
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+migration_acs_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as migration_acs_year,
+            pct_foreign_born,
+            pct_non_citizen,
+            pct_same_house,
+            mobility_rate,
+            pct_moved_same_cnty,
+            pct_moved_same_st,
+            pct_moved_diff_st,
+            pct_moved_abroad,
+            row_number() over (
+                partition by geo_id
+                order by year desc
+            ) as rn
+        from gold.migration_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+migration_irs_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as migration_irs_year,
+            irs_net_migration,
+            irs_net_migration_rate,
+            irs_inflow_agi,
+            irs_outflow_agi,
+            irs_net_agi,
+            row_number() over (
+                partition by geo_id
+                order by year desc
+            ) as rn
+        from gold.migration_wide
+        where geo_level = 'cbsa'
+          and irs_net_migration_rate is not null
+    )
+    where rn = 1
+),
+built_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as built_form_year,
+            pop_weighted_density_sqmi,
+            gross_density_sqmi,
+            row_number() over (
+                partition by geo_id
+                order by year desc
+            ) as rn
+        from gold.transport_built_form_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+housing_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as housing_year,
+            pct_struct_multifam,
+            owner_occ_rate,
+            row_number() over (
+                partition by geo_id
+                order by year desc
+            ) as rn
+        from gold.housing_core_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+social_infra_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as social_infra_year,
+            pct_hh_single_person,
+            pct_family_single_parent,
+            row_number() over (
+                partition by geo_id
+                order by year desc
+            ) as rn
+        from gold.social_infra_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+health_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as health_year,
+            social_associations_per_10k,
+            homicide_rate,
+            row_number() over (
+                partition by geo_id
+                order by year desc
+            ) as rn
+        from gold.health_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+social_static as (
+    select
+        geo_id,
+        economic_connectedness,
+        childhood_economic_connectedness,
+        friending_bias,
+        childhood_friending_bias,
+        cohesion_clustering,
+        cohesion_support_ratio,
+        civic_engagement_volunteering_rate,
+        civic_organizations_per_1000,
+        nonprofits_per_100k,
+        nonprofits_total_per_100k
+    from gold.social_fabric_wide
+    where geo_level = 'cbsa'
+)
+select
+    pop.geo_id,
+    pop.geo_name,
+    pop.pop_total,
+    pop.population_year,
+    mig_acs.migration_acs_year,
+    mig_irs.migration_irs_year,
+    built.built_form_year,
+    social_infra.social_infra_year,
+    health.health_year,
+    housing.housing_year,
+    pop.median_age,
+    pop.pct_age_under_18,
+    pop.pct_age_18_64,
+    pop.pct_age_over_64,
+    mig_acs.pct_foreign_born,
+    mig_acs.pct_non_citizen,
+    pop.pct_hs_or_less,
+    pop.pct_ba,
+    pop.pct_ba_plus,
+    pop.pct_grad_plus,
+    pop.diversity_index,
+    pop.pct_white_nh,
+    pop.pct_black_nh,
+    pop.pct_aian_nh,
+    pop.pct_hispanic,
+    pop.pct_asian_nh,
+    pop.pct_nhpi_nh,
+    mig_acs.pct_same_house,
+    mig_acs.mobility_rate,
+    mig_acs.pct_moved_same_cnty,
+    mig_acs.pct_moved_same_st,
+    mig_acs.pct_moved_diff_st,
+    mig_acs.pct_moved_abroad,
+    mig_irs.irs_net_migration,
+    mig_irs.irs_net_migration_rate,
+    mig_irs.irs_inflow_agi,
+    mig_irs.irs_outflow_agi,
+    mig_irs.irs_net_agi,
+    social.economic_connectedness,
+    social.childhood_economic_connectedness,
+    social.friending_bias,
+    social.childhood_friending_bias,
+    social.cohesion_clustering,
+    social.cohesion_support_ratio,
+    social.civic_engagement_volunteering_rate,
+    social.civic_organizations_per_1000,
+    social.nonprofits_per_100k,
+    social.nonprofits_total_per_100k,
+    social_infra.pct_hh_single_person,
+    social_infra.pct_family_single_parent,
+    health.social_associations_per_10k,
+    health.homicide_rate,
+    housing.pct_struct_multifam,
+    built.pop_weighted_density_sqmi,
+    built.gross_density_sqmi,
+    housing.owner_occ_rate
+from population_latest pop
+left join migration_acs_latest mig_acs
+    on pop.geo_id = mig_acs.geo_id
+left join migration_irs_latest mig_irs
+    on pop.geo_id = mig_irs.geo_id
+left join social_static social
+    on pop.geo_id = social.geo_id
+left join built_latest built
+    on pop.geo_id = built.geo_id
+left join social_infra_latest social_infra
+    on pop.geo_id = social_infra.geo_id
+left join health_latest health
+    on pop.geo_id = health.geo_id
+left join housing_latest housing
+    on pop.geo_id = housing.geo_id
+where pop.pop_total >= 100000
+order by pop.pop_total desc
+")
+
+metrics <- c(
+  "median_age", "pct_age_under_18", "pct_age_18_64", "pct_age_over_64",
+  "pct_foreign_born", "pct_non_citizen",
+  "pct_hs_or_less", "pct_ba", "pct_ba_plus", "pct_grad_plus",
+  "diversity_index", "pct_white_nh", "pct_black_nh", "pct_aian_nh", "pct_asian_nh", "pct_nhpi_nh", "pct_hispanic",
+  "pct_same_house", "mobility_rate", "pct_moved_same_cnty", "pct_moved_same_st",
+  "pct_moved_diff_st", "pct_moved_abroad",
+  "irs_net_migration", "irs_net_migration_rate", "irs_inflow_agi", "irs_outflow_agi", "irs_net_agi",
+  "economic_connectedness", "childhood_economic_connectedness", "friending_bias", "childhood_friending_bias",
+  "cohesion_clustering", "cohesion_support_ratio", "civic_engagement_volunteering_rate",
+  "civic_organizations_per_1000", "nonprofits_per_100k", "nonprofits_total_per_100k",
+  "pct_hh_single_person", "pct_family_single_parent", "social_associations_per_10k", "homicide_rate",
+  "pct_struct_multifam", "pop_weighted_density_sqmi", "gross_density_sqmi", "owner_occ_rate"
+)
+
+coverage_tbl <- tibble(
+  metric = metrics,
+  non_null_cbsas = sapply(metrics, \(m) sum(!is.na(df[[m]]))),
+  coverage_pct = non_null_cbsas / nrow(df)
+) |>
+  left_join(metric_catalog, by = "metric") |>
+  arrange(desc(coverage_pct), metric)
+
+source_year_tbl <- tibble(
+  source_family = c("population", "migration_acs", "migration_irs", "built_form", "social_infra", "health", "housing"),
+  latest_year = c(
+    max(df$population_year, na.rm = TRUE),
+    max(df$migration_acs_year, na.rm = TRUE),
+    max(df$migration_irs_year, na.rm = TRUE),
+    max(df$built_form_year, na.rm = TRUE),
+    max(df$social_infra_year, na.rm = TRUE),
+    max(df$health_year, na.rm = TRUE),
+    max(df$housing_year, na.rm = TRUE)
+  )
+)
+
+cat("Rows:", nrow(df), "\n")
+cat("CBSAs with complete Character coverage:", sum(complete.cases(df[, metrics])), "\n")
+source_year_tbl
+coverage_tbl
+```
+
+This Character frame uses:
+
+- `geo_level = 'cbsa'`
+- `pop_total >= 100000`
+- latest available row by source family
+- `homicide_rate` as the current safety / violent-crime proxy
+- voting intentionally deferred
+
+One note on Social Capital Atlas sub-indices: the `neighborhood_*` fields are ZIP-only and are therefore not candidates for this CBSA notebook.
+
+## Subject and topic inventory
+
+```{r inventory}
+metric_catalog |>
+  mutate(metric_label = metric_labels[metric]) |>
+  arrange(subject, topic, metric_label)
+```
+
+## Coverage and latest-vintage check
+
+```{r coverage-summary}
+subject_topic_coverage_tbl <- coverage_tbl |>
+  group_by(subject, topic) |>
+  summarise(
+    metric_count = n(),
+    min_coverage_pct = min(coverage_pct),
+    avg_coverage_pct = mean(coverage_pct),
+    .groups = "drop"
+  ) |>
+  arrange(subject, topic)
+
+subject_topic_coverage_tbl |>
+  mutate(
+    min_coverage_pct = percent(min_coverage_pct, accuracy = 0.1),
+    avg_coverage_pct = percent(avg_coverage_pct, accuracy = 0.1)
+  )
+```
+
+```{r coverage-plot}
+subject_topic_coverage_tbl |>
+  mutate(topic = reorder(topic, avg_coverage_pct)) |>
+  ggplot(aes(x = avg_coverage_pct, y = topic, fill = subject)) +
+  geom_col(alpha = 0.9) +
+  geom_vline(xintercept = 0.9, linetype = "22",
+             color = visual_neutral_palette()$text_muted, linewidth = 0.5) +
+  scale_x_continuous(labels = label_percent()) +
+  labs(
+    title = "Coverage by Character topic",
+    subtitle = "Average KPI coverage within each topic | Dashed line = 90% caution threshold",
+    x = "Average coverage",
+    y = NULL,
+    fill = NULL,
+    caption = build_chart_notes(source = "ACS, IRS, CHR, Opportunity Insights", vintage = "Latest available by source family")
+  ) +
+  visual_theme()
+```
+
+---
+
+## 1. KPI variance pass
+
+```{r variance}
+variance_tbl <- tibble(metric = metrics) |>
+  mutate(
+    n       = sapply(metric, \(m) sum(!is.na(df[[m]]))),
+    mean    = sapply(metric, \(m) mean(df[[m]], na.rm = TRUE)),
+    sd      = sapply(metric, \(m) sd(df[[m]], na.rm = TRUE)),
+    cv      = sd / abs(mean),
+    iqr     = sapply(metric, \(m) IQR(df[[m]], na.rm = TRUE))
+  ) |>
+  left_join(metric_catalog, by = "metric") |>
+  arrange(desc(cv))
+
+variance_tbl
+```
+
+```{r variance-plot}
+variance_tbl |>
+  mutate(metric_label = metric_labels[metric]) |>
+  mutate(metric_label = reorder(metric_label, cv)) |>
+  ggplot(aes(x = cv, y = metric_label, fill = subject)) +
+  geom_col(fill = visual_palette_defaults()$highlight$selection, alpha = 0.85) +
+  geom_vline(xintercept = 0.2, linetype = "22",
+             color = visual_neutral_palette()$text_muted, linewidth = 0.5) +
+  annotate("text", x = 0.21, y = 1, label = "CV = 0.2 threshold",
+           hjust = 0, size = 2.8, color = visual_neutral_palette()$text_muted) +
+  labs(
+    title = "Character metrics ranked by coefficient of variation",
+    subtitle = "Higher CV means a metric separates CBSAs more strongly",
+    x = "Coefficient of variation (SD / mean)",
+    y = NULL,
+    fill = NULL,
+    caption = build_chart_notes(source = "ACS, IRS, CHR, Opportunity Insights", vintage = "Latest available by source family")
+  ) +
+  visual_theme()
+```
+
+**Interpretation:** Metrics below `CV = 0.2` are weak differentiators at this metro scale and should usually be treated as secondary or dropped from the default clustering set.
+
+```{r variance-summary}
+variance_tbl |>
+  transmute(
+    subject,
+    topic,
+    metric = metric_labels[metric],
+    coverage_pct = percent(coverage_tbl$coverage_pct[match(metric, coverage_tbl$metric)], accuracy = 0.1),
+    cv = round(cv, 3),
+    iqr = round(iqr, 3)
+  )
+```
+
+## 2. Topic scorecard
+
+```{r topic-scorecard}
+topic_scorecard_tbl <- variance_tbl |>
+  left_join(coverage_tbl |> select(metric, coverage_pct), by = "metric") |>
+  group_by(subject, topic) |>
+  summarise(
+    metric_count = n(),
+    avg_coverage_pct = mean(coverage_pct),
+    high_variance_metrics = sum(cv >= 0.2),
+    top_kpis = paste(metric_labels[metric[order(cv, decreasing = TRUE)][seq_len(min(3, n()))]], collapse = "; "),
+    .groups = "drop"
+  ) |>
+  mutate(
+    topic_read = case_when(
+      high_variance_metrics == 0 ~ "Weak topic at CBSA scale",
+      high_variance_metrics == 1 ~ "Keep topic, likely with one lead KPI",
+      TRUE ~ "Keep topic, compare KPIs inside topic"
+    )
+  ) |>
+  arrange(subject, topic)
+
+topic_scorecard_tbl |>
+  mutate(avg_coverage_pct = percent(avg_coverage_pct, accuracy = 0.1))
+```
+
+## 3. Correlation pass
+
+```{r correlation}
+surviving <- variance_tbl |> filter(cv >= 0.2) |> pull(metric)
+
+df_cor <- df |> select(all_of(surviving)) |> drop_na()
+cor_matrix <- cor(df_cor, use = "pairwise.complete.obs")
+
+# Flag pairs above 0.75
+high_cor <- which(abs(cor_matrix) > 0.75 & upper.tri(cor_matrix), arr.ind = TRUE)
+high_cor_tbl <- if (nrow(high_cor) > 0) {
+  tibble(
+    metric_a = rownames(cor_matrix)[high_cor[, 1]],
+    metric_b = colnames(cor_matrix)[high_cor[, 2]],
+    correlation = cor_matrix[high_cor]
+  ) |> arrange(desc(abs(correlation)))
+} else {
+  tibble(metric_a = character(), metric_b = character(), correlation = double())
+}
+
+high_cor_tbl <- high_cor_tbl |>
+  left_join(metric_catalog |> rename(metric_a = metric, subject_a = subject, topic_a = topic), by = "metric_a") |>
+  left_join(metric_catalog |> rename(metric_b = metric, subject_b = subject, topic_b = topic), by = "metric_b")
+
+high_cor_tbl
+```
+
+```{r correlation-heatmap, fig.width=12, fig.height=10}
+# Correlation heatmap — use visual library render if available, otherwise ggcorrplot
+cor_matrix |>
+  as.data.frame() |>
+  tibble::rownames_to_column("metric_a") |>
+  pivot_longer(-metric_a, names_to = "metric_b", values_to = "r") |>
+  mutate(
+    metric_a_label = metric_labels[metric_a],
+    metric_b_label = metric_labels[metric_b]
+  ) |>
+  ggplot(aes(x = metric_b_label, y = metric_a_label, fill = r)) +
+  geom_tile(color = visual_neutral_palette()$background_white) +
+  geom_text(aes(label = round(r, 2)), size = 2.8,
+            color = visual_neutral_palette()$text) +
+  scale_fill_gradient2(
+    low    = visual_palette_defaults()$diverging$worse,
+    mid    = visual_palette_defaults()$diverging$midpoint,
+    high   = visual_palette_defaults()$diverging$better,
+    midpoint = 0, limits = c(-1, 1), name = "r"
+  ) +
+  labs(
+    title = "Character metric correlation matrix",
+    subtitle = "High-variance survivors only | pairs > 0.75 flagged for review",
+    caption = build_chart_notes(source = "ACS, IRS, CHR, Opportunity Insights", vintage = "Latest available by source family")
+  ) +
+  visual_theme(grid = "none") +
+  theme(
+    axis.text.x = element_text(angle = 40, hjust = 1, size = 10),
+    axis.text.y = element_text(size = 10)
+  )
+```
+
+```{r correlation-by-topic}
+high_cor_tbl |>
+  transmute(
+    metric_a = metric_labels[metric_a],
+    topic_a,
+    metric_b = metric_labels[metric_b],
+    topic_b,
+    correlation = round(correlation, 2)
+  )
+```
+
+## 4. PCA diagnostic
+
+PCA is used here as a diagnostic only. It tells us whether the surviving Character set still carries several independent dimensions, or whether the notebook is mostly measuring the same few stories repeatedly.
+
+```{r pca}
+df_pca <- df |> select(all_of(surviving)) |> drop_na() |> scale()
+pca_result <- prcomp(df_pca, center = FALSE, scale. = FALSE)
+pca_summary <- summary(pca_result)
+pca_summary
+```
+
+```{r pca-scree}
+tibble(
+  component = seq_along(pca_result$sdev),
+  variance_explained = (pca_result$sdev^2) / sum(pca_result$sdev^2)
+) |>
+  mutate(cumulative = cumsum(variance_explained)) |>
+  ggplot(aes(x = component, y = variance_explained)) +
+  geom_col(fill = visual_palette_defaults()$highlight$selection, alpha = 0.85) +
+  geom_line(aes(y = cumulative),
+            color = visual_neutral_palette()$text_muted, linewidth = 0.6) +
+  geom_point(aes(y = cumulative),
+             color = visual_neutral_palette()$text_muted, size = 2) +
+  scale_y_continuous(labels = label_percent()) +
+  labs(
+    title = "PCA scree plot — Character metrics",
+    subtitle = "Bars = variance per component | Line = cumulative variance explained",
+    x = "Principal component",
+    y = "Variance explained",
+    caption = build_chart_notes(source = "ACS, IRS, CHR, Opportunity Insights", vintage = "Latest available by source family")
+  ) +
+  visual_theme()
+```
+
+```{r pca-loadings, fig.width=12, fig.height=9}
+# Top loadings per component — tells us what each dimension represents
+loadings_tbl <- as.data.frame(pca_result$rotation[, 1:4]) |>
+  tibble::rownames_to_column("metric") |>
+  mutate(metric_label = metric_labels[metric]) |>
+  pivot_longer(c(PC1, PC2, PC3, PC4), names_to = "component", values_to = "loading") |>
+  arrange(component, desc(abs(loading)))
+
+loadings_tbl |>
+  ggplot(aes(x = loading, y = reorder(metric_label, loading), fill = loading > 0)) +
+  geom_col(alpha = 0.85) +
+  scale_fill_manual(values = c(
+    "TRUE"  = visual_palette_defaults()$diverging$better,
+    "FALSE" = visual_palette_defaults()$diverging$worse
+  ), guide = "none") +
+  facet_wrap(~component, scales = "free_x") +
+  labs(
+    title = "PCA loadings — first 4 components",
+    subtitle = "Used as a diagnostic: how many independent dimensions does the Character metric set have?",
+    x = "Loading", y = NULL,
+    caption = build_chart_notes(source = "ACS, IRS, CHR, Opportunity Insights", vintage = "Latest available by source family")
+  ) +
+  visual_theme()
+```
+
+```{r topic-pca}
+topic_pca_tbl <- purrr::map_dfr(split(metric_catalog, metric_catalog$topic), \(topic_df) {
+  topic_metrics <- intersect(topic_df$metric, surviving)
+  if (length(topic_metrics) < 2) {
+    return(tibble(
+      subject = topic_df$subject[[1]],
+      topic = topic_df$topic[[1]],
+      surviving_metrics = length(topic_metrics),
+      complete_rows = sum(complete.cases(df[, topic_metrics, drop = FALSE])),
+      components_80 = NA_integer_,
+      topic_dimensionality = "Single-metric or inactive topic"
+    ))
+  }
+
+  topic_complete <- df |>
+    select(all_of(topic_metrics)) |>
+    drop_na()
+
+  if (nrow(topic_complete) < 50) {
+    return(tibble(
+      subject = topic_df$subject[[1]],
+      topic = topic_df$topic[[1]],
+      surviving_metrics = length(topic_metrics),
+      complete_rows = nrow(topic_complete),
+      components_80 = NA_integer_,
+      topic_dimensionality = "Too sparse for stable topic PCA"
+    ))
+  }
+
+  topic_pca <- prcomp(scale(topic_complete), center = FALSE, scale. = FALSE)
+  topic_components_80 <- which(cumsum((topic_pca$sdev^2) / sum(topic_pca$sdev^2)) >= 0.8)[1]
+
+  tibble(
+    subject = topic_df$subject[[1]],
+    topic = topic_df$topic[[1]],
+    surviving_metrics = length(topic_metrics),
+    complete_rows = nrow(topic_complete),
+    components_80 = topic_components_80,
+    topic_dimensionality = case_when(
+      topic_components_80 <= 1 ~ "Mostly one dominant KPI story",
+      topic_components_80 == 2 ~ "Has two meaningful sub-dimensions",
+      TRUE ~ "Multi-dimensional topic"
+    )
+  )
+})
+
+topic_pca_tbl |>
+  arrange(subject, topic)
+```
+
+**Interpretation:** The overall component count tells us how multidimensional Character is. The topic-level PCA tells us whether a topic really needs several KPIs, or whether one lead metric can represent it cleanly.
+
+## 5. Cross-topic leader correlation check
+
+This is the final validation pass before clustering. Instead of looking at every surviving metric, we test the provisional topic leaders against each other across the full Character frame. The goal is to catch cases where two different topics are empirically telling the same story.
+
+```{r cross-topic-setup}
+topic_leader_tbl <- tibble::tribble(
+  ~subject, ~topic, ~metric,
+  "Demographics", "Race & ethnicity", "diversity_index",
+  "Demographics", "Race & ethnicity", "pct_black_nh",
+  "Demographics", "Race & ethnicity", "pct_asian_nh",
+  "Demographics", "Race & ethnicity", "pct_hispanic",
+  "Demographics", "Age structure", "pct_age_over_64",
+  "Demographics", "Educational attainment", "pct_ba_plus",
+  "Demographics", "Nativity & citizenship", "pct_non_citizen",
+  "Demographics", "Population density", "pop_weighted_density_sqmi",
+  "Social Fabric", "Social capital", "friending_bias",
+  "Social Fabric", "Social capital", "civic_engagement_volunteering_rate",
+  "Social Fabric", "Social capital", "civic_organizations_per_1000",
+  "Social Fabric", "Nonprofits & civic organizations", "nonprofits_per_100k",
+  "Social Fabric", "Residential stability", "irs_net_migration_rate",
+  "Social Fabric", "Residential stability", "pct_moved_diff_st",
+  "Social Fabric", "Residential stability", "pct_moved_abroad",
+  "Social Fabric", "Social associations", "social_associations_per_10k",
+  "Social Fabric", "Built form", "pct_struct_multifam"
+) |>
+  mutate(metric_label = metric_labels[metric])
+
+topic_leader_tbl
+```
+
+```{r cross-topic-correlation}
+cross_topic_metrics <- topic_leader_tbl$metric
+
+cross_topic_df <- df |>
+  select(all_of(cross_topic_metrics)) |>
+  drop_na()
+
+cross_topic_cor_matrix <- cor(cross_topic_df, use = "pairwise.complete.obs")
+
+cross_topic_high_cor <- which(abs(cross_topic_cor_matrix) > 0.75 & upper.tri(cross_topic_cor_matrix), arr.ind = TRUE)
+cross_topic_high_cor_tbl <- if (nrow(cross_topic_high_cor) > 0) {
+  tibble(
+    metric_a = rownames(cross_topic_cor_matrix)[cross_topic_high_cor[, 1]],
+    metric_b = colnames(cross_topic_cor_matrix)[cross_topic_high_cor[, 2]],
+    correlation = cross_topic_cor_matrix[cross_topic_high_cor]
+  ) |>
+    left_join(topic_leader_tbl |> select(metric, subject, topic) |> rename(metric_a = metric, subject_a = subject, topic_a = topic), by = "metric_a") |>
+    left_join(topic_leader_tbl |> select(metric, subject, topic) |> rename(metric_b = metric, subject_b = subject, topic_b = topic), by = "metric_b") |>
+    mutate(
+      metric_a_label = metric_labels[metric_a],
+      metric_b_label = metric_labels[metric_b]
+    ) |>
+    arrange(desc(abs(correlation)))
+} else {
+  tibble(
+    metric_a = character(),
+    metric_b = character(),
+    correlation = double(),
+    subject_a = character(),
+    topic_a = character(),
+    subject_b = character(),
+    topic_b = character(),
+    metric_a_label = character(),
+    metric_b_label = character()
+  )
+}
+
+cross_topic_high_cor_tbl |>
+  select(subject_a, topic_a, metric_a_label, subject_b, topic_b, metric_b_label, correlation)
+```
+
+```{r cross-topic-heatmap, fig.width=12, fig.height=10}
+cross_topic_cor_matrix |>
+  as.data.frame() |>
+  tibble::rownames_to_column("metric_a") |>
+  pivot_longer(-metric_a, names_to = "metric_b", values_to = "r") |>
+  mutate(
+    metric_a_label = metric_labels[metric_a],
+    metric_b_label = metric_labels[metric_b]
+  ) |>
+  ggplot(aes(x = metric_b_label, y = metric_a_label, fill = r)) +
+  geom_tile(color = visual_neutral_palette()$background_white) +
+  geom_text(aes(label = round(r, 2)), size = 2.8,
+            color = visual_neutral_palette()$text) +
+  scale_fill_gradient2(
+    low    = visual_palette_defaults()$diverging$worse,
+    mid    = visual_palette_defaults()$diverging$midpoint,
+    high   = visual_palette_defaults()$diverging$better,
+    midpoint = 0, limits = c(-1, 1), name = "r"
+  ) +
+  labs(
+    title = "Cross-topic leader correlation matrix",
+    subtitle = "Final Character topic leaders only | pairs > 0.75 need review across topics",
+    x = NULL,
+    y = NULL,
+    caption = build_chart_notes(source = "ACS, IRS, CHR, Opportunity Insights", vintage = "Latest available by source family")
+  ) +
+  visual_theme(grid = "none") +
+  theme(
+    axis.text.x = element_text(angle = 40, hjust = 1, size = 10),
+    axis.text.y = element_text(size = 10)
+  )
+```
+
+**Interpretation:** If a cross-topic pair is very highly correlated, we should ask whether we are really measuring two dimensions, or just putting two different labels on the same metro pattern.
+
+## 6. Recommendations by subject, topic, and KPI
+
+```{r decisions, results='asis'}
+keep_tbl <- variance_tbl |>
+  filter(cv >= 0.2) |>
+  left_join(coverage_tbl |> select(metric, coverage_pct), by = "metric") |>
+  select(subject, topic, metric, coverage_pct, cv, iqr)
+
+drop_tbl <- variance_tbl |>
+  filter(cv < 0.2) |>
+  left_join(coverage_tbl |> select(metric, coverage_pct), by = "metric") |>
+  select(subject, topic, metric, coverage_pct, cv, iqr)
+
+pc1 <- pca_result$rotation[, 1]
+pc2 <- pca_result$rotation[, 2]
+pc3 <- pca_result$rotation[, 3]
+component_count_80 <- which(cumsum((pca_result$sdev^2) / sum(pca_result$sdev^2)) >= 0.8)[1]
+cross_topic_pair_count <- nrow(cross_topic_high_cor_tbl)
+
+cor_flag_tbl <- bind_rows(
+  high_cor_tbl |> transmute(metric = metric_a, correlation = abs(correlation)),
+  high_cor_tbl |> transmute(metric = metric_b, correlation = abs(correlation))
+) |>
+  group_by(metric) |>
+  summarise(max_abs_correlation = max(correlation), .groups = "drop")
+
+kpi_decision_tbl <- variance_tbl |>
+  left_join(coverage_tbl |> select(metric, coverage_pct), by = "metric") |>
+  left_join(cor_flag_tbl, by = "metric") |>
+  mutate(
+    max_abs_correlation = coalesce(max_abs_correlation, 0),
+    recommendation = case_when(
+      coverage_pct < 0.9 ~ "Caution: limited coverage",
+      cv < 0.2 ~ "Drop from default clustering set",
+      max_abs_correlation >= 0.9 ~ "Keep one lead KPI only",
+      max_abs_correlation >= 0.75 ~ "Keep, but de-duplicate within topic",
+      TRUE ~ "Keep"
+    )
+  ) |>
+  arrange(subject, topic, desc(cv))
+
+subject_read_tbl <- topic_scorecard_tbl |>
+  group_by(subject) |>
+  summarise(
+    topic_count = n(),
+    active_topics = sum(high_variance_metrics > 0),
+    avg_coverage_pct = mean(avg_coverage_pct),
+    subject_read = case_when(
+      active_topics == 0 ~ "Weak subject for Character",
+      active_topics < topic_count ~ "Useful subject, but uneven across topics",
+      TRUE ~ "Strong subject for Character"
+    ),
+    .groups = "drop"
+  )
+
+cat("**Subject read:**\n")
+for (i in seq_len(nrow(subject_read_tbl))) {
+  row <- subject_read_tbl[i, ]
+  cat(glue("- **{row$subject}**: {row$subject_read}. Average topic coverage = {percent(row$avg_coverage_pct, accuracy = 0.1)}.\n\n"))
+}
+
+cat("\n**Topic read:**\n")
+for (i in seq_len(nrow(topic_scorecard_tbl))) {
+  row <- topic_scorecard_tbl[i, ]
+  cat(glue("- **{row$subject} / {row$topic}**: {row$topic_read}. Lead KPIs: {row$top_kpis}.\n\n"))
+}
+
+cat("\n**KPIs to keep as strong default candidates:**\n")
+keep_default_tbl <- kpi_decision_tbl |>
+  filter(recommendation == "Keep")
+for (i in seq_len(nrow(keep_default_tbl))) {
+  row <- keep_default_tbl[i, ]
+  cat(glue("- **{row$subject} / {row$topic}**: `{row$metric}` ({unname(metric_labels[row$metric])})\n\n"))
+}
+
+cat("\n**KPIs to keep, but consolidate within topic:**\n")
+keep_review_tbl <- kpi_decision_tbl |>
+  filter(recommendation %in% c("Keep one lead KPI only", "Keep, but de-duplicate within topic"))
+if (nrow(keep_review_tbl) == 0) {
+  cat("- None.\n")
+} else {
+  for (i in seq_len(nrow(keep_review_tbl))) {
+    row <- keep_review_tbl[i, ]
+    cat(glue("- **{row$subject} / {row$topic}**: `{row$metric}` ({unname(metric_labels[row$metric])})\n\n"))
+  }
+}
+
+cat("\n**KPIs to drop from the default clustering set:**\n")
+drop_default_tbl <- kpi_decision_tbl |>
+  filter(recommendation %in% c("Drop from default clustering set", "Caution: limited coverage"))
+if (nrow(drop_default_tbl) == 0) {
+  cat("- None.\n")
+} else {
+  for (i in seq_len(nrow(drop_default_tbl))) {
+    row <- drop_default_tbl[i, ]
+    cat(glue("- **{row$subject} / {row$topic}**: `{row$metric}` ({unname(metric_labels[row$metric])})\n\n"))
+  }
+}
+
+cat("\n**PCA read:**\n")
+cat(glue("- `{component_count_80}` components explain at least 80% of the variance in the surviving Character set.\n"))
+cat(glue("- PC1 is primarily driven by `{names(sort(abs(pc1), decreasing = TRUE))[1]}`, `{names(sort(abs(pc1), decreasing = TRUE))[2]}`, and `{names(sort(abs(pc1), decreasing = TRUE))[3]}`.\n"))
+cat(glue("- PC2 is primarily driven by `{names(sort(abs(pc2), decreasing = TRUE))[1]}`, `{names(sort(abs(pc2), decreasing = TRUE))[2]}`, and `{names(sort(abs(pc2), decreasing = TRUE))[3]}`.\n"))
+cat(glue("- PC3 is primarily driven by `{names(sort(abs(pc3), decreasing = TRUE))[1]}`, `{names(sort(abs(pc3), decreasing = TRUE))[2]}`, and `{names(sort(abs(pc3), decreasing = TRUE))[3]}`.\n"))
+
+cat("\n**Cross-topic read:**\n")
+if (cross_topic_pair_count == 0) {
+  cat("- No cross-topic leader pairs exceed the `|r| = 0.75` review threshold.\n")
+} else {
+  cat(glue("- `{cross_topic_pair_count}` cross-topic leader pairs exceed the `|r| = 0.75` review threshold.\n\n"))
+  top_cross_topic <- cross_topic_high_cor_tbl |> slice_head(n = min(5, nrow(cross_topic_high_cor_tbl)))
+  for (i in seq_len(nrow(top_cross_topic))) {
+    row <- top_cross_topic[i, ]
+    cat(glue("- `{row$metric_a}` ({row$topic_a}) vs `{row$metric_b}` ({row$topic_b}) has `r = {round(row$correlation, 2)}`.\n\n"))
+  }
+}
+
+cat("\n**Working recommendation for Character clustering inputs:**\n")
+cat("- Keep both `Demographics` and `Social Fabric` in scope; the topic scorecard shows that Character is not just a demographic composition frame.\n")
+cat("- Within each topic, prefer one or two lead KPIs rather than carrying every related measure. The correlation pass is strongest in education, nativity, nonprofit density, and migration-flow metrics.\n")
+cat("- The cross-topic check should be used as the final tie-breaker if one topic leader is mostly acting as a proxy for another topic.\n")
+cat(glue("- Use a cluster-count search centered around `k = {max(3, component_count_80 - 1)}` to `k = {component_count_80 + 1}` in Phase 2 rather than locking a fixed archetype count too early.\n"))
+```
+
+## Character read
+
+This notebook is meant to make the Character selection logic transparent rather than just produce a metric list.
+
+The intended read order is:
+
+1. Check whether the **subject** belongs in Character at all.
+2. Check whether the **topic** has enough coverage and variance to matter at CBSA scale.
+3. Choose the **KPI** that best represents the topic without overcounting correlated variants.
+
+That framing matters here because some Character topics are genuinely multi-dimensional, while others are really single-signal topics wearing several KPI names.
+
+- `Race & ethnicity`, `Residential stability`, `Social capital`, and `Educational attainment` are the most likely to require deliberate KPI pruning rather than simple keep/drop decisions.
+- `Safety proxy` and `Social associations` are cleaner topic-level additions because each is essentially a one-metric topic right now.
+- `Age structure`, parts of `Household structure`, and some built-form ownership signals are more likely to act as weak background descriptors than as core clustering drivers.
+
+The PCA diagnostic should be read as a check on how complicated Character really is after pruning. If the surviving set still needs many components to explain most of the variance, that means we should expect several distinct Character archetypes and should not collapse the frame too aggressively before clustering.
+
+**Update `docs/metric_selections.md` with the final Character selections after reviewing this notebook.**
+
+```{r cleanup, include=FALSE}
+dbDisconnect(con)
+```

@@ -77,4 +77,4 @@
 - The current staging contract keeps only the approved compact subset of the full `117`-column EPA CSV. If a later transportation analysis needs additional SLD variables, we can extend staging without changing the raw download path.
 - The CSV-only path is sufficient for county modeling, but tract-level canonical recovery is still unresolved from the delivered file alone.
   - A future tract fix should use the official Census 2010/2020 tract relationship files or the geodatabase-based SLD delivery.
-- The first-pass Silver contract is county-only because 2010-era tract recovery remains incomplete and not trustworthy enough for modeled use today.
+- The first-pass Silver contract now derives county, CBSA, and state rows from staging while tract recovery remains incomplete and not trustworthy enough for modeled use today.

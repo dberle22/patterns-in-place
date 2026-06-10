@@ -727,7 +727,7 @@ steps:
     depends_on:
       - epa_sld
     enabled: true
-    notes: County-only 2021 EPA Smart Location baseline mart kept separate from the recurring ACS transport panel.
+    notes: 2021 EPA Smart Location baseline mart with county, CBSA, and state rows kept separate from the recurring ACS transport panel.
 
   - id: gold_food_access_wide
     layer: gold

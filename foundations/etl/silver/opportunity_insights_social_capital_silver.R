@@ -81,6 +81,24 @@ state_lookup <- county_lookup %>%
   distinct(.data$state_fips, .data$state_abbr) %>%
   left_join(state_name_lookup, by = "state_abbr")
 
+population_weights <- DBI::dbGetQuery(
+  con,
+  "
+  SELECT
+    geo_id AS county_geoid,
+    year,
+    pop_total
+  FROM silver.age_kpi
+  WHERE geo_level = 'county'
+    AND year = 2018
+  "
+) %>%
+  transmute(
+    county_geoid = as.character(.data$county_geoid),
+    total_population_weight = as.double(.data$pop_total)
+  ) %>%
+  distinct()
+
 cbsa_lookup <- DBI::dbGetQuery(con, "SELECT * FROM silver.xwalk_cbsa_county") %>%
   transmute(
     county_geoid = as.character(.data$county_geoid),
@@ -92,8 +110,10 @@ cbsa_lookup <- DBI::dbGetQuery(con, "SELECT * FROM silver.xwalk_cbsa_county") %>
 # 4. Standardize county and ZCTA source-native rows ----
 social_capital_county <- county_stage %>%
   left_join(county_lookup, by = c("county" = "county_geoid")) %>%
+  left_join(population_weights, by = c("county" = "county_geoid")) %>%
   mutate(
-    state_fips = dplyr::coalesce(.data$state_fips, stringr::str_sub(.data$county, 1, 2))
+    state_fips = dplyr::coalesce(.data$state_fips, stringr::str_sub(.data$county, 1, 2)),
+    rollup_population = dplyr::coalesce(.data$pop2018, .data$total_population_weight)
   ) %>%
   transmute(
     geo_level = "county",
@@ -116,7 +136,8 @@ social_capital_county <- county_stage %>%
     cohesion_support_ratio = as.double(.data$support_ratio_county),
     civic_engagement_volunteering_rate = as.double(.data$volunteering_rate_county),
     civic_organizations_per_1000 = as.double(.data$civic_organizations_county),
-    state_fips = .data$state_fips
+    state_fips = .data$state_fips,
+    rollup_population = .data$rollup_population
   )
 
 social_capital_zcta <- zip_stage %>%
@@ -154,27 +175,28 @@ social_capital_state <- social_capital_county %>%
     geo_name = dplyr::first(.data$state_name),
     population_total = sum(.data$population_total, na.rm = TRUE),
     children_below_p50 = sum(.data$children_below_p50, na.rm = TRUE),
-    economic_connectedness = safe_weighted_mean(.data$economic_connectedness, .data$population_total),
+    economic_connectedness = safe_weighted_mean(.data$economic_connectedness, .data$rollup_population),
     economic_connectedness_se = as.double(NA),
-    childhood_economic_connectedness = safe_weighted_mean(.data$childhood_economic_connectedness, .data$population_total),
+    childhood_economic_connectedness = safe_weighted_mean(.data$childhood_economic_connectedness, .data$rollup_population),
     childhood_economic_connectedness_se = as.double(NA),
     neighborhood_economic_connectedness = as.double(NA),
-    economic_exposure = safe_weighted_mean(.data$economic_exposure, .data$population_total),
-    childhood_economic_exposure = safe_weighted_mean(.data$childhood_economic_exposure, .data$population_total),
+    economic_exposure = safe_weighted_mean(.data$economic_exposure, .data$rollup_population),
+    childhood_economic_exposure = safe_weighted_mean(.data$childhood_economic_exposure, .data$rollup_population),
     neighborhood_economic_exposure = as.double(NA),
-    friending_bias = safe_weighted_mean(.data$friending_bias, .data$population_total),
-    childhood_friending_bias = safe_weighted_mean(.data$childhood_friending_bias, .data$population_total),
+    friending_bias = safe_weighted_mean(.data$friending_bias, .data$rollup_population),
+    childhood_friending_bias = safe_weighted_mean(.data$childhood_friending_bias, .data$rollup_population),
     neighborhood_friending_bias = as.double(NA),
-    cohesion_clustering = safe_weighted_mean(.data$cohesion_clustering, .data$population_total),
-    cohesion_support_ratio = safe_weighted_mean(.data$cohesion_support_ratio, .data$population_total),
-    civic_engagement_volunteering_rate = safe_weighted_mean(.data$civic_engagement_volunteering_rate, .data$population_total),
-    civic_organizations_per_1000 = safe_weighted_mean(.data$civic_organizations_per_1000, .data$population_total),
+    cohesion_clustering = safe_weighted_mean(.data$cohesion_clustering, .data$rollup_population),
+    cohesion_support_ratio = safe_weighted_mean(.data$cohesion_support_ratio, .data$rollup_population),
+    civic_engagement_volunteering_rate = safe_weighted_mean(.data$civic_engagement_volunteering_rate, .data$rollup_population),
+    civic_organizations_per_1000 = safe_weighted_mean(.data$civic_organizations_per_1000, .data$rollup_population),
     state_fips = dplyr::first(.data$state_fips),
     .groups = "drop"
   )
 
 social_capital_cbsa <- social_capital_county %>%
-  inner_join(cbsa_lookup, by = c("geo_id" = "county_geoid")) %>%
+  left_join(cbsa_lookup, by = c("geo_id" = "county_geoid")) %>%
+  filter(!is.na(.data$cbsa_code), .data$cbsa_code != "") %>%
   group_by(.data$cbsa_code, .data$cbsa_name) %>%
   summarise(
     geo_level = "cbsa",
@@ -182,28 +204,29 @@ social_capital_cbsa <- social_capital_county %>%
     geo_name = dplyr::first(.data$cbsa_name),
     population_total = sum(.data$population_total, na.rm = TRUE),
     children_below_p50 = sum(.data$children_below_p50, na.rm = TRUE),
-    economic_connectedness = safe_weighted_mean(.data$economic_connectedness, .data$population_total),
+    economic_connectedness = safe_weighted_mean(.data$economic_connectedness, .data$rollup_population),
     economic_connectedness_se = as.double(NA),
-    childhood_economic_connectedness = safe_weighted_mean(.data$childhood_economic_connectedness, .data$population_total),
+    childhood_economic_connectedness = safe_weighted_mean(.data$childhood_economic_connectedness, .data$rollup_population),
     childhood_economic_connectedness_se = as.double(NA),
     neighborhood_economic_connectedness = as.double(NA),
-    economic_exposure = safe_weighted_mean(.data$economic_exposure, .data$population_total),
-    childhood_economic_exposure = safe_weighted_mean(.data$childhood_economic_exposure, .data$population_total),
+    economic_exposure = safe_weighted_mean(.data$economic_exposure, .data$rollup_population),
+    childhood_economic_exposure = safe_weighted_mean(.data$childhood_economic_exposure, .data$rollup_population),
     neighborhood_economic_exposure = as.double(NA),
-    friending_bias = safe_weighted_mean(.data$friending_bias, .data$population_total),
-    childhood_friending_bias = safe_weighted_mean(.data$childhood_friending_bias, .data$population_total),
+    friending_bias = safe_weighted_mean(.data$friending_bias, .data$rollup_population),
+    childhood_friending_bias = safe_weighted_mean(.data$childhood_friending_bias, .data$rollup_population),
     neighborhood_friending_bias = as.double(NA),
-    cohesion_clustering = safe_weighted_mean(.data$cohesion_clustering, .data$population_total),
-    cohesion_support_ratio = safe_weighted_mean(.data$cohesion_support_ratio, .data$population_total),
-    civic_engagement_volunteering_rate = safe_weighted_mean(.data$civic_engagement_volunteering_rate, .data$population_total),
-    civic_organizations_per_1000 = safe_weighted_mean(.data$civic_organizations_per_1000, .data$population_total),
+    cohesion_clustering = safe_weighted_mean(.data$cohesion_clustering, .data$rollup_population),
+    cohesion_support_ratio = safe_weighted_mean(.data$cohesion_support_ratio, .data$rollup_population),
+    civic_engagement_volunteering_rate = safe_weighted_mean(.data$civic_engagement_volunteering_rate, .data$rollup_population),
+    civic_organizations_per_1000 = safe_weighted_mean(.data$civic_organizations_per_1000, .data$rollup_population),
     state_fips = as.character(NA),
     .groups = "drop"
   )
 
 # 6. Materialize the unified static Silver table ----
 social_capital_silver <- bind_rows(
-  social_capital_county,
+  social_capital_county %>%
+    select(-state_fips, -rollup_population),
   social_capital_state,
   social_capital_cbsa,
   social_capital_zcta

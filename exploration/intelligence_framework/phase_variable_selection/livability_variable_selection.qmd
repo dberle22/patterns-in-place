@@ -1,0 +1,1219 @@
+---
+title: "Variable Selection - Livability"
+subtitle: "Subject, topic, and KPI diagnostic for Livability frame inputs"
+date: today
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 3
+    code-fold: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE
+)
+
+options(
+  dplyr.summarise.inform = FALSE,
+  knitr.kable.NA = ""
+)
+
+library(here)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales)
+library(glue)
+library(purrr)
+library(stringr)
+library(knitr)
+
+source(here("exploration/intelligence_framework/R/utils.R"))
+con <- db_connect()
+```
+
+```{r catalog, include=FALSE}
+metric_labels <- c(
+  rent_to_income = "Rent-to-income ratio",
+  value_to_income = "Home value-to-income ratio",
+  rpp_real_pc_income = "RPP-adjusted per-capita income",
+  pct_rent_burden_30plus = "Rent burden 30%+",
+  pct_rent_burden_50plus = "Rent burden 50%+",
+  pct_cost_burdened = "CHAS cost burdened share",
+  pct_severely_cost_burdened = "CHAS severely burdened share",
+  pct_renter_severely_cost_burdened = "CHAS renter severely burdened share",
+  pov_rate = "Poverty rate",
+  permits_per_1000_housing_units = "Permits per 1k housing units",
+  permits_per_1000_population = "Permits per 1k population",
+  permits_share_multifam_units = "Multifamily permit share",
+  permits_share_units_5_plus = "5+ unit permit share",
+  permits_avg_units_per_bldg = "Average units per building",
+  pct_struct_multifam = "Existing multifamily share",
+  pct_struct_sf_det = "Single-family detached share",
+  pct_struct_small_mf = "Small multifamily share",
+  pct_struct_mid_mf = "Mid multifamily share",
+  pct_struct_large_mf = "Large multifamily share",
+  pct_struct_mobile = "Mobile-home share",
+  life_expectancy = "Life expectancy",
+  premature_death_rate = "Premature death rate",
+  child_mortality_rate = "Child mortality rate",
+  infant_mortality_rate = "Infant mortality rate",
+  drug_overdose_death_rate = "Drug overdose death rate",
+  pct_uninsured_adults = "Uninsured adult share",
+  preventable_hospital_stay_rate = "Preventable hospital stay rate",
+  primary_care_ratio = "Primary care provider ratio",
+  mental_health_provider_ratio = "Mental health provider ratio",
+  physical_inactivity = "Physical inactivity",
+  adult_obesity = "Adult obesity",
+  poor_mental_health_days = "Poor mental health days",
+  food_insecurity_rate = "Food insecurity rate",
+  child_care_cost_burden_rate = "Child care cost burden rate",
+  homicide_rate = "Homicide rate",
+  firearm_fatality_rate = "Firearm fatality rate",
+  motor_vehicle_crash_rate = "Motor vehicle crash death rate",
+  mean_travel_time = "Mean travel time",
+  pct_commute_transit = "Transit commute share",
+  pct_commute_walk = "Walk commute share",
+  pct_commute_wfh = "Work-from-home share",
+  pct_hh_0_vehicles = "Zero-vehicle household share",
+  vacancy_rate = "Vacancy rate",
+  pct_broadband_subscription = "Broadband subscription share",
+  pct_no_internet_access = "No-internet share",
+  walkability_index = "Walkability index",
+  transit_service_density = "Transit service density",
+  jobs_access_45min_transit = "Jobs access within 45 min transit",
+  jobs_access_45min_auto = "Jobs access within 45 min auto",
+  pct_population_low_access_1_10 = "Low-access population share",
+  pct_population_low_income_low_access_1_10 = "Low-income low-access population share",
+  pop_weighted_density_sqmi = "Population-weighted density",
+  gross_density_sqmi = "Gross density",
+  hs_graduation_rate = "HS graduation rate",
+  math_score_index = "Math score index",
+  reading_score_index = "Reading score index",
+  air_pollution_pm25 = "CHR PM2.5 proxy",
+  aqi_median = "Median AQI",
+  aqi_p90 = "AQI P90",
+  unhealthy_days = "Unhealthy AQI days",
+  ejs_pm25 = "EJScreen PM2.5",
+  ejs_ozone = "EJScreen ozone",
+  ejs_diesel_pm = "EJScreen diesel PM",
+  ejs_traffic_proximity = "EJScreen traffic proximity",
+  ejs_superfund_proximity = "EJScreen superfund proximity",
+  ejs_rmp_proximity = "EJScreen RMP proximity",
+  ejs_wastewater_discharge = "EJScreen wastewater discharge",
+  ejs_drinking_water_noncompliance = "EJScreen drinking water noncompliance",
+  adverse_climate_events = "CHR adverse climate-events proxy",
+  fema_risk_score = "FEMA composite risk score",
+  fema_eal_score = "FEMA expected annual loss score"
+)
+
+metric_catalog <- tibble::tribble(
+  ~metric, ~subject, ~topic, ~source_family, ~role, ~note,
+  "rent_to_income", "Affordability", "Price pressure", "ACS affordability", "direct", "Recurring ACS affordability level.",
+  "value_to_income", "Affordability", "Price pressure", "ACS affordability", "direct", "Recurring ACS affordability level.",
+  "rpp_real_pc_income", "Affordability", "Price pressure", "BEA RPP", "direct", "Cross-metro purchasing-power adjustment with partial CBSA coverage.",
+  "pct_rent_burden_30plus", "Affordability", "Housing burden", "ACS rent burden", "direct", "Preferred recurring burden KPI in the Phase 1 mapping audit.",
+  "pct_rent_burden_50plus", "Affordability", "Housing burden", "ACS rent burden", "direct", "More extreme recurring burden variant.",
+  "pct_cost_burdened", "Affordability", "Housing burden", "HUD CHAS", "baseline", "CHAS burden field; contextual and not recurring across years.",
+  "pct_severely_cost_burdened", "Affordability", "Housing burden", "HUD CHAS", "baseline", "CHAS burden field; contextual and not recurring across years.",
+  "pct_renter_severely_cost_burdened", "Affordability", "Housing burden", "HUD CHAS", "baseline", "CHAS renter-only burden field; contextual and not recurring across years.",
+  "pov_rate", "Affordability", "Poverty context", "ACS income", "direct", "Affordability context rather than a pure housing KPI.",
+  "permits_per_1000_housing_units", "Affordability", "Housing supply", "BPS permits", "direct", "Recurring permit intensity signal.",
+  "permits_per_1000_population", "Affordability", "Housing supply", "BPS permits", "direct", "Alternative permit intensity denominator.",
+  "permits_share_multifam_units", "Affordability", "Housing supply", "BPS permits", "direct", "Density-of-supply signal.",
+  "permits_share_units_5_plus", "Affordability", "Housing supply", "BPS permits", "direct", "Higher-density supply composition signal.",
+  "permits_avg_units_per_bldg", "Affordability", "Housing supply", "BPS permits", "direct", "Average building scale of new supply.",
+  "pct_struct_multifam", "Affordability", "Housing structure mix", "ACS housing stock", "direct", "Existing stock composition, distinct from permits.",
+  "pct_struct_sf_det", "Affordability", "Housing structure mix", "ACS housing stock", "direct", "Existing stock composition, distinct from permits.",
+  "pct_struct_small_mf", "Affordability", "Housing structure mix", "ACS housing stock", "direct", "Existing stock composition, distinct from permits.",
+  "pct_struct_mid_mf", "Affordability", "Housing structure mix", "ACS housing stock", "direct", "Existing stock composition, distinct from permits.",
+  "pct_struct_large_mf", "Affordability", "Housing structure mix", "ACS housing stock", "direct", "Existing stock composition, distinct from permits.",
+  "pct_struct_mobile", "Affordability", "Housing structure mix", "ACS housing stock", "direct", "Existing stock composition, distinct from permits.",
+  "life_expectancy", "Health", "Health outcomes", "CHR health", "direct", "Headline CHR health outcome.",
+  "premature_death_rate", "Health", "Health outcomes", "CHR health", "direct", "Headline CHR mortality outcome.",
+  "child_mortality_rate", "Health", "Health outcomes", "CHR health", "direct", "Child mortality coverage is decent but below the headline measures.",
+  "infant_mortality_rate", "Health", "Health outcomes", "CHR health", "direct", "Important but materially sparse at CBSA scale.",
+  "drug_overdose_death_rate", "Health", "Health behavior and access", "CHR health", "direct", "Important contemporary health-risk signal.",
+  "pct_uninsured_adults", "Health", "Health behavior and access", "CHR health", "direct", "Insurance access lens.",
+  "preventable_hospital_stay_rate", "Health", "Health behavior and access", "CHR health", "direct", "Healthcare-system access / quality lens.",
+  "primary_care_ratio", "Health", "Health behavior and access", "CHR health", "direct", "Primary care access ratio.",
+  "mental_health_provider_ratio", "Health", "Health behavior and access", "CHR health", "direct", "Mental-health access ratio.",
+  "physical_inactivity", "Health", "Health behavior and access", "CHR health", "direct", "Behavioral health lens.",
+  "adult_obesity", "Health", "Health behavior and access", "CHR health", "direct", "Behavioral health lens.",
+  "poor_mental_health_days", "Health", "Health behavior and access", "CHR health", "direct", "Mental-health outcome lens.",
+  "food_insecurity_rate", "Health", "Health behavior and access", "CHR health", "direct", "Household stress / nutrition lens.",
+  "child_care_cost_burden_rate", "Health", "Health behavior and access", "CHR health", "direct", "Household stress / care infrastructure lens.",
+  "homicide_rate", "Safety", "Violence and injury", "CHR health", "direct", "Violence outcome lens, but coverage is limited.",
+  "firearm_fatality_rate", "Safety", "Violence and injury", "CHR health", "direct", "Broader violence / self-harm / accident exposure lens.",
+  "motor_vehicle_crash_rate", "Safety", "Violence and injury", "CHR health", "direct", "Transport safety lens.",
+  "mean_travel_time", "Access & Infrastructure", "Commute and mode access", "ACS transport", "direct", "Recurring commute burden signal.",
+  "pct_commute_transit", "Access & Infrastructure", "Commute and mode access", "ACS transport", "direct", "Transit use lens.",
+  "pct_commute_walk", "Access & Infrastructure", "Commute and mode access", "ACS transport", "direct", "Walk mode share lens.",
+  "pct_commute_wfh", "Access & Infrastructure", "Commute and mode access", "ACS transport", "direct", "Hybrid / remote access lens.",
+  "pct_hh_0_vehicles", "Access & Infrastructure", "Vehicle and housing access", "ACS transport", "direct", "Vehicle dependence / transit need lens.",
+  "vacancy_rate", "Access & Infrastructure", "Vehicle and housing access", "ACS housing stock", "direct", "Housing-market slack lens that also matters for access.",
+  "pct_broadband_subscription", "Access & Infrastructure", "Digital access", "ACS broadband", "direct", "Digital infrastructure lens.",
+  "pct_no_internet_access", "Access & Infrastructure", "Digital access", "ACS broadband", "direct", "Digital exclusion counterpart.",
+  "walkability_index", "Access & Infrastructure", "Walkability and transit baseline", "EPA SLD", "baseline", "Single-vintage baseline promoted because the metric map names the topic but not the KPIs.",
+  "transit_service_density", "Access & Infrastructure", "Walkability and transit baseline", "EPA SLD", "baseline", "Single-vintage baseline promoted because the metric map names the topic but not the KPIs.",
+  "jobs_access_45min_transit", "Access & Infrastructure", "Walkability and transit baseline", "EPA SLD", "baseline", "Single-vintage baseline promoted because the metric map names the topic but not the KPIs.",
+  "jobs_access_45min_auto", "Access & Infrastructure", "Walkability and transit baseline", "EPA SLD", "baseline", "Auto-access complement to the transit accessibility story.",
+  "pct_population_low_access_1_10", "Access & Infrastructure", "Food access baseline", "USDA food access", "baseline", "Single-vintage 2019 baseline promoted because the metric map names the topic but not the KPIs.",
+  "pct_population_low_income_low_access_1_10", "Access & Infrastructure", "Food access baseline", "USDA food access", "baseline", "Single-vintage 2019 baseline promoted because the metric map names the topic but not the KPIs.",
+  "pop_weighted_density_sqmi", "Access & Infrastructure", "Built-form proxy", "ACS built form", "proxy", "Practical proxy for access intensity; primary home is Character.",
+  "gross_density_sqmi", "Access & Infrastructure", "Built-form proxy", "ACS built form", "proxy", "Practical proxy for access intensity; primary home is Character.",
+  "hs_graduation_rate", "Education access", "School performance", "CHR education", "direct", "Only high-coverage school KPI in the live set.",
+  "math_score_index", "Education access", "School performance", "CHR education", "direct", "Live but somewhat sparser than HS graduation.",
+  "reading_score_index", "Education access", "School performance", "CHR education", "direct", "Live but materially sparser than HS graduation.",
+  "air_pollution_pm25", "Physical Environment", "Air pollution", "CHR environment proxy", "proxy", "Lagged CHR air-pollution proxy retained for comparison with direct AQI/EJScreen fields.",
+  "aqi_median", "Physical Environment", "Air pollution", "EPA AQI", "direct", "Direct AQI exposure signal.",
+  "aqi_p90", "Physical Environment", "Air pollution", "EPA AQI", "direct", "Tail-risk AQI signal.",
+  "unhealthy_days", "Physical Environment", "Air pollution", "EPA AQI", "direct", "Air-quality bad-days count.",
+  "ejs_pm25", "Physical Environment", "Air pollution", "EPA EJScreen", "direct", "Environmental burden lens with partial coverage.",
+  "ejs_ozone", "Physical Environment", "Air pollution", "EPA EJScreen", "direct", "Environmental burden lens with partial coverage.",
+  "ejs_diesel_pm", "Physical Environment", "Air pollution", "EPA EJScreen", "direct", "Environmental burden lens with partial coverage.",
+  "ejs_traffic_proximity", "Physical Environment", "Hazard exposure", "EPA EJScreen", "direct", "Traffic-related burden baseline.",
+  "ejs_superfund_proximity", "Physical Environment", "Hazard exposure", "EPA EJScreen", "direct", "Toxic-site burden baseline.",
+  "ejs_rmp_proximity", "Physical Environment", "Hazard exposure", "EPA EJScreen", "direct", "Risk-management-plan site proximity baseline.",
+  "ejs_wastewater_discharge", "Physical Environment", "Hazard exposure", "EPA EJScreen", "direct", "Water-quality burden baseline.",
+  "ejs_drinking_water_noncompliance", "Physical Environment", "Hazard exposure", "EPA EJScreen", "direct", "Drinking-water burden baseline.",
+  "adverse_climate_events", "Physical Environment", "Climate hazard risk", "CHR environment proxy", "proxy", "Lagged CHR climate proxy retained for comparison with FEMA.",
+  "fema_risk_score", "Physical Environment", "Climate hazard risk", "FEMA NRI", "direct", "Composite climate and hazard risk surface.",
+  "fema_eal_score", "Physical Environment", "Climate hazard risk", "FEMA NRI", "direct", "Expected annual loss complement to FEMA risk score."
+)
+
+topic_inventory_notes <- tibble::tribble(
+  ~subject, ~topic, ~status, ~note,
+  "Access & Infrastructure", "Walkability and transit baseline", "live baseline", "Metric map named the topic but did not pin concrete KPIs. This notebook uses `walkability_index`, `transit_service_density`, and `jobs_access_45min_transit` from `gold.transport_built_form_sld` as the first-pass live stand-ins.",
+  "Access & Infrastructure", "Food access baseline", "live baseline", "Metric map named the topic but did not pin concrete KPIs. This notebook uses USDA baseline shares from `gold.food_access_wide` as the first-pass live stand-ins.",
+  "Access & Infrastructure", "Built-form proxy", "proxy", "Metric map points to density derivation via `dim_geo`, but live Gold already exposes recurring built-form density in `gold.transport_built_form_wide`. Keep as a proxy topic, not a primary Livability axis.",
+  "Education access", "K-12 learning quality", "deferred", "Stanford SEDA remains deferred in the metric map and is not part of the live Gold frame.",
+  "Physical Environment", "Air pollution", "mixed direct + proxy", "Use EPA AQI and EJScreen as the direct source family. Keep CHR `air_pollution_pm25` only as a proxy comparison field.",
+  "Physical Environment", "Climate hazard risk", "mixed direct + proxy", "Use FEMA NRI as the direct source family. Keep CHR `adverse_climate_events` only as a proxy comparison field."
+)
+```
+
+## Goal
+
+Build a complete Phase 1 Livability selection pass that is explicit at three levels:
+
+1. **Subject**: does the subject belong in the Livability frame at all?
+2. **Topic**: does the topic survive as a real dimension, collapse to one lead KPI, stay only as a baseline / sensitivity topic, or drop?
+3. **KPI**: which metrics are core, redundant, optional sensitivity tests, or drops?
+
+This notebook uses the same CBSA universe as the Character pass:
+
+- `geo_level = 'cbsa'`
+- `pop_total >= 100000`
+- latest available row by **source family**, not a single blanket year for every table
+
+## Decision rules
+
+These rules are used throughout the notebook and should be read as screens, not rigid auto-decisions:
+
+- **Coverage**: below `90%` coverage is a caution flag, not an automatic drop.
+- **Variance**: below `CV = 0.2` is weak differentiation at CBSA scale.
+- **Correlation**: above `|r| = 0.75` means we should not carry every KPI at full weight inside the same topic.
+- **PCA**: diagnostic only. It tells us whether a topic is really multi-dimensional after the basic screens.
+
+## Phase 1 inventory
+
+Livability is being treated as six subjects in this pass:
+
+- `Affordability`
+- `Health`
+- `Safety`
+- `Access & Infrastructure`
+- `Education access`
+- `Physical Environment`
+
+The goal is completeness, so this notebook explicitly distinguishes:
+
+- recurring direct KPIs
+- live but single-vintage baseline KPIs
+- proxy KPIs
+- deferred topics that still need to be named in the audit
+
+```{r data}
+df <- dbGetQuery(con, "
+with spine as (
+    select
+        geo_id,
+        geo_name,
+        pop_total,
+        year as spine_year
+    from gold.population_demographics
+    where geo_level = 'cbsa'
+      and year = 2024
+      and pop_total >= 100000
+),
+affordability_acs_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as affordability_acs_year,
+            rent_to_income,
+            value_to_income,
+            pct_rent_burden_30plus,
+            pct_rent_burden_50plus,
+            row_number() over (
+                partition by geo_id
+                order by year desc
+            ) as rn
+        from gold.affordability_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+affordability_rpp_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as affordability_rpp_year,
+            rpp_real_pc_income,
+            row_number() over (
+                partition by geo_id
+                order by case when rpp_real_pc_income is not null then year end desc nulls last
+            ) as rn
+        from gold.affordability_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+affordability_chas_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as affordability_chas_year,
+            pct_cost_burdened,
+            pct_severely_cost_burdened,
+            pct_renter_severely_cost_burdened,
+            row_number() over (
+                partition by geo_id
+                order by case
+                    when pct_cost_burdened is not null
+                      or pct_severely_cost_burdened is not null
+                      or pct_renter_severely_cost_burdened is not null
+                    then year
+                end desc nulls last
+            ) as rn
+        from gold.affordability_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+income_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as income_year,
+            pov_rate,
+            row_number() over (
+                partition by geo_id
+                order by year desc
+            ) as rn
+        from gold.economics_income_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+housing_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as housing_year,
+            vacancy_rate,
+            permits_per_1000_housing_units,
+            permits_per_1000_population,
+            permits_share_multifam_units,
+            permits_share_units_5_plus,
+            permits_avg_units_per_bldg,
+            pct_struct_multifam,
+            pct_struct_sf_det,
+            pct_struct_small_mf,
+            pct_struct_mid_mf,
+            pct_struct_large_mf,
+            pct_struct_mobile,
+            row_number() over (
+                partition by geo_id
+                order by year desc
+            ) as rn
+        from gold.housing_core_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+transport_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as transport_year,
+            mean_travel_time,
+            pct_commute_transit,
+            pct_commute_walk,
+            pct_commute_wfh,
+            pct_hh_0_vehicles,
+            pop_weighted_density_sqmi,
+            gross_density_sqmi,
+            row_number() over (
+                partition by geo_id
+                order by year desc
+            ) as rn
+        from gold.transport_built_form_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+social_infra_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as social_infra_year,
+            pct_broadband_subscription,
+            pct_no_internet_access,
+            row_number() over (
+                partition by geo_id
+                order by year desc
+            ) as rn
+        from gold.social_infra_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+health_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as health_year,
+            life_expectancy,
+            premature_death_rate,
+            child_mortality_rate,
+            infant_mortality_rate,
+            drug_overdose_death_rate,
+            pct_uninsured_adults,
+            preventable_hospital_stay_rate,
+            primary_care_ratio,
+            mental_health_provider_ratio,
+            physical_inactivity,
+            adult_obesity,
+            poor_mental_health_days,
+            food_insecurity_rate,
+            child_care_cost_burden_rate,
+            homicide_rate,
+            firearm_fatality_rate,
+            motor_vehicle_crash_rate,
+            hs_graduation_rate,
+            math_score_index,
+            reading_score_index,
+            air_pollution_pm25,
+            adverse_climate_events,
+            row_number() over (
+                partition by geo_id
+                order by year desc
+            ) as rn
+        from gold.health_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+environment_aqi_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as environment_aqi_year,
+            aqi_median,
+            aqi_p90,
+            unhealthy_days,
+            row_number() over (
+                partition by geo_id
+                order by case
+                    when aqi_median is not null
+                      or aqi_p90 is not null
+                      or unhealthy_days is not null
+                    then year
+                end desc nulls last
+            ) as rn
+        from gold.environment_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+environment_ejs_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as environment_ejs_year,
+            ejs_pm25,
+            ejs_ozone,
+            ejs_diesel_pm,
+            ejs_traffic_proximity,
+            ejs_superfund_proximity,
+            ejs_rmp_proximity,
+            ejs_wastewater_discharge,
+            ejs_drinking_water_noncompliance,
+            row_number() over (
+                partition by geo_id
+                order by case
+                    when ejs_pm25 is not null
+                      or ejs_ozone is not null
+                      or ejs_diesel_pm is not null
+                      or ejs_traffic_proximity is not null
+                      or ejs_superfund_proximity is not null
+                      or ejs_rmp_proximity is not null
+                      or ejs_wastewater_discharge is not null
+                      or ejs_drinking_water_noncompliance is not null
+                    then year
+                end desc nulls last
+            ) as rn
+        from gold.environment_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+environment_fema_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as environment_fema_year,
+            fema_risk_score,
+            fema_eal_score,
+            row_number() over (
+                partition by geo_id
+                order by case
+                    when fema_risk_score is not null
+                      or fema_eal_score is not null
+                    then year
+                end desc nulls last
+            ) as rn
+        from gold.environment_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+sld_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as sld_year,
+            walkability_index,
+            transit_service_density,
+            jobs_access_45min_transit,
+            jobs_access_45min_auto,
+            row_number() over (
+                partition by geo_id
+                order by case
+                    when walkability_index is not null
+                      or transit_service_density is not null
+                      or jobs_access_45min_transit is not null
+                      or jobs_access_45min_auto is not null
+                    then year
+                end desc nulls last
+            ) as rn
+        from gold.transport_built_form_sld
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+food_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as food_access_year,
+            pct_population_low_access_1_10,
+            pct_population_low_income_low_access_1_10,
+            row_number() over (
+                partition by geo_id
+                order by case
+                    when pct_population_low_access_1_10 is not null
+                      or pct_population_low_income_low_access_1_10 is not null
+                    then year
+                end desc nulls last
+            ) as rn
+        from gold.food_access_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+)
+select
+    spine.geo_id,
+    spine.geo_name,
+    spine.pop_total,
+    spine.spine_year,
+    affordability_acs.affordability_acs_year,
+    affordability_rpp.affordability_rpp_year,
+    affordability_chas.affordability_chas_year,
+    income.income_year,
+    housing.housing_year,
+    transport.transport_year,
+    social_infra.social_infra_year,
+    health.health_year,
+    environment_aqi.environment_aqi_year,
+    environment_ejs.environment_ejs_year,
+    environment_fema.environment_fema_year,
+    sld.sld_year,
+    food.food_access_year,
+    affordability_acs.rent_to_income,
+    affordability_acs.value_to_income,
+    affordability_rpp.rpp_real_pc_income,
+    affordability_acs.pct_rent_burden_30plus,
+    affordability_acs.pct_rent_burden_50plus,
+    affordability_chas.pct_cost_burdened,
+    affordability_chas.pct_severely_cost_burdened,
+    affordability_chas.pct_renter_severely_cost_burdened,
+    income.pov_rate,
+    housing.permits_per_1000_housing_units,
+    housing.permits_per_1000_population,
+    housing.permits_share_multifam_units,
+    housing.permits_share_units_5_plus,
+    housing.permits_avg_units_per_bldg,
+    housing.pct_struct_multifam,
+    housing.pct_struct_sf_det,
+    housing.pct_struct_small_mf,
+    housing.pct_struct_mid_mf,
+    housing.pct_struct_large_mf,
+    housing.pct_struct_mobile,
+    health.life_expectancy,
+    health.premature_death_rate,
+    health.child_mortality_rate,
+    health.infant_mortality_rate,
+    health.drug_overdose_death_rate,
+    health.pct_uninsured_adults,
+    health.preventable_hospital_stay_rate,
+    health.primary_care_ratio,
+    health.mental_health_provider_ratio,
+    health.physical_inactivity,
+    health.adult_obesity,
+    health.poor_mental_health_days,
+    health.food_insecurity_rate,
+    health.child_care_cost_burden_rate,
+    health.homicide_rate,
+    health.firearm_fatality_rate,
+    health.motor_vehicle_crash_rate,
+    transport.mean_travel_time,
+    transport.pct_commute_transit,
+    transport.pct_commute_walk,
+    transport.pct_commute_wfh,
+    transport.pct_hh_0_vehicles,
+    housing.vacancy_rate,
+    social_infra.pct_broadband_subscription,
+    social_infra.pct_no_internet_access,
+    sld.walkability_index,
+    sld.transit_service_density,
+    sld.jobs_access_45min_transit,
+    sld.jobs_access_45min_auto,
+    food.pct_population_low_access_1_10,
+    food.pct_population_low_income_low_access_1_10,
+    transport.pop_weighted_density_sqmi,
+    transport.gross_density_sqmi,
+    health.hs_graduation_rate,
+    health.math_score_index,
+    health.reading_score_index,
+    health.air_pollution_pm25,
+    environment_aqi.aqi_median,
+    environment_aqi.aqi_p90,
+    environment_aqi.unhealthy_days,
+    environment_ejs.ejs_pm25,
+    environment_ejs.ejs_ozone,
+    environment_ejs.ejs_diesel_pm,
+    environment_ejs.ejs_traffic_proximity,
+    environment_ejs.ejs_superfund_proximity,
+    environment_ejs.ejs_rmp_proximity,
+    environment_ejs.ejs_wastewater_discharge,
+    environment_ejs.ejs_drinking_water_noncompliance,
+    health.adverse_climate_events,
+    environment_fema.fema_risk_score,
+    environment_fema.fema_eal_score
+from spine
+left join affordability_acs_latest affordability_acs
+    on spine.geo_id = affordability_acs.geo_id
+left join affordability_rpp_latest affordability_rpp
+    on spine.geo_id = affordability_rpp.geo_id
+left join affordability_chas_latest affordability_chas
+    on spine.geo_id = affordability_chas.geo_id
+left join income_latest income
+    on spine.geo_id = income.geo_id
+left join housing_latest housing
+    on spine.geo_id = housing.geo_id
+left join transport_latest transport
+    on spine.geo_id = transport.geo_id
+left join social_infra_latest social_infra
+    on spine.geo_id = social_infra.geo_id
+left join health_latest health
+    on spine.geo_id = health.geo_id
+left join environment_aqi_latest environment_aqi
+    on spine.geo_id = environment_aqi.geo_id
+left join environment_ejs_latest environment_ejs
+    on spine.geo_id = environment_ejs.geo_id
+left join environment_fema_latest environment_fema
+    on spine.geo_id = environment_fema.geo_id
+left join sld_latest sld
+    on spine.geo_id = sld.geo_id
+left join food_latest food
+    on spine.geo_id = food.geo_id
+order by spine.pop_total desc
+")
+
+metrics <- metric_catalog$metric
+
+coverage_tbl <- tibble(
+  metric = metrics,
+  non_null_cbsas = sapply(metrics, \(m) sum(!is.na(df[[m]]))),
+  coverage_pct = non_null_cbsas / nrow(df)
+) |>
+  left_join(metric_catalog, by = "metric") |>
+  mutate(metric_label = unname(metric_labels[metric])) |>
+  arrange(subject, topic, desc(coverage_pct), metric)
+
+source_family_tbl <- tibble::tribble(
+  ~source_family, ~latest_year, ~coverage_metric, ~coverage_n, ~note,
+  "ACS affordability", max(df$affordability_acs_year, na.rm = TRUE), "rent_to_income", sum(!is.na(df$rent_to_income)), "Recurring affordability levels and ACS rent-burden fields.",
+  "BEA RPP", max(df$affordability_rpp_year, na.rm = TRUE), "rpp_real_pc_income", sum(!is.na(df$rpp_real_pc_income)), "Partial CBSA coverage, but still usable as contextual normalization.",
+  "HUD CHAS", max(df$affordability_chas_year, na.rm = TRUE), "pct_cost_burdened", sum(!is.na(df$pct_cost_burdened)), "Single-vintage burden fields; contextual rather than recurring.",
+  "ACS income", max(df$income_year, na.rm = TRUE), "pov_rate", sum(!is.na(df$pov_rate)), "Affordability context family.",
+  "BPS permits / ACS housing", max(df$housing_year, na.rm = TRUE), "permits_per_1000_housing_units", sum(!is.na(df$permits_per_1000_housing_units)), "Supply and structure mix family.",
+  "ACS transport / built form", max(df$transport_year, na.rm = TRUE), "mean_travel_time", sum(!is.na(df$mean_travel_time)), "Recurring commute, vehicle, and density family.",
+  "ACS broadband", max(df$social_infra_year, na.rm = TRUE), "pct_broadband_subscription", sum(!is.na(df$pct_broadband_subscription)), "Recurring digital-access family.",
+  "CHR health", max(df$health_year, na.rm = TRUE), "life_expectancy", sum(!is.na(df$life_expectancy)), "Health, safety, education, and proxy environment family.",
+  "EPA AQI", max(df$environment_aqi_year, na.rm = TRUE), "aqi_median", sum(!is.na(df$aqi_median)), "Direct AQI family with monitored-geography limits.",
+  "EPA EJScreen", max(df$environment_ejs_year, na.rm = TRUE), "ejs_pm25", sum(!is.na(df$ejs_pm25)), "Direct environmental-burden family with partial coverage.",
+  "FEMA NRI", max(df$environment_fema_year, na.rm = TRUE), "fema_risk_score", sum(!is.na(df$fema_risk_score)), "Direct climate-risk family with partial coverage.",
+  "EPA SLD", max(df$sld_year, na.rm = TRUE), "walkability_index", sum(!is.na(df$walkability_index)), "Single-vintage 2021 baseline; still strong enough to test as a topic.",
+  "USDA food access", max(df$food_access_year, na.rm = TRUE), "pct_population_low_access_1_10", sum(!is.na(df$pct_population_low_access_1_10)), "Single-vintage 2019 baseline; still strong enough to test as a topic."
+) |>
+  mutate(coverage_pct = coverage_n / nrow(df))
+
+variance_tbl <- tibble(metric = metrics) |>
+  mutate(
+    n = sapply(metric, \(m) sum(!is.na(df[[m]]))),
+    mean = sapply(metric, \(m) mean(df[[m]], na.rm = TRUE)),
+    sd = sapply(metric, \(m) sd(df[[m]], na.rm = TRUE)),
+    cv = sd / abs(mean),
+    iqr = sapply(metric, \(m) IQR(df[[m]], na.rm = TRUE))
+  ) |>
+  left_join(metric_catalog, by = "metric") |>
+  left_join(coverage_tbl |> select(metric, coverage_pct), by = "metric") |>
+  mutate(metric_label = unname(metric_labels[metric])) |>
+  arrange(desc(cv))
+
+topic_scorecard_tbl <- variance_tbl |>
+  group_by(subject, topic) |>
+  summarise(
+    metric_count = n(),
+    avg_coverage_pct = mean(coverage_pct),
+    direct_metrics = sum(role == "direct"),
+    baseline_metrics = sum(role == "baseline"),
+    proxy_metrics = sum(role == "proxy"),
+    high_variance_metrics = sum(cv >= 0.2, na.rm = TRUE),
+    top_kpis = paste(metric_label[order(cv, decreasing = TRUE)][seq_len(min(3, n()))], collapse = "; "),
+    .groups = "drop"
+  ) |>
+  mutate(
+    topic_read = case_when(
+      high_variance_metrics == 0 ~ "Weak topic at CBSA scale",
+      high_variance_metrics == 1 ~ "Keep topic, likely with one lead KPI",
+      TRUE ~ "Keep topic, compare KPIs inside topic"
+    )
+  ) |>
+  arrange(subject, topic)
+
+surviving <- variance_tbl |>
+  filter(cv >= 0.2) |>
+  pull(metric)
+
+df_cor <- df |>
+  select(all_of(surviving)) |>
+  drop_na()
+
+cor_matrix <- cor(df_cor, use = "pairwise.complete.obs")
+high_cor <- which(abs(cor_matrix) > 0.75 & upper.tri(cor_matrix), arr.ind = TRUE)
+
+high_cor_tbl <- if (nrow(high_cor) > 0) {
+  tibble(
+    metric_a = rownames(cor_matrix)[high_cor[, 1]],
+    metric_b = colnames(cor_matrix)[high_cor[, 2]],
+    correlation = cor_matrix[high_cor]
+  ) |>
+    mutate(
+      metric_a_label = unname(metric_labels[metric_a]),
+      metric_b_label = unname(metric_labels[metric_b])
+    ) |>
+    left_join(metric_catalog |> rename(metric_a = metric, subject_a = subject, topic_a = topic), by = "metric_a") |>
+    left_join(metric_catalog |> rename(metric_b = metric, subject_b = subject, topic_b = topic), by = "metric_b") |>
+    arrange(desc(abs(correlation)))
+} else {
+  tibble(
+    metric_a = character(),
+    metric_b = character(),
+    correlation = double(),
+    metric_a_label = character(),
+    metric_b_label = character(),
+    subject_a = character(),
+    topic_a = character(),
+    subject_b = character(),
+    topic_b = character()
+  )
+}
+
+topic_pca_tbl <- map_dfr(split(metric_catalog, metric_catalog$topic), \(topic_df) {
+  topic_metrics <- intersect(topic_df$metric, metrics)
+  topic_complete <- df |>
+    select(all_of(topic_metrics)) |>
+    drop_na()
+
+  if (length(topic_metrics) < 2) {
+    return(tibble(
+      subject = topic_df$subject[[1]],
+      topic = topic_df$topic[[1]],
+      surviving_metrics = length(topic_metrics),
+      complete_rows = nrow(topic_complete),
+      components_80 = NA_integer_,
+      topic_dimensionality = "Single-metric topic"
+    ))
+  }
+
+  if (nrow(topic_complete) < 50) {
+    return(tibble(
+      subject = topic_df$subject[[1]],
+      topic = topic_df$topic[[1]],
+      surviving_metrics = length(topic_metrics),
+      complete_rows = nrow(topic_complete),
+      components_80 = NA_integer_,
+      topic_dimensionality = "Too sparse for stable topic PCA"
+    ))
+  }
+
+  topic_pca <- prcomp(scale(topic_complete), center = FALSE, scale. = FALSE)
+  topic_components_80 <- which(cumsum((topic_pca$sdev^2) / sum(topic_pca$sdev^2)) >= 0.8)[1]
+
+  tibble(
+    subject = topic_df$subject[[1]],
+    topic = topic_df$topic[[1]],
+    surviving_metrics = length(topic_metrics),
+    complete_rows = nrow(topic_complete),
+    components_80 = topic_components_80,
+    topic_dimensionality = case_when(
+      topic_components_80 <= 1 ~ "Mostly one dominant KPI story",
+      topic_components_80 == 2 ~ "Has two meaningful sub-dimensions",
+      TRUE ~ "Multi-dimensional topic"
+    )
+  )
+})
+
+cor_flag_tbl <- bind_rows(
+  high_cor_tbl |> transmute(metric = metric_a, correlation = abs(correlation)),
+  high_cor_tbl |> transmute(metric = metric_b, correlation = abs(correlation))
+) |>
+  group_by(metric) |>
+  summarise(max_abs_correlation = max(correlation), .groups = "drop")
+
+kpi_decision_tbl <- variance_tbl |>
+  left_join(cor_flag_tbl, by = "metric") |>
+  mutate(
+    max_abs_correlation = coalesce(max_abs_correlation, 0),
+    recommendation = case_when(
+      metric == "pct_rent_burden_30plus" ~ "Core candidate",
+      role == "baseline" ~ "Optional sensitivity",
+      role == "proxy" ~ "Optional sensitivity",
+      coverage_pct < 0.75 ~ "Drop",
+      cv < 0.2 ~ "Drop",
+      max_abs_correlation >= 0.9 ~ "Redundant - keep one lead KPI",
+      max_abs_correlation >= 0.75 ~ "Keep, but de-duplicate",
+      coverage_pct < 0.9 ~ "Optional sensitivity",
+      TRUE ~ "Core candidate"
+    )
+  ) |>
+  arrange(subject, topic, desc(cv))
+
+topic_decision_tbl <- kpi_decision_tbl |>
+  group_by(subject, topic) |>
+  summarise(
+    avg_coverage_pct = mean(coverage_pct),
+    core_metrics = sum(recommendation == "Core candidate"),
+    redundant_metrics = sum(recommendation %in% c("Redundant - keep one lead KPI", "Keep, but de-duplicate")),
+    optional_metrics = sum(recommendation == "Optional sensitivity"),
+    dropped_metrics = sum(recommendation == "Drop"),
+    lead_kpis = paste(metric_label[order(cv, decreasing = TRUE)][seq_len(min(3, n()))], collapse = "; "),
+    .groups = "drop"
+  ) |>
+  left_join(topic_pca_tbl, by = c("subject", "topic")) |>
+  mutate(
+    topic_decision = case_when(
+      core_metrics == 0 & optional_metrics == 0 & redundant_metrics == 0 ~ "Drop",
+      core_metrics == 0 & optional_metrics > 0 ~ "Sensitivity-only topic",
+      core_metrics == 1 & redundant_metrics == 0 ~ "Keep as one-KPI topic",
+      components_80 <= 1 ~ "Collapse to one lead KPI",
+      TRUE ~ "Keep as multi-KPI topic"
+    )
+  ) |>
+  arrange(subject, topic)
+
+subject_decision_tbl <- topic_decision_tbl |>
+  group_by(subject) |>
+  summarise(
+    topic_count = n(),
+    kept_topics = sum(topic_decision != "Drop"),
+    strong_topics = sum(topic_decision %in% c("Keep as one-KPI topic", "Collapse to one lead KPI", "Keep as multi-KPI topic")),
+    avg_coverage_pct = mean(avg_coverage_pct, na.rm = TRUE),
+    subject_decision = case_when(
+      strong_topics == 0 ~ "Drop subject from Phase 1 core set",
+      strong_topics == 1 ~ "Keep subject, but it is thin",
+      TRUE ~ "Keep subject in Livability"
+    ),
+    .groups = "drop"
+  ) |>
+  arrange(subject)
+
+df_pca <- df |>
+  select(all_of(surviving)) |>
+  drop_na() |>
+  scale()
+
+pca_result <- prcomp(df_pca, center = FALSE, scale. = FALSE)
+component_count_80 <- which(cumsum((pca_result$sdev^2) / sum(pca_result$sdev^2)) >= 0.8)[1]
+```
+
+## Source-family audit
+
+```{r source-family-audit}
+source_family_tbl |>
+  transmute(
+    `Source family` = source_family,
+    `Latest year used` = latest_year,
+    `Representative metric` = unname(metric_labels[coverage_metric]),
+    `CBSAs with data` = coverage_n,
+    `Coverage` = percent(coverage_pct, accuracy = 0.1),
+    Note = note
+  ) |>
+  kable()
+```
+
+```{r inventory-audit}
+topic_inventory_notes |>
+  kable()
+```
+
+**Read of the audit**
+
+- The recurring Livability frame is strongest in `Affordability`, `Access & Infrastructure`, and the main `CHR health` surface.
+- `RPP`, `AQI`, `EJScreen`, and `FEMA` are usable, but each carries real coverage limits at CBSA scale.
+- `HUD CHAS`, `EPA SLD`, and `USDA food access` are analytically useful only as baseline or sensitivity families because they are single-vintage rather than recurring series.
+- `K-12 learning quality` remains deferred and is not silently substituted here.
+
+## Subject and topic inventory
+
+```{r subject-topic-inventory}
+metric_catalog |>
+  count(subject, topic, role, name = "metric_count") |>
+  arrange(subject, topic, role) |>
+  kable()
+```
+
+## Coverage by topic
+
+```{r coverage-summary}
+subject_topic_coverage_tbl <- coverage_tbl |>
+  group_by(subject, topic) |>
+  summarise(
+    metric_count = n(),
+    min_coverage_pct = min(coverage_pct),
+    avg_coverage_pct = mean(coverage_pct),
+    .groups = "drop"
+  ) |>
+  arrange(subject, topic)
+
+subject_topic_coverage_tbl |>
+  mutate(
+    min_coverage_pct = percent(min_coverage_pct, accuracy = 0.1),
+    avg_coverage_pct = percent(avg_coverage_pct, accuracy = 0.1)
+  ) |>
+  kable()
+```
+
+```{r coverage-plot}
+subject_topic_coverage_tbl |>
+  mutate(topic = reorder(topic, avg_coverage_pct)) |>
+  ggplot(aes(x = avg_coverage_pct, y = topic, fill = subject)) +
+  geom_col(alpha = 0.9) +
+  geom_vline(
+    xintercept = 0.9,
+    linetype = "22",
+    color = visual_neutral_palette()$text_muted,
+    linewidth = 0.5
+  ) +
+  scale_x_continuous(labels = label_percent()) +
+  labs(
+    title = "Coverage by Livability topic",
+    subtitle = "Average KPI coverage within each topic | Dashed line = 90% caution threshold",
+    x = "Average coverage",
+    y = NULL,
+    fill = NULL,
+    caption = build_chart_notes(
+      source = "ACS, HUD CHAS, BPS, CHR, EPA AQI/EJScreen/SLD, FEMA, USDA",
+      vintage = "Latest available by source family"
+    )
+  ) +
+  visual_theme()
+```
+
+## 1. KPI variance pass
+
+```{r variance-summary}
+variance_tbl |>
+  transmute(
+    subject,
+    topic,
+    metric = metric_label,
+    role,
+    coverage = percent(coverage_pct, accuracy = 0.1),
+    cv = round(cv, 3),
+    iqr = round(iqr, 3)
+  ) |>
+  arrange(subject, topic, desc(cv)) |>
+  kable()
+```
+
+```{r variance-plot, fig.height=18}
+variance_tbl |>
+  mutate(metric_label = reorder(metric_label, cv)) |>
+  ggplot(aes(x = cv, y = metric_label, fill = subject)) +
+  geom_col(alpha = 0.85) +
+  geom_vline(
+    xintercept = 0.2,
+    linetype = "22",
+    color = visual_neutral_palette()$text_muted,
+    linewidth = 0.5
+  ) +
+  labs(
+    title = "Livability metrics ranked by coefficient of variation",
+    subtitle = "Higher CV means a metric separates CBSAs more strongly",
+    x = "Coefficient of variation (SD / mean)",
+    y = NULL,
+    fill = NULL,
+    caption = build_chart_notes(
+      source = "ACS, HUD CHAS, BPS, CHR, EPA AQI/EJScreen/SLD, FEMA, USDA",
+      vintage = "Latest available by source family"
+    )
+  ) +
+  visual_theme()
+```
+
+## 2. Topic scorecard
+
+```{r topic-scorecard}
+topic_scorecard_tbl |>
+  mutate(
+    avg_coverage_pct = percent(avg_coverage_pct, accuracy = 0.1)
+  ) |>
+  kable()
+```
+
+## 3. Correlation pass
+
+```{r correlation-summary}
+high_cor_tbl |>
+  transmute(
+    `Subject / topic A` = paste(subject_a, topic_a, sep = " / "),
+    `Metric A` = metric_a_label,
+    `Subject / topic B` = paste(subject_b, topic_b, sep = " / "),
+    `Metric B` = metric_b_label,
+    `r` = round(correlation, 2)
+  ) |>
+  kable()
+```
+
+```{r correlation-plot}
+high_cor_tbl |>
+  slice_head(n = 20) |>
+  mutate(
+    pair = paste(metric_a_label, metric_b_label, sep = " vs "),
+    pair = reorder(pair, abs(correlation))
+  ) |>
+  ggplot(aes(x = correlation, y = pair, fill = correlation > 0)) +
+  geom_col(alpha = 0.85) +
+  scale_fill_manual(
+    values = c(
+      "TRUE" = visual_palette_defaults()$diverging$better,
+      "FALSE" = visual_palette_defaults()$diverging$worse
+    ),
+    guide = "none"
+  ) +
+  labs(
+    title = "Strongest Livability correlation pairs",
+    subtitle = "Only pairs with |r| > 0.75 are shown",
+    x = "Correlation",
+    y = NULL,
+    caption = build_chart_notes(
+      source = "Latest-source-family Livability frame",
+      vintage = "Mixed vintages by source family"
+    )
+  ) +
+  visual_theme()
+```
+
+## 4. PCA diagnostic
+
+```{r pca-scree}
+tibble(
+  component = seq_along(pca_result$sdev),
+  variance_explained = (pca_result$sdev^2) / sum(pca_result$sdev^2)
+) |>
+  mutate(cumulative = cumsum(variance_explained)) |>
+  ggplot(aes(x = component, y = variance_explained)) +
+  geom_col(fill = visual_palette_defaults()$highlight$selection, alpha = 0.85) +
+  geom_line(
+    aes(y = cumulative),
+    color = visual_neutral_palette()$text_muted,
+    linewidth = 0.6
+  ) +
+  geom_point(
+    aes(y = cumulative),
+    color = visual_neutral_palette()$text_muted,
+    size = 2
+  ) +
+  scale_y_continuous(labels = label_percent()) +
+  labs(
+    title = "PCA scree plot - Livability metrics",
+    subtitle = "Bars = variance per component | Line = cumulative variance explained",
+    x = "Principal component",
+    y = "Variance explained",
+    caption = build_chart_notes(
+      source = "Latest-source-family Livability frame",
+      vintage = "Mixed vintages by source family"
+    )
+  ) +
+  visual_theme()
+```
+
+```{r topic-pca}
+topic_pca_tbl |>
+  arrange(subject, topic) |>
+  kable()
+```
+
+## 5. Recommendations by subject, topic, and KPI
+
+```{r decision-tables}
+subject_decision_tbl |>
+  mutate(avg_coverage_pct = percent(avg_coverage_pct, accuracy = 0.1)) |>
+  kable()
+
+topic_decision_tbl |>
+  mutate(avg_coverage_pct = percent(avg_coverage_pct, accuracy = 0.1)) |>
+  kable()
+```
+
+```{r decisions, results='asis'}
+for (subject_name in unique(metric_catalog$subject)) {
+  subject_row <- subject_decision_tbl |>
+    filter(subject == subject_name)
+
+  cat(glue("<h3>{subject_name}</h3>\n"))
+  cat(glue("<p><strong>Subject decision:</strong> {subject_row$subject_decision}<br><strong>Coverage read:</strong> average topic coverage = {percent(subject_row$avg_coverage_pct, accuracy = 0.1)}</p>\n"))
+
+  subject_topics <- topic_decision_tbl |>
+    filter(subject == subject_name)
+
+  for (i in seq_len(nrow(subject_topics))) {
+    topic_row <- subject_topics[i, ]
+    topic_metrics <- kpi_decision_tbl |>
+      filter(subject == subject_name, topic == topic_row$topic)
+
+    core_kpis <- topic_metrics |>
+      filter(recommendation == "Core candidate") |>
+      pull(metric_label)
+
+    redundant_kpis <- topic_metrics |>
+      filter(recommendation %in% c("Redundant - keep one lead KPI", "Keep, but de-duplicate")) |>
+      pull(metric_label)
+
+    optional_kpis <- topic_metrics |>
+      filter(recommendation == "Optional sensitivity") |>
+      pull(metric_label)
+
+    drop_kpis <- topic_metrics |>
+      filter(recommendation == "Drop") |>
+      pull(metric_label)
+
+    cat(glue("<h4>{topic_row$topic}</h4>\n"))
+    cat(glue("<p><strong>Topic decision:</strong> {topic_row$topic_decision}<br><strong>Lead KPIs by variance:</strong> {topic_row$lead_kpis}<br><strong>Topic evidence:</strong> coverage = {percent(topic_row$avg_coverage_pct, accuracy = 0.1)}; high-variance metrics = {topic_scorecard_tbl$high_variance_metrics[match(topic_row$topic, topic_scorecard_tbl$topic)]}; topic PCA read = {topic_row$topic_dimensionality}</p>\n"))
+
+    if (length(core_kpis) > 0) {
+      cat("<p><strong>Core KPIs:</strong></p>\n<ul>\n")
+      for (metric_name in core_kpis) {
+        cat(glue("<li>{metric_name}</li>\n"))
+      }
+      cat("</ul>\n")
+    }
+
+    if (length(redundant_kpis) > 0) {
+      cat("<p><strong>Redundant / consolidate KPIs:</strong></p>\n<ul>\n")
+      for (metric_name in redundant_kpis) {
+        cat(glue("<li>{metric_name}</li>\n"))
+      }
+      cat("</ul>\n")
+    }
+
+    if (length(optional_kpis) > 0) {
+      cat("<p><strong>Optional sensitivity / baseline KPIs:</strong></p>\n<ul>\n")
+      for (metric_name in optional_kpis) {
+        cat(glue("<li>{metric_name}</li>\n"))
+      }
+      cat("</ul>\n")
+    }
+
+    if (length(drop_kpis) > 0) {
+      cat("<p><strong>Drop from default Phase 1 set:</strong></p>\n<ul>\n")
+      for (metric_name in drop_kpis) {
+        cat(glue("<li>{metric_name}</li>\n"))
+      }
+      cat("</ul>\n")
+    }
+  }
+}
+
+cat(glue("<p><strong>PCA read:</strong> <code>{component_count_80}</code> components explain at least 80% of the variance in the surviving Livability set.</p>\n"))
+cat("<p><strong>Working interpretation:</strong></p>\n<ul>\n")
+cat("<li>Livability is not one thing. The audit shows a stable recurring core, a real but partial environment family, and a set of useful baseline-only access topics.</li>\n")
+cat("<li>The main reduction problem is redundancy inside affordability, housing supply, structure mix, education, and air-pollution families.</li>\n")
+cat("<li>The main caution problem is coverage and vintage mismatch, especially for RPP, AQI/EJScreen/FEMA, SLD, food access, and the more specialized CHR mortality and education metrics.</li>\n")
+cat("</ul>\n")
+```
+
+## Working read
+
+This Livability pass should be read in order:
+
+1. decide whether the **subject** is worth keeping in the frame
+2. decide whether the **topic** is recurring, thin, redundant, baseline-only, or weak
+3. decide which **KPI** earns the default slot once we account for coverage, variance, and overlap
+
+That matters here because Livability is more uneven than Character:
+
+- `Affordability` is deep and recurring, but it is also the most redundancy-prone subject.
+- `Health` is broad and useful, but some mortality / access sub-KPIs are clearly thinner than the headline measures.
+- `Safety` is analytically real, but it is mostly a one-topic subject right now.
+- `Access & Infrastructure` has a strong recurring ACS core plus useful single-vintage baseline topics that should not be over-weighted.
+- `Education access` is live but thin until better K-12 quality data exists.
+- `Physical Environment` belongs in the frame, but it has to be handled carefully because direct source coverage is partial and the CHR fallback fields are only proxies.
+
+**Update `exploration/intelligence_framework/docs/metric_selections.md` after reviewing this notebook output.**
+
+```{r cleanup, include=FALSE}
+dbDisconnect(con)
+```

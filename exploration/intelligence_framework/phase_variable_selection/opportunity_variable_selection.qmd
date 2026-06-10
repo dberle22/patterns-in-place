@@ -1,0 +1,1594 @@
+---
+title: "Variable Selection - Opportunity"
+subtitle: "Subject, topic, and KPI diagnostic for Opportunity frame inputs"
+date: today
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 3
+    code-fold: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE
+)
+
+options(
+  dplyr.summarise.inform = FALSE,
+  knitr.kable.NA = ""
+)
+
+library(here)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales)
+library(glue)
+library(purrr)
+library(stringr)
+library(knitr)
+library(ggrepel)
+library(tibble)
+
+source(here("exploration/intelligence_framework/R/utils.R"))
+con <- db_connect()
+```
+
+```{r catalog, include=FALSE}
+industry_family_labels <- c(
+  ag_mining = "Ag / mining",
+  construction = "Construction",
+  manufacturing = "Manufacturing",
+  wholesale = "Wholesale",
+  retail = "Retail",
+  transport_util = "Transport / utilities",
+  information = "Information",
+  finance_real = "Finance / real estate",
+  professional = "Professional services",
+  educ_health = "Education / health",
+  arts_accomm_food = "Arts / accommodations / food",
+  other_services = "Other services"
+)
+
+gdp_family_labels <- c(
+  natural_resources = "Natural resources",
+  manufacturing = "Manufacturing",
+  construction = "Construction",
+  trade = "Trade",
+  transportation = "Transportation",
+  information = "Information",
+  fire = "Finance / insurance / real estate",
+  professional = "Professional services",
+  edu_health = "Education / health",
+  leisure = "Leisure / hospitality",
+  gov = "Government"
+)
+
+metric_labels <- c(
+  income_pc_growth_1yr = "Income per-capita growth (1yr)",
+  income_pc_growth_5yr = "Income per-capita growth (5yr)",
+  income_pc_cagr_5yr = "Income per-capita CAGR (5yr)",
+  qcew_total_covered_avg_wkly_wage = "Covered weekly wage",
+  qcew_private_avg_wkly_wage = "Private weekly wage",
+  pct_unemployment_rate = "Unemployment rate",
+  unemployment_rate_change_1yr = "Unemployment-rate change (1yr)",
+  lfpr = "Labor-force participation rate",
+  lfpr_growth_5yr = "LFPR growth (5yr)",
+  pov_rate = "Poverty rate",
+  pov_rate_change_1yr = "Poverty-rate change (1yr)",
+  pov_rate_change_5yr = "Poverty-rate change (5yr)",
+  gini_index = "Gini index",
+  economic_connectedness = "Economic connectedness",
+  hpi_yoy_pct = "HPI YoY growth",
+  hpi_5yr_pct = "HPI growth (5yr)",
+  hpi_10yr_pct = "HPI growth (10yr)",
+  zori_annual_avg = "ZORI annual average",
+  zori_annual_avg_yoy_pct = "ZORI YoY growth",
+  zori_december = "ZORI December level",
+  zori_december_yoy_pct = "ZORI December YoY growth",
+  pop_growth_1yr = "Population growth (1yr)",
+  pop_growth_5yr = "Population growth (5yr)",
+  pop_cagr_5yr = "Population CAGR (5yr)",
+  irs_net_migration_rate = "IRS net migration rate",
+  irs_net_agi = "IRS net AGI",
+  irs_inflow_agi = "IRS inflow AGI",
+  irs_outflow_agi = "IRS outflow AGI",
+  permits_per_1000_housing_units = "Permits per 1k housing units",
+  permits_per_1000_population = "Permits per 1k population",
+  permits_share_multifam_units = "Multifamily permit share",
+  permits_share_units_5_plus = "5+ unit permit share",
+  permits_avg_units_per_bldg = "Average units per building",
+  real_gdp_growth_5yr = "Real GDP growth (5yr)",
+  real_gdp_cagr_5yr = "Real GDP CAGR (5yr)",
+  real_gdp_pc_growth_5yr = "Real GDP per-capita growth (5yr)",
+  productivity_growth_5yr = "Productivity growth (5yr)",
+  industry_concentration_hhi = "Industry concentration HHI",
+  bfs_business_applications = "Business applications",
+  bfs_business_applications_yoy_pct = "Business applications YoY",
+  bfs_business_application_rate_per_1000_establishments = "Business applications per 1k establishments",
+  bfs_business_applications_per_1000_residents = "Business applications per 1k residents",
+  cbp_total_estabs = "Total establishments",
+  cbp_estabs_per_1000_residents = "Establishments per 1k residents",
+  pct_ba_plus = "BA+ share",
+  pct_ba_plus_change_5yr = "BA+ share change (5yr)"
+)
+
+metric_labels <- c(
+  metric_labels,
+  setNames(
+    paste0(unname(industry_family_labels), " employment share"),
+    paste0("pct_qcew_private_emp_", names(industry_family_labels))
+  ),
+  setNames(
+    paste0(unname(gdp_family_labels), " GDP share"),
+    paste0("pct_real_gdp_", names(gdp_family_labels))
+  ),
+  setNames(
+    paste0(unname(industry_family_labels), " weekly wage"),
+    paste0("qcew_private_avg_wkly_wage_", names(industry_family_labels))
+  ),
+  setNames(
+    paste0(unname(industry_family_labels), " establishment share"),
+    paste0("pct_cbp_estabs_", names(industry_family_labels))
+  ),
+  setNames(
+    paste0(unname(industry_family_labels), " location quotient"),
+    paste0("lq_", names(industry_family_labels))
+  )
+)
+
+resident_topics <- tribble(
+  ~metric, ~subject, ~topic, ~source_family, ~role, ~note,
+  "income_pc_growth_1yr", "Resident Opportunity", "Income growth", "BEA CAINC growth", "direct", "Short-run resident momentum.",
+  "income_pc_growth_5yr", "Resident Opportunity", "Income growth", "BEA CAINC growth", "direct", "Structural resident momentum.",
+  "income_pc_cagr_5yr", "Resident Opportunity", "Income growth", "BEA CAINC growth", "direct", "Alternative scaling of 5-year income growth.",
+  "qcew_total_covered_avg_wkly_wage", "Resident Opportunity", "Wage levels", "QCEW wages", "direct", "Broad employer-side wage level.",
+  "qcew_private_avg_wkly_wage", "Resident Opportunity", "Wage levels", "QCEW wages", "direct", "Private-sector wage level.",
+  "pct_unemployment_rate", "Resident Opportunity", "Labor market tightness", "ACS labor", "direct", "Headline unemployment rate.",
+  "unemployment_rate_change_1yr", "Resident Opportunity", "Labor market tightness", "ACS labor", "direct", "Short-run labor cooling / tightening.",
+  "lfpr", "Resident Opportunity", "Labor market tightness", "ACS labor", "direct", "Labor-force attachment level.",
+  "lfpr_growth_5yr", "Resident Opportunity", "Labor market tightness", "ACS labor", "direct", "Longer-run labor-force momentum.",
+  "pov_rate", "Resident Opportunity", "Poverty and inclusion", "ACS income distribution", "direct", "Current resident distress level.",
+  "pov_rate_change_1yr", "Resident Opportunity", "Poverty and inclusion", "ACS income distribution", "direct", "Short-run poverty shift.",
+  "pov_rate_change_5yr", "Resident Opportunity", "Poverty and inclusion", "ACS income distribution", "direct", "Long-run poverty shift.",
+  "gini_index", "Resident Opportunity", "Poverty and inclusion", "ACS income distribution", "direct", "Inclusive-vs-concentrated growth check.",
+  "economic_connectedness", "Resident Opportunity", "Intergenerational mobility proxy", "Social Capital Atlas", "proxy", "Opportunity Atlas is still deferred; use as the live mobility proxy."
+)
+
+market_topics <- tribble(
+  ~metric, ~subject, ~topic, ~source_family, ~role, ~note,
+  "hpi_yoy_pct", "Market / Investor Opportunity", "Home price appreciation", "FHFA HPI", "direct", "Short-run home price momentum.",
+  "hpi_5yr_pct", "Market / Investor Opportunity", "Home price appreciation", "FHFA HPI", "direct", "Structural housing-market momentum.",
+  "hpi_10yr_pct", "Market / Investor Opportunity", "Home price appreciation", "FHFA HPI", "optional", "Longer-run housing-cycle context.",
+  "zori_annual_avg", "Market / Investor Opportunity", "Rent growth", "Zillow ZORI", "baseline", "Rent level context; not a pure momentum KPI.",
+  "zori_annual_avg_yoy_pct", "Market / Investor Opportunity", "Rent growth", "Zillow ZORI", "direct", "Recurring annual rent momentum.",
+  "zori_december", "Market / Investor Opportunity", "Rent growth", "Zillow ZORI", "baseline", "Year-end rent level context.",
+  "zori_december_yoy_pct", "Market / Investor Opportunity", "Rent growth", "Zillow ZORI", "optional", "Year-end momentum variant.",
+  "pop_growth_1yr", "Market / Investor Opportunity", "Population growth", "ACS population", "direct", "Short-run population momentum.",
+  "pop_growth_5yr", "Market / Investor Opportunity", "Population growth", "ACS population", "direct", "Structural growth signal.",
+  "pop_cagr_5yr", "Market / Investor Opportunity", "Population growth", "ACS population", "direct", "Alternative scaling of 5-year population growth.",
+  "irs_net_migration_rate", "Market / Investor Opportunity", "Migration and wealth flows", "IRS migration", "direct", "Demand-side migration pressure.",
+  "irs_net_agi", "Market / Investor Opportunity", "Migration and wealth flows", "IRS migration", "direct", "Wealth-flow signal.",
+  "irs_inflow_agi", "Market / Investor Opportunity", "Migration and wealth flows", "IRS migration", "direct", "Gross in-migration wealth.",
+  "irs_outflow_agi", "Market / Investor Opportunity", "Migration and wealth flows", "IRS migration", "direct", "Gross out-migration wealth.",
+  "permits_per_1000_housing_units", "Market / Investor Opportunity", "Permit activity", "BPS permits", "direct", "Forward supply intensity.",
+  "permits_per_1000_population", "Market / Investor Opportunity", "Permit activity", "BPS permits", "direct", "Alternative permit denominator.",
+  "permits_share_multifam_units", "Market / Investor Opportunity", "Permit activity", "BPS permits", "direct", "Supply composition toward multifamily.",
+  "permits_share_units_5_plus", "Market / Investor Opportunity", "Permit activity", "BPS permits", "direct", "Higher-density supply composition.",
+  "permits_avg_units_per_bldg", "Market / Investor Opportunity", "Permit activity", "BPS permits", "direct", "Scale of new building supply."
+)
+
+business_core_topics <- tribble(
+  ~metric, ~subject, ~topic, ~source_family, ~role, ~note,
+  "real_gdp_growth_5yr", "Business & Industry Opportunity", "GDP growth", "BEA GDP growth", "direct", "Headline structural output growth.",
+  "real_gdp_cagr_5yr", "Business & Industry Opportunity", "GDP growth", "BEA GDP growth", "direct", "Alternative scaling of GDP growth.",
+  "real_gdp_pc_growth_5yr", "Business & Industry Opportunity", "GDP growth", "BEA GDP growth", "direct", "Per-capita GDP growth.",
+  "productivity_growth_5yr", "Business & Industry Opportunity", "GDP growth", "BEA GDP growth", "direct", "Productivity-focused growth lens.",
+  "industry_concentration_hhi", "Business & Industry Opportunity", "Industry concentration", "BEA industry structure", "direct", "Diversification / concentration diagnostic.",
+  "bfs_business_applications", "Business & Industry Opportunity", "Business formation", "BFS applications", "baseline", "Entrepreneurial flow level.",
+  "bfs_business_applications_yoy_pct", "Business & Industry Opportunity", "Business formation", "BFS applications", "direct", "Short-run entrepreneurial momentum.",
+  "bfs_business_application_rate_per_1000_establishments", "Business & Industry Opportunity", "Business formation", "BFS applications", "direct", "Business formation intensity vs current base.",
+  "bfs_business_applications_per_1000_residents", "Business & Industry Opportunity", "Business formation", "BFS applications", "direct", "Population-scaled entrepreneurial intensity.",
+  "cbp_total_estabs", "Business & Industry Opportunity", "Establishment density", "CBP establishments", "baseline", "Level context; strongly size-related.",
+  "cbp_estabs_per_1000_residents", "Business & Industry Opportunity", "Establishment density", "CBP establishments", "direct", "Population-scaled establishment density.",
+  "pct_ba_plus", "Business & Industry Opportunity", "Human capital momentum", "ACS education", "baseline", "Current human-capital level; primary home is Character.",
+  "pct_ba_plus_change_5yr", "Business & Industry Opportunity", "Human capital momentum", "ACS education", "direct", "Human-capital accumulation signal."
+)
+
+metric_catalog <- bind_rows(
+  resident_topics,
+  market_topics,
+  business_core_topics,
+  tibble(
+    metric = paste0("pct_qcew_private_emp_", names(industry_family_labels)),
+    subject = "Business & Industry Opportunity",
+    topic = "Sector employment mix",
+    source_family = "QCEW sector employment shares",
+    role = "direct",
+    note = "Private-sector employment composition by broad industry family."
+  ),
+  tibble(
+    metric = paste0("pct_real_gdp_", names(gdp_family_labels)),
+    subject = "Business & Industry Opportunity",
+    topic = "Sector GDP mix",
+    source_family = "BEA sector GDP shares",
+    role = "direct",
+    note = "Output composition by broad industry family."
+  ),
+  tibble(
+    metric = paste0("qcew_private_avg_wkly_wage_", names(industry_family_labels)),
+    subject = "Business & Industry Opportunity",
+    topic = "Sector wage mix",
+    source_family = "QCEW sector wages",
+    role = "direct",
+    note = "Sector wage-quality diagnostic."
+  ),
+  tibble(
+    metric = paste0("pct_cbp_estabs_", names(industry_family_labels)),
+    subject = "Business & Industry Opportunity",
+    topic = "Establishment mix",
+    source_family = "CBP establishment shares",
+    role = "direct",
+    note = "Business-base composition by broad industry family."
+  ),
+  tibble(
+    metric = paste0("lq_", names(industry_family_labels)),
+    subject = "Business & Industry Opportunity",
+    topic = "Location quotient specialization",
+    source_family = "QCEW location quotients",
+    role = "direct",
+    note = "Industry specialization vs national benchmark."
+  )
+)
+
+topic_inventory_notes <- tribble(
+  ~subject, ~topic, ~status, ~note,
+  "Resident Opportunity", "Intergenerational mobility proxy", "proxy", "Opportunity Atlas remains deferred. Phase 1 uses `economic_connectedness` as the live proxy and treats it as a sensitivity-aware topic rather than a perfect substitute.",
+  "Market / Investor Opportunity", "Rent growth", "mixed direct + baseline", "ZORI gives live rent momentum, but rent levels are context fields rather than true trajectory KPIs and coverage is materially narrower than HPI.",
+  "Business & Industry Opportunity", "Business formation", "live but vintage-limited", "BFS business-application levels continue into 2024, but the CBP-backed rate fields stop at 2023. Use the rate as the default KPI and name the vintage constraint explicitly.",
+  "Business & Industry Opportunity", "Establishment density", "mixed direct + baseline", "Overall establishment density is usable, but raw establishment counts are size-driven and belong only as context.",
+  "Business & Industry Opportunity", "Human capital momentum", "mixed direct + baseline", "The level field (`pct_ba_plus`) lives conceptually in Character; the 5-year change is the Opportunity-leading indicator."
+)
+```
+
+## Goal
+
+Build a complete Phase 1 Opportunity selection pass that is explicit at three levels:
+
+1. **Subject**: should the subject stay in Opportunity at all?
+2. **Topic**: should the topic stay, collapse to one KPI, remain a sensitivity-only topic, or drop?
+3. **KPI**: which metrics are core, redundant, optional sensitivity tests, baseline-only context, proxies, or drops?
+
+This notebook uses the same CBSA universe as the Character and Livability passes:
+
+- `geo_level = 'cbsa'`
+- `pop_total >= 100000`
+- latest available usable row by **source family or source sub-family**
+
+## Decision rules
+
+These rules are used throughout the notebook and should be read as screens, not rigid auto-decisions:
+
+- **Coverage**: below `90%` coverage is a caution flag; below `75%` is a strong warning.
+- **Variance**: below `CV = 0.2` is weak differentiation at CBSA scale.
+- **Correlation**: above `|r| = 0.75` means we should not carry every KPI at full weight inside the same topic.
+- **PCA**: diagnostic only. It tells us whether a topic is really multi-dimensional after the basic screens.
+
+## Phase 1 inventory
+
+Opportunity is being treated as three main subjects plus one explicit proxy topic:
+
+- `Resident Opportunity`
+- `Market / Investor Opportunity`
+- `Business & Industry Opportunity`
+
+The audit is intentionally complete, so this notebook distinguishes:
+
+- recurring direct KPIs
+- baseline-only or level-context KPIs
+- proxy KPIs
+- deferred topics that still need to be named in the audit
+
+```{r data}
+df <- dbGetQuery(con, "
+with spine as (
+    select
+        geo_id,
+        geo_name,
+        pop_total,
+        year as spine_year
+    from gold.population_demographics
+    where geo_level = 'cbsa'
+      and year = 2024
+      and pop_total >= 100000
+),
+income_growth_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as income_growth_year,
+            income_pc_growth_1yr,
+            income_pc_growth_5yr,
+            income_pc_cagr_5yr,
+            row_number() over (
+                partition by geo_id
+                order by case
+                    when income_pc_growth_1yr is not null
+                      or income_pc_growth_5yr is not null
+                      or income_pc_cagr_5yr is not null
+                    then year
+                end desc nulls last
+            ) as rn
+        from gold.economics_income_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+income_distribution_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as income_distribution_year,
+            pov_rate,
+            pov_rate_change_1yr,
+            pov_rate_change_5yr,
+            gini_index,
+            row_number() over (
+                partition by geo_id
+                order by case
+                    when pov_rate is not null
+                      or pov_rate_change_1yr is not null
+                      or pov_rate_change_5yr is not null
+                      or gini_index is not null
+                    then year
+                end desc nulls last
+            ) as rn
+        from gold.economics_income_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+labor_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as labor_year,
+            pct_unemployment_rate,
+            unemployment_rate_change_1yr,
+            lfpr,
+            lfpr_growth_5yr,
+            row_number() over (
+                partition by geo_id
+                order by case
+                    when pct_unemployment_rate is not null
+                      or unemployment_rate_change_1yr is not null
+                      or lfpr is not null
+                      or lfpr_growth_5yr is not null
+                    then year
+                end desc nulls last
+            ) as rn
+        from gold.economics_labor_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+population_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as population_year,
+            pop_growth_1yr,
+            pop_growth_5yr,
+            pop_cagr_5yr,
+            pct_ba_plus,
+            pct_ba_plus_change_5yr,
+            row_number() over (
+                partition by geo_id
+                order by year desc
+            ) as rn
+        from gold.population_demographics
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+migration_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as migration_year,
+            irs_net_migration_rate,
+            irs_net_agi,
+            irs_inflow_agi,
+            irs_outflow_agi,
+            row_number() over (
+                partition by geo_id
+                order by case
+                    when irs_net_migration_rate is not null
+                      or irs_net_agi is not null
+                      or irs_inflow_agi is not null
+                      or irs_outflow_agi is not null
+                    then year
+                end desc nulls last
+            ) as rn
+        from gold.migration_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+housing_hpi_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as housing_hpi_year,
+            hpi_yoy_pct,
+            hpi_5yr_pct,
+            hpi_10yr_pct,
+            row_number() over (
+                partition by geo_id
+                order by case
+                    when hpi_yoy_pct is not null
+                      or hpi_5yr_pct is not null
+                      or hpi_10yr_pct is not null
+                    then year
+                end desc nulls last
+            ) as rn
+        from gold.housing_market_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+housing_zori_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as housing_zori_year,
+            zori_annual_avg,
+            zori_annual_avg_yoy_pct,
+            zori_december,
+            zori_december_yoy_pct,
+            row_number() over (
+                partition by geo_id
+                order by case
+                    when zori_annual_avg is not null
+                      or zori_annual_avg_yoy_pct is not null
+                      or zori_december is not null
+                      or zori_december_yoy_pct is not null
+                    then year
+                end desc nulls last
+            ) as rn
+        from gold.housing_market_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+housing_supply_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as housing_supply_year,
+            permits_per_1000_housing_units,
+            permits_per_1000_population,
+            permits_share_multifam_units,
+            permits_share_units_5_plus,
+            permits_avg_units_per_bldg,
+            row_number() over (
+                partition by geo_id
+                order by case
+                    when permits_per_1000_housing_units is not null
+                      or permits_per_1000_population is not null
+                      or permits_share_multifam_units is not null
+                      or permits_share_units_5_plus is not null
+                      or permits_avg_units_per_bldg is not null
+                    then year
+                end desc nulls last
+            ) as rn
+        from gold.housing_core_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+gdp_growth_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as gdp_growth_year,
+            real_gdp_growth_5yr,
+            real_gdp_cagr_5yr,
+            real_gdp_pc_growth_5yr,
+            productivity_growth_5yr,
+            row_number() over (
+                partition by geo_id
+                order by case
+                    when real_gdp_growth_5yr is not null
+                      or real_gdp_cagr_5yr is not null
+                      or real_gdp_pc_growth_5yr is not null
+                      or productivity_growth_5yr is not null
+                    then year
+                end desc nulls last
+            ) as rn
+        from gold.economics_gdp_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+industry_bea_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as industry_bea_year,
+            industry_concentration_hhi,
+            pct_real_gdp_natural_resources,
+            pct_real_gdp_manufacturing,
+            pct_real_gdp_construction,
+            pct_real_gdp_trade,
+            pct_real_gdp_transportation,
+            pct_real_gdp_information,
+            pct_real_gdp_fire,
+            pct_real_gdp_professional,
+            pct_real_gdp_edu_health,
+            pct_real_gdp_leisure,
+            pct_real_gdp_gov,
+            row_number() over (
+                partition by geo_id
+                order by case
+                    when industry_concentration_hhi is not null
+                      or pct_real_gdp_professional is not null
+                      or pct_real_gdp_manufacturing is not null
+                    then year
+                end desc nulls last
+            ) as rn
+        from gold.economics_industry_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+industry_qcew_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as industry_qcew_year,
+            qcew_total_covered_avg_wkly_wage,
+            qcew_private_avg_wkly_wage,
+            qcew_private_avg_wkly_wage_ag_mining,
+            qcew_private_avg_wkly_wage_construction,
+            qcew_private_avg_wkly_wage_manufacturing,
+            qcew_private_avg_wkly_wage_wholesale,
+            qcew_private_avg_wkly_wage_retail,
+            qcew_private_avg_wkly_wage_transport_util,
+            qcew_private_avg_wkly_wage_information,
+            qcew_private_avg_wkly_wage_finance_real,
+            qcew_private_avg_wkly_wage_professional,
+            qcew_private_avg_wkly_wage_educ_health,
+            qcew_private_avg_wkly_wage_arts_accomm_food,
+            qcew_private_avg_wkly_wage_other_services,
+            pct_qcew_private_emp_ag_mining,
+            pct_qcew_private_emp_construction,
+            pct_qcew_private_emp_manufacturing,
+            pct_qcew_private_emp_wholesale,
+            pct_qcew_private_emp_retail,
+            pct_qcew_private_emp_transport_util,
+            pct_qcew_private_emp_information,
+            pct_qcew_private_emp_finance_real,
+            pct_qcew_private_emp_professional,
+            pct_qcew_private_emp_educ_health,
+            pct_qcew_private_emp_arts_accomm_food,
+            pct_qcew_private_emp_other_services,
+            lq_ag_mining,
+            lq_construction,
+            lq_manufacturing,
+            lq_wholesale,
+            lq_retail,
+            lq_transport_util,
+            lq_information,
+            lq_finance_real,
+            lq_professional,
+            lq_educ_health,
+            lq_arts_accomm_food,
+            lq_other_services,
+            row_number() over (
+                partition by geo_id
+                order by case
+                    when pct_qcew_private_emp_professional is not null
+                      or qcew_private_avg_wkly_wage_professional is not null
+                      or lq_professional is not null
+                    then year
+                end desc nulls last
+            ) as rn
+        from gold.economics_industry_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+industry_bfs_flow_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as industry_bfs_flow_year,
+            bfs_business_applications,
+            bfs_business_applications_yoy_pct,
+            bfs_business_applications_per_1000_residents,
+            row_number() over (
+                partition by geo_id
+                order by case
+                    when bfs_business_applications is not null
+                      or bfs_business_applications_yoy_pct is not null
+                      or bfs_business_applications_per_1000_residents is not null
+                    then year
+                end desc nulls last
+            ) as rn
+        from gold.economics_industry_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+industry_bfs_rate_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as industry_bfs_rate_year,
+            bfs_business_application_rate_per_1000_establishments,
+            row_number() over (
+                partition by geo_id
+                order by case
+                    when bfs_business_application_rate_per_1000_establishments is not null
+                    then year
+                end desc nulls last
+            ) as rn
+        from gold.economics_industry_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+industry_cbp_latest as (
+    select *
+    from (
+        select
+            geo_id,
+            year as industry_cbp_year,
+            cbp_total_estabs,
+            cbp_estabs_per_1000_residents,
+            pct_cbp_estabs_ag_mining,
+            pct_cbp_estabs_construction,
+            pct_cbp_estabs_manufacturing,
+            pct_cbp_estabs_wholesale,
+            pct_cbp_estabs_retail,
+            pct_cbp_estabs_transport_util,
+            pct_cbp_estabs_information,
+            pct_cbp_estabs_finance_real,
+            pct_cbp_estabs_professional,
+            pct_cbp_estabs_educ_health,
+            pct_cbp_estabs_arts_accomm_food,
+            pct_cbp_estabs_other_services,
+            row_number() over (
+                partition by geo_id
+                order by case
+                    when cbp_estabs_per_1000_residents is not null
+                      or pct_cbp_estabs_professional is not null
+                      or cbp_total_estabs is not null
+                    then year
+                end desc nulls last
+            ) as rn
+        from gold.economics_industry_wide
+        where geo_level = 'cbsa'
+    )
+    where rn = 1
+),
+social_latest as (
+    select
+        geo_id,
+        geo_name as social_geo_name,
+        economic_connectedness
+    from gold.social_fabric_wide
+    where geo_level = 'cbsa'
+)
+select
+    spine.*,
+    income_growth.income_growth_year,
+    income_growth.income_pc_growth_1yr,
+    income_growth.income_pc_growth_5yr,
+    income_growth.income_pc_cagr_5yr,
+    income_distribution.income_distribution_year,
+    income_distribution.pov_rate,
+    income_distribution.pov_rate_change_1yr,
+    income_distribution.pov_rate_change_5yr,
+    income_distribution.gini_index,
+    labor.labor_year,
+    labor.pct_unemployment_rate,
+    labor.unemployment_rate_change_1yr,
+    labor.lfpr,
+    labor.lfpr_growth_5yr,
+    population.population_year,
+    population.pop_growth_1yr,
+    population.pop_growth_5yr,
+    population.pop_cagr_5yr,
+    population.pct_ba_plus,
+    population.pct_ba_plus_change_5yr,
+    migration.migration_year,
+    migration.irs_net_migration_rate,
+    migration.irs_net_agi,
+    migration.irs_inflow_agi,
+    migration.irs_outflow_agi,
+    housing_hpi.housing_hpi_year,
+    housing_hpi.hpi_yoy_pct,
+    housing_hpi.hpi_5yr_pct,
+    housing_hpi.hpi_10yr_pct,
+    housing_zori.housing_zori_year,
+    housing_zori.zori_annual_avg,
+    housing_zori.zori_annual_avg_yoy_pct,
+    housing_zori.zori_december,
+    housing_zori.zori_december_yoy_pct,
+    housing_supply.housing_supply_year,
+    housing_supply.permits_per_1000_housing_units,
+    housing_supply.permits_per_1000_population,
+    housing_supply.permits_share_multifam_units,
+    housing_supply.permits_share_units_5_plus,
+    housing_supply.permits_avg_units_per_bldg,
+    gdp_growth.gdp_growth_year,
+    gdp_growth.real_gdp_growth_5yr,
+    gdp_growth.real_gdp_cagr_5yr,
+    gdp_growth.real_gdp_pc_growth_5yr,
+    gdp_growth.productivity_growth_5yr,
+    industry_bea.industry_bea_year,
+    industry_bea.industry_concentration_hhi,
+    industry_bea.pct_real_gdp_natural_resources,
+    industry_bea.pct_real_gdp_manufacturing,
+    industry_bea.pct_real_gdp_construction,
+    industry_bea.pct_real_gdp_trade,
+    industry_bea.pct_real_gdp_transportation,
+    industry_bea.pct_real_gdp_information,
+    industry_bea.pct_real_gdp_fire,
+    industry_bea.pct_real_gdp_professional,
+    industry_bea.pct_real_gdp_edu_health,
+    industry_bea.pct_real_gdp_leisure,
+    industry_bea.pct_real_gdp_gov,
+    industry_qcew.industry_qcew_year,
+    industry_qcew.qcew_total_covered_avg_wkly_wage,
+    industry_qcew.qcew_private_avg_wkly_wage,
+    industry_qcew.qcew_private_avg_wkly_wage_ag_mining,
+    industry_qcew.qcew_private_avg_wkly_wage_construction,
+    industry_qcew.qcew_private_avg_wkly_wage_manufacturing,
+    industry_qcew.qcew_private_avg_wkly_wage_wholesale,
+    industry_qcew.qcew_private_avg_wkly_wage_retail,
+    industry_qcew.qcew_private_avg_wkly_wage_transport_util,
+    industry_qcew.qcew_private_avg_wkly_wage_information,
+    industry_qcew.qcew_private_avg_wkly_wage_finance_real,
+    industry_qcew.qcew_private_avg_wkly_wage_professional,
+    industry_qcew.qcew_private_avg_wkly_wage_educ_health,
+    industry_qcew.qcew_private_avg_wkly_wage_arts_accomm_food,
+    industry_qcew.qcew_private_avg_wkly_wage_other_services,
+    industry_qcew.pct_qcew_private_emp_ag_mining,
+    industry_qcew.pct_qcew_private_emp_construction,
+    industry_qcew.pct_qcew_private_emp_manufacturing,
+    industry_qcew.pct_qcew_private_emp_wholesale,
+    industry_qcew.pct_qcew_private_emp_retail,
+    industry_qcew.pct_qcew_private_emp_transport_util,
+    industry_qcew.pct_qcew_private_emp_information,
+    industry_qcew.pct_qcew_private_emp_finance_real,
+    industry_qcew.pct_qcew_private_emp_professional,
+    industry_qcew.pct_qcew_private_emp_educ_health,
+    industry_qcew.pct_qcew_private_emp_arts_accomm_food,
+    industry_qcew.pct_qcew_private_emp_other_services,
+    industry_qcew.lq_ag_mining,
+    industry_qcew.lq_construction,
+    industry_qcew.lq_manufacturing,
+    industry_qcew.lq_wholesale,
+    industry_qcew.lq_retail,
+    industry_qcew.lq_transport_util,
+    industry_qcew.lq_information,
+    industry_qcew.lq_finance_real,
+    industry_qcew.lq_professional,
+    industry_qcew.lq_educ_health,
+    industry_qcew.lq_arts_accomm_food,
+    industry_qcew.lq_other_services,
+    industry_bfs_flow.industry_bfs_flow_year,
+    industry_bfs_flow.bfs_business_applications,
+    industry_bfs_flow.bfs_business_applications_yoy_pct,
+    industry_bfs_rate.industry_bfs_rate_year,
+    industry_bfs_rate.bfs_business_application_rate_per_1000_establishments,
+    industry_bfs_flow.bfs_business_applications_per_1000_residents,
+    industry_cbp.industry_cbp_year,
+    industry_cbp.cbp_total_estabs,
+    industry_cbp.cbp_estabs_per_1000_residents,
+    industry_cbp.pct_cbp_estabs_ag_mining,
+    industry_cbp.pct_cbp_estabs_construction,
+    industry_cbp.pct_cbp_estabs_manufacturing,
+    industry_cbp.pct_cbp_estabs_wholesale,
+    industry_cbp.pct_cbp_estabs_retail,
+    industry_cbp.pct_cbp_estabs_transport_util,
+    industry_cbp.pct_cbp_estabs_information,
+    industry_cbp.pct_cbp_estabs_finance_real,
+    industry_cbp.pct_cbp_estabs_professional,
+    industry_cbp.pct_cbp_estabs_educ_health,
+    industry_cbp.pct_cbp_estabs_arts_accomm_food,
+    industry_cbp.pct_cbp_estabs_other_services,
+    social.economic_connectedness
+from spine
+left join income_growth_latest income_growth
+    on spine.geo_id = income_growth.geo_id
+left join income_distribution_latest income_distribution
+    on spine.geo_id = income_distribution.geo_id
+left join labor_latest labor
+    on spine.geo_id = labor.geo_id
+left join population_latest population
+    on spine.geo_id = population.geo_id
+left join migration_latest migration
+    on spine.geo_id = migration.geo_id
+left join housing_hpi_latest housing_hpi
+    on spine.geo_id = housing_hpi.geo_id
+left join housing_zori_latest housing_zori
+    on spine.geo_id = housing_zori.geo_id
+left join housing_supply_latest housing_supply
+    on spine.geo_id = housing_supply.geo_id
+left join gdp_growth_latest gdp_growth
+    on spine.geo_id = gdp_growth.geo_id
+left join industry_bea_latest industry_bea
+    on spine.geo_id = industry_bea.geo_id
+left join industry_qcew_latest industry_qcew
+    on spine.geo_id = industry_qcew.geo_id
+left join industry_bfs_flow_latest industry_bfs_flow
+    on spine.geo_id = industry_bfs_flow.geo_id
+left join industry_bfs_rate_latest industry_bfs_rate
+    on spine.geo_id = industry_bfs_rate.geo_id
+left join industry_cbp_latest industry_cbp
+    on spine.geo_id = industry_cbp.geo_id
+left join social_latest social
+    on spine.geo_id = social.geo_id
+order by spine.pop_total desc
+")
+
+metrics <- metric_catalog$metric
+
+coverage_tbl <- tibble(
+  metric = metrics,
+  non_null_cbsas = sapply(metrics, \(m) sum(!is.na(df[[m]]))),
+  coverage_pct = non_null_cbsas / nrow(df)
+) |>
+  left_join(metric_catalog, by = "metric") |>
+  mutate(metric_label = unname(metric_labels[metric])) |>
+  arrange(subject, topic, desc(coverage_pct), metric)
+
+source_family_tbl <- tibble::tribble(
+  ~source_family, ~latest_year, ~coverage_metric, ~coverage_n, ~note,
+  "BEA CAINC growth", max(df$income_growth_year, na.rm = TRUE), "income_pc_growth_5yr", sum(!is.na(df$income_pc_growth_5yr)), "Growth fields require the latest non-null growth row, which is 2023 in the current Gold surface.",
+  "ACS income distribution", max(df$income_distribution_year, na.rm = TRUE), "gini_index", sum(!is.na(df$gini_index)), "Inclusive-growth companion fields remain available on the latest ACS row.",
+  "ACS labor", max(df$labor_year, na.rm = TRUE), "pct_unemployment_rate", sum(!is.na(df$pct_unemployment_rate)), "Labor-market levels and short-run changes on the latest ACS labor row.",
+  "ACS population", max(df$population_year, na.rm = TRUE), "pop_growth_5yr", sum(!is.na(df$pop_growth_5yr)), "Population momentum and BA+ change live on the current population surface.",
+  "IRS migration", max(df$migration_year, na.rm = TRUE), "irs_net_migration_rate", sum(!is.na(df$irs_net_migration_rate)), "IRS migration and AGI flows remain slightly partial at CBSA scale.",
+  "FHFA HPI", max(df$housing_hpi_year, na.rm = TRUE), "hpi_5yr_pct", sum(!is.na(df$hpi_5yr_pct)), "Home-price momentum now uses the latest non-null HPI row on the Zillow market surface.",
+  "Zillow ZORI", max(df$housing_zori_year, na.rm = TRUE), "zori_annual_avg_yoy_pct", sum(!is.na(df$zori_annual_avg_yoy_pct)), "Rent momentum is live but materially sparser than HPI coverage.",
+  "BPS permits", max(df$housing_supply_year, na.rm = TRUE), "permits_per_1000_housing_units", sum(!is.na(df$permits_per_1000_housing_units)), "Forward supply metrics are fully live on the housing-core surface for this universe.",
+  "BEA GDP growth", max(df$gdp_growth_year, na.rm = TRUE), "real_gdp_growth_5yr", sum(!is.na(df$real_gdp_growth_5yr)), "Growth fields require the latest non-null GDP-growth row, which is behind the 2024 spine.",
+  "BEA sector GDP shares", max(df$industry_bea_year, na.rm = TRUE), "pct_real_gdp_professional", sum(!is.na(df$pct_real_gdp_professional)), "GDP composition and HHI come from the latest non-null BEA industry row.",
+  "QCEW sector shares and wages", max(df$industry_qcew_year, na.rm = TRUE), "pct_qcew_private_emp_professional", sum(!is.na(df$pct_qcew_private_emp_professional)), "Employment mix, location quotients, and sector wages are all live in 2024.",
+  "BFS application flow", max(df$industry_bfs_flow_year, na.rm = TRUE), "bfs_business_applications_yoy_pct", sum(!is.na(df$bfs_business_applications_yoy_pct)), "Business-application levels and YoY momentum remain live into 2024.",
+  "BFS application rate", max(df$industry_bfs_rate_year, na.rm = TRUE), "bfs_business_application_rate_per_1000_establishments", sum(!is.na(df$bfs_business_application_rate_per_1000_establishments)), "The CBP-backed rate field stops where CBP overlap exists, so the usable latest row is 2023.",
+  "CBP establishments", max(df$industry_cbp_year, na.rm = TRUE), "cbp_estabs_per_1000_residents", sum(!is.na(df$cbp_estabs_per_1000_residents)), "Establishment density and mix also stop at the last CBP-supported year.",
+  "Social Capital Atlas", NA_integer_, "economic_connectedness", sum(!is.na(df$economic_connectedness)), "Static baseline source; coverage is broad enough to test as a proxy topic."
+) |>
+  mutate(coverage_pct = coverage_n / nrow(df))
+
+variance_tbl <- tibble(metric = metrics) |>
+  mutate(
+    n = sapply(metric, \(m) sum(!is.na(df[[m]]))),
+    mean = sapply(metric, \(m) mean(df[[m]], na.rm = TRUE)),
+    sd = sapply(metric, \(m) sd(df[[m]], na.rm = TRUE)),
+    cv = sd / abs(mean),
+    iqr = sapply(metric, \(m) IQR(df[[m]], na.rm = TRUE))
+  ) |>
+  left_join(metric_catalog, by = "metric") |>
+  left_join(coverage_tbl |> select(metric, coverage_pct), by = "metric") |>
+  mutate(metric_label = unname(metric_labels[metric])) |>
+  arrange(desc(cv))
+
+topic_scorecard_tbl <- variance_tbl |>
+  group_by(subject, topic) |>
+  summarise(
+    metric_count = n(),
+    avg_coverage_pct = mean(coverage_pct),
+    direct_metrics = sum(role == "direct"),
+    baseline_metrics = sum(role == "baseline"),
+    proxy_metrics = sum(role == "proxy"),
+    optional_metrics = sum(role == "optional"),
+    high_variance_metrics = sum(cv >= 0.2, na.rm = TRUE),
+    top_kpis = paste(metric_label[order(cv, decreasing = TRUE)][seq_len(min(3, n()))], collapse = "; "),
+    .groups = "drop"
+  ) |>
+  mutate(
+    topic_read = case_when(
+      high_variance_metrics == 0 ~ "Weak topic at CBSA scale",
+      high_variance_metrics == 1 ~ "Keep topic, likely with one lead KPI",
+      TRUE ~ "Keep topic, compare KPIs inside topic"
+    )
+  ) |>
+  arrange(subject, topic)
+
+surviving <- variance_tbl |>
+  filter(cv >= 0.2, coverage_pct >= 0.75) |>
+  pull(metric)
+
+df_cor <- df |>
+  select(all_of(surviving)) |>
+  drop_na()
+
+cor_matrix <- cor(df_cor, use = "pairwise.complete.obs")
+high_cor <- which(abs(cor_matrix) > 0.75 & upper.tri(cor_matrix), arr.ind = TRUE)
+
+high_cor_tbl <- if (nrow(high_cor) > 0) {
+  tibble(
+    metric_a = rownames(cor_matrix)[high_cor[, 1]],
+    metric_b = colnames(cor_matrix)[high_cor[, 2]],
+    correlation = cor_matrix[high_cor]
+  ) |>
+    mutate(
+      metric_a_label = unname(metric_labels[metric_a]),
+      metric_b_label = unname(metric_labels[metric_b])
+    ) |>
+    left_join(metric_catalog |> rename(metric_a = metric, subject_a = subject, topic_a = topic), by = "metric_a") |>
+    left_join(metric_catalog |> rename(metric_b = metric, subject_b = subject, topic_b = topic), by = "metric_b") |>
+    arrange(desc(abs(correlation)))
+} else {
+  tibble(
+    metric_a = character(),
+    metric_b = character(),
+    correlation = double(),
+    metric_a_label = character(),
+    metric_b_label = character(),
+    subject_a = character(),
+    topic_a = character(),
+    subject_b = character(),
+    topic_b = character()
+  )
+}
+
+topic_pca_tbl <- map_dfr(split(metric_catalog, metric_catalog$topic), \(topic_df) {
+  topic_metrics <- variance_tbl |>
+    filter(
+      topic == topic_df$topic[[1]],
+      coverage_pct >= 0.75,
+      cv >= 0.2
+    ) |>
+    pull(metric)
+
+  if (length(topic_metrics) == 0) {
+    return(tibble(
+      subject = topic_df$subject[[1]],
+      topic = topic_df$topic[[1]],
+      surviving_metrics = 0L,
+      complete_rows = NA_integer_,
+      components_80 = NA_integer_,
+      topic_dimensionality = "No screened metrics survive"
+    ))
+  }
+
+  topic_complete <- df |>
+    select(all_of(topic_metrics)) |>
+    drop_na()
+
+  if (length(topic_metrics) < 2) {
+    return(tibble(
+      subject = topic_df$subject[[1]],
+      topic = topic_df$topic[[1]],
+      surviving_metrics = length(topic_metrics),
+      complete_rows = nrow(topic_complete),
+      components_80 = NA_integer_,
+      topic_dimensionality = "Single-metric topic"
+    ))
+  }
+
+  if (nrow(topic_complete) < 50) {
+    return(tibble(
+      subject = topic_df$subject[[1]],
+      topic = topic_df$topic[[1]],
+      surviving_metrics = length(topic_metrics),
+      complete_rows = nrow(topic_complete),
+      components_80 = NA_integer_,
+      topic_dimensionality = "Too sparse for stable topic PCA"
+    ))
+  }
+
+  topic_pca <- prcomp(scale(topic_complete), center = FALSE, scale. = FALSE)
+  topic_components_80 <- which(cumsum((topic_pca$sdev^2) / sum(topic_pca$sdev^2)) >= 0.8)[1]
+
+  tibble(
+    subject = topic_df$subject[[1]],
+    topic = topic_df$topic[[1]],
+    surviving_metrics = length(topic_metrics),
+    complete_rows = nrow(topic_complete),
+    components_80 = topic_components_80,
+    topic_dimensionality = case_when(
+      topic_components_80 <= 1 ~ "Mostly one dominant KPI story",
+      topic_components_80 == 2 ~ "Has two meaningful sub-dimensions",
+      TRUE ~ "Multi-dimensional topic"
+    )
+  )
+})
+
+cor_flag_tbl <- bind_rows(
+  high_cor_tbl |> transmute(metric = metric_a, correlation = abs(correlation)),
+  high_cor_tbl |> transmute(metric = metric_b, correlation = abs(correlation))
+) |>
+  group_by(metric) |>
+  summarise(max_abs_correlation = max(correlation), .groups = "drop")
+
+manual_recommendation_overrides <- tribble(
+  ~metric, ~recommendation_manual,
+  "income_pc_growth_5yr", "Core candidate",
+  "income_pc_growth_1yr", "Optional sensitivity",
+  "income_pc_cagr_5yr", "Drop",
+  "economic_connectedness", "Optional sensitivity / proxy",
+  "pct_unemployment_rate", "Core candidate",
+  "lfpr", "Core candidate",
+  "unemployment_rate_change_1yr", "Optional sensitivity",
+  "lfpr_growth_5yr", "Optional sensitivity",
+  "pov_rate_change_5yr", "Core candidate",
+  "gini_index", "Optional sensitivity",
+  "pov_rate", "Baseline context only",
+  "pov_rate_change_1yr", "Optional sensitivity",
+  "qcew_private_avg_wkly_wage", "Core candidate",
+  "qcew_total_covered_avg_wkly_wage", "Redundant - keep one lead KPI",
+  "hpi_5yr_pct", "Core candidate",
+  "hpi_yoy_pct", "Core candidate",
+  "hpi_10yr_pct", "Optional sensitivity",
+  "zori_annual_avg_yoy_pct", "Core candidate",
+  "zori_annual_avg", "Baseline context only",
+  "zori_december", "Drop",
+  "zori_december_yoy_pct", "Optional sensitivity",
+  "pop_growth_5yr", "Core candidate",
+  "pop_growth_1yr", "Optional sensitivity",
+  "pop_cagr_5yr", "Redundant - keep one lead KPI",
+  "irs_net_migration_rate", "Core candidate",
+  "irs_net_agi", "Core candidate",
+  "irs_inflow_agi", "Redundant - keep one lead KPI",
+  "irs_outflow_agi", "Redundant - keep one lead KPI",
+  "permits_per_1000_housing_units", "Core candidate",
+  "permits_share_units_5_plus", "Core candidate",
+  "permits_share_multifam_units", "Optional sensitivity",
+  "permits_per_1000_population", "Redundant - keep one lead KPI",
+  "permits_avg_units_per_bldg", "Optional sensitivity",
+  "productivity_growth_5yr", "Core candidate",
+  "real_gdp_growth_5yr", "Optional sensitivity",
+  "real_gdp_pc_growth_5yr", "Redundant - keep one lead KPI",
+  "real_gdp_cagr_5yr", "Drop",
+  "industry_concentration_hhi", "Core candidate",
+  "bfs_business_application_rate_per_1000_establishments", "Core candidate",
+  "bfs_business_applications_yoy_pct", "Optional sensitivity",
+  "bfs_business_applications_per_1000_residents", "Optional sensitivity",
+  "bfs_business_applications", "Baseline context only",
+  "cbp_estabs_per_1000_residents", "Core candidate",
+  "cbp_total_estabs", "Baseline context only",
+  "pct_ba_plus_change_5yr", "Core candidate",
+  "pct_ba_plus", "Baseline context only",
+  "pct_qcew_private_emp_professional", "Core candidate",
+  "pct_qcew_private_emp_information", "Core candidate",
+  "pct_qcew_private_emp_manufacturing", "Core candidate",
+  "pct_qcew_private_emp_educ_health", "Optional sensitivity",
+  "pct_real_gdp_professional", "Core candidate",
+  "pct_real_gdp_information", "Core candidate",
+  "pct_real_gdp_manufacturing", "Core candidate",
+  "pct_real_gdp_edu_health", "Optional sensitivity",
+  "qcew_private_avg_wkly_wage_professional", "Core candidate",
+  "qcew_private_avg_wkly_wage_information", "Core candidate",
+  "qcew_private_avg_wkly_wage_manufacturing", "Optional sensitivity",
+  "qcew_private_avg_wkly_wage_finance_real", "Optional sensitivity",
+  "lq_professional", "Core candidate",
+  "lq_information", "Core candidate",
+  "lq_manufacturing", "Core candidate",
+  "lq_educ_health", "Optional sensitivity",
+  "pct_cbp_estabs_professional", "Optional sensitivity",
+  "pct_cbp_estabs_information", "Optional sensitivity",
+  "pct_cbp_estabs_manufacturing", "Optional sensitivity"
+)
+
+kpi_decision_tbl <- variance_tbl |>
+  left_join(cor_flag_tbl, by = "metric") |>
+  left_join(manual_recommendation_overrides, by = "metric") |>
+  mutate(
+    max_abs_correlation = coalesce(max_abs_correlation, 0),
+    recommendation_auto = case_when(
+      role == "proxy" & coverage_pct >= 0.75 & cv >= 0.2 ~ "Optional sensitivity / proxy",
+      role == "proxy" ~ "Drop",
+      role == "baseline" & coverage_pct >= 0.75 & cv >= 0.2 ~ "Baseline context only",
+      role == "baseline" ~ "Drop",
+      role == "optional" & coverage_pct >= 0.75 & cv >= 0.2 ~ "Optional sensitivity",
+      role == "optional" ~ "Drop",
+      coverage_pct < 0.75 ~ "Drop",
+      cv < 0.2 ~ "Drop",
+      max_abs_correlation >= 0.9 ~ "Redundant - keep one lead KPI",
+      max_abs_correlation >= 0.75 ~ "Keep, but de-duplicate",
+      coverage_pct < 0.9 ~ "Optional sensitivity",
+      TRUE ~ "Core candidate"
+    ),
+    recommendation = coalesce(recommendation_manual, recommendation_auto),
+    recommendation = case_when(
+      topic %in% c("Establishment mix", "Sector GDP mix", "Sector employment mix", "Sector wage mix") &
+        recommendation %in% c("Core candidate", "Redundant - keep one lead KPI", "Keep, but de-duplicate") ~ "Optional sensitivity",
+      TRUE ~ recommendation
+    )
+  ) |>
+  arrange(subject, topic, desc(cv))
+
+topic_decision_tbl <- kpi_decision_tbl |>
+  group_by(subject, topic) |>
+  summarise(
+    avg_coverage_pct = mean(coverage_pct),
+    core_metrics = sum(recommendation == "Core candidate"),
+    redundant_metrics = sum(recommendation %in% c("Redundant - keep one lead KPI", "Keep, but de-duplicate")),
+    proxy_metrics = sum(recommendation == "Optional sensitivity / proxy"),
+    baseline_metrics = sum(recommendation == "Baseline context only"),
+    optional_metrics = sum(recommendation == "Optional sensitivity"),
+    dropped_metrics = sum(recommendation == "Drop"),
+    lead_kpis = paste(metric_label[order(cv, decreasing = TRUE)][seq_len(min(3, n()))], collapse = "; "),
+    .groups = "drop"
+  ) |>
+  left_join(topic_pca_tbl, by = c("subject", "topic")) |>
+  mutate(
+    topic_decision = case_when(
+      core_metrics == 0 & redundant_metrics == 0 & optional_metrics == 0 & proxy_metrics == 0 & baseline_metrics == 0 ~ "Drop",
+      core_metrics == 0 & redundant_metrics == 0 & optional_metrics == 0 & proxy_metrics > 0 ~ "Sensitivity-only proxy topic",
+      core_metrics == 0 & redundant_metrics == 0 & optional_metrics > 0 ~ "Sensitivity-only topic",
+      core_metrics == 0 & redundant_metrics == 0 & baseline_metrics > 0 ~ "Baseline-only topic",
+      core_metrics == 1 & redundant_metrics == 0 ~ "Keep as one-KPI topic",
+      components_80 <= 1 ~ "Collapse to one lead KPI",
+      TRUE ~ "Keep as multi-KPI topic"
+    )
+  ) |>
+  arrange(subject, topic)
+
+subject_decision_tbl <- topic_decision_tbl |>
+  group_by(subject) |>
+  summarise(
+    topic_count = n(),
+    kept_topics = sum(topic_decision != "Drop"),
+    strong_topics = sum(topic_decision %in% c("Keep as one-KPI topic", "Collapse to one lead KPI", "Keep as multi-KPI topic")),
+    avg_coverage_pct = mean(avg_coverage_pct, na.rm = TRUE),
+    subject_decision = case_when(
+      strong_topics == 0 ~ "Drop subject from Phase 1 core set",
+      strong_topics == 1 ~ "Keep subject, but it is thin",
+      TRUE ~ "Keep subject in Opportunity"
+    ),
+    .groups = "drop"
+  ) |>
+  arrange(subject)
+
+df_pca <- df |>
+  select(all_of(surviving)) |>
+  drop_na() |>
+  scale()
+
+pca_result <- prcomp(df_pca, center = FALSE, scale. = FALSE)
+component_count_80 <- which(cumsum((pca_result$sdev^2) / sum(pca_result$sdev^2)) >= 0.8)[1]
+
+resident_divergence_tbl <- df |>
+  filter(!is.na(income_pc_growth_1yr), !is.na(income_pc_growth_5yr)) |>
+  mutate(
+    divergence = income_pc_growth_1yr - income_pc_growth_5yr,
+    label = if_else(abs(divergence) >= quantile(abs(divergence), 0.95, na.rm = TRUE), geo_name, NA_character_)
+  )
+
+market_divergence_tbl <- df |>
+  filter(!is.na(hpi_yoy_pct), !is.na(hpi_5yr_pct)) |>
+  mutate(
+    divergence = hpi_yoy_pct - hpi_5yr_pct,
+    label = if_else(abs(divergence) >= quantile(abs(divergence), 0.95, na.rm = TRUE), geo_name, NA_character_)
+  )
+```
+
+## Source-family audit
+
+```{r source-family-audit, echo=FALSE}
+source_family_tbl |>
+  transmute(
+    `Source family` = source_family,
+    `Latest year used` = latest_year,
+    `Representative metric` = unname(metric_labels[coverage_metric]),
+    `CBSAs with data` = coverage_n,
+    `Coverage` = percent(coverage_pct, accuracy = 0.1),
+    Note = note
+  ) |>
+  kable()
+```
+
+```{r inventory-audit, echo=FALSE}
+topic_inventory_notes |>
+  kable()
+```
+
+**Read of the audit**
+
+- Opportunity is only coherent if we respect the different usable vintages across families.
+- The biggest trap in this frame is assuming the latest row is always the latest usable row. In the current Gold surface, `2024` rows often blank out `5yr` growth metrics while still keeping level fields alive.
+- `ZORI`, `IRS AGI flows`, `BFS rate fields`, and the static `economic_connectedness` proxy are all usable, but each needs an explicit caveat rather than being treated as clean recurring panels.
+- `Intergenerational mobility` is still not a live Phase 1 direct topic. It is named here, but only through the `economic_connectedness` proxy.
+
+## Subject and topic inventory
+
+```{r subject-topic-inventory, echo=FALSE}
+metric_catalog |>
+  count(subject, topic, role, name = "metric_count") |>
+  arrange(subject, topic, role) |>
+  kable()
+```
+
+## Coverage by topic
+
+```{r coverage-summary, echo=FALSE}
+subject_topic_coverage_tbl <- coverage_tbl |>
+  group_by(subject, topic) |>
+  summarise(
+    metric_count = n(),
+    min_coverage_pct = min(coverage_pct),
+    avg_coverage_pct = mean(coverage_pct),
+    .groups = "drop"
+  ) |>
+  arrange(subject, topic)
+
+subject_topic_coverage_tbl |>
+  mutate(
+    min_coverage_pct = percent(min_coverage_pct, accuracy = 0.1),
+    avg_coverage_pct = percent(avg_coverage_pct, accuracy = 0.1)
+  ) |>
+  kable()
+```
+
+```{r coverage-plot, echo=FALSE}
+subject_topic_coverage_tbl |>
+  mutate(topic = reorder(topic, avg_coverage_pct)) |>
+  ggplot(aes(x = avg_coverage_pct, y = topic, fill = subject)) +
+  geom_col(alpha = 0.9) +
+  geom_vline(
+    xintercept = 0.9,
+    linetype = "22",
+    color = visual_neutral_palette()$text_muted,
+    linewidth = 0.5
+  ) +
+  scale_x_continuous(labels = label_percent()) +
+  labs(
+    title = "Coverage by Opportunity topic",
+    subtitle = "Average KPI coverage within each topic | Dashed line = 90% caution threshold",
+    x = "Average coverage",
+    y = NULL,
+    fill = NULL,
+    caption = build_chart_notes(
+      source = "BEA, ACS, IRS, FHFA, Zillow, BPS, QCEW, BFS, CBP, Social Capital Atlas",
+      vintage = "Latest usable row by source family"
+    )
+  ) +
+  visual_theme()
+```
+
+## 1. KPI variance pass
+
+```{r variance-summary, echo=FALSE}
+variance_tbl |>
+  transmute(
+    subject,
+    topic,
+    metric = metric_label,
+    role,
+    coverage = percent(coverage_pct, accuracy = 0.1),
+    cv = round(cv, 3),
+    iqr = round(iqr, 3)
+  ) |>
+  arrange(subject, topic, desc(cv)) |>
+  kable()
+```
+
+```{r variance-plot, echo=FALSE, fig.height=18}
+variance_tbl |>
+  mutate(metric_label = reorder(metric_label, cv)) |>
+  ggplot(aes(x = cv, y = metric_label, fill = subject)) +
+  geom_col(alpha = 0.85) +
+  geom_vline(
+    xintercept = 0.2,
+    linetype = "22",
+    color = visual_neutral_palette()$text_muted,
+    linewidth = 0.5
+  ) +
+  labs(
+    title = "Opportunity metrics ranked by coefficient of variation",
+    subtitle = "Higher CV means a metric separates CBSAs more strongly",
+    x = "Coefficient of variation (SD / mean)",
+    y = NULL,
+    fill = NULL,
+    caption = build_chart_notes(
+      source = "BEA, ACS, IRS, FHFA, Zillow, BPS, QCEW, BFS, CBP, Social Capital Atlas",
+      vintage = "Latest usable row by source family"
+    )
+  ) +
+  visual_theme()
+```
+
+## 2. Topic scorecard
+
+```{r topic-scorecard, echo=FALSE}
+topic_scorecard_tbl |>
+  mutate(
+    avg_coverage_pct = percent(avg_coverage_pct, accuracy = 0.1)
+  ) |>
+  kable()
+```
+
+## 3. Time-horizon diagnostics
+
+```{r resident-time-horizon, echo=FALSE}
+resident_divergence_tbl |>
+  ggplot(aes(x = income_pc_growth_5yr, y = income_pc_growth_1yr)) +
+  geom_point(alpha = 0.7, color = visual_palette_defaults()$highlight$opportunity) +
+  geom_abline(
+    slope = 1,
+    intercept = 0,
+    linetype = "22",
+    color = visual_neutral_palette()$text_muted,
+    linewidth = 0.5
+  ) +
+  geom_text_repel(aes(label = label), size = 2.6, max.overlaps = 20) +
+  labs(
+    title = "Resident momentum: 1-year vs 5-year income growth",
+    subtitle = "Above the line = accelerating lately | Below the line = cooling vs structural trend",
+    x = "Income growth (5yr)",
+    y = "Income growth (1yr)",
+    caption = build_chart_notes(
+      source = "BEA CAINC",
+      vintage = paste0("Latest usable growth row: ", max(df$income_growth_year, na.rm = TRUE))
+    )
+  ) +
+  visual_theme()
+```
+
+```{r market-time-horizon, echo=FALSE}
+market_divergence_tbl |>
+  ggplot(aes(x = hpi_5yr_pct, y = hpi_yoy_pct)) +
+  geom_point(alpha = 0.7, color = visual_palette_defaults()$highlight$selection) +
+  geom_abline(
+    slope = 1,
+    intercept = 0,
+    linetype = "22",
+    color = visual_neutral_palette()$text_muted,
+    linewidth = 0.5
+  ) +
+  geom_text_repel(aes(label = label), size = 2.6, max.overlaps = 20) +
+  labs(
+    title = "Market momentum: YoY vs 5-year HPI growth",
+    subtitle = "Above the line = recent overheating / acceleration | Below the line = cooling vs structural trend",
+    x = "HPI growth (5yr)",
+    y = "HPI YoY growth",
+    caption = build_chart_notes(
+      source = "FHFA HPI",
+      vintage = paste0("Latest usable HPI row: ", max(df$housing_hpi_year, na.rm = TRUE))
+    )
+  ) +
+  visual_theme()
+```
+
+## 4. Correlation pass
+
+```{r correlation-summary, echo=FALSE}
+high_cor_tbl |>
+  slice_head(n = 60) |>
+  transmute(
+    `Subject / topic A` = paste(subject_a, topic_a, sep = " / "),
+    `Metric A` = metric_a_label,
+    `Subject / topic B` = paste(subject_b, topic_b, sep = " / "),
+    `Metric B` = metric_b_label,
+    `r` = round(correlation, 2)
+  ) |>
+  kable()
+```
+
+```{r correlation-plot, echo=FALSE}
+high_cor_tbl |>
+  slice_head(n = 25) |>
+  mutate(
+    pair = paste(metric_a_label, metric_b_label, sep = " vs "),
+    pair = reorder(pair, abs(correlation))
+  ) |>
+  ggplot(aes(x = correlation, y = pair, fill = correlation > 0)) +
+  geom_col(alpha = 0.85) +
+  scale_fill_manual(
+    values = c(
+      "TRUE" = visual_palette_defaults()$diverging$better,
+      "FALSE" = visual_palette_defaults()$diverging$worse
+    ),
+    guide = "none"
+  ) +
+  labs(
+    title = "Strongest Opportunity correlation pairs",
+    subtitle = "Only pairs with |r| > 0.75 are shown",
+    x = "Correlation",
+    y = NULL,
+    caption = build_chart_notes(
+      source = "Latest-usable Opportunity frame",
+      vintage = "Mixed vintages by source family"
+    )
+  ) +
+  visual_theme()
+```
+
+## 5. PCA diagnostic
+
+```{r pca-scree, echo=FALSE}
+tibble(
+  component = seq_along(pca_result$sdev),
+  variance_explained = (pca_result$sdev^2) / sum(pca_result$sdev^2)
+) |>
+  mutate(cumulative = cumsum(variance_explained)) |>
+  ggplot(aes(x = component, y = variance_explained)) +
+  geom_col(fill = visual_palette_defaults()$highlight$strength, alpha = 0.85) +
+  geom_line(
+    aes(y = cumulative),
+    color = visual_neutral_palette()$text_muted,
+    linewidth = 0.6
+  ) +
+  geom_point(
+    aes(y = cumulative),
+    color = visual_neutral_palette()$text_muted,
+    size = 2
+  ) +
+  scale_y_continuous(labels = label_percent()) +
+  labs(
+    title = "PCA scree plot - Opportunity metrics",
+    subtitle = "Bars = variance per component | Line = cumulative variance explained",
+    x = "Principal component",
+    y = "Variance explained",
+    caption = build_chart_notes(
+      source = "Latest-usable Opportunity frame",
+      vintage = "Mixed vintages by source family"
+    )
+  ) +
+  visual_theme()
+```
+
+```{r topic-pca, echo=FALSE}
+topic_pca_tbl |>
+  arrange(subject, topic) |>
+  kable()
+```
+
+## 6. Recommendations by subject, topic, and KPI
+
+```{r decision-tables, echo=FALSE}
+subject_decision_tbl |>
+  mutate(avg_coverage_pct = percent(avg_coverage_pct, accuracy = 0.1)) |>
+  kable()
+
+topic_decision_tbl |>
+  mutate(avg_coverage_pct = percent(avg_coverage_pct, accuracy = 0.1)) |>
+  kable()
+```
+
+```{r decisions, echo=FALSE, results='asis'}
+for (subject_name in unique(metric_catalog$subject)) {
+  subject_row <- subject_decision_tbl |>
+    filter(subject == subject_name)
+
+  cat(glue("<h3>{subject_name}</h3>\n"))
+  cat(glue("<p><strong>Subject decision:</strong> {subject_row$subject_decision}<br><strong>Coverage read:</strong> average topic coverage = {percent(subject_row$avg_coverage_pct, accuracy = 0.1)}</p>\n"))
+
+  subject_topics <- topic_decision_tbl |>
+    filter(subject == subject_name)
+
+  for (i in seq_len(nrow(subject_topics))) {
+    topic_row <- subject_topics[i, ]
+    topic_metrics <- kpi_decision_tbl |>
+      filter(subject == subject_name, topic == topic_row$topic)
+
+    core_kpis <- topic_metrics |>
+      filter(recommendation == "Core candidate") |>
+      pull(metric_label)
+
+    redundant_kpis <- topic_metrics |>
+      filter(recommendation %in% c("Redundant - keep one lead KPI", "Keep, but de-duplicate")) |>
+      pull(metric_label)
+
+    optional_kpis <- topic_metrics |>
+      filter(recommendation == "Optional sensitivity") |>
+      pull(metric_label)
+
+    proxy_kpis <- topic_metrics |>
+      filter(recommendation == "Optional sensitivity / proxy") |>
+      pull(metric_label)
+
+    baseline_kpis <- topic_metrics |>
+      filter(recommendation == "Baseline context only") |>
+      pull(metric_label)
+
+    drop_kpis <- topic_metrics |>
+      filter(recommendation == "Drop") |>
+      pull(metric_label)
+
+    cat(glue("<h4>{topic_row$topic}</h4>\n"))
+    cat(glue("<p><strong>Topic decision:</strong> {topic_row$topic_decision}<br><strong>Lead KPIs by variance:</strong> {topic_row$lead_kpis}<br><strong>Topic evidence:</strong> coverage = {percent(topic_row$avg_coverage_pct, accuracy = 0.1)}; high-variance metrics = {topic_scorecard_tbl$high_variance_metrics[match(topic_row$topic, topic_scorecard_tbl$topic)]}; topic PCA read = {topic_row$topic_dimensionality}</p>\n"))
+
+    if (length(core_kpis) > 0) {
+      cat("<p><strong>Core KPIs:</strong></p>\n<ul>\n")
+      for (metric_name in core_kpis) {
+        cat(glue("<li>{metric_name}</li>\n"))
+      }
+      cat("</ul>\n")
+    }
+
+    if (length(redundant_kpis) > 0) {
+      cat("<p><strong>Redundant / consolidate KPIs:</strong></p>\n<ul>\n")
+      for (metric_name in redundant_kpis) {
+        cat(glue("<li>{metric_name}</li>\n"))
+      }
+      cat("</ul>\n")
+    }
+
+    if (length(optional_kpis) > 0) {
+      cat("<p><strong>Optional sensitivity KPIs:</strong></p>\n<ul>\n")
+      for (metric_name in optional_kpis) {
+        cat(glue("<li>{metric_name}</li>\n"))
+      }
+      cat("</ul>\n")
+    }
+
+    if (length(proxy_kpis) > 0) {
+      cat("<p><strong>Proxy KPIs:</strong></p>\n<ul>\n")
+      for (metric_name in proxy_kpis) {
+        cat(glue("<li>{metric_name}</li>\n"))
+      }
+      cat("</ul>\n")
+    }
+
+    if (length(baseline_kpis) > 0) {
+      cat("<p><strong>Baseline / context KPIs:</strong></p>\n<ul>\n")
+      for (metric_name in baseline_kpis) {
+        cat(glue("<li>{metric_name}</li>\n"))
+      }
+      cat("</ul>\n")
+    }
+
+    if (length(drop_kpis) > 0) {
+      cat("<p><strong>Drop from default Phase 1 set:</strong></p>\n<ul>\n")
+      for (metric_name in drop_kpis) {
+        cat(glue("<li>{metric_name}</li>\n"))
+      }
+      cat("</ul>\n")
+    }
+  }
+}
+
+cat(glue("<p><strong>PCA read:</strong> <code>{component_count_80}</code> components explain at least 80% of the variance in the surviving Opportunity set.</p>\n"))
+cat("<p><strong>Working interpretation:</strong></p>\n<ul>\n")
+cat("<li>Opportunity is broad enough to justify three separate subjects, but the largest redundancy problem sits inside the business-and-industry families where sector-share, wage, and specialization metrics overlap heavily.</li>\n")
+cat("<li>The biggest source-quality caution is vintage mismatch: growth, HHI, BFS-rate, and CBP fields are usable only when we deliberately pull their latest non-null rows rather than blindly taking the 2024 record.</li>\n")
+cat("<li>Resident and market time-horizon diagnostics should be treated as momentum checks, not as a reason to automatically carry both the short-run and long-run version of every KPI.</li>\n")
+cat("</ul>\n")
+```
+
+## Working read
+
+This Opportunity pass should be read in order:
+
+1. decide whether the **subject** belongs in Opportunity
+2. decide whether the **topic** is recurring, thin, redundant, baseline-only, proxy-only, or weak
+3. decide which **KPI** earns the default slot once we account for coverage, variance, overlap, and source vintage
+
+That matters here because Opportunity is more source-misaligned than Character or Livability:
+
+- `Resident Opportunity` mixes true growth fields with level and inclusion fields that live on different usable vintages.
+- `Market / Investor Opportunity` is relatively clean, but rent momentum is still coverage-constrained and AGI flows remain partial.
+- `Business & Industry Opportunity` is analytically rich, but it is also the easiest place to over-count the same structure signal through employment shares, GDP shares, establishment shares, location quotients, and sector wage families.
+
+**Update `exploration/intelligence_framework/docs/metric_selections.md` after reviewing this notebook output.**
+
+```{r cleanup, include=FALSE}
+dbDisconnect(con)
+```

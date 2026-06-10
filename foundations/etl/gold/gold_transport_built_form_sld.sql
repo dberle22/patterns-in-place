@@ -1,6 +1,6 @@
 -- Gold EPA Smart Location baseline mart
 -- Grain: one row per geo_level + geo_id + year
--- Current scope: county-only, 2021 baseline
+-- Current scope: county, CBSA, and state rows for the 2021 baseline
 
 create or replace table patterns_in_place.gold.transport_built_form_sld as
 select

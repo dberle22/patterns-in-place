@@ -30,8 +30,9 @@ The basic makeup of an area.
     - Columns: `pct_foreign_born`, `pct_non_citizen`
 - Population Density
     - Source: ACS
-    - Gold: `gold.population_demographics`
-    - Notes: More relevant for in-market analyses; use `pop_weighted_density_sqmi` once confirmed in Gold spine
+    - Gold: `gold.transport_built_form_wide`
+    - Columns: `pop_weighted_density_sqmi`, `gross_density_sqmi`
+    - Notes: More relevant for in-market analyses. `pop_weighted_density_sqmi` weights density by where people actually live.
 
 ### Social Fabric & civic identity
 How engaged the population is in a shared civic responsibility.
@@ -42,8 +43,9 @@ How engaged the population is in a shared civic responsibility.
 - Social Capital (Economic Connectedness, Civic Engagement)
     - Source: Opportunity Insights Social Capital Atlas
     - Gold: `gold.social_fabric_wide`
-    - Columns: `economic_connectedness`, `civic_engagement_volunteering_rate`, `civic_organizations_per_1000`, `cohesion_clustering`
-    - Notes: Static baseline (2022 release). Best available proxy for cross-class social ties and civic density.
+    - Columns: `economic_connectedness`, `friending_bias`, `cohesion_clustering`, `cohesion_support_ratio`, `civic_engagement_volunteering_rate`, `civic_organizations_per_1000`
+    - Additional sub-indices: `childhood_economic_connectedness`, `neighborhood_economic_connectedness`, `childhood_friending_bias`, `neighborhood_friending_bias`
+    - Notes: Static baseline (2022 release). `economic_connectedness` is the headline cross-class social ties measure. `friending_bias` captures the degree to which low-SES individuals friend high-SES individuals less than expected.
 - Nonprofits per 100k
     - Source: IRS Business Master File
     - Gold: `gold.social_fabric_wide`
@@ -53,17 +55,19 @@ How engaged the population is in a shared civic responsibility.
     - Source: ACS (via migration family)
     - Gold: `gold.migration_wide`
     - Columns: `pct_same_house`, `mobility_rate`, `pct_moved_same_cnty`, `pct_moved_same_st`, `pct_moved_diff_st`, `pct_moved_abroad`
-- Residential Stability (IRS AGI flows)
+- Residential Stability (IRS migration direction / churn)
     - Source: IRS Migration
     - Gold: `gold.migration_wide`
-    - Columns: `irs_net_migration`, `irs_net_migration_rate`, `irs_inflow_agi`, `irs_outflow_agi`, `irs_net_agi`
+    - Columns: `irs_net_migration`, `irs_net_migration_rate`
+    - Notes: Keep the migration-count and migration-rate signals in Character as rootedness / churn indicators. Move the AGI flow fields to Opportunity, where they fit better as market / investor momentum signals.
 - Single-person household share
     - Source: ACS B11001
     - Gold: `gold.social_infra_wide`
     - Columns: `pct_hh_single_person`
 - Single-parent family share
     - Source: ACS B11003
-    - Status: Pending — B11003 not yet staged in `staging.acs_social_infra_*`. Requires `get_acs_social_infra.R` refresh. Track 19.3.2b open.
+    - Gold: `gold.social_infra_wide`
+    - Columns: `pct_family_single_parent`
 - Social Associations per 10k
     - Source: CHR
     - Gold: `gold.health_wide`
@@ -115,7 +119,13 @@ Can someone afford to live here?
 - Housing Cost Burden
     - Source: HUD CHAS
     - Gold: `gold.affordability_wide`
-    - Columns: `pct_cost_burden_30plus`, `pct_cost_burden_50plus` (renter and owner breakdowns available)
+    - Columns: `pct_cost_burdened`, `pct_severely_cost_burdened`, `pct_renter_severely_cost_burdened`
+    - Notes: These are the CHAS burden fields. They are not the same as the recurring ACS rent-burden panel below.
+- Rent Burden
+    - Source: ACS
+    - Gold: `gold.affordability_wide` (also present in `gold.housing_core_wide`)
+    - Columns: `pct_rent_burden_30plus`, `pct_rent_burden_50plus`
+    - Notes: Use `pct_rent_burden_30plus` as the recurring CBSA affordability-burden input for Phase 1.
 - Cost of Living (RPP-adjusted)
     - Source: BEA RPP
     - Gold: `gold.affordability_wide`
@@ -124,12 +134,18 @@ Can someone afford to live here?
 - Poverty Rate
     - Source: ACS B17001
     - Gold: `gold.economics_income_wide`
-    - Columns: `pov_rate`
-    - Notes: Level is query-ready. Trend columns (`pov_rate_change_1yr`, `pov_rate_change_5yr`) are derivable from the time series — Track 19.5.1 open.
-- Permit Activity (supply signal)
-    - Source: BPS
-    - Gold: `gold.affordability_wide`
-    - Columns: `permits_per_1000_housing_units`, `permits_per_1000_population`, `permits_share_multifam_units`
+    - Columns: `pov_rate`, `pov_rate_change_1yr`, `pov_rate_change_5yr`
+    - Notes: Also available in `gold.housing_core_wide` as `pov_rate` (level only).
+- Housing Supply
+    - Source: BPS (building permits)
+    - Gold: `gold.housing_core_wide` (primary — full permit detail); `gold.affordability_wide` (headline rates only)
+    - Columns: `permits_per_1000_housing_units`, `permits_per_1000_population`, `permits_share_multifam_units`, `permits_share_units_5_plus`, `permits_avg_units_per_bldg`, `permits_structure_mix`
+    - Notes: `housing_core_wide` has the full permit breakdown including `permits_multifam_units`, `permits_avg_units_per_mf_bldg`, `permits_total_units`. Use `permits_share_multifam_units` + `permits_avg_units_per_bldg` as the density-of-supply signal.
+- Housing Structure Mix
+    - Source: ACS
+    - Gold: `gold.housing_core_wide`
+    - Columns: `pct_struct_multifam`, `pct_struct_sf_det`, `pct_struct_small_mf`, `pct_struct_mid_mf`, `pct_struct_large_mf`, `pct_struct_mobile`
+    - Notes: Structural composition of existing housing stock — distinct from permit activity (future supply).
 
 ### Health
 How healthy is this community?
@@ -204,7 +220,7 @@ How healthy is this community?
 - Mean Travel Time to Work
     - Source: ACS
     - Gold: `gold.transport_built_form_wide`
-    - Columns: `mean_travel_time_min`
+    - Columns: `mean_travel_time`
 - Transit Commute Share
     - Source: ACS
     - Gold: `gold.transport_built_form_wide`
@@ -221,10 +237,11 @@ How healthy is this community?
     - Source: ACS
     - Gold: `gold.population_demographics`
     - Columns: `pop_total` (density derivable at CBSA/county grain using area from dim_geo)
-- Multi-Family Housing Share
+- Vacancy Rate
     - Source: ACS
-    - Gold: `gold.social_infra_wide` or `gold.housing_core_wide`
-    - Columns: `pct_struct_multifam` — confirm exact column in housing_core_wide
+    - Gold: `gold.housing_core_wide`
+    - Columns: `vacancy_rate`
+    - Notes: Slack in the housing market. High vacancy = soft market; low vacancy = supply-constrained.
 - Broadband Access
     - Source: ACS B28002
     - Gold: `gold.social_infra_wide`
@@ -301,7 +318,7 @@ Trajectory-focused. About economic momentum, market signals, and whether conditi
 - Poverty Rate Change
     - Source: ACS B17001
     - Gold: `gold.economics_income_wide`
-    - Columns: `pov_rate` (level, query-ready); `pov_rate_change_1yr`, `pov_rate_change_5yr` (pending Track 19.5.1 — derived columns, no new ingestion needed)
+    - Columns: `pov_rate`, `pov_rate_change_1yr`, `pov_rate_change_5yr`
 - Gini Index (Income Inequality)
     - Source: ACS
     - Gold: `gold.economics_income_wide`
@@ -320,20 +337,21 @@ Trajectory-focused. About economic momentum, market signals, and whether conditi
 - Rent Growth
     - Source: Zillow ZORI
     - Gold: `gold.housing_market_wide`
-    - Columns: confirm ZORI growth columns in `gold__housing_market_wide.md`
+    - Columns: `zori_annual_avg`, `zori_annual_avg_yoy_pct`, `zori_december`, `zori_december_yoy_pct`
 - Population Growth
     - Source: ACS
     - Gold: `gold.population_demographics`
     - Columns: `pop_growth_1yr`, `pop_growth_5yr`, `pop_cagr_5yr`
-- Net Migration (AGI)
+- Migration & Wealth Flows
     - Source: IRS
     - Gold: `gold.migration_wide`
     - Columns: `irs_net_migration_rate`, `irs_net_agi`, `irs_inflow_agi`, `irs_outflow_agi`
-    - Notes: `irs_net_agi` is the key investor signal — are high-income households net moving in or out?
-- Permit Activity
+    - Notes: `irs_net_agi` is the key investor signal — are high-income households net moving in or out? `irs_net_migration_rate` stays relevant here as a market-demand companion to the wealth-flow story, even though it is also useful in Character as a migration-churn signal.
+- Permit Activity (supply momentum)
     - Source: BPS
-    - Gold: `gold.affordability_wide`
-    - Columns: `permits_per_1000_housing_units`, `permits_per_1000_population`, `permits_share_multifam_units`
+    - Gold: `gold.housing_core_wide` (primary); `gold.affordability_wide` (headline rates)
+    - Columns: `permits_per_1000_housing_units`, `permits_per_1000_population`, `permits_share_multifam_units`, `permits_share_units_5_plus`
+    - Notes: Forward-looking supply signal. Cross-reference with `vacancy_rate` and `hpi_yoy_pct` to distinguish supply-response vs. speculative building.
 
 ### Business & Industry Opportunity
 
@@ -369,10 +387,10 @@ Trajectory-focused. About economic momentum, market signals, and whether conditi
     - Notes: Track 12 complete. 2010–2023 county + derived CBSA. Latest-year ZIP detail in separate `silver.cbp_zip`.
 - Location Quotient by Sector
     - Source: BLS QCEW (derived from industry_wide)
-    - Gold: Not yet computed
-    - Status: Pending Track 19.5.3 — derivable as `pct_qcew_private_emp_* / national_pct_qcew_private_emp_*` by joining `geo_level = 'us'` row. No new ingestion needed.
+    - Gold: `gold.economics_industry_wide`
+    - Columns: `lq_ag_mining`, `lq_arts_accomm_food`, `lq_construction`, `lq_educ_health`, `lq_finance_real`, `lq_information`, `lq_manufacturing`, `lq_other_services`, `lq_professional`, `lq_retail`, `lq_transport_util`, `lq_wholesale`
 - Education Attainment Trend
     - Source: ACS
     - Gold: `gold.population_demographics`
-    - Columns: `pct_ba_plus` (level); `pct_ba_plus_change_5yr` pending Track 19.5.2 (derived column, no new ingestion needed)
+    - Columns: `pct_ba_plus`, `pct_ba_plus_change_5yr`
     - Notes: The human capital accumulation signal. Level lives in Character/Demographics; 5yr change belongs here as a leading indicator of industry mix trajectory.
