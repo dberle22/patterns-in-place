@@ -132,29 +132,29 @@ metric_catalog <- tibble::tribble(
   "pct_struct_mid_mf", "Affordability", "Housing structure mix", "ACS housing stock", "direct", "Existing stock composition, distinct from permits.",
   "pct_struct_large_mf", "Affordability", "Housing structure mix", "ACS housing stock", "direct", "Existing stock composition, distinct from permits.",
   "pct_struct_mobile", "Affordability", "Housing structure mix", "ACS housing stock", "direct", "Existing stock composition, distinct from permits.",
-  "life_expectancy", "Health", "Health outcomes", "CHR health", "direct", "Headline CHR health outcome.",
-  "premature_death_rate", "Health", "Health outcomes", "CHR health", "direct", "Headline CHR mortality outcome.",
-  "child_mortality_rate", "Health", "Health outcomes", "CHR health", "direct", "Child mortality coverage is decent but below the headline measures.",
-  "infant_mortality_rate", "Health", "Health outcomes", "CHR health", "direct", "Important but materially sparse at CBSA scale.",
-  "drug_overdose_death_rate", "Health", "Health behavior and access", "CHR health", "direct", "Important contemporary health-risk signal.",
-  "pct_uninsured_adults", "Health", "Health behavior and access", "CHR health", "direct", "Insurance access lens.",
-  "preventable_hospital_stay_rate", "Health", "Health behavior and access", "CHR health", "direct", "Healthcare-system access / quality lens.",
-  "primary_care_ratio", "Health", "Health behavior and access", "CHR health", "direct", "Primary care access ratio.",
-  "mental_health_provider_ratio", "Health", "Health behavior and access", "CHR health", "direct", "Mental-health access ratio.",
-  "physical_inactivity", "Health", "Health behavior and access", "CHR health", "direct", "Behavioral health lens.",
-  "adult_obesity", "Health", "Health behavior and access", "CHR health", "direct", "Behavioral health lens.",
-  "poor_mental_health_days", "Health", "Health behavior and access", "CHR health", "direct", "Mental-health outcome lens.",
-  "food_insecurity_rate", "Health", "Health behavior and access", "CHR health", "direct", "Household stress / nutrition lens.",
-  "child_care_cost_burden_rate", "Health", "Health behavior and access", "CHR health", "direct", "Household stress / care infrastructure lens.",
-  "homicide_rate", "Safety", "Violence and injury", "CHR health", "direct", "Violence outcome lens, but coverage is limited.",
-  "firearm_fatality_rate", "Safety", "Violence and injury", "CHR health", "direct", "Broader violence / self-harm / accident exposure lens.",
-  "motor_vehicle_crash_rate", "Safety", "Violence and injury", "CHR health", "direct", "Transport safety lens.",
+  "life_expectancy", "Health & Safety", "Health outcomes", "CHR health", "direct", "Headline CHR health outcome.",
+  "premature_death_rate", "Health & Safety", "Health outcomes", "CHR health", "direct", "Headline CHR mortality outcome.",
+  "child_mortality_rate", "Health & Safety", "Health outcomes", "CHR health", "direct", "Child mortality coverage is decent but below the headline measures.",
+  "infant_mortality_rate", "Health & Safety", "Health outcomes", "CHR health", "direct", "Important but materially sparse at CBSA scale.",
+  "drug_overdose_death_rate", "Health & Safety", "Health behavior and access", "CHR health", "direct", "Important contemporary health-risk signal.",
+  "pct_uninsured_adults", "Health & Safety", "Health behavior and access", "CHR health", "direct", "Insurance access lens.",
+  "preventable_hospital_stay_rate", "Health & Safety", "Health behavior and access", "CHR health", "direct", "Healthcare-system access / quality lens.",
+  "primary_care_ratio", "Health & Safety", "Health behavior and access", "CHR health", "direct", "Primary care access ratio.",
+  "mental_health_provider_ratio", "Health & Safety", "Health behavior and access", "CHR health", "direct", "Mental-health access ratio.",
+  "physical_inactivity", "Health & Safety", "Health behavior and access", "CHR health", "direct", "Behavioral health lens.",
+  "adult_obesity", "Health & Safety", "Health behavior and access", "CHR health", "direct", "Behavioral health lens.",
+  "poor_mental_health_days", "Health & Safety", "Health behavior and access", "CHR health", "direct", "Mental-health outcome lens.",
+  "food_insecurity_rate", "Health & Safety", "Health behavior and access", "CHR health", "direct", "Household stress / nutrition lens.",
+  "child_care_cost_burden_rate", "Health & Safety", "Health behavior and access", "CHR health", "direct", "Household stress / care infrastructure lens.",
+  "homicide_rate", "Health & Safety", "Violence and injury", "CHR health", "direct", "Violence outcome lens, but coverage is limited.",
+  "firearm_fatality_rate", "Health & Safety", "Violence and injury", "CHR health", "direct", "Broader violence / self-harm / accident exposure lens.",
+  "motor_vehicle_crash_rate", "Health & Safety", "Violence and injury", "CHR health", "direct", "Transport safety lens.",
   "mean_travel_time", "Access & Infrastructure", "Commute and mode access", "ACS transport", "direct", "Recurring commute burden signal.",
   "pct_commute_transit", "Access & Infrastructure", "Commute and mode access", "ACS transport", "direct", "Transit use lens.",
   "pct_commute_walk", "Access & Infrastructure", "Commute and mode access", "ACS transport", "direct", "Walk mode share lens.",
   "pct_commute_wfh", "Access & Infrastructure", "Commute and mode access", "ACS transport", "direct", "Hybrid / remote access lens.",
-  "pct_hh_0_vehicles", "Access & Infrastructure", "Vehicle and housing access", "ACS transport", "direct", "Vehicle dependence / transit need lens.",
-  "vacancy_rate", "Access & Infrastructure", "Vehicle and housing access", "ACS housing stock", "direct", "Housing-market slack lens that also matters for access.",
+  "pct_hh_0_vehicles", "Access & Infrastructure", "Vehicle access", "ACS transport", "direct", "Vehicle dependence / transit need lens.",
+  "vacancy_rate", "Access & Infrastructure", "Housing slack", "ACS housing stock", "direct", "Housing-market slack lens that also matters for access.",
   "pct_broadband_subscription", "Access & Infrastructure", "Digital access", "ACS broadband", "direct", "Digital infrastructure lens.",
   "pct_no_internet_access", "Access & Infrastructure", "Digital access", "ACS broadband", "direct", "Digital exclusion counterpart.",
   "walkability_index", "Access & Infrastructure", "Walkability and transit baseline", "EPA SLD", "baseline", "Single-vintage baseline promoted because the metric map names the topic but not the KPIs.",
@@ -189,10 +189,11 @@ topic_inventory_notes <- tibble::tribble(
   ~subject, ~topic, ~status, ~note,
   "Access & Infrastructure", "Walkability and transit baseline", "live baseline", "Metric map named the topic but did not pin concrete KPIs. This notebook uses `walkability_index`, `transit_service_density`, and `jobs_access_45min_transit` from `gold.transport_built_form_sld` as the first-pass live stand-ins.",
   "Access & Infrastructure", "Food access baseline", "live baseline", "Metric map named the topic but did not pin concrete KPIs. This notebook uses USDA baseline shares from `gold.food_access_wide` as the first-pass live stand-ins.",
-  "Access & Infrastructure", "Built-form proxy", "proxy", "Metric map points to density derivation via `dim_geo`, but live Gold already exposes recurring built-form density in `gold.transport_built_form_wide`. Keep as a proxy topic, not a primary Livability axis.",
+  "Access & Infrastructure", "Built-form proxy", "proxy", "Metric map points to density derivation via `dim_geo`, but live Gold already exposes recurring built-form density in `gold.transport_built_form_wide`. Keep as a proxy topic and explicitly test overlap against housing structure and vacancy.",
   "Education access", "K-12 learning quality", "deferred", "Stanford SEDA remains deferred in the metric map and is not part of the live Gold frame.",
   "Physical Environment", "Air pollution", "mixed direct + proxy", "Use EPA AQI and EJScreen as the direct source family. Keep CHR `air_pollution_pm25` only as a proxy comparison field.",
-  "Physical Environment", "Climate hazard risk", "mixed direct + proxy", "Use FEMA NRI as the direct source family. Keep CHR `adverse_climate_events` only as a proxy comparison field."
+  "Physical Environment", "Climate hazard risk", "mixed direct + proxy", "Use FEMA NRI as the direct source family. Keep CHR `adverse_climate_events` only as a proxy comparison field.",
+  "Health & Safety", "Health & Safety weighting note", "modeling note", "Use one consolidated Health & Safety subject in modeling so the Safety topic does not get an automatic extra subject vote."
 )
 ```
 
@@ -219,13 +220,19 @@ These rules are used throughout the notebook and should be read as screens, not 
 - **Correlation**: above `|r| = 0.75` means we should not carry every KPI at full weight inside the same topic.
 - **PCA**: diagnostic only. It tells us whether a topic is really multi-dimensional after the basic screens.
 
+This pass also uses a few explicit judgment calls:
+
+- recurring series beat single-vintage baselines when the concepts are very similar
+- single-vintage baseline topics can still stay in the Livability frame if they are conceptually strong and not too redundant
+- Physical Environment stays in scope even with weaker coverage because it opens a genuinely different line of thinking
+- Safety stays visible as its own topic family, but it now rolls up under one broader `Health & Safety` subject
+
 ## Phase 1 inventory
 
-Livability is being treated as six subjects in this pass:
+Livability is being treated as five subjects in this pass:
 
 - `Affordability`
-- `Health`
-- `Safety`
+- `Health & Safety`
 - `Access & Infrastructure`
 - `Education access`
 - `Physical Environment`
@@ -828,6 +835,30 @@ kpi_decision_tbl <- variance_tbl |>
     max_abs_correlation = coalesce(max_abs_correlation, 0),
     recommendation = case_when(
       metric == "pct_rent_burden_30plus" ~ "Core candidate",
+      metric %in% c(
+        "permits_per_1000_housing_units",
+        "permits_share_units_5_plus",
+        "premature_death_rate",
+        "firearm_fatality_rate",
+        "motor_vehicle_crash_rate",
+        "walkability_index",
+        "jobs_access_45min_transit",
+        "pct_population_low_income_low_access_1_10",
+        "unhealthy_days",
+        "fema_risk_score"
+      ) ~ "Core candidate",
+      metric %in% c(
+        "homicide_rate",
+        "pct_commute_transit",
+        "rpp_real_pc_income",
+        "rent_to_income",
+        "child_mortality_rate",
+        "primary_care_ratio",
+        "permits_avg_units_per_bldg",
+        "ejs_diesel_pm",
+        "ejs_wastewater_discharge",
+        "pop_weighted_density_sqmi"
+      ) ~ "Optional sensitivity",
       role == "baseline" ~ "Optional sensitivity",
       role == "proxy" ~ "Optional sensitivity",
       coverage_pct < 0.75 ~ "Drop",
@@ -854,6 +885,13 @@ topic_decision_tbl <- kpi_decision_tbl |>
   left_join(topic_pca_tbl, by = c("subject", "topic")) |>
   mutate(
     topic_decision = case_when(
+      topic == "Housing supply" ~ "Keep as multi-KPI topic",
+      topic == "Health outcomes" ~ "Collapse to one lead KPI",
+      topic == "Violence and injury" ~ "Keep as multi-KPI topic",
+      topic %in% c("Walkability and transit baseline", "Food access baseline") ~ "Keep as baseline topic",
+      topic == "Built-form proxy" ~ "Keep as proxy topic",
+      topic %in% c("Air pollution", "Climate hazard risk") ~ "Keep with coverage caution",
+      topic == "Hazard exposure" ~ "Sensitivity-only topic",
       core_metrics == 0 & optional_metrics == 0 & redundant_metrics == 0 ~ "Drop",
       core_metrics == 0 & optional_metrics > 0 ~ "Sensitivity-only topic",
       core_metrics == 1 & redundant_metrics == 0 ~ "Keep as one-KPI topic",
@@ -868,14 +906,18 @@ subject_decision_tbl <- topic_decision_tbl |>
   summarise(
     topic_count = n(),
     kept_topics = sum(topic_decision != "Drop"),
-    strong_topics = sum(topic_decision %in% c("Keep as one-KPI topic", "Collapse to one lead KPI", "Keep as multi-KPI topic")),
+    strong_topics = sum(topic_decision %in% c("Keep as one-KPI topic", "Collapse to one lead KPI", "Keep as multi-KPI topic", "Keep as baseline topic", "Keep as proxy topic", "Keep with coverage caution")),
     avg_coverage_pct = mean(avg_coverage_pct, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(
     subject_decision = case_when(
+      subject == "Physical Environment" ~ "Keep subject in Livability, but with coverage caution",
+      subject == "Health & Safety" ~ "Keep subject in Livability",
       strong_topics == 0 ~ "Drop subject from Phase 1 core set",
       strong_topics == 1 ~ "Keep subject, but it is thin",
       TRUE ~ "Keep subject in Livability"
-    ),
-    .groups = "drop"
+    )
   ) |>
   arrange(subject)
 
@@ -886,6 +928,116 @@ df_pca <- df |>
 
 pca_result <- prcomp(df_pca, center = FALSE, scale. = FALSE)
 component_count_80 <- which(cumsum((pca_result$sdev^2) / sum(pca_result$sdev^2)) >= 0.8)[1]
+
+recommended_bundle_tbl <- tibble::tribble(
+  ~subject, ~topic, ~metric, ~bundle_tier,
+  "Affordability", "Price pressure", "value_to_income", "core_recurring",
+  "Affordability", "Housing burden", "pct_rent_burden_30plus", "core_recurring",
+  "Affordability", "Poverty context", "pov_rate", "core_recurring",
+  "Affordability", "Housing supply", "permits_per_1000_housing_units", "core_recurring",
+  "Affordability", "Housing supply", "permits_share_units_5_plus", "core_recurring",
+  "Affordability", "Housing structure mix", "pct_struct_mobile", "core_recurring",
+  "Affordability", "Housing structure mix", "pct_struct_small_mf", "core_recurring",
+  "Affordability", "Housing structure mix", "pct_struct_mid_mf", "core_recurring",
+  "Health & Safety", "Health outcomes", "premature_death_rate", "core_recurring",
+  "Health & Safety", "Health behavior and access", "mental_health_provider_ratio", "core_recurring",
+  "Health & Safety", "Health behavior and access", "drug_overdose_death_rate", "core_recurring",
+  "Health & Safety", "Health behavior and access", "pct_uninsured_adults", "core_recurring",
+  "Health & Safety", "Health behavior and access", "preventable_hospital_stay_rate", "core_recurring",
+  "Health & Safety", "Violence and injury", "firearm_fatality_rate", "core_recurring",
+  "Health & Safety", "Violence and injury", "motor_vehicle_crash_rate", "core_recurring",
+  "Access & Infrastructure", "Commute and mode access", "pct_commute_walk", "core_recurring",
+  "Access & Infrastructure", "Commute and mode access", "pct_commute_wfh", "core_recurring",
+  "Access & Infrastructure", "Housing slack", "vacancy_rate", "core_recurring",
+  "Access & Infrastructure", "Vehicle access", "pct_hh_0_vehicles", "core_recurring",
+  "Access & Infrastructure", "Digital access", "pct_no_internet_access", "core_recurring",
+  "Access & Infrastructure", "Walkability and transit baseline", "walkability_index", "supplemental_baseline",
+  "Access & Infrastructure", "Walkability and transit baseline", "jobs_access_45min_transit", "supplemental_baseline",
+  "Access & Infrastructure", "Food access baseline", "pct_population_low_income_low_access_1_10", "supplemental_baseline",
+  "Access & Infrastructure", "Built-form proxy", "pop_weighted_density_sqmi", "supplemental_baseline",
+  "Physical Environment", "Air pollution", "unhealthy_days", "supplemental_caution",
+  "Physical Environment", "Climate hazard risk", "fema_risk_score", "supplemental_caution"
+) |>
+  mutate(metric_label = unname(metric_labels[metric]))
+
+subject_kpi_count_tbl <- recommended_bundle_tbl |>
+  count(subject, bundle_tier, name = "kpi_count") |>
+  pivot_wider(names_from = bundle_tier, values_from = kpi_count, values_fill = 0) |>
+  mutate(total = core_recurring + supplemental_baseline + supplemental_caution) |>
+  arrange(subject)
+
+topic_weight_tbl <- recommended_bundle_tbl |>
+  distinct(subject, topic, bundle_tier) |>
+  left_join(topic_decision_tbl |> select(subject, topic, avg_coverage_pct), by = c("subject", "topic")) |>
+  mutate(
+    reliability_factor = case_when(
+      bundle_tier == "core_recurring" ~ 1.0,
+      bundle_tier == "supplemental_baseline" ~ 0.75,
+      TRUE ~ 0.60
+    ),
+    raw_topic_weight = avg_coverage_pct * reliability_factor
+  ) |>
+  group_by(subject) |>
+  mutate(
+    topic_weight_within_subject = raw_topic_weight / sum(raw_topic_weight),
+    subject_weight_equal = if_else(subject %in% c("Affordability", "Health & Safety", "Access & Infrastructure", "Physical Environment"), 0.25, 0),
+    total_frame_weight = subject_weight_equal * topic_weight_within_subject
+  ) |>
+  ungroup() |>
+  arrange(subject, desc(total_frame_weight), topic)
+
+topic_lead_metrics_tbl <- tibble::tribble(
+  ~topic, ~lead_metric, ~lead_label,
+  "Price pressure", "value_to_income", "Home value-to-income ratio",
+  "Housing burden", "pct_rent_burden_30plus", "Rent burden 30%+",
+  "Poverty context", "pov_rate", "Poverty rate",
+  "Housing supply", "permits_per_1000_housing_units", "Permits per 1k housing units",
+  "Housing structure mix", "pct_struct_small_mf", "Small multifamily share",
+  "Health outcomes", "premature_death_rate", "Premature death rate",
+  "Health behavior and access", "mental_health_provider_ratio", "Mental health provider ratio",
+  "Violence and injury", "firearm_fatality_rate", "Firearm fatality rate",
+  "Commute and mode access", "pct_commute_walk", "Walk commute share",
+  "Vehicle access", "pct_hh_0_vehicles", "Zero-vehicle household share",
+  "Housing slack", "vacancy_rate", "Vacancy rate",
+  "Digital access", "pct_no_internet_access", "No-internet share",
+  "Walkability and transit baseline", "walkability_index", "Walkability index",
+  "Food access baseline", "pct_population_low_income_low_access_1_10", "Low-income low-access population share",
+  "Built-form proxy", "pop_weighted_density_sqmi", "Population-weighted density",
+  "Air pollution", "unhealthy_days", "Unhealthy AQI days",
+  "Climate hazard risk", "fema_risk_score", "FEMA composite risk score"
+)
+
+topic_lead_df <- df |>
+  select(all_of(topic_lead_metrics_tbl$lead_metric)) |>
+  setNames(topic_lead_metrics_tbl$topic)
+
+topic_lead_cor_matrix <- cor(topic_lead_df, use = "pairwise.complete.obs")
+
+topic_cross_check_tbl <- tibble::tribble(
+  ~question, ~metric_a, ~metric_b,
+  "Price pressure vs housing burden", "value_to_income", "pct_rent_burden_30plus",
+  "Price pressure vs poverty", "value_to_income", "pov_rate",
+  "Housing burden vs poverty", "pct_rent_burden_30plus", "pov_rate",
+  "Housing supply rate vs density supply", "permits_per_1000_housing_units", "permits_share_units_5_plus",
+  "Housing supply vs housing structure", "permits_per_1000_housing_units", "pct_struct_small_mf",
+  "Built form vs vacancy", "pop_weighted_density_sqmi", "vacancy_rate",
+  "Built form vs small multifamily", "pop_weighted_density_sqmi", "pct_struct_small_mf",
+  "Built form vs mid multifamily", "pop_weighted_density_sqmi", "pct_struct_mid_mf",
+  "Walkability vs built form", "walkability_index", "pop_weighted_density_sqmi",
+  "Walkability vs walk commute", "walkability_index", "pct_commute_walk",
+  "Food access vs no internet", "pct_population_low_income_low_access_1_10", "pct_no_internet_access",
+  "Firearm fatalities vs premature death", "firearm_fatality_rate", "premature_death_rate",
+  "Motor vehicle fatalities vs premature death", "motor_vehicle_crash_rate", "premature_death_rate",
+  "Homicide vs premature death", "homicide_rate", "premature_death_rate"
+) |>
+  rowwise() |>
+  mutate(
+    n = sum(complete.cases(df[, c(metric_a, metric_b)])),
+    correlation = cor(df[[metric_a]], df[[metric_b]], use = "complete.obs"),
+    metric_a_label = unname(metric_labels[metric_a]),
+    metric_b_label = unname(metric_labels[metric_b])
+  ) |>
+  ungroup()
 ```
 
 ## Source-family audit
@@ -912,7 +1064,8 @@ topic_inventory_notes |>
 
 - The recurring Livability frame is strongest in `Affordability`, `Access & Infrastructure`, and the main `CHR health` surface.
 - `RPP`, `AQI`, `EJScreen`, and `FEMA` are usable, but each carries real coverage limits at CBSA scale.
-- `HUD CHAS`, `EPA SLD`, and `USDA food access` are analytically useful only as baseline or sensitivity families because they are single-vintage rather than recurring series.
+- `HUD CHAS` is best treated as context rather than a default recurring family.
+- `EPA SLD` and `USDA food access` are single-vintage baselines, but they are still strong enough to keep as explicit Livability topics.
 - `K-12 learning quality` remains deferred and is not silently substituted here.
 
 ## Subject and topic inventory
@@ -1106,7 +1259,143 @@ topic_pca_tbl |>
   kable()
 ```
 
-## 5. Recommendations by subject, topic, and KPI
+## 5. Cross-topic correlation checks
+
+This is the main next-step check from the current Livability pass. The question is not just whether KPIs overlap within a topic, but whether our chosen topics are secretly repeating the same story across the frame.
+
+```{r cross-topic-summary}
+topic_cross_check_tbl |>
+  transmute(
+    Question = question,
+    `Metric A` = metric_a_label,
+    `Metric B` = metric_b_label,
+    `Complete CBSAs` = n,
+    `r` = round(correlation, 2)
+  ) |>
+  kable()
+```
+
+```{r cross-topic-heatmap, fig.width=12, fig.height=10}
+topic_lead_cor_matrix |>
+  as.data.frame() |>
+  tibble::rownames_to_column("topic_a") |>
+  pivot_longer(-topic_a, names_to = "topic_b", values_to = "r") |>
+  ggplot(aes(x = topic_b, y = topic_a, fill = r)) +
+  geom_tile(color = visual_neutral_palette()$background_white) +
+  scale_fill_gradient2(
+    low = visual_palette_defaults()$diverging$worse,
+    mid = visual_palette_defaults()$diverging$midpoint,
+    high = visual_palette_defaults()$diverging$better,
+    midpoint = 0,
+    limits = c(-1, 1),
+    name = "r"
+  ) +
+  labs(
+    title = "Cross-topic correlation matrix using lead Livability KPIs",
+    subtitle = "Used to check overweighting before clustering or score design",
+    x = NULL,
+    y = NULL,
+    caption = build_chart_notes(
+      source = "Lead KPI per Livability topic",
+      vintage = "Mixed vintages by source family"
+    )
+  ) +
+  visual_theme(grid = "none") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+**Read of the cross-topic check**
+
+- `Price pressure` and `Housing burden` are related, but not redundant: r = 0.47.
+- `Price pressure` and `Poverty context` are weakly related: r = -0.16.
+- `Housing burden` and `Poverty context` are also weakly related: r = 0.12.
+- `Built-form proxy` is not overly redundant with `Housing slack` or the deeper housing-structure KPIs:
+  - density vs vacancy: r = -0.30
+  - density vs small multifamily: r = 0.28
+  - density vs mid multifamily: r = 0.37
+- `Walkability` overlaps with density, but not enough to treat them as the same topic:
+  - walkability vs built form: r = 0.65
+- `Safety` behaves much more like a health-adjacent family than an affordability or access family:
+  - firearm fatalities vs premature death: r = 0.74
+  - motor vehicle fatalities vs premature death: r = 0.79
+
+That last point is the strongest case for using one consolidated `Health & Safety` subject in the default clustering or calibration design.
+
+## 6. Weighting design
+
+The cleanest way to avoid overweighting a subject is hierarchical weighting:
+
+1. Standardize each KPI to a z-score.
+2. Average KPIs into a **topic score**.
+3. Average topic scores into a **subject score**.
+4. Average subject scores into the final Livability score or clustering input bundle.
+
+That means a subject with more KPIs does **not** automatically get more influence.
+
+The proposed Livability bundle count is:
+
+```{r subject-kpi-counts}
+subject_kpi_count_tbl |>
+  kable()
+```
+
+For the first modeling pass, use four active subjects with equal top-line weight:
+
+- `Affordability = 0.25`
+- `Health & Safety = 0.25`
+- `Access & Infrastructure = 0.25`
+- `Physical Environment = 0.25`
+
+Inside each subject, weight topics by:
+
+`raw_topic_weight = coverage_share * reliability_factor`
+
+Where:
+
+- recurring core topics use `reliability_factor = 1.00`
+- supplemental baseline topics use `reliability_factor = 0.75`
+- supplemental coverage-caution topics use `reliability_factor = 0.60`
+
+Then normalize within each subject:
+
+`topic_weight_within_subject = raw_topic_weight / sum(raw_topic_weight within subject)`
+
+And apply the equal subject weight:
+
+`final_topic_weight = subject_weight_equal * topic_weight_within_subject`
+
+```{r topic-weight-table}
+topic_weight_tbl |>
+  transmute(
+    subject,
+    topic,
+    bundle_tier,
+    coverage = percent(avg_coverage_pct, accuracy = 0.1),
+    reliability_factor = round(reliability_factor, 2),
+    topic_weight_within_subject = round(topic_weight_within_subject, 3),
+    total_frame_weight = round(total_frame_weight, 3)
+  ) |>
+  kable()
+```
+
+Within each topic, keep KPI weights simple:
+
+- one-KPI topics: the lead KPI gets all topic weight
+- multi-KPI recurring topics: split topic weight equally across the selected core KPIs
+- supplemental baseline / caution topics: split equally across the selected supplemental KPIs
+
+That gives a concrete formula:
+
+`final_kpi_weight = final_topic_weight / number_of_selected_kpis_in_topic`
+
+This is the best default because it is:
+
+- mathematically clean
+- easy to explain
+- robust to uneven KPI counts across subjects
+- flexible enough to include the supplemental baseline topics without letting them dominate
+
+## 7. Recommendations by subject, topic, and KPI
 
 ```{r decision-tables}
 subject_decision_tbl |>
@@ -1189,9 +1478,10 @@ for (subject_name in unique(metric_catalog$subject)) {
 
 cat(glue("<p><strong>PCA read:</strong> <code>{component_count_80}</code> components explain at least 80% of the variance in the surviving Livability set.</p>\n"))
 cat("<p><strong>Working interpretation:</strong></p>\n<ul>\n")
-cat("<li>Livability is not one thing. The audit shows a stable recurring core, a real but partial environment family, and a set of useful baseline-only access topics.</li>\n")
-cat("<li>The main reduction problem is redundancy inside affordability, housing supply, structure mix, education, and air-pollution families.</li>\n")
-cat("<li>The main caution problem is coverage and vintage mismatch, especially for RPP, AQI/EJScreen/FEMA, SLD, food access, and the more specialized CHR mortality and education metrics.</li>\n")
+cat("<li>Livability is not one thing. The audit shows a stable recurring core, a real environment family we should keep in scope, and a set of useful baseline access topics that strengthen the frame.</li>\n")
+cat("<li>The main reduction problem is redundancy inside affordability, housing supply, structure mix, and some health and air-pollution families.</li>\n")
+cat("<li>The main caution problem is coverage and vintage mismatch, especially for RPP, AQI/EJScreen/FEMA, SLD, food access, and the more specialized CHR education metrics.</li>\n")
+cat("<li>The main modeling note is to keep `Health & Safety` consolidated as one subject and to keep checking cross-topic overlap before clustering or score calibration.</li>\n")
 cat("</ul>\n")
 ```
 
@@ -1206,11 +1496,10 @@ This Livability pass should be read in order:
 That matters here because Livability is more uneven than Character:
 
 - `Affordability` is deep and recurring, but it is also the most redundancy-prone subject.
-- `Health` is broad and useful, but some mortality / access sub-KPIs are clearly thinner than the headline measures.
-- `Safety` is analytically real, but it is mostly a one-topic subject right now.
-- `Access & Infrastructure` has a strong recurring ACS core plus useful single-vintage baseline topics that should not be over-weighted.
+- `Health & Safety` is broad and useful, but some mortality / access sub-KPIs are clearly thinner than the headline measures and the safety topic sits close to the main health-outcome line.
+- `Access & Infrastructure` has a strong recurring ACS core plus useful single-vintage baseline topics that should stay visible even if they are weighted carefully.
 - `Education access` is live but thin until better K-12 quality data exists.
-- `Physical Environment` belongs in the frame, but it has to be handled carefully because direct source coverage is partial and the CHR fallback fields are only proxies.
+- `Physical Environment` belongs in the frame and should stay in scope, but it has to be handled carefully because direct source coverage is partial and the CHR fallback fields are only proxies.
 
 **Update `exploration/intelligence_framework/docs/metric_selections.md` after reviewing this notebook output.**
 
