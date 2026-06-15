@@ -1681,6 +1681,7 @@ This memo translates `exploration/intelligence_framework/phase_variable_selectio
 - `lq_professional`
 - `lq_information`
 - `lq_manufacturing`
+- `pct_real_gdp_information`
 
 ### Subject Decisions
 
@@ -1696,6 +1697,7 @@ This memo translates `exploration/intelligence_framework/phase_variable_selectio
 **Contrarian take**
 - Resident Opportunity can drift toward a generalized distress frame if we overweight poverty and labor metrics while underweighting actual mobility.
 - The subject belongs, but it is still missing a true intergenerational mobility metric.
+- That also means some redundant resident KPIs can still stay in the deep-dive layer even when they are trimmed out of the cluster model.
 
 ##### Income growth
 
@@ -1763,6 +1765,7 @@ This memo translates `exploration/intelligence_framework/phase_variable_selectio
 - `3` KPIs clear the variance screen.
 - Topic PCA read: “Multi-dimensional topic.”
 - The strongest live spread is in the change fields, but the level pair is still the cleaner default read for resident opportunity.
+- The overlap check argues for keeping the growth/change fields as descriptive or sensitivity reads rather than promoting all four labor metrics into the core model.
 
 **Contrarian take**
 - The short-run change fields may actually be the more newsworthy opportunity signal.
@@ -1792,6 +1795,7 @@ This memo translates `exploration/intelligence_framework/phase_variable_selectio
 **Contrarian take**
 - `gini_index` may be the most conceptually important resident-opportunity KPI in the topic because it tests whether growth is broadly shared.
 - We are not making it default because its cross-metro spread is weaker than the poverty-change family.
+- The notebook still supports carrying it as a live descriptive companion instead of treating it as dropped.
 
 ##### Intergenerational mobility proxy
 
@@ -1812,6 +1816,7 @@ This memo translates `exploration/intelligence_framework/phase_variable_selectio
 **Contrarian take**
 - Even if it is low-variance at CBSA scale, `economic_connectedness` may be the most structurally important long-run resident-opportunity signal we have.
 - It could still be worth carrying as a shadow KPI in later scoring calibration.
+- For now it should stay out of the cluster model and remain an explicit proxy until Opportunity Atlas lands.
 
 #### Market / Investor Opportunity
 
@@ -1824,6 +1829,7 @@ This memo translates `exploration/intelligence_framework/phase_variable_selectio
 **Contrarian take**
 - Market Opportunity can dominate the frame if we let housing-market heat stand in for all opportunity.
 - It belongs, but it should stay separate from resident improvement rather than becoming the whole story.
+- It is also still missing a commercial real-estate lens, so the subject should be read as housing-heavy rather than fully market-complete.
 
 ##### Home price appreciation
 
@@ -1874,6 +1880,7 @@ This memo translates `exploration/intelligence_framework/phase_variable_selectio
 **Contrarian take**
 - If we require the same coverage cleanliness as the rest of the core frame, rent growth should probably drop to sensitivity-only.
 - We are keeping it because omitting rent entirely would understate investor-side market heat.
+- If we can materially improve rent coverage later, this is one of the first market topics worth revisiting.
 
 ##### Population growth
 
@@ -1958,10 +1965,12 @@ This memo translates `exploration/intelligence_framework/phase_variable_selectio
 **Why keep it**
 - This is the richest Opportunity subject, and it is where the frame gets genuinely forward-looking rather than just reactive.
 - Average topic coverage is `98.2%` after fixing the mixed-vintage pulls.
+- The new cross-topic competition check confirms that the subject should stay, but not as a giant stack of parallel industry families in the cluster model.
 
 **Contrarian take**
 - It is also the easiest subject to overbuild.
 - The notebook shows real structure here, but the memo should compress aggressively or the business subject will overwhelm the whole frame.
+- Redundant business topics should still remain available as descriptive structure reads, even when they are kept out of the default model.
 
 ##### GDP growth
 
@@ -2080,11 +2089,11 @@ This memo translates `exploration/intelligence_framework/phase_variable_selectio
 
 ##### Location quotient specialization
 
-**Topic decision:** Keep as the default business-structure topic
+**Topic decision:** Keep as a core multi-KPI business-structure topic
 
 **Why keep it**
 - Topic coverage is `100.0%`.
-- This is the cleanest way to express sector specialization without carrying every parallel structure family at full weight.
+- This remains one of the strongest business-structure families after the cross-topic competition check, but it is not being treated as the only structure lens by default.
 
 **KPI read**
 - Recommended core KPIs:
@@ -2097,7 +2106,7 @@ This memo translates `exploration/intelligence_framework/phase_variable_selectio
 **Data behind the call**
 - All `12` LQ fields clear the variance screen.
 - Topic PCA read: “Multi-dimensional topic.”
-- The memo chooses a small future-facing specialization bundle rather than carrying the whole LQ wall.
+- The cross-topic shortlist still leaves room for a non-LQ companion KPI, which is why the final business bundle is hybrid rather than LQ-only.
 
 **Contrarian take**
 - The notebook’s raw variance ordering puts some smaller or more cyclical sectors near the top.
@@ -2120,7 +2129,7 @@ This memo translates `exploration/intelligence_framework/phase_variable_selectio
 **Data behind the call**
 - `7` establishment-share metrics clear the variance screen.
 - Topic PCA read: “Multi-dimensional topic.”
-- The problem is not lack of signal; it is duplicate structure signal.
+- The business-topic competition section shows that the family has real information, but most of it is already captured once LQ and the surviving GDP-mix KPI are in the room.
 
 **Contrarian take**
 - Establishment mix may be more stable and less noisy than employment-based sector shares.
@@ -2128,16 +2137,17 @@ This memo translates `exploration/intelligence_framework/phase_variable_selectio
 
 ##### Sector GDP mix
 
-**Topic decision:** Sensitivity-only topic
+**Topic decision:** Keep as a one-KPI topic
 
-**Why keep it as sensitivity**
+**Why keep it**
 - Topic coverage is `96.3%`.
-- The topic is informative, but it overlaps materially with HHI and LQ specialization.
+- This is the one non-LQ business-structure family that still earns a narrow default role after the cross-topic PCA and correlation checks.
 
 **KPI read**
+- Recommended core KPI:
+  - `pct_real_gdp_information`
 - Best sensitivity KPIs:
   - `pct_real_gdp_professional`
-  - `pct_real_gdp_information`
   - `pct_real_gdp_manufacturing`
 - Additional sensitivity KPI:
   - `pct_real_gdp_edu_health`
@@ -2145,11 +2155,11 @@ This memo translates `exploration/intelligence_framework/phase_variable_selectio
 **Data behind the call**
 - `11` GDP-share metrics clear the variance screen.
 - Topic PCA read: “Multi-dimensional topic.”
-- The notebook keeps it alive, but the memo does not want both GDP shares and LQs doing full default duty.
+- The notebook keeps one GDP-mix KPI in the default bundle precisely because the business-topic competition should not automatically resolve to LQ alone.
 
 **Contrarian take**
 - Output mix can matter more than employment mix when we care about value creation rather than job counts.
-- A more productivity-focused version of Opportunity could promote this topic.
+- A more productivity-focused version of Opportunity could promote this topic even further than the memo currently does.
 
 ##### Sector employment mix
 
@@ -2170,7 +2180,7 @@ This memo translates `exploration/intelligence_framework/phase_variable_selectio
 **Data behind the call**
 - All `12` employment-share metrics clear the variance screen.
 - Topic PCA read: “Multi-dimensional topic.”
-- The memo is intentionally not carrying both employment-share and LQ families as equal-default structure blocks.
+- The family survives as a useful descriptive bundle, but it loses the cluster-model competition once LQ and the surviving GDP-mix KPI are retained.
 
 **Contrarian take**
 - Employment shares are more intuitive than location quotients for most readers.
@@ -2196,6 +2206,7 @@ This memo translates `exploration/intelligence_framework/phase_variable_selectio
 - `8` sector wage metrics clear the variance screen.
 - Topic PCA read: “Multi-dimensional topic.”
 - The cleaner default move is to keep one overall wage-level topic in Resident Opportunity and reserve sector wages for pressure tests.
+- The competition check matters here too: wage mix adds interpretation value, but not enough unique structure to justify default inclusion alongside the other business families.
 
 **Contrarian take**
 - Sector wage quality may be exactly what separates a healthy labor market from a hollow one.
@@ -2207,7 +2218,10 @@ This memo translates `exploration/intelligence_framework/phase_variable_selectio
   - `Resident Opportunity`
   - `Market / Investor Opportunity`
   - `Business & Industry Opportunity`
-- The recommended default business-structure family is `Location quotient specialization`; the other sector-share and sector-wage families should stay as sensitivity bundles rather than all entering the core at once.
+- The recommended default business-structure read is a hybrid bundle, not an LQ-only shortcut:
+  - `Location quotient specialization` supplies the cleanest multi-KPI specialization block
+  - `Sector GDP mix` keeps one core companion KPI in `pct_real_gdp_information`
+  - `Establishment mix`, `Sector employment mix`, and `Sector wage mix` stay alive as descriptive or sensitivity bundles rather than default cluster inputs
 - The biggest redundancy problems are:
   - `1yr` vs `5yr` vs `CAGR` variants inside income, population, and GDP growth
   - gross IRS AGI flow fields vs `irs_net_agi`
@@ -2217,7 +2231,7 @@ This memo translates `exploration/intelligence_framework/phase_variable_selectio
 - The weakest current topics are:
   - `Intergenerational mobility proxy`, because it is still only a proxy and shows low variance at CBSA scale
   - `Rent growth`, because the topic-level coverage profile is still weak once the level fields are included
-  - `Establishment mix`, `Sector GDP mix`, `Sector employment mix`, and `Sector wage mix` as default topics, because they are all individually real but collectively too redundant
+  - `Establishment mix`, `Sector employment mix`, and `Sector wage mix` as default topics, because they are individually useful but do not win the cluster-model competition
 - The best sensitivity-test alternatives are:
   - `income_pc_growth_1yr`, `unemployment_rate_change_1yr`, and `gini_index` inside Resident Opportunity
   - `hpi_10yr_pct`, `pop_growth_1yr`, and `zori_december_yoy_pct` inside Market Opportunity

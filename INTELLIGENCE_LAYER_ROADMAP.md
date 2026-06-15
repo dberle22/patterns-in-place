@@ -24,6 +24,168 @@ Every entry in `foundations/semantic_layer/intelligence_catalog.yml` is currentl
 
 ---
 
+## Scoring and Clustering Architecture
+
+*These decisions were locked in after Phase 1 (Variable Selection) was complete. Every Phase 2–4 frame notebook follows this architecture. Do not relitigate these choices inside individual notebooks — document deviations here instead.*
+
+---
+
+### Universe
+
+**Decision:** All 401 CBSAs (population ≥ 100K) are included in every model. CBSAs are never dropped due to missing KPI coverage.
+
+**How missingness is handled:** Per-KPI, not per-CBSA. Each Phase 2–4 notebook opens with a coverage audit for its KPI set. KPIs with any missing values are imputed before modeling. KPIs with coverage problems severe enough to warrant removal are dropped from the model (with a documented rationale), not the CBSAs they're missing for.
+
+---
+
+### Missing Data — Imputation Strategy
+
+**Decision:** Median imputation as the default. KNN imputation considered only when a KPI has >15% missingness AND the missing pattern is clearly non-random (e.g. a source that systematically excludes small metros).
+
+**Implementation:**
+- Replace missing values with the national median for that KPI across the 401-CBSA universe
+- Log which KPIs triggered imputation and how many CBSAs were affected
+- Flag imputed values in the output so downstream analysis can identify imputation-sensitive results
+
+**Rationale:** Median imputation is fast, transparent, and appropriate when missingness is random or coverage-driven (e.g. ZORI not covering smaller metros). KNN adds complexity that is not justified for this universe size unless missingness is structurally biased.
+
+---
+
+### KPI Standardization and Polarity
+
+**Decision:** All KPIs are standardized to z-scores before any clustering or scoring. A polarity flag is assigned to each KPI before Phase 3 and carried forward:
+
+- **Positive polarity** (`+`): higher values are better (e.g. `life_expectancy`, `lfpr`, `income_pc_growth_5yr`)
+- **Negative polarity** (`-`): lower values are better (e.g. `premature_death_rate`, `pct_rent_burden_30plus`, `pct_unemployment_rate`)
+
+**For scoring:** Negative-polarity KPIs are sign-flipped before computing sub-scores so that a higher score always means better on every axis.
+
+**For clustering and similarity:** Polarity does not matter — distance metrics are direction-agnostic. No sign-flip needed.
+
+---
+
+### Clustering Architecture
+
+Each frame runs three clustering passes in sequence, all on the same standardized KPI vectors:
+
+**Step 1 — Hierarchical clustering (agglomerative)**
+- Purpose: discover the natural number of clusters (k) from the data
+- Output: dendrogram; cut point chosen based on within-cluster variance and interpretability
+- k range: data-driven, no hard constraint — but must produce interpretable, nameable groups. Expect 5–9 for most frames.
+
+**Step 2 — K-Means at natural k**
+- Purpose: hard cluster assignments for publication-ready archetype labels
+- Output: one cluster label per CBSA per frame (e.g. "Sun Belt Growth", "Immigrant Gateway")
+- Labels are assigned after inspecting cluster centroids — not pre-specified
+
+**Step 3 — Gaussian Mixture Model (GMM) at same k**
+- Purpose: soft membership probabilities that capture metros that genuinely sit between archetypes
+- Output: probability vector for each CBSA across all k clusters
+- Use: "Austin is 68% Knowledge Hub, 28% Sun Belt Growth, 4% other" — honest about ambiguity and useful for narrative
+
+**All three outputs are retained.** Hard labels are the default for display and publication. Soft memberships are the default for analysis and similarity scoring.
+
+---
+
+### Scoring Architecture
+
+**Structure:** Hierarchical weighted averaging. Score flows upward through four levels:
+
+```
+KPI z-score (sign-flipped for negative polarity)
+    → Topic score      (mean of KPI z-scores within topic)
+        → Subject score    (weighted mean of topic scores within subject)
+            → Frame composite  (weighted mean of subject scores)
+                → Percentile rank  (0–100 within 401-CBSA universe)
+```
+
+**Subject weights:** Equal weight across subjects within each frame for the initial model (e.g. Livability = 25% Affordability + 25% Health & Safety + 25% Access & Infrastructure + 25% Physical Environment). Revisit after first calibration pass if one subject is clearly dominating or underweighting.
+
+**Topic weights within subject:**
+
+```
+raw_topic_weight = coverage_share × reliability_factor
+```
+
+Reliability factors:
+- Recurring core topics: `1.00`
+- Supplemental baseline topics: `0.75`
+- Coverage-caution topics: `0.60`
+
+Normalize within each subject, then apply the subject weight:
+
+```
+topic_weight = subject_weight × (raw_topic_weight / sum(raw_topic_weights in subject))
+```
+
+**KPI weights within topic:** Equal split across selected core KPIs within the topic.
+
+**Final output:** Percentile rank (0–100) within the 401-CBSA universe. Percentile is the public-facing number — more interpretable than a raw z-score. Sub-scores at topic and subject level are also retained for drill-down analysis.
+
+**Score anchoring:** Percentile ranks are relative to the current 401-CBSA universe. This is the correct default for the initial model. Anchoring scores to a base year for longitudinal comparability is a future calibration decision — flag it in the catalog entry when it becomes relevant.
+
+---
+
+### Similarity Scoring
+
+**Method:** Cosine distance on the standardized KPI vectors (the same vectors used for clustering and scoring).
+
+**Why cosine over Euclidean:** Cosine distance measures directional similarity — whether two metros are *shaped* the same way — rather than absolute magnitude. This is the right question for metro comparison: not "are these metros similar in size?" but "do they look like each other across the metric profile?"
+
+**Three similarity matrices:**
+
+1. **Frame-specific similarity** (three independent matrices — one per frame): "The metros most similar to Richmond VA on Livability" — computed on Livability KPI vectors only
+2. **Cross-frame combined similarity** (one combined matrix): computed on the concatenated KPI vectors across all three frames — "the metros most like Richmond VA overall"
+3. **Cross-frame overlap check**: compare cluster label assignments across frames to identify metros that are outliers on one frame but typical on another ("diverging from themselves" — key Deep Dive candidates)
+
+**Frame independence:** Frames 2–4 are built and scored independently first. The cross-frame combined model is built after all three frame models are stable.
+
+---
+
+### Output Format
+
+**During Phase 2–4 (notebook phase):** Flat parquet files in `exploration/intelligence_framework/outputs/`. One file per frame with all scored and clustered results.
+
+**After calibration is stable:** Promoted to a Gold-layer scores datamart. This is the prerequisite for Area Explorer Phase 2 (Intelligence Frames views) and the Chatbot wire-up. Promotion happens in Phase 7 (Catalog Finalization).
+
+**Columns per CBSA in the output:**
+- `cbsa_code`, `cbsa_name`, `census_division`
+- One cluster label column per frame (`character_cluster`, `livability_cluster`, `opportunity_cluster`)
+- GMM soft membership probabilities per frame (`character_prob_k1` … `character_prob_kN`)
+- Topic scores (z-score scale) per frame
+- Subject scores (z-score scale) per frame
+- Frame composite (z-score scale) per frame
+- Frame percentile rank (0–100) per frame
+- Cross-frame similarity: top-10 most similar CBSAs by frame and combined
+
+---
+
+### Benchmark Strategy
+
+Each CBSA score is benchmarked at three levels:
+
+1. **National:** percentile rank within all 401 CBSAs
+2. **Census Division:** percentile rank within the CBSA's Census Division (9 divisions)
+3. **Cluster peers:** percentile rank within CBSAs sharing the same frame cluster label
+
+Custom peer sets (e.g. user-defined geographic peers or size-matched peers) are supported as an optional fourth benchmark layer but are not part of the default model.
+
+---
+
+### Cross-Frame Overlap Acknowledgment
+
+Several KPIs appear in more than one frame by design. The same metric can be evidence for different things:
+
+- `pov_rate` — Livability (household burden) and Opportunity (trajectory context)
+- `irs_net_migration_rate` — Character (residential stability) and Opportunity (market momentum)
+- `permits_per_1000_housing_units` — Livability (housing supply) and Opportunity (market activity)
+- `economic_connectedness` — Character (social fabric) and Opportunity (mobility proxy)
+- `pop_weighted_density_sqmi` — Character (built form) and Livability (access proxy)
+
+**Decision:** Cross-frame overlap is acknowledged and preserved. Metrics are not forced into a single frame. The cross-frame combined similarity model and the overlap check will surface where overlap is creating redundancy at the composite level.
+
+---
+
 ## Deliverable formats
 
 | Artifact type | Format | Location |
@@ -109,20 +271,28 @@ Look for: the leading indicator hypothesis (industry mix predicts income growth)
 
 ---
 
-## Phase 2 — Character Clustering (archetypes)
+## Phase 2 — Character Frame Model
 
 **Status:** Not started
-**Depends on:** Phase 1 metric selections
-**Goal:** Derive metro-level Character archetypes from data, not from intuition. Validate or revise the draft label set.
+**Depends on:** Phase 1 metric selections; Architecture decisions (above — locked)
+**Execution order:** Third, after Phases 3 and 4. Livability and Opportunity scoring are higher-priority unblocks for Area Explorer and the Chatbot. Character clustering requires a literature review step before labels can be defended, making it the slower pass.
 
-**Input set (pending Phase 2 reduction):**
-Candidates: `median_age`, race/ethnicity shares, `pct_foreign_born`, `pct_ba_plus`, `pct_same_house`, `mobility_rate`, `pct_struct_multifam`, `pop_weighted_density_sqmi`, `economic_connectedness`, `civic_engagement_volunteering_rate`
+**Goal:** Produce all three outputs for the Character frame in one notebook: cluster labels (archetypes), scored sub-scores + composite percentile, and similarity vectors. This is the same structure as Phases 3 and 4.
 
-**Methodology sequence:**
-1. Standardize all inputs (z-score)
-2. Hierarchical clustering first — use dendrogram to identify natural group count (k=5? k=7? don't assume)
-3. K-means at the natural k — evaluate cluster coherence (within-cluster variance, silhouette scores)
-4. Label each cluster: do the emerging groups feel coherent and nameable?
+**Input set (from Phase 1 metric_selections.md — Character core):**
+`diversity_index`, `pct_black_nh`, `pct_asian_nh`, `pct_hispanic`, `pct_age_over_64`, `pct_ba_plus`, `pct_foreign_born`, `pop_weighted_density_sqmi`, `friending_bias`, `civic_engagement_volunteering_rate`, `civic_organizations_per_1000`, `nonprofits_per_100k`, `irs_net_migration_rate`, `pct_moved_diff_st`, `pct_moved_abroad`, `social_associations_per_10k`, `pct_struct_multifam`
+
+**Notebook sequence:**
+1. Coverage audit — check missingness per KPI across 401 CBSAs; apply median imputation; log affected KPIs and counts
+2. Assign polarity flags per KPI
+3. Standardize all inputs (z-score)
+4. Hierarchical clustering — dendrogram, choose natural k; evaluate silhouette scores
+5. K-Means at natural k — hard cluster assignments
+6. GMM at same k — soft membership probabilities
+7. Label clusters from centroids; evaluate against draft label set and literature anchors
+8. Scoring — topic scores → subject scores → frame composite → percentile rank
+9. Cosine similarity matrix — Character-specific peers
+10. Written interpretation per cluster with named metro examples
 
 **Draft label set to evaluate against:**
 - Immigrant Gateway — high diversity + high foreign-born + younger age
@@ -132,89 +302,140 @@ Candidates: `median_age`, race/ethnicity shares, `pct_foreign_born`, `pct_ba_plu
 - Sunbelt Growth — fast population growth, younger, newer housing stock
 - Rust Belt / Industrial — older vintage housing, declining population, mixed education
 
-**Key test:** Do groups reflect structural differences, or just population size and region? If size is dominating, normalize for it.
+**Key tests:**
+- Do groups reflect structural differences, or just population size and region? If size is dominating, normalize for it.
+- Does `economic_connectedness` change cluster shapes vs. demographic-only inputs?
+- Do soft GMM memberships reveal meaningful hybrid metros?
 
-**Literature anchor (required before labeling):** Identify 2–3 published metro classification frameworks (Brookings, Pew Research metro typologies, Moretti's "Great Divergence") and document where clusters align or diverge.
+**Literature anchor (required before labeling):** Identify 2–3 published metro classification frameworks (Brookings, Pew Research metro typologies, Moretti's "Great Divergence") and document where clusters align or diverge. Write up in `docs/character_clustering_notes.md`.
 
 ### Tasks
 
-- [ ] Write `exploration/intelligence_framework/character_clustering.qmd` — dendrogram, k-means clustering, cluster visualization, label evaluation, written interpretation
-- [ ] Document literature anchor comparisons in a `docs/character_clustering_notes.md`
-- [ ] Evaluate whether `economic_connectedness` from Social Capital Atlas changes cluster shapes vs. demographic-only inputs
-- [ ] Update `intelligence_catalog.yml` character entry from placeholder to specified methodology with justified inputs
+- [ ] Coverage audit and imputation pass for Character KPI set
+- [ ] Write `exploration/intelligence_framework/phase_2_character_clustering/character_frame_model.qmd` — full clustering + scoring + similarity pass
+- [ ] Document literature anchor comparisons in `docs/character_clustering_notes.md`
+- [ ] Produce cosine similarity output: top-10 Character peers per CBSA
+- [ ] Update `intelligence_catalog.yml` character entry from placeholder to specified methodology
+- [ ] Write outputs to `exploration/intelligence_framework/outputs/character_scores.parquet`
 
-**Deliverable:** `character_clustering.qmd` with cluster visualization, label evaluation, written interpretation. Feeds Article 2.
+**Deliverable:** `character_frame_model.qmd` with dendrogram, cluster visualization, soft memberships, scored percentiles, similarity matrix, and written interpretation. Feeds Article 2 ("A new map of American metros").
 
 ---
 
-## Phase 3 — Livability Scoring Calibration
+## Phase 3 — Livability Frame Model
 
 **Status:** Not started
-**Depends on:** Phase 1 metric selections
-**Goal:** Define Livability sub-scores. The prior answer: sub-scores, not a single number. Collapsing to one score loses the most interesting tensions.
+**Depends on:** Phase 1 metric selections; Architecture decisions (above — locked)
+**Execution order:** First. Livability + Opportunity together produce Article 1 (the Livability/Opportunity scatter), which is the highest-value near-term publishable output and the clearest connection to the ROADMAP.md flywheel.
 
-**Sub-scores to build:**
+**Goal:** Produce all three outputs for the Livability frame in one notebook: cluster labels (Livability types), scored sub-scores + composite percentile, and similarity vectors.
 
-1. **Affordability sub-score:** `rpp_real_pc_income` + `pct_rent_burden_30plus` + `value_to_income`. Test: does it rank metros in a way that passes the smell test? (NYC bottom, Midwest mid-tier, Sun Belt moving down over time)
+**Input set (from Phase 1 metric_selections.md — Livability core):**
 
-2. **Health sub-score (CHR-based):** `life_expectancy` + `premature_death_rate` + `physical_inactivity` + `adult_obesity` + `drug_overdose_death_rate`. Test the geographic hypothesis: Southern markets score worse on health despite performing better on affordability. If confirmed, this is publishable (Article 3).
+*Recurring core:*
+`value_to_income`, `pct_rent_burden_30plus`, `pov_rate`, `permits_per_1000_housing_units`, `permits_share_units_5_plus`, `pct_struct_mobile`, `pct_struct_small_mf`, `pct_struct_mid_mf`, `premature_death_rate`, `mental_health_provider_ratio`, `drug_overdose_death_rate`, `pct_uninsured_adults`, `preventable_hospital_stay_rate`, `firearm_fatality_rate`, `motor_vehicle_crash_rate`, `pct_commute_walk`, `pct_commute_wfh`, `vacancy_rate`, `pct_hh_0_vehicles`, `pct_no_internet_access`
 
-3. **Safety sub-score:** `homicide_rate` + `motor_vehicle_crash_rate`. Distinct from health — safety is about external risk, not lifestyle outcomes.
+*Supplemental baseline / coverage-caution (weighted at 0.60–0.75):*
+`walkability_index`, `jobs_access_45min_transit`, `pct_population_low_income_low_access_1_10`, `pop_weighted_density_sqmi`, `unhealthy_days`, `fema_risk_score`
 
-4. **Environment sub-score:** `fema_risk_score` + `aqi_unhealthy_days` + `ej_pm25`. New — enabled by FEMA NRI and EPA AQI / EJScreen. Test: does this create a meaningful axis that separates Sun Belt / Gulf Coast markets from others?
+**Subject structure and initial weights:**
+- `Affordability`: 0.25 — topics: Price Pressure, Housing Burden, Poverty Context, Housing Supply, Housing Structure Mix
+- `Health & Safety`: 0.25 — topics: Health Outcomes, Health Behavior & Access, Violence & Injury
+- `Access & Infrastructure`: 0.25 — topics: Commute & Mode, Vehicle Access, Housing Slack, Digital Access, Walkability baseline, Food Access baseline, Built-Form Proxy
+- `Physical Environment`: 0.25 — topics: Air Pollution, Climate Hazard Risk (both coverage-caution weighted)
 
-5. **Mobility sub-score:** `pct_commute_transit` + `mean_travel_time_min` + `pct_hh_0_vehicles`. Currently thin — EPA SLD walkability adds signal once joined. Flag as incomplete but include with available ACS metrics.
+**Notebook sequence:**
+1. Coverage audit — check missingness per KPI across 401 CBSAs; apply median imputation; log affected KPIs and counts
+2. Assign polarity flags per KPI (note: most Livability KPIs are negative-polarity — lower is better)
+3. Standardize all inputs (z-score); sign-flip negative-polarity KPIs for scoring
+4. Hierarchical clustering — dendrogram, choose natural k; evaluate silhouette scores
+5. K-Means at natural k — hard cluster assignments (Livability type labels)
+6. GMM at same k — soft membership probabilities
+7. Label clusters from centroids; name Livability types
+8. Scoring — topic → subject → frame composite → percentile rank (per architecture above)
+9. Cosine similarity matrix — Livability-specific peers
+10. Key hypothesis tests (see below)
+11. Written interpretation per cluster with named metro examples
 
-**Benchmarking:** Score each CBSA against national median, regional median, and peer cluster (from Phase 3). Raw scores without benchmarks are meaningless.
+**Key hypothesis tests:**
+- Southern markets health hypothesis: do metros that score well on Affordability score poorly on Health? (Article 3)
+- Environmental risk axis: does `fema_risk_score` add non-redundant signal beyond `unhealthy_days`?
+- Livability / Opportunity scatter stub: produce with Livability percentile on one axis; complete with Opportunity scores after Phase 4 (Article 1)
 
-**The Livability / Opportunity scatter** (from Phase 2) is reproduced here with the calibrated sub-scores. Find the four quadrants:
-- High Livability + High Opportunity → the "unicorn" metros
-- High Livability + Low Opportunity → "pleasant but stagnant"
-- Low Livability + High Opportunity → "high-growth, expensive" (classic Sun Belt tension)
-- Low Livability + Low Opportunity → the real distress cases
+**Smell test:** Does the Affordability topic rank NYC / coastal metros at the bottom and Midwest interior metros near the top? If not, revisit polarity or weighting before proceeding.
 
 ### Tasks
 
-- [ ] Write `exploration/intelligence_framework/livability_calibration.qmd` — build and validate five sub-scores, plot distributions and named metro examples, produce composite
-- [ ] Test the Southern market health hypothesis: affordability vs. health sub-score scatter
-- [ ] Test the environmental risk axis: does `fema_risk_score` add non-redundant signal beyond AQI?
-- [ ] Produce the Livability / Opportunity scatter with calibrated scores (publishable output — Article 1)
-- [ ] Document benchmark strategy (national + regional + peer cluster)
-- [ ] Update `intelligence_catalog.yml` Livability entries with justified inputs and weights
+- [ ] Coverage audit and imputation pass for Livability KPI set
+- [ ] Assign polarity flags to all Livability KPIs
+- [ ] Write `exploration/intelligence_framework/phase_3_livability_calibration/livability_frame_model.qmd` — full clustering + scoring + similarity pass
+- [ ] Test Southern markets health hypothesis: affordability sub-score vs. health sub-score scatter
+- [ ] Test environmental risk axis: `fema_risk_score` vs. `unhealthy_days` non-redundancy check
+- [ ] Produce Livability/Opportunity scatter stub (complete after Phase 4)
+- [ ] Produce cosine similarity output: top-10 Livability peers per CBSA
+- [ ] Update `intelligence_catalog.yml` Livability entries from placeholder to specified methodology
+- [ ] Write outputs to `exploration/intelligence_framework/outputs/livability_scores.parquet`
 
-**Deliverable:** `livability_calibration.qmd`. Updated catalog. Two publishable charts: Livability/Opportunity scatter (Article 1), Health vs. Affordability scatter (Article 3).
+**Deliverable:** `livability_frame_model.qmd` with dendrogram, cluster visualization, soft memberships, topic/subject/composite scores, percentile ranks, similarity matrix, and written interpretation. Two publishable findings: Livability/Opportunity scatter (Article 1, completed with Phase 4), Health vs. Affordability scatter (Article 3).
 
 ---
 
-## Phase 4 — Opportunity Scoring Calibration
+## Phase 4 — Opportunity Frame Model
 
 **Status:** Not started
-**Depends on:** Phase 1 metric selections
-**Goal:** Define three Opportunity sub-lenses and validate they tell different stories.
+**Depends on:** Phase 1 metric selections; Architecture decisions (above — locked)
+**Execution order:** Second, immediately after Phase 3. Opportunity scores complete the Livability/Opportunity scatter (Article 1).
 
-**Sub-scores to build:**
+**Goal:** Produce all three outputs for the Opportunity frame in one notebook: cluster labels (Opportunity types), scored sub-scores + composite percentile, and similarity vectors.
 
-1. **Resident Opportunity:** `income_pc_growth_5yr` + `lfpr` + `pct_unemployment_rate` + `gini_index`. Test: does this identify markets where residents are materially better off vs. 5 years ago? Does the gini index reveal that growth is concentrated vs. broad-based?
+**Input set (from Phase 1 metric_selections.md — Opportunity core):**
+`income_pc_growth_5yr`, `pct_unemployment_rate`, `lfpr`, `pov_rate_change_5yr`, `qcew_private_avg_wkly_wage`, `hpi_5yr_pct`, `hpi_yoy_pct`, `zori_annual_avg_yoy_pct`, `pop_growth_5yr`, `irs_net_migration_rate`, `irs_net_agi`, `permits_per_1000_housing_units`, `permits_share_units_5_plus`, `productivity_growth_5yr`, `industry_concentration_hhi`, `bfs_business_application_rate_per_1000_establishments`, `cbp_estabs_per_1000_residents`, `pct_ba_plus_change_5yr`, `lq_professional`, `lq_information`, `lq_manufacturing`, `pct_real_gdp_information`
 
-2. **Market / Investor Opportunity:** `hpi_5yr_pct` + `hpi_yoy_pct` + `pop_growth_5yr` + `irs_net_migration_rate` + `permits_per_1000_housing_units`. Test: does this flag the markets that were "hot" in 2021–2023? Does it now show cooling?
+**Subject structure and initial weights:**
+- `Resident Opportunity`: 0.33 — topics: Income Growth, Wage Levels, Labor Market Tightness, Poverty & Inclusion, Intergenerational Mobility Proxy
+- `Market / Investor Opportunity`: 0.33 — topics: Home Price Appreciation, Rent Growth, Population Growth, Migration & Wealth Flows, Permit Activity
+- `Business & Industry Opportunity`: 0.33 — topics: GDP Growth, Industry Concentration, Human Capital Momentum, Business Formation, Establishment Density, Location Quotient Specialization, Sector GDP Mix
 
-3. **Business / Industry Opportunity:** `industry_concentration_hhi` + sector share changes (QCEW) + `bfs_business_application_rate_per_1000_establishments` + `productivity_growth_5yr`. Key hypothesis: industry mix in 2015 predicts income growth by 2022. Test this longitudinally with the QCEW backfill (2010–2024). This is the industry-as-leading-indicator test (Article 4).
+**Note on ZORI coverage:** `zori_annual_avg_yoy_pct` has ~48% topic-level coverage once level fields are included. Carry the YoY growth field only; impute missing CBSAs at the national median. Flag this as a coverage-caution KPI in the output.
 
-4. **Time horizon test:** 1-year signals vs. 5-year signals. Weight toward 5-year for structural story, 1-year for momentum signal.
+**Note on cross-frame overlap:** `permits_per_1000_housing_units`, `irs_net_migration_rate`, and `pov_rate` appear in both Livability and Opportunity. This is intentional — they serve different conceptual roles in each frame. Acknowledge in the notebook; do not remove.
 
-5. **OZ analysis:** Flag CBSA-level OZ exposure rate (`pct_oz_tracts` from `gold.dim_policy_designations`) as a contextual data point. Which high-momentum markets have significant OZ exposure?
+**Notebook sequence:**
+1. Coverage audit — check missingness per KPI across 401 CBSAs; apply median imputation; log affected KPIs and counts; flag ZORI specifically
+2. Assign polarity flags per KPI (note: mixed polarity — `pct_unemployment_rate` and `industry_concentration_hhi` are negative; most others are positive)
+3. Standardize all inputs (z-score); sign-flip negative-polarity KPIs for scoring
+4. Hierarchical clustering — dendrogram, choose natural k; evaluate silhouette scores
+5. K-Means at natural k — hard cluster assignments (Opportunity type labels)
+6. GMM at same k — soft membership probabilities
+7. Label clusters from centroids; name Opportunity types
+8. Scoring — topic → subject → frame composite → percentile rank (per architecture above)
+9. Cosine similarity matrix — Opportunity-specific peers
+10. Key hypothesis tests (see below)
+11. Complete the Livability/Opportunity scatter with Phase 3 Livability percentiles (Article 1)
+12. Written interpretation per cluster with named metro examples
 
-6. **Social capital as Opportunity signal:** Test `economic_connectedness` as a predictor of income growth trajectory. Does it add signal beyond industry mix? This directly feeds Article 5.
+**Key hypothesis tests:**
+- Industry mix as leading indicator: does industry mix in 2015 (QCEW) predict income growth by 2022? Test longitudinally. (Article 4)
+- Social capital as Opportunity signal: `economic_connectedness` vs. `income_pc_growth_5yr` scatter — does who you know predict income growth beyond industry mix? (Article 5)
+- 1yr vs. 5yr signal divergence: do short-run and long-run signals tell different stories for the same metros?
+- OZ exposure: flag `pct_oz_tracts` from `gold.dim_policy_designations` as a contextual overlay — which high-momentum metros have significant OZ exposure?
+- Livability / Opportunity four quadrants: unicorns (high/high), pleasant-but-stagnant (high L / low O), high-growth-expensive (low L / high O), distress cases (low/low)
 
 ### Tasks
 
-- [ ] Write `exploration/intelligence_framework/opportunity_calibration.qmd` — build and validate three sub-lenses, test industry-as-leading-indicator hypothesis longitudinally
-- [ ] Test the social capital → income growth hypothesis: `economic_connectedness` vs. `income_pc_growth_5yr` scatter
-- [ ] Test the momentum vs. structure split: does 1yr signal tell a different story from 5yr for the same metros?
-- [ ] Flag CBSA OZ exposure as a contextual field
-- [ ] Update `intelligence_catalog.yml` Opportunity entries with justified inputs and weights
+- [ ] Coverage audit and imputation pass for Opportunity KPI set; flag ZORI coverage issue explicitly
+- [ ] Assign polarity flags to all Opportunity KPIs
+- [ ] Write `exploration/intelligence_framework/phase_4_opportunity_calibration/opportunity_frame_model.qmd` — full clustering + scoring + similarity pass
+- [ ] Test industry-as-leading-indicator hypothesis longitudinally (QCEW 2010–2024 backfill)
+- [ ] Test social capital → income growth hypothesis: `economic_connectedness` vs. `income_pc_growth_5yr`
+- [ ] Test 1yr vs. 5yr signal divergence across resident and market subjects
+- [ ] Flag CBSA OZ exposure as contextual field
+- [ ] Complete Livability/Opportunity scatter (four-quadrant plot) using Phase 3 percentiles
+- [ ] Produce cosine similarity output: top-10 Opportunity peers per CBSA
+- [ ] Update `intelligence_catalog.yml` Opportunity entries from placeholder to specified methodology
+- [ ] Write outputs to `exploration/intelligence_framework/outputs/opportunity_scores.parquet`
 
-**Deliverable:** `opportunity_calibration.qmd`. Updated catalog. Two publishable findings: industry mix as leading indicator (Article 4), social capital as hidden differentiator (Article 5).
+**Deliverable:** `opportunity_frame_model.qmd` with dendrogram, cluster visualization, soft memberships, topic/subject/composite scores, percentile ranks, similarity matrix, and written interpretation. Three publishable findings: Livability/Opportunity four-quadrant scatter (Article 1), industry mix as leading indicator (Article 4), social capital as hidden differentiator (Article 5).
 
 ---
 
@@ -334,19 +555,26 @@ Three cluster models, built and compared:
 ```
 Phase 0 — Metric Mapping                 ✓ Complete
     ↓
-Phase 1 — Variable Selection             (start now — variance + correlation + PCA, one notebook per frame)
+Phase 1 — Variable Selection             ✓ Complete (metric_selections.md)
     ↓
-Phase 2 — Character Clustering  ←→ Phase 3 — Livability Calibration  ←→ Phase 4 — Opportunity Calibration
-(parallel after Phase 1)
+Phase 3 — Livability Frame Model         (start here — highest publishing value, unblocks Article 1)
+    ↓
+Phase 4 — Opportunity Frame Model        (completes Article 1 Livability/Opportunity scatter)
+    ↓
+Phase 2 — Character Frame Model          (third — requires literature review step; does not block Articles 1/3/4/5)
     ↓
 Phase 5 — Trajectory Analysis            (can start after Phase 1 — needs reduced metrics, not calibrated scores)
     ↓
 Phase 6 — Zone Methodology               (depends on Phases 2–4 frame definitions)
     ↓
-Phase 7 — Catalog Finalization           (depends on all prior phases)
+Phase 7 — Catalog Finalization           (depends on all prior phases; promotes outputs to Gold scores datamart)
 ```
 
-Phase 5 can run in parallel with Phases 2–4 once Phase 1 is done.
+**Execution order rationale:**
+- Phase 3 before Phase 4: Livability sub-scores are needed to produce the L/O scatter; Phase 4 completes it
+- Phase 2 third: Character archetypes don't unblock any other product track; literature review adds lead time
+- Phase 5 can run in parallel with Phases 2–4 once Phase 1 is done (needs reduced metrics, not scores)
+- Cross-frame combined similarity model is built in Phase 7, after all three frame models are stable
 
 ---
 
@@ -359,27 +587,33 @@ exploration/
       utils.R                              ← shared DB connect, CBSA spine; sources visual_library/shared/standards.R
     docs/
       metric_map.md                        ← Phase 0 (complete)
-      metric_selections.md                 ← Phase 1 output
+      metric_selections.md                 ← Phase 1 output (complete)
       character_clustering_notes.md        ← Phase 2 literature anchor
       zone_methodology_notes.md            ← Phase 6 literature review
       intelligence_calibration_notes.md    ← Phase 7 summary
-    phase_variable_selection/              ← Phase 1
+    outputs/                               ← scored + clustered parquet files (promoted to Gold in Phase 7)
+      livability_scores.parquet            ← Phase 3 output
+      opportunity_scores.parquet           ← Phase 4 output
+      character_scores.parquet             ← Phase 2 output
+      cross_frame_scores.parquet           ← Phase 7 combined model
+    phase_variable_selection/              ← Phase 1 (complete)
       character_variable_selection.qmd
       livability_variable_selection.qmd
       opportunity_variable_selection.qmd
       docs/
         metric_selections.md
-    phase_2_character_clustering/
-      character_clustering.qmd
-    phase_3_livability_calibration/
-      livability_calibration.qmd
-    phase_4_opportunity_calibration/
-      opportunity_calibration.qmd
+    phase_2_character_clustering/          ← Phase 2 (third in execution order)
+      character_frame_model.qmd            ← clustering + scoring + similarity in one pass
+    phase_3_livability_calibration/        ← Phase 3 (first in execution order)
+      livability_frame_model.qmd           ← clustering + scoring + similarity in one pass
+    phase_4_opportunity_calibration/       ← Phase 4 (second in execution order)
+      opportunity_frame_model.qmd          ← clustering + scoring + similarity in one pass
     phase_5_trajectory/
       trajectory_analysis.qmd
     phase_6_zone_methodology/
       zone_methodology.qmd
     phase_7_catalog/
+      cross_frame_model.qmd               ← combined similarity + cross-frame overlap check
       (catalog update scripts)
 ```
 

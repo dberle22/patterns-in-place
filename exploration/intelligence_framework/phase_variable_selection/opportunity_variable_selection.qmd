@@ -1019,6 +1019,168 @@ topic_pca_tbl <- map_dfr(split(metric_catalog, metric_catalog$topic), \(topic_df
   )
 })
 
+cross_topic_lead_tbl <- tribble(
+  ~metric, ~subject, ~topic,
+  "income_pc_growth_5yr", "Resident Opportunity", "Income growth",
+  "qcew_private_avg_wkly_wage", "Resident Opportunity", "Wage levels",
+  "pct_unemployment_rate", "Resident Opportunity", "Labor market tightness",
+  "lfpr", "Resident Opportunity", "Labor market tightness",
+  "pov_rate_change_5yr", "Resident Opportunity", "Poverty and inclusion",
+  "gini_index", "Resident Opportunity", "Poverty and inclusion",
+  "economic_connectedness", "Resident Opportunity", "Intergenerational mobility proxy",
+  "hpi_5yr_pct", "Market / Investor Opportunity", "Home price appreciation",
+  "hpi_yoy_pct", "Market / Investor Opportunity", "Home price appreciation",
+  "zori_annual_avg_yoy_pct", "Market / Investor Opportunity", "Rent growth",
+  "pop_growth_5yr", "Market / Investor Opportunity", "Population growth",
+  "irs_net_migration_rate", "Market / Investor Opportunity", "Migration and wealth flows",
+  "irs_net_agi", "Market / Investor Opportunity", "Migration and wealth flows",
+  "permits_per_1000_housing_units", "Market / Investor Opportunity", "Permit activity",
+  "permits_share_units_5_plus", "Market / Investor Opportunity", "Permit activity",
+  "productivity_growth_5yr", "Business & Industry Opportunity", "GDP growth",
+  "industry_concentration_hhi", "Business & Industry Opportunity", "Industry concentration",
+  "bfs_business_application_rate_per_1000_establishments", "Business & Industry Opportunity", "Business formation",
+  "cbp_estabs_per_1000_residents", "Business & Industry Opportunity", "Establishment density",
+  "pct_ba_plus_change_5yr", "Business & Industry Opportunity", "Human capital momentum",
+  "lq_professional", "Business & Industry Opportunity", "Location quotient specialization",
+  "lq_information", "Business & Industry Opportunity", "Location quotient specialization",
+  "lq_manufacturing", "Business & Industry Opportunity", "Location quotient specialization",
+  "pct_real_gdp_information", "Business & Industry Opportunity", "Sector GDP mix",
+  "pct_qcew_private_emp_manufacturing", "Business & Industry Opportunity", "Sector employment mix",
+  "qcew_private_avg_wkly_wage_professional", "Business & Industry Opportunity", "Sector wage mix",
+  "pct_cbp_estabs_information", "Business & Industry Opportunity", "Establishment mix"
+)
+
+cross_topic_cor_tbl <- {
+  lead_metrics <- cross_topic_lead_tbl$metric
+  lead_cor_matrix <- cor(
+    df |>
+      select(all_of(lead_metrics)),
+    use = "pairwise.complete.obs"
+  )
+
+  lead_pairs <- which(abs(lead_cor_matrix) >= 0.6 & upper.tri(lead_cor_matrix), arr.ind = TRUE)
+
+  if (nrow(lead_pairs) > 0) {
+    tibble(
+      metric_a = rownames(lead_cor_matrix)[lead_pairs[, 1]],
+      metric_b = colnames(lead_cor_matrix)[lead_pairs[, 2]],
+      correlation = lead_cor_matrix[lead_pairs]
+    ) |>
+      left_join(cross_topic_lead_tbl |> rename(metric_a = metric, subject_a = subject, topic_a = topic), by = "metric_a") |>
+      left_join(cross_topic_lead_tbl |> rename(metric_b = metric, subject_b = subject, topic_b = topic), by = "metric_b") |>
+      filter(topic_a != topic_b) |>
+      mutate(
+        metric_a_label = unname(metric_labels[metric_a]),
+        metric_b_label = unname(metric_labels[metric_b])
+      ) |>
+      arrange(desc(abs(correlation)))
+  } else {
+    tibble(
+      metric_a = character(),
+      metric_b = character(),
+      correlation = double(),
+      subject_a = character(),
+      topic_a = character(),
+      subject_b = character(),
+      topic_b = character(),
+      metric_a_label = character(),
+      metric_b_label = character()
+    )
+  }
+}
+
+business_topic_competitor_tbl <- tribble(
+  ~metric, ~topic_family, ~cluster_shortlist,
+  "lq_professional", "Location quotient specialization", TRUE,
+  "lq_information", "Location quotient specialization", TRUE,
+  "lq_manufacturing", "Location quotient specialization", TRUE,
+  "pct_real_gdp_information", "Sector GDP mix", TRUE,
+  "pct_real_gdp_professional", "Sector GDP mix", FALSE,
+  "pct_real_gdp_manufacturing", "Sector GDP mix", FALSE,
+  "pct_qcew_private_emp_manufacturing", "Sector employment mix", TRUE,
+  "pct_qcew_private_emp_information", "Sector employment mix", FALSE,
+  "pct_qcew_private_emp_professional", "Sector employment mix", FALSE,
+  "qcew_private_avg_wkly_wage_professional", "Sector wage mix", TRUE,
+  "qcew_private_avg_wkly_wage_information", "Sector wage mix", FALSE,
+  "qcew_private_avg_wkly_wage_manufacturing", "Sector wage mix", FALSE,
+  "pct_cbp_estabs_information", "Establishment mix", TRUE,
+  "pct_cbp_estabs_professional", "Establishment mix", FALSE,
+  "pct_cbp_estabs_manufacturing", "Establishment mix", FALSE
+) |>
+  left_join(
+    variance_tbl |>
+      select(metric, coverage_pct, cv, iqr) |>
+      distinct(),
+    by = "metric"
+  ) |>
+  mutate(metric_label = unname(metric_labels[metric]))
+
+business_topic_competitor_cor_tbl <- {
+  business_metrics <- business_topic_competitor_tbl$metric
+  business_cor_matrix <- cor(
+    df |>
+      select(all_of(business_metrics)),
+    use = "pairwise.complete.obs"
+  )
+
+  business_pairs <- which(abs(business_cor_matrix) >= 0.6 & upper.tri(business_cor_matrix), arr.ind = TRUE)
+
+  if (nrow(business_pairs) > 0) {
+    tibble(
+      metric_a = rownames(business_cor_matrix)[business_pairs[, 1]],
+      metric_b = colnames(business_cor_matrix)[business_pairs[, 2]],
+      correlation = business_cor_matrix[business_pairs]
+    ) |>
+      left_join(business_topic_competitor_tbl |> rename(metric_a = metric, family_a = topic_family), by = "metric_a") |>
+      left_join(business_topic_competitor_tbl |> rename(metric_b = metric, family_b = topic_family), by = "metric_b") |>
+      mutate(
+        metric_a_label = unname(metric_labels[metric_a]),
+        metric_b_label = unname(metric_labels[metric_b])
+      ) |>
+      arrange(desc(abs(correlation)))
+  } else {
+    tibble(
+      metric_a = character(),
+      metric_b = character(),
+      correlation = double(),
+      family_a = character(),
+      family_b = character(),
+      metric_a_label = character(),
+      metric_b_label = character()
+    )
+  }
+}
+
+business_shortlist_metrics <- business_topic_competitor_tbl |>
+  filter(cluster_shortlist) |>
+  pull(metric)
+
+business_shortlist_complete <- df |>
+  select(all_of(business_shortlist_metrics)) |>
+  drop_na()
+
+business_shortlist_pca_tbl <- if (nrow(business_shortlist_complete) >= 50) {
+  business_shortlist_pca <- prcomp(scale(business_shortlist_complete), center = FALSE, scale. = FALSE)
+
+  tibble(
+    metric = rownames(business_shortlist_pca$rotation),
+    pc1 = business_shortlist_pca$rotation[, 1],
+    pc2 = business_shortlist_pca$rotation[, 2],
+    pc3 = business_shortlist_pca$rotation[, 3]
+  ) |>
+    left_join(business_topic_competitor_tbl |> select(metric, topic_family), by = "metric") |>
+    mutate(metric_label = unname(metric_labels[metric]))
+} else {
+  tibble(
+    metric = character(),
+    pc1 = double(),
+    pc2 = double(),
+    pc3 = double(),
+    topic_family = character(),
+    metric_label = character()
+  )
+}
+
 cor_flag_tbl <- bind_rows(
   high_cor_tbl |> transmute(metric = metric_a, correlation = abs(correlation)),
   high_cor_tbl |> transmute(metric = metric_b, correlation = abs(correlation))
@@ -1082,7 +1244,7 @@ manual_recommendation_overrides <- tribble(
   "pct_real_gdp_information", "Core candidate",
   "pct_real_gdp_manufacturing", "Core candidate",
   "pct_real_gdp_edu_health", "Optional sensitivity",
-  "qcew_private_avg_wkly_wage_professional", "Core candidate",
+  "qcew_private_avg_wkly_wage_professional", "Optional sensitivity",
   "qcew_private_avg_wkly_wage_information", "Core candidate",
   "qcew_private_avg_wkly_wage_manufacturing", "Optional sensitivity",
   "qcew_private_avg_wkly_wage_finance_real", "Optional sensitivity",
@@ -1117,6 +1279,7 @@ kpi_decision_tbl <- variance_tbl |>
     recommendation = coalesce(recommendation_manual, recommendation_auto),
     recommendation = case_when(
       topic %in% c("Establishment mix", "Sector GDP mix", "Sector employment mix", "Sector wage mix") &
+        !metric %in% c("pct_real_gdp_information") &
         recommendation %in% c("Core candidate", "Redundant - keep one lead KPI", "Keep, but de-duplicate") ~ "Optional sensitivity",
       TRUE ~ recommendation
     )
@@ -1420,7 +1583,85 @@ high_cor_tbl |>
   visual_theme()
 ```
 
-## 5. PCA diagnostic
+## 5. Cross-subject and cross-topic overlap
+
+```{r cross-topic-correlation, echo=FALSE}
+cross_topic_cor_tbl |>
+  slice_head(n = 40) |>
+  transmute(
+    `Subject / topic A` = paste(subject_a, topic_a, sep = " / "),
+    `Metric A` = metric_a_label,
+    `Subject / topic B` = paste(subject_b, topic_b, sep = " / "),
+    `Metric B` = metric_b_label,
+    `r` = round(correlation, 2)
+  ) |>
+  kable()
+```
+
+**Read of the overlap check**
+
+- This is the guardrail against carrying the same story twice across subjects or topics.
+- Metrics that look redundant for the cluster model can still remain valuable as descriptive deep-dive fields.
+- The main place to watch is the handoff from `Resident Opportunity` into `Market / Investor Opportunity`, and then again inside the dense `Business & Industry Opportunity` structure families.
+
+## 6. Business-topic competition
+
+```{r business-topic-competitors, echo=FALSE}
+business_topic_competitor_tbl |>
+  mutate(
+    coverage_pct = percent(coverage_pct, accuracy = 0.1),
+    cv = round(cv, 3)
+  ) |>
+  transmute(
+    `Topic family` = topic_family,
+    `Metric` = metric_label,
+    `Cluster shortlist` = if_else(cluster_shortlist, "Yes", "No"),
+    `Coverage` = coverage_pct,
+    `CV` = cv
+  ) |>
+  kable()
+```
+
+```{r business-topic-correlations, echo=FALSE}
+business_topic_competitor_cor_tbl |>
+  slice_head(n = 35) |>
+  transmute(
+    `Topic family A` = family_a,
+    `Metric A` = metric_a_label,
+    `Topic family B` = family_b,
+    `Metric B` = metric_b_label,
+    `r` = round(correlation, 2)
+  ) |>
+  kable()
+```
+
+```{r business-topic-pca, echo=FALSE}
+business_shortlist_pca_tbl |>
+  mutate(
+    pc1 = round(pc1, 3),
+    pc2 = round(pc2, 3),
+    pc3 = round(pc3, 3)
+  ) |>
+  transmute(
+    `Topic family` = topic_family,
+    `Metric` = metric_label,
+    `PC1 loading` = pc1,
+    `PC2 loading` = pc2,
+    `PC3 loading` = pc3
+  ) |>
+  kable()
+```
+
+**Read of the business-topic competition**
+
+- The point of this section is not to let `Location quotient specialization` win by default just because it is a convenient topic.
+- Instead, we test a cross-topic shortlist drawn from `Location quotient specialization`, `Sector GDP mix`, `Sector employment mix`, `Sector wage mix`, and `Establishment mix`.
+- The notebook’s recommendation should be read as:
+  - keep a small business-structure cluster bundle
+  - let the rest of the business-topic KPIs stay alive as descriptive deep-dive or sensitivity fields
+  - avoid carrying every parallel industry family into the default model just because the data exists
+
+## 7. PCA diagnostic
 
 ```{r pca-scree, echo=FALSE}
 tibble(
@@ -1460,7 +1701,7 @@ topic_pca_tbl |>
   kable()
 ```
 
-## 6. Recommendations by subject, topic, and KPI
+## 8. Recommendations by subject, topic, and KPI
 
 ```{r decision-tables, echo=FALSE}
 subject_decision_tbl |>
@@ -1570,6 +1811,8 @@ cat("<p><strong>Working interpretation:</strong></p>\n<ul>\n")
 cat("<li>Opportunity is broad enough to justify three separate subjects, but the largest redundancy problem sits inside the business-and-industry families where sector-share, wage, and specialization metrics overlap heavily.</li>\n")
 cat("<li>The biggest source-quality caution is vintage mismatch: growth, HHI, BFS-rate, and CBP fields are usable only when we deliberately pull their latest non-null rows rather than blindly taking the 2024 record.</li>\n")
 cat("<li>Resident and market time-horizon diagnostics should be treated as momentum checks, not as a reason to automatically carry both the short-run and long-run version of every KPI.</li>\n")
+cat("<li>For the cluster model, redundancy is a trimming rule rather than a deletion rule: many non-core KPIs still stay alive as descriptive or sensitivity fields for Deep Dive interpretation.</li>\n")
+cat("<li>The business-structure decision should be read as a hybrid outcome, not an LQ-only shortcut: the notebook explicitly checks overlap across LQ, GDP mix, employment mix, wage mix, and establishment mix before naming the default bundle.</li>\n")
 cat("</ul>\n")
 ```
 
@@ -1584,7 +1827,7 @@ This Opportunity pass should be read in order:
 That matters here because Opportunity is more source-misaligned than Character or Livability:
 
 - `Resident Opportunity` mixes true growth fields with level and inclusion fields that live on different usable vintages.
-- `Market / Investor Opportunity` is relatively clean, but rent momentum is still coverage-constrained and AGI flows remain partial.
+- `Market / Investor Opportunity` is relatively clean, but it is still heavily housing-weighted, rent momentum is coverage-constrained, and commercial real estate is still a live gap.
 - `Business & Industry Opportunity` is analytically rich, but it is also the easiest place to over-count the same structure signal through employment shares, GDP shares, establishment shares, location quotients, and sector wage families.
 
 **Update `exploration/intelligence_framework/docs/metric_selections.md` after reviewing this notebook output.**
