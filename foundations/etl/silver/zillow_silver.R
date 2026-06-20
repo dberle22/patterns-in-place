@@ -110,7 +110,7 @@ zhvi_zip_stage <- dbGetQuery(con, "SELECT * FROM staging.zillow_zhvi_zip_code")
 zori_county_stage <- dbGetQuery(con, "SELECT * FROM staging.zillow_zori_county")
 zori_zip_stage <- dbGetQuery(con, "SELECT * FROM staging.zillow_zori_zip_code")
 
-cbsa_county_xwalk <- dbGetQuery(con, "SELECT * FROM silver.xwalk_cbsa_county")
+cbsa_county_xwalk <- get_cbsa_rollup_xwalk(con)
 
 housing_weights <- dbGetQuery(
   con,

@@ -99,7 +99,7 @@ population_weights <- DBI::dbGetQuery(
   ) %>%
   distinct()
 
-cbsa_lookup <- DBI::dbGetQuery(con, "SELECT * FROM silver.xwalk_cbsa_county") %>%
+cbsa_lookup <- get_cbsa_rollup_xwalk(con) %>%
   transmute(
     county_geoid = as.character(.data$county_geoid),
     cbsa_code = as.character(.data$cbsa_code),

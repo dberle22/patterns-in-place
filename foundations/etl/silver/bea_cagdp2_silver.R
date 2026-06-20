@@ -37,7 +37,7 @@ cbsa_cagdp2_stage <- dbGetQuery(con, "SELECT * FROM staging.bea_regional_cbsa_ca
 state_cagdp2_stage <- dbGetQuery(con, "SELECT * FROM staging.bea_regional_state_cagdp2")
 
 ## CBSA <> County Xwalk ----
-cbsa_county_xwalk <- dbGetQuery(con, "SELECT * FROM silver.xwalk_cbsa_county")
+cbsa_county_xwalk <- get_cbsa_rollup_xwalk(con)
 
 ## Reference Tables ----
 line_codes_ref <- dbGetQuery(con, "SELECT * FROM silver.bea_regional_metrics_ref")
@@ -159,4 +159,3 @@ DBI::dbWriteTable(con, DBI::Id(schema="silver", table="bea_regional_cagdp2_wide"
 # Disconnect our DB ----
 dbExecute(con, "CHECKPOINT")
 dbDisconnect(con, shutdown = TRUE)
-

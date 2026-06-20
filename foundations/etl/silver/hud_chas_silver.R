@@ -111,7 +111,7 @@ standardize_chas <- function(df, geo_level_value, geo_id_col, state_lookup) {
 county_chas_stage <- dbGetQuery(con, "SELECT * FROM staging.hud_chas_county")
 place_chas_stage <- dbGetQuery(con, "SELECT * FROM staging.hud_chas_place")
 county_state_xwalk <- dbGetQuery(con, "SELECT * FROM silver.xwalk_county_state")
-cbsa_county_xwalk <- dbGetQuery(con, "SELECT * FROM silver.xwalk_cbsa_county")
+cbsa_county_xwalk <- get_cbsa_rollup_xwalk(con)
 
 state_lookup <- county_state_xwalk %>%
   transmute(

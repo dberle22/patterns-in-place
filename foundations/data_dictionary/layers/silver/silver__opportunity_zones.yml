@@ -34,13 +34,22 @@ columns:
   - name: pct_oz_tracts
     type: DOUBLE
     definition: Share of tracts in the geography that are designated Opportunity Zones.
+  - name: oz_population
+    type: DOUBLE
+    definition: Total population living in designated Opportunity Zone tracts within the geography, using the latest tract `silver.age_kpi.pop_total` snapshot as the denominator backbone.
+  - name: total_population
+    type: DOUBLE
+    definition: Total tract population represented by the geography, using the latest tract `silver.age_kpi.pop_total` snapshot.
+  - name: pct_population_in_oz
+    type: DOUBLE
+    definition: Share of the geography's tract population that lives in designated Opportunity Zone tracts.
 lineage:
   - step: read_source
     script: foundations/etl/staging/get_opportunity_zones.R
     details: Downloads and normalizes the official CDFI Fund designated-QOZ workbook into `staging.opportunity_zones`.
   - step: standardize_and_roll_up
     script: foundations/etl/silver/opportunity_zones_silver.R
-    details: Uses `silver.xwalk_tract_county` as the tract backbone, applies the tract designation flag, and derives county and CBSA counts and shares.
+    details: Uses `silver.xwalk_tract_county` as the tract backbone, joins the latest tract `silver.age_kpi.pop_total` snapshot, and derives county and CBSA OZ tract-count and population-share overlays through `get_cbsa_rollup_xwalk()`.
   - step: write_target
     script: foundations/etl/silver/opportunity_zones_silver.R
     details: Writes `silver.opportunity_zones` with overwrite enabled.

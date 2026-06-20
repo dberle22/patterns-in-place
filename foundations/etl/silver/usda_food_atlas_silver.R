@@ -83,13 +83,22 @@ county_lookup <- county_xwalk %>%
   bind_rows(county_manual_lookup) %>%
   distinct(.data$county_geoid, .keep_all = TRUE)
 
-cbsa_xwalk <- DBI::dbGetQuery(con, "SELECT * FROM silver.xwalk_cbsa_county") %>%
+cbsa_xwalk <- get_cbsa_rollup_xwalk(con) %>%
   transmute(
     county_geoid = as.character(.data$county_geoid),
     cbsa_code = as.character(.data$cbsa_code),
     cbsa_name = as.character(.data$cbsa_name)
   ) %>%
   distinct()
+
+tract_cbsa_xwalk <- food_stage %>%
+  distinct(.data$tract_geoid) %>%
+  transmute(
+    tract_geoid = as.character(.data$tract_geoid),
+    county_geoid = stringr::str_sub(.data$tract_geoid, 1, 5)
+  ) %>%
+  inner_join(cbsa_xwalk, by = "county_geoid") %>%
+  distinct(.data$tract_geoid, .keep_all = TRUE)
 
 # 4. Audit county coverage before rollups ----
 county_match_audit <- food_stage %>%
@@ -183,8 +192,8 @@ food_county <- food_stage %>%
   )
 
 # 7. Aggregate counties to CBSAs ----
-food_cbsa <- food_county %>%
-  inner_join(cbsa_xwalk, by = c("geo_id" = "county_geoid")) %>%
+food_cbsa <- food_tract %>%
+  inner_join(tract_cbsa_xwalk, by = c("geo_id" = "tract_geoid")) %>%
   group_by(.data$cbsa_code, .data$cbsa_name, .data$year) %>%
   summarise(
     geo_level = "cbsa",

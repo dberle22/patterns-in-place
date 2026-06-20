@@ -1,0 +1,102 @@
+---
+title: "Phase 6 - Bounce Back Markets"
+subtitle: "Converging-from-below Opportunity recovery review"
+date: today
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 2
+    code-fold: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
+options(
+  dplyr.summarise.inform = FALSE,
+  knitr.kable.NA = ""
+)
+
+library(here)
+library(dplyr)
+library(readr)
+library(arrow)
+library(ggplot2)
+library(knitr)
+
+output_dir <- here("exploration/intelligence_framework/phase_6_trajectory", "outputs")
+
+trajectory_scores <- read_parquet(file.path(output_dir, "trajectory_scores.parquet")) |> as_tibble()
+pattern_summary <- read_csv(file.path(output_dir, "phase6_pattern_summary.csv"), show_col_types = FALSE)
+
+bounce_back <- trajectory_scores |> filter(is_bounce_back)
+near_misses <- trajectory_scores |>
+  filter(opportunity_direction == "converging-improving") |>
+  arrange(desc(opportunity_trajectory_strength), opportunity_current_percentile, cbsa_name)
+```
+
+## Purpose
+
+The bounce-back pattern looks for metros that are still relatively weak on current Opportunity standing but are recovering quickly.
+
+The default filter is:
+
+- Opportunity direction = `converging-improving`
+- Opportunity trajectory strength in the top national decile
+- current Opportunity percentile at or below `50`
+
+## Current Pattern Count
+
+```{r}
+pattern_summary |>
+  filter(pattern_flag == "is_bounce_back") |>
+  kable()
+```
+
+## Matched Metros
+
+```{r}
+if (nrow(bounce_back) == 0) {
+  knitr::kable(tibble(note = "No metros met the current bounce-back default."))
+} else {
+  bounce_back |>
+    select(
+      cbsa_name,
+      census_division,
+      opportunity_trajectory_strength,
+      opportunity_trajectory_score,
+      opportunity_direction,
+      opportunity_current_percentile,
+      candidate_rank
+    ) |>
+    mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+    kable()
+}
+```
+
+## Near Misses
+
+```{r}
+near_misses |>
+  slice_head(n = 25) |>
+  select(
+    cbsa_name,
+    census_division,
+    opportunity_trajectory_strength,
+    opportunity_direction,
+    opportunity_current_percentile,
+    opp_turn_signal,
+    candidate_rank
+  ) |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+## Review Lens
+
+Look for:
+
+- whether zero matches feels analytically correct or overly strict
+- whether the near misses are the metros you would expect to anchor an Article 7 recovery story
+- whether the current cutoff is screening out plausible rebound stories because their present percentile is slightly too high

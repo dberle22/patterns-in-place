@@ -1,0 +1,99 @@
+---
+title: "Phase 6 - Candidate List Review"
+subtitle: "Ranked Deep Dive candidate surface with Jacksonville and Richmond check"
+date: today
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 2
+    code-fold: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
+options(
+  dplyr.summarise.inform = FALSE,
+  knitr.kable.NA = ""
+)
+
+library(here)
+library(dplyr)
+library(readr)
+library(ggplot2)
+library(knitr)
+
+output_dir <- here("exploration/intelligence_framework/phase_6_trajectory", "outputs")
+
+candidate_list <- read_csv(file.path(output_dir, "phase6_candidate_list.csv"), show_col_types = FALSE)
+
+jax_rva_check <- candidate_list |>
+  filter(cbsa_name %in% c("Jacksonville, FL", "Richmond, VA"))
+```
+
+## Candidate Method
+
+The current candidate score uses:
+
+- equal weights across the five Phase 6 pattern flags
+- a multiplier from overall trajectory strength
+- a smaller Phase 5 overlap bonus
+
+The sensitivity note in the CSV explains how changing those weights would move the rankings.
+
+## Top 50 Candidates
+
+```{r}
+candidate_list |>
+  slice_head(n = 50) |>
+  select(
+    candidate_rank,
+    cbsa_name,
+    census_division,
+    pattern_count,
+    pattern_signal_score,
+    overall_trajectory_strength,
+    phase5_overlap_rank,
+    candidate_score
+  ) |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+## Jacksonville And Richmond Check
+
+```{r}
+jax_rva_check |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+## Rank Composition
+
+```{r fig.height=5}
+ggplot(
+  candidate_list,
+  aes(
+    x = overall_trajectory_strength,
+    y = candidate_score,
+    color = factor(pattern_count)
+  )
+) +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(
+    title = "Candidate score rises with both pattern count and overall trajectory strength",
+    x = "Overall trajectory strength",
+    y = "Candidate score",
+    color = "Pattern count"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+## Review Lens
+
+Look for:
+
+- whether the top 20 feel like true review-priority metros rather than arbitrary score artifacts
+- whether Jacksonville and Richmond are positioned in ways that make sense for the first Deep Dive decision
+- whether the overlap bonus is helping the right cases or over-rewarding Phase 5 contradiction alone

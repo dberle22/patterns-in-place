@@ -1456,3 +1456,2134 @@ metrics:
     growth_windows: []
     caveats: Employment-based diversification lens that may differ from GDP concentration.
     status: active
+
+  # --- economics_industry_wide: QCEW wages ---
+
+  - metric_id: qcew_private_avg_wkly_wage
+    display_name: Private Sector Average Weekly Wage
+    description: Average weekly wage for private sector workers from BLS QCEW.
+    source_table: economics_industry_wide
+    source_column: qcew_private_avg_wkly_wage
+    formula: null
+    unit_format: currency
+    subject_areas: [wages]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Employer-side wage signal; complement with BEA income measures for household-side picture.
+    status: active
+
+  - metric_id: qcew_total_covered_avg_wkly_wage
+    display_name: Total Covered Average Weekly Wage
+    description: Average weekly wage across all covered employment (private + government) from BLS QCEW.
+    source_table: economics_industry_wide
+    source_column: qcew_total_covered_avg_wkly_wage
+    formula: null
+    unit_format: currency
+    subject_areas: [wages]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Includes government sector; may differ materially from private wage in government-heavy metros.
+    status: active
+
+  # --- economics_industry_wide: QCEW location quotients ---
+
+  - metric_id: lq_professional
+    display_name: Location Quotient — Professional Services
+    description: Location quotient for professional and business services employment relative to national share.
+    source_table: economics_industry_wide
+    source_column: lq_professional
+    formula: (local_emp_share / national_emp_share)
+    unit_format: ratio
+    subject_areas: [industry_specialization]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: LQ > 1 indicates relative specialization; use with employment share for full picture.
+    status: active
+
+  - metric_id: lq_information
+    display_name: Location Quotient — Information
+    description: Location quotient for information sector employment relative to national share.
+    source_table: economics_industry_wide
+    source_column: lq_information
+    formula: (local_emp_share / national_emp_share)
+    unit_format: ratio
+    subject_areas: [industry_specialization]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: LQ > 1 indicates relative specialization; tech-economy signal.
+    status: active
+
+  - metric_id: lq_manufacturing
+    display_name: Location Quotient — Manufacturing
+    description: Location quotient for manufacturing employment relative to national share.
+    source_table: economics_industry_wide
+    source_column: lq_manufacturing
+    formula: (local_emp_share / national_emp_share)
+    unit_format: ratio
+    subject_areas: [industry_specialization]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: LQ > 1 indicates relative specialization; use to distinguish legacy from advanced manufacturing.
+    status: active
+
+  - metric_id: lq_educ_health
+    display_name: Location Quotient — Education And Health
+    description: Location quotient for education and health services employment relative to national share.
+    source_table: economics_industry_wide
+    source_column: lq_educ_health
+    formula: (local_emp_share / national_emp_share)
+    unit_format: ratio
+    subject_areas: [industry_specialization]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Eds-and-meds anchor signal; can indicate institutional anchor or low-wage service concentration.
+    status: active
+
+  - metric_id: lq_finance_real
+    display_name: Location Quotient — Finance And Real Estate
+    description: Location quotient for finance and real estate employment relative to national share.
+    source_table: economics_industry_wide
+    source_column: lq_finance_real
+    formula: (local_emp_share / national_emp_share)
+    unit_format: ratio
+    subject_areas: [industry_specialization]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: LQ > 1 indicates relative specialization.
+    status: active
+
+  - metric_id: lq_construction
+    display_name: Location Quotient — Construction
+    description: Location quotient for construction employment relative to national share.
+    source_table: economics_industry_wide
+    source_column: lq_construction
+    formula: (local_emp_share / national_emp_share)
+    unit_format: ratio
+    subject_areas: [industry_specialization]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: LQ > 1 indicates relative specialization; often correlated with growth markets.
+    status: active
+
+  - metric_id: lq_retail
+    display_name: Location Quotient — Retail
+    description: Location quotient for retail employment relative to national share.
+    source_table: economics_industry_wide
+    source_column: lq_retail
+    formula: (local_emp_share / national_emp_share)
+    unit_format: ratio
+    subject_areas: [industry_specialization]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: LQ > 1 indicates relative specialization.
+    status: active
+
+  - metric_id: lq_transport_util
+    display_name: Location Quotient — Transportation And Utilities
+    description: Location quotient for transportation and utilities employment relative to national share.
+    source_table: economics_industry_wide
+    source_column: lq_transport_util
+    formula: (local_emp_share / national_emp_share)
+    unit_format: ratio
+    subject_areas: [industry_specialization]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: LQ > 1 indicates relative specialization.
+    status: active
+
+  - metric_id: lq_arts_accomm_food
+    display_name: Location Quotient — Arts, Accommodations, And Food
+    description: Location quotient for arts, accommodations, and food services employment relative to national share.
+    source_table: economics_industry_wide
+    source_column: lq_arts_accomm_food
+    formula: (local_emp_share / national_emp_share)
+    unit_format: ratio
+    subject_areas: [industry_specialization]
+    themes: [opportunity, character]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Tourism and hospitality signal; sensitive to leisure-economy concentration.
+    status: active
+
+  - metric_id: lq_wholesale
+    display_name: Location Quotient — Wholesale
+    description: Location quotient for wholesale trade employment relative to national share.
+    source_table: economics_industry_wide
+    source_column: lq_wholesale
+    formula: (local_emp_share / national_emp_share)
+    unit_format: ratio
+    subject_areas: [industry_specialization]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: LQ > 1 indicates relative specialization.
+    status: active
+
+  - metric_id: lq_other_services
+    display_name: Location Quotient — Other Services
+    description: Location quotient for other services employment relative to national share.
+    source_table: economics_industry_wide
+    source_column: lq_other_services
+    formula: (local_emp_share / national_emp_share)
+    unit_format: ratio
+    subject_areas: [industry_specialization]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: LQ > 1 indicates relative specialization.
+    status: active
+
+  - metric_id: lq_ag_mining
+    display_name: Location Quotient — Agriculture And Mining
+    description: Location quotient for agriculture and mining employment relative to national share.
+    source_table: economics_industry_wide
+    source_column: lq_ag_mining
+    formula: (local_emp_share / national_emp_share)
+    unit_format: ratio
+    subject_areas: [industry_specialization]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: LQ > 1 indicates relative specialization; extractive-economy signal.
+    status: active
+
+  # --- economics_industry_wide: BFS business formation ---
+
+  - metric_id: bfs_business_applications
+    display_name: Business Applications
+    description: Total business applications from Census Bureau Business Formation Statistics.
+    source_table: economics_industry_wide
+    source_column: bfs_business_applications
+    formula: null
+    unit_format: integer
+    subject_areas: [business_formation]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: true
+    growth_windows: [1]
+    caveats: Raw count; use rate metrics for cross-metro comparison.
+    status: active
+
+  - metric_id: bfs_business_applications_yoy_pct
+    display_name: Business Applications Year-Over-Year Change
+    description: Year-over-year percentage change in business applications.
+    source_table: economics_industry_wide
+    source_column: bfs_business_applications_yoy_pct
+    formula: null
+    unit_format: percent
+    subject_areas: [business_formation]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Short-run momentum signal; can be volatile.
+    status: active
+
+  - metric_id: bfs_business_application_rate_per_1000_establishments
+    display_name: Business Application Rate Per 1,000 Establishments
+    description: Business applications per 1,000 existing establishments; CBP-backed rate for cross-metro comparison.
+    source_table: economics_industry_wide
+    source_column: bfs_business_application_rate_per_1000_establishments
+    formula: bfs_business_applications / (cbp_total_estabs / 1000)
+    unit_format: ratio
+    subject_areas: [business_formation]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: CBP denominator is one year lagged; rate is populated 2012–2023.
+    status: active
+
+  - metric_id: bfs_business_applications_per_1000_residents
+    display_name: Business Applications Per 1,000 Residents
+    description: Business applications per 1,000 residents; population-normalized formation rate.
+    source_table: economics_industry_wide
+    source_column: bfs_business_applications_per_1000_residents
+    formula: bfs_business_applications / (pop_total / 1000)
+    unit_format: ratio
+    subject_areas: [business_formation]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Population-normalized; complements the establishment-backed rate.
+    status: active
+
+  # --- economics_industry_wide: CBP establishment density ---
+
+  - metric_id: cbp_estabs_per_1000_residents
+    display_name: Establishments Per 1,000 Residents
+    description: Total business establishments per 1,000 residents from County Business Patterns.
+    source_table: economics_industry_wide
+    source_column: cbp_estabs_per_1000_residents
+    formula: cbp_total_estabs / (pop_total / 1000)
+    unit_format: ratio
+    subject_areas: [business_density]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: CBP vintage lags by one year; 2010–2023 coverage.
+    status: active
+
+  - metric_id: cbp_total_estabs
+    display_name: Total Establishments
+    description: Total business establishments from County Business Patterns.
+    source_table: economics_industry_wide
+    source_column: cbp_total_estabs
+    formula: null
+    unit_format: integer
+    subject_areas: [business_density]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Scale-heavy raw count; use per-resident rate for cross-metro comparison.
+    status: active
+
+  # --- economics_industry_wide: GDP sector mix ---
+
+  - metric_id: pct_real_gdp_information
+    display_name: Information GDP Share
+    description: Share of real GDP from the information sector.
+    source_table: economics_industry_wide
+    source_column: pct_real_gdp_information
+    formula: null
+    unit_format: percent
+    subject_areas: [industry]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: GDP-share view differs from employment-share view; tech-output signal.
+    status: active
+
+  # --- economics_gdp_wide: additional growth variants ---
+
+  - metric_id: real_gdp_cagr_5yr
+    display_name: Real GDP CAGR (5 Year)
+    description: Five-year compound annual growth rate of real GDP.
+    source_table: economics_gdp_wide
+    source_column: real_gdp_cagr_5yr
+    formula: null
+    unit_format: percent
+    subject_areas: [gdp_growth]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: CAGR normalizes for compounding; use when comparing across different time windows.
+    status: active
+
+  - metric_id: real_gdp_pc_growth_5yr
+    display_name: Real GDP Per Capita Growth (5 Year)
+    description: Five-year percentage change in real GDP per capita.
+    source_table: economics_gdp_wide
+    source_column: real_gdp_pc_growth_5yr
+    formula: null
+    unit_format: percent
+    subject_areas: [gdp_growth]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Population-adjusted growth; preferred over total GDP growth for per-resident welfare comparisons.
+    status: active
+
+  # --- economics_labor_wide: labor change variants ---
+
+  - metric_id: unemployment_rate_change_1yr
+    display_name: Unemployment Rate Change (1 Year)
+    description: One-year change in unemployment rate in percentage points.
+    source_table: economics_labor_wide
+    source_column: unemployment_rate_change_1yr
+    formula: null
+    unit_format: percent
+    subject_areas: [labor]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Short-run labor momentum signal; interpret alongside the level.
+    status: active
+
+  # --- economics_income_wide: poverty change + income variants ---
+
+  - metric_id: pov_rate_change_1yr
+    display_name: Poverty Rate Change (1 Year)
+    description: One-year change in poverty rate in percentage points.
+    source_table: economics_income_wide
+    source_column: pov_rate_change_1yr
+    formula: null
+    unit_format: percent
+    subject_areas: [poverty]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Short-run poverty momentum; can be noisy at smaller geographies.
+    status: active
+
+  - metric_id: pov_rate_change_5yr
+    display_name: Poverty Rate Change (5 Year)
+    description: Five-year change in poverty rate in percentage points.
+    source_table: economics_income_wide
+    source_column: pov_rate_change_5yr
+    formula: null
+    unit_format: percent
+    subject_areas: [poverty]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Structural poverty-trajectory signal; prefer over 1yr for Opportunity scoring.
+    status: active
+
+  - metric_id: income_pc_cagr_5yr
+    display_name: Per-Capita Income CAGR (5 Year)
+    description: Five-year compound annual growth rate of per-capita income.
+    source_table: economics_income_wide
+    source_column: income_pc_cagr_5yr
+    formula: null
+    unit_format: percent
+    subject_areas: [income_growth]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: CAGR form of the 5yr growth; redundant with income_pc_growth_5yr for most uses.
+    status: active
+
+  # --- population_demographics: race/ethnicity and education additions ---
+
+  - metric_id: pct_aian_nh
+    display_name: Non-Hispanic American Indian And Alaska Native Share
+    description: Share of residents who identify as non-Hispanic American Indian or Alaska Native.
+    source_table: population_demographics
+    source_column: pct_aian_nh
+    formula: null
+    unit_format: percent
+    subject_areas: [race_ethnicity]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Small shares in most CBSAs; high CV makes this a strong differentiator in select markets.
+    status: active
+
+  - metric_id: pct_nhpi_nh
+    display_name: Non-Hispanic Native Hawaiian And Pacific Islander Share
+    description: Share of residents who identify as non-Hispanic Native Hawaiian or Pacific Islander.
+    source_table: population_demographics
+    source_column: pct_nhpi_nh
+    formula: null
+    unit_format: percent
+    subject_areas: [race_ethnicity]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Very small shares in most CBSAs; analytically important in select Pacific and island-adjacent markets.
+    status: active
+
+  - metric_id: pct_ba
+    display_name: Share With Bachelor's Degree Only
+    description: Share of adults age 25+ with exactly a bachelor's degree (not graduate).
+    source_table: population_demographics
+    source_column: pct_ba
+    formula: null
+    unit_format: percent
+    subject_areas: [education]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Highly correlated with pct_ba_plus; avoid carrying both in a default model.
+    status: active
+
+  - metric_id: pct_hs_or_less
+    display_name: Share With High School Or Less
+    description: Share of adults age 25+ with a high school diploma or less.
+    source_table: population_demographics
+    source_column: pct_hs_or_less
+    formula: null
+    unit_format: percent
+    subject_areas: [education]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Inverse signal; highly correlated with pct_ba_plus (r ≈ -0.90 at CBSA scale).
+    status: active
+
+  - metric_id: pct_ba_plus_change_5yr
+    display_name: Share With Bachelor's Degree Or Higher Change (5 Year)
+    description: Five-year change in the share of adults with a bachelor's degree or higher.
+    source_table: population_demographics
+    source_column: pct_ba_plus_change_5yr
+    formula: null
+    unit_format: percent
+    subject_areas: [education]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Human capital accumulation signal; change field belongs in Opportunity, level in Character.
+    status: active
+
+  - metric_id: pop_cagr_5yr
+    display_name: Population CAGR (5 Year)
+    description: Five-year compound annual growth rate of total population.
+    source_table: population_demographics
+    source_column: pop_cagr_5yr
+    formula: null
+    unit_format: percent
+    subject_areas: [population]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: CAGR form of pop_growth_5yr; redundant for most uses.
+    status: active
+
+  # --- migration_wide: IRS AGI flows ---
+
+  - metric_id: irs_net_agi
+    display_name: IRS Net AGI Flow
+    description: Net adjusted gross income flow from IRS migration data; inflow minus outflow AGI.
+    source_table: migration_wide
+    source_column: irs_net_agi
+    formula: irs_inflow_agi - irs_outflow_agi
+    unit_format: currency
+    subject_areas: [migration]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Wealth-flow investor signal; positive = net income coming in, negative = net income leaving.
+    status: active
+
+  - metric_id: irs_inflow_agi
+    display_name: IRS Inflow AGI
+    description: Total adjusted gross income of households moving into the geography per IRS migration data.
+    source_table: migration_wide
+    source_column: irs_inflow_agi
+    formula: null
+    unit_format: currency
+    subject_areas: [migration]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Gross inflow; highly correlated with outflow — use net AGI for directional signal.
+    status: active
+
+  - metric_id: irs_outflow_agi
+    display_name: IRS Outflow AGI
+    description: Total adjusted gross income of households moving out of the geography per IRS migration data.
+    source_table: migration_wide
+    source_column: irs_outflow_agi
+    formula: null
+    unit_format: currency
+    subject_areas: [migration]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Gross outflow; highly correlated with inflow — use net AGI for directional signal.
+    status: active
+
+  - metric_id: pct_moved_same_cnty
+    display_name: Share Moved Within Same County
+    description: Share of residents who moved within the same county within the past year.
+    source_table: migration_wide
+    source_column: pct_moved_same_cnty
+    formula: null
+    unit_format: percent
+    subject_areas: [migration]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Local churn indicator; highly correlated with mobility_rate at CBSA scale.
+    status: active
+
+  - metric_id: pct_moved_same_st
+    display_name: Share Moved Within Same State
+    description: Share of residents who moved within the same state but from a different county within the past year.
+    source_table: migration_wide
+    source_column: pct_moved_same_st
+    formula: null
+    unit_format: percent
+    subject_areas: [migration]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Intra-state relocation signal; complements pct_moved_diff_st for full migration origin picture.
+    status: active
+
+  # --- housing_core_wide: structure mix additions ---
+
+  - metric_id: pct_struct_sf_det
+    display_name: Single-Family Detached Housing Share
+    description: Share of housing stock in single-family detached structures.
+    source_table: housing_core_wide
+    source_column: pct_struct_sf_det
+    formula: null
+    unit_format: percent
+    subject_areas: [built_form]
+    themes: [livability, character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Dropped from default Livability model; retained as descriptive context for built-form narrative.
+    status: active
+
+  - metric_id: pct_struct_small_mf
+    display_name: Small Multifamily Housing Share
+    description: Share of housing stock in small multifamily structures (2–4 units).
+    source_table: housing_core_wide
+    source_column: pct_struct_small_mf
+    formula: null
+    unit_format: percent
+    subject_areas: [built_form]
+    themes: [livability, character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Core Livability model KPI for housing structure mix topic.
+    status: active
+
+  - metric_id: pct_struct_mid_mf
+    display_name: Mid-Size Multifamily Housing Share
+    description: Share of housing stock in mid-size multifamily structures (5–19 units).
+    source_table: housing_core_wide
+    source_column: pct_struct_mid_mf
+    formula: null
+    unit_format: percent
+    subject_areas: [built_form]
+    themes: [livability, character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Core Livability model KPI for housing structure mix topic.
+    status: active
+
+  - metric_id: pct_struct_large_mf
+    display_name: Large Multifamily Housing Share
+    description: Share of housing stock in large multifamily structures (20+ units).
+    source_table: housing_core_wide
+    source_column: pct_struct_large_mf
+    formula: null
+    unit_format: percent
+    subject_areas: [built_form]
+    themes: [livability, character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Descriptive KPI; not in default model but useful for urban density narrative.
+    status: active
+
+  - metric_id: pct_struct_mobile
+    display_name: Mobile Home And Other Structure Share
+    description: Share of housing stock in mobile homes and other non-traditional structures.
+    source_table: housing_core_wide
+    source_column: pct_struct_mobile
+    formula: null
+    unit_format: percent
+    subject_areas: [built_form]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Core Livability model KPI; high values correlate with lower-cost, rural-adjacent markets.
+    status: active
+
+  # --- housing_core_wide: permit detail additions ---
+
+  - metric_id: permits_share_units_5_plus
+    display_name: Permit Share — Structures With 5 Or More Units
+    description: Share of permitted units in structures with 5 or more units.
+    source_table: housing_core_wide
+    source_column: permits_share_units_5_plus
+    formula: null
+    unit_format: percent
+    subject_areas: [housing_supply]
+    themes: [livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Density-of-supply signal; low correlation with permit rate (r ≈ 0.10 at CBSA).
+    status: active
+
+  - metric_id: permits_avg_units_per_bldg
+    display_name: Average Units Per Permitted Building
+    description: Average number of units per permitted building; reflects density of new construction.
+    source_table: housing_core_wide
+    source_column: permits_avg_units_per_bldg
+    formula: null
+    unit_format: number_1dp
+    subject_areas: [housing_supply]
+    themes: [livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Interpretable supply-density metric; sensitivity alternative to permits_share_units_5_plus.
+    status: active
+
+  - metric_id: permits_per_1000_population
+    display_name: Permits Per 1,000 Population
+    description: Residential permits per 1,000 residents.
+    source_table: housing_core_wide
+    source_column: permits_per_1000_population
+    formula: null
+    unit_format: ratio
+    subject_areas: [housing_supply]
+    themes: [livability, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Redundant with permits_per_1000_housing_units at CBSA scale; not in default model.
+    status: active
+
+  # --- housing_market_wide: FHFA HPI + Zillow ZORI ---
+
+  - metric_id: hpi_yoy_pct
+    display_name: Home Price Index Year-Over-Year Change
+    description: Year-over-year percentage change in the FHFA house price index.
+    source_table: housing_market_wide
+    source_column: hpi_yoy_pct
+    formula: null
+    unit_format: percent
+    subject_areas: [home_price]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Repeat-sales index; more reliable than ACS median home value for appreciation tracking.
+    status: active
+
+  - metric_id: hpi_5yr_pct
+    display_name: Home Price Index 5-Year Change
+    description: Five-year percentage change in the FHFA house price index.
+    source_table: housing_market_wide
+    source_column: hpi_5yr_pct
+    formula: null
+    unit_format: percent
+    subject_areas: [home_price]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Structural market appreciation signal; core Opportunity model KPI.
+    status: active
+
+  - metric_id: hpi_10yr_pct
+    display_name: Home Price Index 10-Year Change
+    description: Ten-year percentage change in the FHFA house price index.
+    source_table: housing_market_wide
+    source_column: hpi_10yr_pct
+    formula: null
+    unit_format: percent
+    subject_areas: [home_price]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Long-cycle appreciation signal; sensitivity alternative to hpi_5yr_pct.
+    status: active
+
+  - metric_id: zori_annual_avg
+    display_name: Zillow Observed Rent Index Annual Average
+    description: Annual average of the Zillow Observed Rent Index; market rent level estimate.
+    source_table: housing_market_wide
+    source_column: zori_annual_avg
+    formula: null
+    unit_format: currency
+    subject_areas: [rent]
+    themes: [opportunity, livability]
+    valid_geo_levels: [us, region, division, state, cbsa]
+    growth_eligible: true
+    growth_windows: [1]
+    caveats: ZORI covers ~48% of CBSAs; missing metros are typically smaller markets. Use as context, not primary signal.
+    status: active
+
+  - metric_id: zori_annual_avg_yoy_pct
+    display_name: Zillow Observed Rent Index Year-Over-Year Change (Annual Average)
+    description: Year-over-year percentage change in the annual average ZORI; rent momentum signal.
+    source_table: housing_market_wide
+    source_column: zori_annual_avg_yoy_pct
+    formula: null
+    unit_format: percent
+    subject_areas: [rent]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Core Opportunity model KPI despite coverage gap (~48%); missing values imputed at national median in model.
+    status: active
+
+  - metric_id: zori_december
+    display_name: Zillow Observed Rent Index December
+    description: December point-in-time ZORI value; end-of-year rent level.
+    source_table: housing_market_wide
+    source_column: zori_december
+    formula: null
+    unit_format: currency
+    subject_areas: [rent]
+    themes: [opportunity, livability]
+    valid_geo_levels: [us, region, division, state, cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Point-in-time; prefer annual average for smoother signal. Coverage same as zori_annual_avg.
+    status: active
+
+  - metric_id: zori_december_yoy_pct
+    display_name: Zillow Observed Rent Index December Year-Over-Year Change
+    description: Year-over-year percentage change in December ZORI; end-of-year rent momentum.
+    source_table: housing_market_wide
+    source_column: zori_december_yoy_pct
+    formula: null
+    unit_format: percent
+    subject_areas: [rent]
+    themes: [opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Sensitivity alternative to zori_annual_avg_yoy_pct; captures year-end momentum.
+    status: active
+
+  # --- affordability_wide: HUD CHAS cost burden ---
+
+  - metric_id: pct_cost_burdened
+    display_name: Share Cost Burdened Households
+    description: Share of all households spending 30 percent or more of income on housing costs (CHAS).
+    source_table: affordability_wide
+    source_column: pct_cost_burdened
+    formula: null
+    unit_format: percent
+    subject_areas: [affordability]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: CHAS single-vintage source; not a recurring annual panel. Use as contextual baseline alongside ACS rent burden.
+    status: active
+
+  - metric_id: pct_severely_cost_burdened
+    display_name: Share Severely Cost Burdened Households
+    description: Share of all households spending 50 percent or more of income on housing costs (CHAS).
+    source_table: affordability_wide
+    source_column: pct_severely_cost_burdened
+    formula: null
+    unit_format: percent
+    subject_areas: [affordability]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: CHAS single-vintage; sharpest distress signal in the affordability family but not recurring.
+    status: active
+
+  - metric_id: pct_renter_severely_cost_burdened
+    display_name: Share Severely Cost Burdened Renter Households
+    description: Share of renter households spending 50 percent or more of income on housing costs (CHAS).
+    source_table: affordability_wide
+    source_column: pct_renter_severely_cost_burdened
+    formula: null
+    unit_format: percent
+    subject_areas: [affordability]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: CHAS single-vintage; renter-specific severe burden. Sharper than ACS pct_rent_burden_50plus for distress analysis.
+    status: active
+
+  # --- social_infra_wide: broadband and household structure ---
+
+  - metric_id: pct_broadband_subscription
+    display_name: Broadband Subscription Rate
+    description: Share of households with a broadband internet subscription.
+    source_table: social_infra_wide
+    source_column: pct_broadband_subscription
+    formula: null
+    unit_format: percent
+    subject_areas: [digital_access]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: ACS question wording changed 2019; treat pre/post comparisons with caution.
+    status: active
+
+  - metric_id: pct_no_internet_access
+    display_name: Share With No Internet Access
+    description: Share of households with no internet access of any kind.
+    source_table: social_infra_wide
+    source_column: pct_no_internet_access
+    formula: null
+    unit_format: percent
+    subject_areas: [digital_access]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Sharper differentiator than broadband subscription rate at CBSA scale; core Livability model KPI.
+    status: active
+
+  - metric_id: pct_hh_single_person
+    display_name: Single-Person Household Share
+    description: Share of households consisting of a single person living alone.
+    source_table: social_infra_wide
+    source_column: pct_hh_single_person
+    formula: null
+    unit_format: percent
+    subject_areas: [household_structure]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Low cross-metro variance at CBSA scale; dropped from default Character model but retained as narrative context.
+    status: active
+
+  - metric_id: pct_family_single_parent
+    display_name: Single-Parent Family Share
+    description: Share of family households with a single parent.
+    source_table: social_infra_wide
+    source_column: pct_family_single_parent
+    formula: null
+    unit_format: percent
+    subject_areas: [household_structure]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Low cross-metro variance at CBSA scale; dropped from default Character model but retained as narrative context.
+    status: active
+
+  # --- social_fabric_wide: Social Capital Atlas ---
+
+  - metric_id: economic_connectedness
+    display_name: Economic Connectedness
+    description: Share of low-SES individuals' friends who are high-SES; cross-class social ties index from Opportunity Insights Social Capital Atlas.
+    source_table: social_fabric_wide
+    source_column: economic_connectedness
+    formula: null
+    unit_format: index
+    subject_areas: [social_capital]
+    themes: [character, opportunity]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Static 2022 baseline; headline cross-class social ties measure. Low variance at CBSA scale — treated as Opportunity proxy, not default Character cluster input.
+    status: active
+
+  - metric_id: friending_bias
+    display_name: Friending Bias
+    description: Degree to which low-SES individuals friend high-SES individuals less than expected given exposure.
+    source_table: social_fabric_wide
+    source_column: friending_bias
+    formula: null
+    unit_format: index
+    subject_areas: [social_capital]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Static 2022 baseline; core Character model KPI for Social Capital topic.
+    status: active
+
+  - metric_id: childhood_friending_bias
+    display_name: Childhood Friending Bias
+    description: Friending bias measured specifically for children and adolescents.
+    source_table: social_fabric_wide
+    source_column: childhood_friending_bias
+    formula: null
+    unit_format: index
+    subject_areas: [social_capital]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Top sensitivity KPI in the Character Social Capital topic; strongest differentiator in Phase 1 notebook.
+    status: active
+
+  - metric_id: childhood_economic_connectedness
+    display_name: Childhood Economic Connectedness
+    description: Economic connectedness measured specifically for children and adolescents.
+    source_table: social_fabric_wide
+    source_column: childhood_economic_connectedness
+    formula: null
+    unit_format: index
+    subject_areas: [social_capital]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Static 2022 baseline; dropped from default Character cluster model due to low variance at CBSA scale.
+    status: active
+
+  - metric_id: cohesion_clustering
+    display_name: Social Cohesion Clustering
+    description: Degree to which friends of friends also know each other; network clustering coefficient.
+    source_table: social_fabric_wide
+    source_column: cohesion_clustering
+    formula: null
+    unit_format: index
+    subject_areas: [social_capital]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Static 2022 baseline; dropped from default Character cluster model due to low variance at CBSA scale.
+    status: active
+
+  - metric_id: cohesion_support_ratio
+    display_name: Social Cohesion Support Ratio
+    description: Ratio of social support connections to total connections; network support density measure.
+    source_table: social_fabric_wide
+    source_column: cohesion_support_ratio
+    formula: null
+    unit_format: index
+    subject_areas: [social_capital]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Static 2022 baseline; dropped from default Character cluster model due to low variance at CBSA scale.
+    status: active
+
+  - metric_id: civic_engagement_volunteering_rate
+    display_name: Civic Engagement Volunteering Rate
+    description: Share of residents who volunteer; civic engagement signal from Social Capital Atlas.
+    source_table: social_fabric_wide
+    source_column: civic_engagement_volunteering_rate
+    formula: null
+    unit_format: percent
+    subject_areas: [civic_engagement]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Static 2022 baseline; core Character model KPI for Social Capital topic.
+    status: active
+
+  - metric_id: civic_organizations_per_1000
+    display_name: Civic Organizations Per 1,000 Residents
+    description: Civic organizations per 1,000 residents from Social Capital Atlas.
+    source_table: social_fabric_wide
+    source_column: civic_organizations_per_1000
+    formula: null
+    unit_format: ratio
+    subject_areas: [civic_engagement]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Static 2022 baseline; core Character model KPI for Social Capital topic.
+    status: active
+
+  - metric_id: nonprofits_per_100k
+    display_name: Nonprofits Per 100,000 Residents
+    description: Number of nonprofits per 100,000 residents from IRS Business Master File.
+    source_table: social_fabric_wide
+    source_column: nonprofits_per_100k
+    formula: null
+    unit_format: ratio
+    subject_areas: [civic_engagement]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Latest IRS snapshot; county and CBSA only. Core Character model KPI for Nonprofits topic.
+    status: active
+
+  - metric_id: nonprofits_total_per_100k
+    display_name: Total Nonprofits Per 100,000 Residents
+    description: Total nonprofit organizations (including religious) per 100,000 residents.
+    source_table: social_fabric_wide
+    source_column: nonprofits_total_per_100k
+    formula: null
+    unit_format: ratio
+    subject_areas: [civic_engagement]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Highly correlated with nonprofits_per_100k (r ≈ 0.99); sensitivity alternative that includes religious orgs.
+    status: active
+
+  # --- health_wide: CHR health metrics ---
+
+  - metric_id: life_expectancy
+    display_name: Life Expectancy
+    description: Average life expectancy at birth in years from County Health Rankings.
+    source_table: health_wide
+    source_column: life_expectancy
+    formula: null
+    unit_format: number_1dp
+    subject_areas: [health_outcomes]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: true
+    growth_windows: [1, 5]
+    caveats: Most intuitive public-facing health KPI; not in default model (premature_death_rate preferred) but strong narrative lead.
+    status: active
+
+  - metric_id: life_expectancy_change_1yr
+    display_name: Life Expectancy Change (1 Year)
+    description: One-year change in life expectancy in years.
+    source_table: health_wide
+    source_column: life_expectancy_change_1yr
+    formula: null
+    unit_format: number_1dp
+    subject_areas: [health_outcomes]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Short-run health trajectory; can be volatile due to CHR methodology.
+    status: active
+
+  - metric_id: life_expectancy_change_5yr
+    display_name: Life Expectancy Change (5 Year)
+    description: Five-year change in life expectancy in years.
+    source_table: health_wide
+    source_column: life_expectancy_change_5yr
+    formula: null
+    unit_format: number_1dp
+    subject_areas: [health_outcomes]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Structural health trajectory signal; useful for trajectory analysis.
+    status: active
+
+  - metric_id: premature_death_rate
+    display_name: Premature Death Rate
+    description: Age-adjusted rate of years of potential life lost before age 75 per 100,000 population (CHR).
+    source_table: health_wide
+    source_column: premature_death_rate
+    formula: null
+    unit_format: ratio
+    subject_areas: [health_outcomes]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: true
+    growth_windows: [1, 5]
+    caveats: Core Livability model KPI for Health Outcomes topic; negative polarity (lower is better).
+    status: active
+
+  - metric_id: premature_death_rate_change_1yr
+    display_name: Premature Death Rate Change (1 Year)
+    description: One-year change in premature death rate.
+    source_table: health_wide
+    source_column: premature_death_rate_change_1yr
+    formula: null
+    unit_format: ratio
+    subject_areas: [health_outcomes]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Short-run health trajectory; useful for trajectory analysis phase.
+    status: active
+
+  - metric_id: premature_death_rate_change_5yr
+    display_name: Premature Death Rate Change (5 Year)
+    description: Five-year change in premature death rate.
+    source_table: health_wide
+    source_column: premature_death_rate_change_5yr
+    formula: null
+    unit_format: ratio
+    subject_areas: [health_outcomes]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Structural health trajectory signal.
+    status: active
+
+  - metric_id: child_mortality_rate
+    display_name: Child Mortality Rate
+    description: Age-adjusted mortality rate for children from County Health Rankings.
+    source_table: health_wide
+    source_column: child_mortality_rate
+    formula: null
+    unit_format: ratio
+    subject_areas: [health_outcomes]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Sensitivity alternative to premature_death_rate; kept as descriptive context in default model.
+    status: active
+
+  - metric_id: infant_mortality_rate
+    display_name: Infant Mortality Rate
+    description: Infant mortality rate per 1,000 live births from County Health Rankings.
+    source_table: health_wide
+    source_column: infant_mortality_rate
+    formula: null
+    unit_format: ratio
+    subject_areas: [health_outcomes]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Dropped from default Livability model due to coverage constraints; retained as descriptive context.
+    status: active
+
+  - metric_id: mental_health_provider_ratio
+    display_name: Mental Health Provider Ratio
+    description: Ratio of population to mental health providers; lower values indicate better access.
+    source_table: health_wide
+    source_column: mental_health_provider_ratio
+    formula: null
+    unit_format: ratio
+    subject_areas: [health_access]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Core Livability model KPI; negative polarity (lower ratio = better access).
+    status: active
+
+  - metric_id: primary_care_ratio
+    display_name: Primary Care Provider Ratio
+    description: Ratio of population to primary care providers; lower values indicate better access.
+    source_table: health_wide
+    source_column: primary_care_ratio
+    formula: null
+    unit_format: ratio
+    subject_areas: [health_access]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: true
+    growth_windows: [5]
+    caveats: Sensitivity KPI; negative polarity. Dropped from default model in favor of mental health provider ratio.
+    status: active
+
+  - metric_id: primary_care_ratio_change_5yr
+    display_name: Primary Care Provider Ratio Change (5 Year)
+    description: Five-year change in the ratio of population to primary care providers.
+    source_table: health_wide
+    source_column: primary_care_ratio_change_5yr
+    formula: null
+    unit_format: ratio
+    subject_areas: [health_access]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Trajectory signal for healthcare access; useful for Phase 6 trajectory analysis.
+    status: active
+
+  - metric_id: drug_overdose_death_rate
+    display_name: Drug Overdose Death Rate
+    description: Age-adjusted drug overdose death rate per 100,000 population from County Health Rankings.
+    source_table: health_wide
+    source_column: drug_overdose_death_rate
+    formula: null
+    unit_format: ratio
+    subject_areas: [health_access]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Core Livability model KPI; negative polarity. Acute harm signal distinct from general health outcomes.
+    status: active
+
+  - metric_id: pct_uninsured_adults
+    display_name: Share Uninsured Adults
+    description: Share of adults without health insurance from County Health Rankings.
+    source_table: health_wide
+    source_column: pct_uninsured_adults
+    formula: null
+    unit_format: percent
+    subject_areas: [health_access]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: true
+    growth_windows: [1, 5]
+    caveats: Core Livability model KPI; negative polarity. System-access signal.
+    status: active
+
+  - metric_id: pct_uninsured_adults_change_1yr
+    display_name: Share Uninsured Adults Change (1 Year)
+    description: One-year change in share of uninsured adults.
+    source_table: health_wide
+    source_column: pct_uninsured_adults_change_1yr
+    formula: null
+    unit_format: percent
+    subject_areas: [health_access]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Short-run insurance coverage trajectory.
+    status: active
+
+  - metric_id: pct_uninsured_adults_change_5yr
+    display_name: Share Uninsured Adults Change (5 Year)
+    description: Five-year change in share of uninsured adults.
+    source_table: health_wide
+    source_column: pct_uninsured_adults_change_5yr
+    formula: null
+    unit_format: percent
+    subject_areas: [health_access]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Structural insurance coverage trajectory; useful for trajectory analysis phase.
+    status: active
+
+  - metric_id: preventable_hospital_stay_rate
+    display_name: Preventable Hospital Stay Rate
+    description: Rate of hospital stays for ambulatory-care-sensitive conditions per 100,000 Medicare enrollees (CHR).
+    source_table: health_wide
+    source_column: preventable_hospital_stay_rate
+    formula: null
+    unit_format: ratio
+    subject_areas: [health_access]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: true
+    growth_windows: [5]
+    caveats: Core Livability model KPI; negative polarity. System-strain signal.
+    status: active
+
+  - metric_id: preventable_hospital_stay_rate_change_5yr
+    display_name: Preventable Hospital Stay Rate Change (5 Year)
+    description: Five-year change in preventable hospital stay rate.
+    source_table: health_wide
+    source_column: preventable_hospital_stay_rate_change_5yr
+    formula: null
+    unit_format: ratio
+    subject_areas: [health_access]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Healthcare system trajectory signal.
+    status: active
+
+  - metric_id: physical_inactivity
+    display_name: Physical Inactivity Rate
+    description: Share of adults reporting no leisure-time physical activity from County Health Rankings.
+    source_table: health_wide
+    source_column: physical_inactivity
+    formula: null
+    unit_format: percent
+    subject_areas: [health_behavior]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: true
+    growth_windows: [5]
+    caveats: Lifestyle metric; dropped from default Livability model core but retained as descriptive context.
+    status: active
+
+  - metric_id: physical_inactivity_change_5yr
+    display_name: Physical Inactivity Rate Change (5 Year)
+    description: Five-year change in physical inactivity rate.
+    source_table: health_wide
+    source_column: physical_inactivity_change_5yr
+    formula: null
+    unit_format: percent
+    subject_areas: [health_behavior]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Lifestyle trajectory signal.
+    status: active
+
+  - metric_id: adult_obesity
+    display_name: Adult Obesity Rate
+    description: Share of adults with a body mass index of 30 or more from County Health Rankings.
+    source_table: health_wide
+    source_column: adult_obesity
+    formula: null
+    unit_format: percent
+    subject_areas: [health_behavior]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: true
+    growth_windows: [5]
+    caveats: Lifestyle metric; dropped from default Livability model core but retained as descriptive context.
+    status: active
+
+  - metric_id: adult_obesity_change_5yr
+    display_name: Adult Obesity Rate Change (5 Year)
+    description: Five-year change in adult obesity rate.
+    source_table: health_wide
+    source_column: adult_obesity_change_5yr
+    formula: null
+    unit_format: percent
+    subject_areas: [health_behavior]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Lifestyle trajectory signal.
+    status: active
+
+  - metric_id: poor_mental_health_days
+    display_name: Poor Mental Health Days
+    description: Average number of poor mental health days per month reported by adults (CHR).
+    source_table: health_wide
+    source_column: poor_mental_health_days
+    formula: null
+    unit_format: number_1dp
+    subject_areas: [health_behavior]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: true
+    growth_windows: [5]
+    caveats: Lifestyle metric; dropped from default Livability model core but retained as descriptive context.
+    status: active
+
+  - metric_id: poor_mental_health_days_change_5yr
+    display_name: Poor Mental Health Days Change (5 Year)
+    description: Five-year change in average poor mental health days per month.
+    source_table: health_wide
+    source_column: poor_mental_health_days_change_5yr
+    formula: null
+    unit_format: number_1dp
+    subject_areas: [health_behavior]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Mental health trajectory signal.
+    status: active
+
+  - metric_id: food_insecurity_rate
+    display_name: Food Insecurity Rate
+    description: Share of population experiencing food insecurity from County Health Rankings.
+    source_table: health_wide
+    source_column: food_insecurity_rate
+    formula: null
+    unit_format: percent
+    subject_areas: [health_behavior]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Dropped from default Livability model core; retained as descriptive context.
+    status: active
+
+  - metric_id: child_care_cost_burden_rate
+    display_name: Child Care Cost Burden Rate
+    description: Share of households experiencing child care cost burden from County Health Rankings.
+    source_table: health_wide
+    source_column: child_care_cost_burden_rate
+    formula: null
+    unit_format: percent
+    subject_areas: [health_access]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Sensitivity KPI for Health Behavior and Access topic.
+    status: active
+
+  - metric_id: homicide_rate
+    display_name: Homicide Rate
+    description: Age-adjusted homicide rate per 100,000 population from County Health Rankings.
+    source_table: health_wide
+    source_column: homicide_rate
+    formula: null
+    unit_format: ratio
+    subject_areas: [safety]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Sensitivity KPI for Violence and Injury topic; moved out of Character on conceptual grounds. Negative polarity.
+    status: active
+
+  - metric_id: firearm_fatality_rate
+    display_name: Firearm Fatality Rate
+    description: Age-adjusted firearm fatality rate per 100,000 population from County Health Rankings.
+    source_table: health_wide
+    source_column: firearm_fatality_rate
+    formula: null
+    unit_format: ratio
+    subject_areas: [safety]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Core Livability model KPI for Violence and Injury topic; negative polarity.
+    status: active
+
+  - metric_id: motor_vehicle_crash_rate
+    display_name: Motor Vehicle Crash Rate
+    description: Age-adjusted motor vehicle crash mortality rate per 100,000 population (CHR).
+    source_table: health_wide
+    source_column: motor_vehicle_crash_rate
+    formula: null
+    unit_format: ratio
+    subject_areas: [safety]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Core Livability model KPI for Violence and Injury topic; negative polarity.
+    status: active
+
+  - metric_id: social_associations_per_10k
+    display_name: Social Associations Per 10,000 Residents
+    description: Number of membership associations per 10,000 residents from County Health Rankings.
+    source_table: health_wide
+    source_column: social_associations_per_10k
+    formula: null
+    unit_format: ratio
+    subject_areas: [civic_engagement]
+    themes: [character]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Core Character model KPI for Social Associations topic; institutional civic density signal.
+    status: active
+
+  - metric_id: hs_graduation_rate
+    display_name: High School Graduation Rate
+    description: Four-year adjusted cohort graduation rate from County Health Rankings.
+    source_table: health_wide
+    source_column: hs_graduation_rate
+    formula: null
+    unit_format: percent
+    subject_areas: [education]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Dropped from default Livability model (zero high-variance KPIs in education subject); retained as descriptive fallback.
+    status: active
+
+  - metric_id: math_score_index
+    display_name: Math Score Index
+    description: Standardized math test score index from County Health Rankings.
+    source_table: health_wide
+    source_column: math_score_index
+    formula: null
+    unit_format: index
+    subject_areas: [education]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Dropped from default model; retained as best descriptive education KPI until SEDA lands.
+    status: active
+
+  - metric_id: reading_score_index
+    display_name: Reading Score Index
+    description: Standardized reading test score index from County Health Rankings.
+    source_table: health_wide
+    source_column: reading_score_index
+    formula: null
+    unit_format: index
+    subject_areas: [education]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Dropped from default model; highly correlated with math_score_index.
+    status: active
+
+  - metric_id: adverse_climate_events
+    display_name: Adverse Climate Events
+    description: Rate of adverse climate events from County Health Rankings; proxy for climate hazard exposure.
+    source_table: health_wide
+    source_column: adverse_climate_events
+    formula: null
+    unit_format: ratio
+    subject_areas: [environment]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: CHR proxy for climate hazard; sensitivity alternative to fema_risk_score until FEMA coverage improves.
+    status: active
+
+  - metric_id: pct_access_to_parks
+    display_name: Share With Access To Parks
+    description: Share of population with adequate access to parks from County Health Rankings.
+    source_table: health_wide
+    source_column: pct_access_to_parks
+    formula: null
+    unit_format: percent
+    subject_areas: [environment]
+    themes: [livability, character]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: CHR crude proxy; full spatial coverage deferred to Points layer (Track 16/17).
+    status: active
+
+  - metric_id: air_pollution_pm25
+    display_name: Air Pollution PM2.5 (CHR Proxy)
+    description: Average daily ambient fine particulate matter concentration in micrograms per cubic meter (CHR).
+    source_table: health_wide
+    source_column: air_pollution_pm25
+    formula: null
+    unit_format: number_1dp
+    subject_areas: [environment]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: true
+    growth_windows: [5]
+    caveats: CHR lagged proxy; sensitivity KPI. Prefer EPA AQI family from environment_wide once coverage improves.
+    status: active
+
+  - metric_id: air_pollution_pm25_change_5yr
+    display_name: Air Pollution PM2.5 Change (5 Year)
+    description: Five-year change in average PM2.5 concentration.
+    source_table: health_wide
+    source_column: air_pollution_pm25_change_5yr
+    formula: null
+    unit_format: number_1dp
+    subject_areas: [environment]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Air quality trajectory signal; useful for Phase 6 trajectory analysis.
+    status: active
+
+  # --- environment_wide: EPA AQI, EJScreen, FEMA NRI ---
+
+  - metric_id: aqi_median
+    display_name: AQI Median
+    description: Median Air Quality Index value from EPA AQI annual summary.
+    source_table: environment_wide
+    source_column: aqi_median
+    formula: null
+    unit_format: index
+    subject_areas: [environment]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Coverage ~86% of CBSAs; descriptive/redundant alongside aqi_unhealthy_days.
+    status: active
+
+  - metric_id: aqi_p90
+    display_name: AQI 90th Percentile
+    description: 90th percentile Air Quality Index value; captures worst air quality days.
+    source_table: environment_wide
+    source_column: aqi_p90
+    formula: null
+    unit_format: index
+    subject_areas: [environment]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Coverage ~86% of CBSAs; tail-risk signal for air quality.
+    status: active
+
+  - metric_id: aqi_unhealthy_days
+    display_name: AQI Unhealthy Days
+    description: Number of days per year with AQI classified as unhealthy from EPA AQI annual summary.
+    source_table: environment_wide
+    source_column: unhealthy_days
+    formula: null
+    unit_format: integer
+    subject_areas: [environment]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Coverage ~86% of CBSAs; coverage-caution KPI in Physical Environment subject.
+    status: active
+
+  - metric_id: ej_pm25
+    display_name: EJScreen PM2.5 Concentration
+    description: Annual mean PM2.5 concentration from EPA EJScreen 2024.
+    source_table: environment_wide
+    source_column: ej_pm25
+    formula: null
+    unit_format: number_1dp
+    subject_areas: [environment]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: EJScreen 2024 single vintage; coverage ~82% of CBSAs. Descriptive alongside aqi_unhealthy_days.
+    status: active
+
+  - metric_id: ej_diesel_pm
+    display_name: EJScreen Diesel Particulate Matter
+    description: Diesel particulate matter exposure index from EPA EJScreen 2024.
+    source_table: environment_wide
+    source_column: ej_diesel_pm
+    formula: null
+    unit_format: index
+    subject_areas: [environment]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: EJScreen 2024 single vintage; sensitivity KPI for Air Pollution topic.
+    status: active
+
+  - metric_id: ej_ozone
+    display_name: EJScreen Ozone Concentration
+    description: Ozone seasonal average from EPA EJScreen 2024.
+    source_table: environment_wide
+    source_column: ej_ozone
+    formula: null
+    unit_format: index
+    subject_areas: [environment]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: EJScreen 2024 single vintage; first to drop from Air Pollution sensitivity set.
+    status: active
+
+  - metric_id: ej_traffic_proximity
+    display_name: EJScreen Traffic Proximity
+    description: Traffic proximity and volume index from EPA EJScreen 2024.
+    source_table: environment_wide
+    source_column: ej_traffic_proximity
+    formula: null
+    unit_format: index
+    subject_areas: [environment]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: EJScreen 2024 single vintage; Hazard Exposure sensitivity topic.
+    status: active
+
+  - metric_id: ej_superfund_proximity
+    display_name: EJScreen Superfund Proximity
+    description: Proximity to National Priorities List Superfund sites index from EPA EJScreen 2024.
+    source_table: environment_wide
+    source_column: ej_superfund_proximity
+    formula: null
+    unit_format: index
+    subject_areas: [environment]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: EJScreen 2024 single vintage; Hazard Exposure sensitivity topic.
+    status: active
+
+  - metric_id: ej_rmp_proximity
+    display_name: EJScreen RMP Proximity
+    description: Proximity to Risk Management Plan facilities index from EPA EJScreen 2024.
+    source_table: environment_wide
+    source_column: ej_rmp_proximity
+    formula: null
+    unit_format: index
+    subject_areas: [environment]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: EJScreen 2024 single vintage; Hazard Exposure sensitivity topic.
+    status: active
+
+  - metric_id: ej_wastewater_discharge
+    display_name: EJScreen Wastewater Discharge
+    description: Wastewater discharge indicator from EPA EJScreen 2024.
+    source_table: environment_wide
+    source_column: ej_wastewater_discharge
+    formula: null
+    unit_format: index
+    subject_areas: [environment]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: EJScreen 2024 single vintage; best sensitivity KPI for Hazard Exposure topic.
+    status: active
+
+  - metric_id: ej_drinking_water_noncompliance
+    display_name: EJScreen Drinking Water Noncompliance
+    description: Drinking water noncompliance indicator from EPA EJScreen 2024.
+    source_table: environment_wide
+    source_column: ej_drinking_water_noncompliance
+    formula: null
+    unit_format: index
+    subject_areas: [environment]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: EJScreen 2024 single vintage; Hazard Exposure sensitivity topic.
+    status: active
+
+  - metric_id: fema_risk_score
+    display_name: FEMA National Risk Index Score
+    description: Composite natural hazard risk score from FEMA National Risk Index 2025 vintage.
+    source_table: environment_wide
+    source_column: fema_risk_score
+    formula: null
+    unit_format: index
+    subject_areas: [environment]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Coverage ~83% of CBSAs; coverage-caution KPI in Climate Hazard Risk topic. 18 hazard types composited.
+    status: active
+
+  # --- transport_built_form_sld: EPA Smart Location Database ---
+
+  - metric_id: walkability_index
+    display_name: Walkability Index
+    description: National walkability index from EPA Smart Location Database 2021 vintage.
+    source_table: transport_built_form_sld
+    source_column: walkability_index
+    formula: null
+    unit_format: index
+    subject_areas: [walkability]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: 2021 single vintage; county/CBSA only. Baseline topic — not in recurring default model core.
+    status: active
+
+  - metric_id: jobs_access_45min_transit
+    display_name: Jobs Accessible Within 45 Minutes By Transit
+    description: Number of jobs accessible within a 45-minute transit commute from EPA Smart Location Database.
+    source_table: transport_built_form_sld
+    source_column: jobs_access_45min_transit
+    formula: null
+    unit_format: integer
+    subject_areas: [walkability]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: 2021 single vintage; baseline topic KPI alongside walkability_index.
+    status: active
+
+  - metric_id: jobs_access_45min_auto
+    display_name: Jobs Accessible Within 45 Minutes By Auto
+    description: Number of jobs accessible within a 45-minute auto commute from EPA Smart Location Database.
+    source_table: transport_built_form_sld
+    source_column: jobs_access_45min_auto
+    formula: null
+    unit_format: integer
+    subject_areas: [walkability]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: 2021 single vintage; redundant baseline KPI — prefer transit version for Livability signal.
+    status: active
+
+  - metric_id: transit_service_density
+    display_name: Transit Service Density
+    description: Transit service density measure from EPA Smart Location Database 2021 vintage.
+    source_table: transport_built_form_sld
+    source_column: transit_service_density
+    formula: null
+    unit_format: ratio
+    subject_areas: [walkability]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county]
+    growth_eligible: false
+    growth_windows: []
+    caveats: 2021 single vintage; redundant alongside jobs_access_45min_transit.
+    status: active
+
+  # --- food_access_wide: USDA Food Access Research Atlas ---
+
+  - metric_id: pct_population_low_income_low_access_1_10
+    display_name: Share Low Income And Low Food Access
+    description: Share of population that is low-income and has low access to a grocery store within 1 mile (urban) or 10 miles (rural) from USDA Food Access Research Atlas.
+    source_table: food_access_wide
+    source_column: pct_population_low_income_low_access_1_10
+    formula: null
+    unit_format: percent
+    subject_areas: [food_access]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: 2019 single vintage; baseline topic KPI. Held out of default model due to source vintage not coverage.
+    status: active
+
+  - metric_id: pct_population_low_access_1_10
+    display_name: Share With Low Food Access
+    description: Share of population with low access to a grocery store within 1 mile (urban) or 10 miles (rural) from USDA Food Access Research Atlas.
+    source_table: food_access_wide
+    source_column: pct_population_low_access_1_10
+    formula: null
+    unit_format: percent
+    subject_areas: [food_access]
+    themes: [livability]
+    valid_geo_levels: [us, region, division, state, cbsa, county, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: 2019 single vintage; alternate baseline KPI — prefer income-restricted version for distress analysis.
+    status: active
+
+  # ---------------------------------------------------------------------------
+  # Intelligence frame score outputs (Phases 2–4)
+  # Sourced from the Gold intelligence tables, not from raw fact marts.
+  # These are precomputed per-CBSA values with no year dimension.
+  # ---------------------------------------------------------------------------
+
+  - metric_id: livability_percentile_rank
+    display_name: Livability Score
+    description: Composite Livability percentile rank (0-100) within the 401-CBSA universe. Higher is better. Derived from hierarchical weighted scoring across Affordability, Health and Safety, Access and Infrastructure, and Physical Environment subjects.
+    source_table: intelligence_livability
+    source_column: livability_percentile_rank
+    formula: null
+    unit_format: integer
+    subject_areas: [intelligence, livability]
+    themes: [livability]
+    valid_geo_levels: [cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Static calibration snapshot — not a time series. Percentile rank is relative to the current 401-CBSA universe.
+    status: active
+
+  - metric_id: livability_cluster
+    display_name: Livability Type
+    description: Hard cluster label (K-Means, k=6) describing the Livability archetype of the metro. Derived from the Phase 3 calibration.
+    source_table: intelligence_livability
+    source_column: livability_cluster
+    formula: null
+    unit_format: string
+    subject_areas: [intelligence, livability]
+    themes: [livability]
+    valid_geo_levels: [cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Labels are centroid-derived; see intelligence_catalog.yml for full label set.
+    status: active
+
+  - metric_id: affordability_score
+    display_name: Affordability Score
+    description: Affordability subject z-score within the Livability frame. Covers price pressure, housing burden, poverty context, housing supply, and structure mix topics.
+    source_table: intelligence_livability
+    source_column: affordability_score
+    formula: null
+    unit_format: number_2dp
+    subject_areas: [intelligence, livability]
+    themes: [livability]
+    valid_geo_levels: [cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Z-score scale; sign-flipped for negative-polarity KPIs so higher always means better.
+    status: active
+
+  - metric_id: health_and_safety_score
+    display_name: Health and Safety Score
+    description: Health and Safety subject z-score within the Livability frame. Covers health outcomes, health behavior and access, and violence and injury topics.
+    source_table: intelligence_livability
+    source_column: health_and_safety_score
+    formula: null
+    unit_format: number_2dp
+    subject_areas: [intelligence, livability]
+    themes: [livability]
+    valid_geo_levels: [cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Z-score scale; higher is better.
+    status: active
+
+  - metric_id: access_and_infrastructure_score
+    display_name: Access and Infrastructure Score
+    description: Access and Infrastructure subject z-score within the Livability frame. Covers commute and mode, vehicle access, housing slack, digital access, walkability, food access, and built-form proxy topics.
+    source_table: intelligence_livability
+    source_column: access_and_infrastructure_score
+    formula: null
+    unit_format: number_2dp
+    subject_areas: [intelligence, livability]
+    themes: [livability]
+    valid_geo_levels: [cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Z-score scale; higher is better.
+    status: active
+
+  - metric_id: physical_environment_score
+    display_name: Physical Environment Score
+    description: Physical Environment subject z-score within the Livability frame. Covers air pollution, climate hazard risk, and hazard exposure topics. Coverage-caution weighted.
+    source_table: intelligence_livability
+    source_column: physical_environment_score
+    formula: null
+    unit_format: number_2dp
+    subject_areas: [intelligence, livability]
+    themes: [livability]
+    valid_geo_levels: [cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Z-score scale; higher is better. Coverage-caution topics have lower reliability weights.
+    status: active
+
+  - metric_id: opportunity_percentile_rank
+    display_name: Opportunity Score
+    description: Composite Opportunity percentile rank (0-100) within the 401-CBSA universe. Higher is better. Derived from hierarchical weighted scoring across Resident Opportunity, Market and Investor Opportunity, and Business and Industry Opportunity subjects.
+    source_table: intelligence_opportunity
+    source_column: opportunity_percentile_rank
+    formula: null
+    unit_format: integer
+    subject_areas: [intelligence, opportunity]
+    themes: [opportunity]
+    valid_geo_levels: [cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Static calibration snapshot. Percentile rank relative to 401-CBSA universe.
+    status: active
+
+  - metric_id: opportunity_cluster
+    display_name: Opportunity Type
+    description: Hard cluster label (K-Means, k=6 on reduced 20-KPI set) describing the Opportunity archetype of the metro. Labels include Superstar Knowledge Capitals, Broad-Based Opportunity Hubs, Emerging Momentum Markets, Industrial Rebound Markets, Uneven Transition Markets, and Thin-Base Distressed Markets.
+    source_table: intelligence_opportunity
+    source_column: opportunity_cluster
+    formula: null
+    unit_format: string
+    subject_areas: [intelligence, opportunity]
+    themes: [opportunity]
+    valid_geo_levels: [cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Clustering used a reduced set; pct_real_gdp_information and permits_per_1000_housing_units held out due to overlap.
+    status: active
+
+  - metric_id: resident_opportunity_score
+    display_name: Resident Opportunity Score
+    description: Resident Opportunity subject z-score. Covers income growth, wage levels, labor market tightness, poverty and inclusion, and intergenerational mobility proxy topics.
+    source_table: intelligence_opportunity
+    source_column: resident_opportunity_score
+    formula: null
+    unit_format: number_2dp
+    subject_areas: [intelligence, opportunity]
+    themes: [opportunity]
+    valid_geo_levels: [cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Z-score scale; higher is better.
+    status: active
+
+  - metric_id: market_opportunity_score
+    display_name: Market Opportunity Score
+    description: Market and Investor Opportunity subject z-score. Covers home price appreciation, rent growth, population growth, migration and wealth flows, and permit activity topics.
+    source_table: intelligence_opportunity
+    source_column: market_opportunity_score
+    formula: null
+    unit_format: number_2dp
+    subject_areas: [intelligence, opportunity]
+    themes: [opportunity]
+    valid_geo_levels: [cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Z-score scale; higher is better. ZORI coverage-caution flagged.
+    status: active
+
+  - metric_id: business_and_industry_score
+    display_name: Business and Industry Score
+    description: Business and Industry Opportunity subject z-score. Covers GDP growth, industry concentration, human capital momentum, business formation, establishment density, location quotient specialization, and sector GDP mix topics.
+    source_table: intelligence_opportunity
+    source_column: business_and_industry_score
+    formula: null
+    unit_format: number_2dp
+    subject_areas: [intelligence, opportunity]
+    themes: [opportunity]
+    valid_geo_levels: [cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Z-score scale; higher is better.
+    status: active
+
+  - metric_id: character_percentile_rank
+    display_name: Character Score
+    description: Composite Character percentile rank (0-100) within the 401-CBSA universe. Derived from hierarchical weighted scoring across Demographics and Social Fabric subjects using the full 17-KPI set.
+    source_table: intelligence_character
+    source_column: character_percentile_rank
+    formula: null
+    unit_format: integer
+    subject_areas: [intelligence, character]
+    themes: [character]
+    valid_geo_levels: [cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Static calibration snapshot. Percentile rank relative to 401-CBSA universe. Character score reflects structural distinctiveness, not a normative better-or-worse judgment.
+    status: active
+
+  - metric_id: character_cluster
+    display_name: Character Archetype
+    description: Hard cluster label (K-Means, k=7) describing the Character archetype of the metro. Labels include Global Knowledge Capitals, Retirement and Lifestyle Havens, College and Civic Anchors, Established Community Anchors, Immigrant Growth Corridors, Rooted Heartland Centers, and Interior Family Opportunity Hubs.
+    source_table: intelligence_character
+    source_column: character_cluster
+    formula: null
+    unit_format: string
+    subject_areas: [intelligence, character]
+    themes: [character]
+    valid_geo_levels: [cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Validated against Brookings, Pew, and Moretti typology frameworks. See docs/character_clustering_notes.md.
+    status: active
+
+  - metric_id: demographics_score
+    display_name: Demographics Score
+    description: Demographics subject z-score within the Character frame. Covers race and ethnicity, age structure, educational attainment, nativity and citizenship, and population density topics. Subject weight 0.50.
+    source_table: intelligence_character
+    source_column: demographics_score
+    formula: null
+    unit_format: number_2dp
+    subject_areas: [intelligence, character]
+    themes: [character]
+    valid_geo_levels: [cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Z-score scale; polarity is descriptive not normative for Character.
+    status: active
+
+  - metric_id: social_fabric_score
+    display_name: Social Fabric Score
+    description: Social Fabric subject z-score within the Character frame. Covers social capital, nonprofits and civic orgs, residential stability, social associations, built form, and household structure topics. Subject weight 0.50.
+    source_table: intelligence_character
+    source_column: social_fabric_score
+    formula: null
+    unit_format: number_2dp
+    subject_areas: [intelligence, character]
+    themes: [character]
+    valid_geo_levels: [cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Z-score scale; Waterbury CT imputed for four social_fabric_wide KPIs.
+    status: active

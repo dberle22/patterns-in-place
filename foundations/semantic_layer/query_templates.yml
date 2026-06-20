@@ -128,3 +128,27 @@ templates:
     sql_pattern_notes:
       - Use LAG or a self-join/CTE to fetch prior-year values.
       - Validate requested window_years against the metric catalog before SQL generation.
+
+  - template_id: frame_lookup
+    question_types: [frame_lookup]
+    description: >
+      Row lookup against a precomputed intelligence frame score table. Returns percentile rank,
+      cluster label, GMM soft memberships, subject/topic scores, and top-10 peer CBSAs for one
+      CBSA and one frame. Unlike aggregation templates, this reads a single row from a Gold
+      intelligence table — no year filter, no aggregation.
+    required_slots:
+      - frame_id
+      - cbsa_code
+    optional_slots:
+      - subject_id
+      - include_peers
+      - include_gmm
+    result_shape:
+      dimensions: [cbsa_name, frame_id, cluster_label]
+      measures: [percentile_rank, subject_scores, topic_scores, peer_list]
+      time_series: false
+    sql_pattern_notes:
+      - Source table is determined by frame_id — livability → gold.intelligence_livability, opportunity → gold.intelligence_opportunity, character → gold.intelligence_character, cross_frame → gold.intelligence_cross_frame.
+      - Filter to WHERE cbsa_code = :cbsa_code; return one row.
+      - Peer list columns are top10_peer_1_cbsa_code through top10_peer_10_cbsa_code — join back to the CBSA spine for names.
+      - subject_id is optional; when provided, return only that subject's topic scores instead of all subject scores.

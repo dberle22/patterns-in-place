@@ -1,7 +1,8 @@
 -- Gold environment mart
 -- Grain: one row per geo_level + geo_id + year
 -- Notes:
---   * AQI remains the source-faithful county + CBSA backbone for the table.
+--   * The table now uses the union of AQI, EJScreen, and FEMA geographies so
+--     sparse AQI coverage does not suppress FEMA or EJScreen rows.
 --   * EJScreen is rolled up from tract to county / CBSA with population-weighted
 --     averages so we can preserve the shared Gold geography contract while still
 --     carrying the tract-first archive into the environment mart.
@@ -28,6 +29,14 @@ with aqi as (
         days_ozone,
         days_pm25
     from patterns_in_place.silver.epa_aqi
+),
+geo_reference as (
+    select distinct
+        geo_level,
+        geo_id,
+        geo_name
+    from patterns_in_place.gold.dim_geo
+    where geo_level in ('county', 'cbsa')
 ),
 ejscreen_tract_bridge as (
     select
@@ -150,12 +159,36 @@ fema as (
         wildfire_risk_score as fema_wildfire_risk_score,
         winter_weather_risk_score as fema_winter_weather_risk_score
     from patterns_in_place.silver.fema_nri
+),
+environment_backbone as (
+    select geo_level, geo_id, geo_name, year
+    from aqi
+    union
+    select
+        ejs.geo_level,
+        ejs.geo_id,
+        ref.geo_name,
+        ejs.year
+    from ejscreen_rollup ejs
+    left join geo_reference ref
+        on ejs.geo_level = ref.geo_level
+       and ejs.geo_id = ref.geo_id
+    union
+    select
+        f.geo_level,
+        f.geo_id,
+        ref.geo_name,
+        f.year
+    from fema f
+    left join geo_reference ref
+        on f.geo_level = ref.geo_level
+       and f.geo_id = ref.geo_id
 )
 select
-    aqi.geo_level,
-    aqi.geo_id,
-    aqi.geo_name,
-    aqi.year,
+    b.geo_level,
+    b.geo_id,
+    coalesce(b.geo_name, ref.geo_name) as geo_name,
+    b.year,
     aqi.days_with_aqi,
     aqi.good_days,
     aqi.moderate_days,
@@ -211,13 +244,20 @@ select
     fema.fema_volcanic_activity_risk_score,
     fema.fema_wildfire_risk_score,
     fema.fema_winter_weather_risk_score
-from aqi
+from environment_backbone b
+left join geo_reference ref
+    on b.geo_level = ref.geo_level
+   and b.geo_id = ref.geo_id
+left join aqi
+    on b.geo_level = aqi.geo_level
+   and b.geo_id = aqi.geo_id
+   and b.year = aqi.year
 left join ejscreen_rollup ejs
-    on aqi.geo_level = ejs.geo_level
-   and aqi.geo_id = ejs.geo_id
-   and aqi.year = ejs.year
+    on b.geo_level = ejs.geo_level
+   and b.geo_id = ejs.geo_id
+   and b.year = ejs.year
 left join fema
-    on aqi.geo_level = fema.geo_level
-   and aqi.geo_id = fema.geo_id
-   and aqi.year = fema.year
+    on b.geo_level = fema.geo_level
+   and b.geo_id = fema.geo_id
+   and b.year = fema.year
 ;

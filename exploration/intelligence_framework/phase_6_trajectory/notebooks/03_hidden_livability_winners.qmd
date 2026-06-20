@@ -1,0 +1,100 @@
+---
+title: "Phase 6 - Hidden Livability Winners"
+subtitle: "Improving Livability metros without top-tier cross-frame profile"
+date: today
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 2
+    code-fold: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
+options(
+  dplyr.summarise.inform = FALSE,
+  knitr.kable.NA = ""
+)
+
+library(here)
+library(dplyr)
+library(readr)
+library(arrow)
+library(ggplot2)
+library(knitr)
+
+output_dir <- here("exploration/intelligence_framework/phase_6_trajectory", "outputs")
+
+trajectory_scores <- read_parquet(file.path(output_dir, "trajectory_scores.parquet")) |> as_tibble()
+pattern_summary <- read_csv(file.path(output_dir, "phase6_pattern_summary.csv"), show_col_types = FALSE)
+
+hidden_winners <- trajectory_scores |>
+  filter(is_hidden_livability_winner) |>
+  arrange(desc(livability_trajectory_strength), cross_frame_percentile, cbsa_name)
+```
+
+## Default Rule
+
+The current default hidden-winner screen is:
+
+- Livability direction = `diverging-improving`
+- Livability trajectory strength in the top national decile
+- Phase 5 cross-frame percentile between `35` and `70`
+
+That middle-band cross-frame rule is meant to avoid metros that are already obvious national standouts.
+
+## Matched Metros
+
+```{r}
+pattern_summary |>
+  filter(pattern_flag == "is_hidden_livability_winner") |>
+  kable()
+```
+
+```{r}
+hidden_winners |>
+  select(
+    cbsa_name,
+    census_division,
+    livability_trajectory_strength,
+    livability_trajectory_score,
+    livability_current_percentile,
+    cross_frame_percentile,
+    candidate_rank
+  ) |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+## Position Versus Momentum
+
+```{r fig.height=5}
+ggplot(
+  trajectory_scores,
+  aes(
+    x = cross_frame_percentile,
+    y = livability_trajectory_strength,
+    color = is_hidden_livability_winner
+  )
+) +
+  geom_point(alpha = 0.7, size = 2) +
+  geom_vline(xintercept = c(35, 70), linetype = "dashed") +
+  geom_hline(yintercept = quantile(trajectory_scores$livability_trajectory_strength, 0.9, na.rm = TRUE), linetype = "dashed") +
+  labs(
+    title = "Hidden winners sit in the middle of the cross-frame pack but high on Livability movement",
+    x = "Phase 5 cross-frame percentile",
+    y = "Livability trajectory strength",
+    color = "Hidden winner"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+## Review Lens
+
+Look for:
+
+- whether these metros really feel “under-discussed” rather than just expensive superstar markets
+- whether the `35` to `70` cross-frame band is too wide or too narrow
+- whether current Livability percentile should matter more than it does now

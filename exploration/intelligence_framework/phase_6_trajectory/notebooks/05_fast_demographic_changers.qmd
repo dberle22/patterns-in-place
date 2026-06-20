@@ -1,0 +1,96 @@
+---
+title: "Phase 6 - Fast Demographic Changers"
+subtitle: "Character 5-year fast movers"
+date: today
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 2
+    code-fold: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
+options(
+  dplyr.summarise.inform = FALSE,
+  knitr.kable.NA = ""
+)
+
+library(here)
+library(dplyr)
+library(readr)
+library(arrow)
+library(ggplot2)
+library(knitr)
+
+output_dir <- here("exploration/intelligence_framework/phase_6_trajectory", "outputs")
+
+trajectory_scores <- read_parquet(file.path(output_dir, "trajectory_scores.parquet")) |> as_tibble()
+kpi_trajectory_long <- read_csv(file.path(output_dir, "phase6_kpi_trajectory_long.csv"), show_col_types = FALSE)
+
+fast_changers <- trajectory_scores |>
+  filter(is_fast_demographic_changer) |>
+  arrange(desc(character_trajectory_strength), cbsa_name)
+
+character_metric_leaders <- kpi_trajectory_long |>
+  filter(frame_id == "character", window_years == 5) |>
+  group_by(metric_id) |>
+  summarise(
+    mean_strength = mean(metric_trajectory_strength, na.rm = TRUE),
+    top_examples = paste(head(cbsa_name[order(-metric_trajectory_strength)], 5), collapse = " | "),
+    .groups = "drop"
+  ) |>
+  arrange(desc(mean_strength))
+```
+
+## Fast-Mover List
+
+```{r}
+fast_changers |>
+  select(
+    cbsa_name,
+    census_division,
+    character_trajectory_strength,
+    character_trajectory_score,
+    character_direction,
+    candidate_rank
+  ) |>
+  slice_head(n = 30) |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+## Which Character Metrics Are Carrying Movement
+
+```{r}
+character_metric_leaders |>
+  mutate(mean_strength = round(mean_strength, 3)) |>
+  kable()
+```
+
+## Character Trajectory Strength Distribution
+
+```{r fig.height=5}
+ggplot(
+  trajectory_scores,
+  aes(x = character_trajectory_strength, fill = is_fast_demographic_changer)
+) +
+  geom_histogram(bins = 30, alpha = 0.8) +
+  labs(
+    title = "Character fast movers are the top-decile tail of Character trajectory strength",
+    x = "Character trajectory strength",
+    y = "CBSAs",
+    fill = "Fast changer"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+## Review Lens
+
+Look for:
+
+- whether the top markets feel like genuine demographic-change stories
+- whether migration-heavy metrics are dominating too much now that 4 social-fabric metrics are context-only
+- whether the candidate metros would still look compelling if civic/social-capital annual series were eventually backfilled

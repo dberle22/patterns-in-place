@@ -1,0 +1,238 @@
+---
+title: "Phase 3 - Livability Frame Review"
+subtitle: "Review notebook for the modular Phase 3 Livability build"
+date: today
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 2
+    code-fold: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE
+)
+
+options(
+  dplyr.summarise.inform = FALSE,
+  knitr.kable.NA = ""
+)
+
+library(here)
+library(dplyr)
+library(readr)
+library(arrow)
+library(ggplot2)
+library(scales)
+library(knitr)
+
+output_dir <- here("exploration/intelligence_framework/phase_3_livability_calibration", "outputs")
+
+cluster_calibration <- readr::read_csv(file.path(output_dir, "livability_phase3_cluster_count_calibration.csv"), show_col_types = FALSE)
+cluster_sizes <- readr::read_csv(file.path(output_dir, "livability_phase3_cluster_count_sizes.csv"), show_col_types = FALSE)
+cluster_centroids <- readr::read_csv(file.path(output_dir, "livability_phase3_cluster_centroids.csv"), show_col_types = FALSE)
+cluster_representatives <- readr::read_csv(file.path(output_dir, "livability_phase3_cluster_representatives.csv"), show_col_types = FALSE)
+gmm_summary <- readr::read_csv(file.path(output_dir, "livability_phase3_gmm_summary.csv"), show_col_types = FALSE)
+gmm_hybrids <- readr::read_csv(file.path(output_dir, "livability_phase3_gmm_hybrids.csv"), show_col_types = FALSE)
+k5_k6_changes <- readr::read_csv(file.path(output_dir, "livability_phase3_k5_to_k6_changed_metros.csv"), show_col_types = FALSE)
+k5_k6_splits <- readr::read_csv(file.path(output_dir, "livability_phase3_k5_to_k6_split_summary.csv"), show_col_types = FALSE)
+similarity_top10 <- readr::read_csv(file.path(output_dir, "livability_phase3_similarity_top10.csv"), show_col_types = FALSE)
+health_affordability <- readr::read_csv(file.path(output_dir, "livability_phase3_health_affordability_scatter.csv"), show_col_types = FALSE)
+environment_axis <- readr::read_csv(file.path(output_dir, "livability_phase3_environment_axis_scatter.csv"), show_col_types = FALSE)
+livability_scores <- arrow::read_parquet(file.path(output_dir, "livability_scores.parquet"))
+
+selected_k <- 6
+selected_cluster_sizes <- cluster_sizes |>
+  filter(k == selected_k) |>
+  arrange(cluster)
+
+model_summary <- tibble::tibble(
+  modeling_universe = nrow(livability_scores),
+  selected_k = selected_k,
+  silhouette_at_k6 = cluster_calibration |>
+    filter(k == selected_k) |>
+    pull(avg_silhouette),
+  health_affordability_correlation = health_affordability |>
+    summarise(correlation = cor(affordability_score, health_score)) |>
+    pull(correlation),
+  environment_axis_correlation = environment_axis |>
+    summarise(correlation = cor(aqi_unhealthy_days, fema_risk_score)) |>
+    pull(correlation)
+)
+```
+
+## Purpose
+
+This notebook is the review layer for Phase 3, not the build pipeline.
+
+The canonical build now lives in:
+
+- `R/run_phase3_livability.R`
+- `R/phase3_*.R`
+
+This notebook reads the saved artifacts in `outputs/` so we can:
+
+- review the chosen `k = 6` calibration
+- inspect the published cluster structure
+- look at soft-membership ambiguity
+- sanity-check similarity outputs
+- review the two main Livability hypothesis tests
+
+## Model Snapshot
+
+```{r model-summary}
+model_summary |>
+  mutate(
+    silhouette_at_k6 = round(silhouette_at_k6, 3),
+    health_affordability_correlation = round(health_affordability_correlation, 3),
+    environment_axis_correlation = round(environment_axis_correlation, 3)
+  ) |>
+  kable()
+```
+
+## Cluster Count Calibration
+
+```{r cluster-calibration-plot, fig.height=4.5}
+cluster_calibration |>
+  ggplot(aes(x = k, y = avg_silhouette)) +
+  geom_line(color = "#355070", linewidth = 0.8) +
+  geom_point(aes(color = k == selected_k), size = 2.8) +
+  scale_color_manual(values = c("FALSE" = "#6c757d", "TRUE" = "#d62828"), guide = "none") +
+  scale_x_continuous(breaks = cluster_calibration$k) +
+  labs(
+    title = "Cluster-count calibration",
+    x = "Cluster count (k)",
+    y = "Average silhouette"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+```{r cluster-calibration-table}
+cluster_calibration |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+## Published Cluster Sizes
+
+```{r selected-cluster-sizes}
+selected_cluster_sizes |>
+  rename(livability_kmeans_cluster = cluster, metros_in_cluster = cluster_size) |>
+  left_join(
+    cluster_centroids |>
+      distinct(livability_kmeans_cluster, livability_cluster_name),
+    by = "livability_kmeans_cluster"
+  ) |>
+  select(livability_kmeans_cluster, livability_cluster_name, metros_in_cluster) |>
+  kable()
+```
+
+## Why `k = 6` Instead Of `k = 5`
+
+The current published choice keeps the full 26-KPI set and uses `k = 6`. The extra cluster is not a complete remap; it is a refinement of the broader `k = 5` structure.
+
+```{r k5-k6-split-summary}
+k5_k6_splits |>
+  arrange(desc(metros_in_split)) |>
+  slice_head(n = 10) |>
+  kable()
+```
+
+```{r k5-k6-changed-metros}
+k5_k6_changes |>
+  filter(changed_under_k6) |>
+  arrange(desc(livability_percentile)) |>
+  slice_head(n = 15) |>
+  mutate(livability_percentile = round(livability_percentile, 1)) |>
+  kable()
+```
+
+## Representative Metros By Cluster
+
+```{r representatives}
+cluster_representatives |>
+  group_by(livability_cluster_name) |>
+  slice_head(n = 6) |>
+  ungroup() |>
+  mutate(livability_percentile = round(livability_percentile, 1)) |>
+  kable()
+```
+
+## Soft Membership Review
+
+```{r gmm-summary}
+gmm_summary |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+```{r gmm-hybrids}
+gmm_hybrids |>
+  arrange(membership_gap) |>
+  slice_head(n = 15) |>
+  mutate(across(contains("probability"), \(x) round(x, 3))) |>
+  kable()
+```
+
+## Similarity Sanity Check
+
+```{r similarity-preview}
+similarity_top10 |>
+  filter(cbsa_code %in% c(40060, 12420, 18140)) |>
+  slice_head(n = 15) |>
+  mutate(cosine_similarity = round(cosine_similarity, 3)) |>
+  kable()
+```
+
+## Hypothesis Review
+
+### Affordability Vs. Health
+
+```{r health-affordability-plot, fig.height=5}
+health_affordability |>
+  ggplot(aes(
+    x = affordability_score,
+    y = health_score,
+    color = livability_cluster_name
+  )) +
+  geom_hline(yintercept = 0, color = "#adb5bd", linewidth = 0.4) +
+  geom_vline(xintercept = 0, color = "#adb5bd", linewidth = 0.4) +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(
+    title = "Affordability and health move together only moderately",
+    x = "Affordability subject score",
+    y = "Health and safety subject score",
+    color = "Cluster"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+### AQI Vs. FEMA
+
+```{r environment-axis-plot, fig.height=5}
+environment_axis |>
+  ggplot(aes(
+    x = aqi_unhealthy_days,
+    y = fema_risk_score,
+    color = livability_cluster_name
+  )) +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(
+    title = "FEMA adds signal beyond AQI alone",
+    x = "AQI unhealthy days",
+    y = "FEMA risk score",
+    color = "Cluster"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+## Final Read
+
+- The canonical Phase 3 build now lives in `R/run_phase3_livability.R`.
+- The chosen published Livability typology keeps all `26` KPIs and uses `k = 6`.
+- The `k = 6` choice is a moderate refinement over `k = 5`, not a wholesale rewrite of the metro map.
+- GMM soft memberships are available for ambiguity-sensitive analysis.
+- The main remaining dependency outside Phase 3 is the Livability/Opportunity scatter, which waits on Phase 4 scores.

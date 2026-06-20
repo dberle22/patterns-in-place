@@ -1,9 +1,19 @@
-version: 1
+version: 2
 catalog_name: question_catalog
-description: Seed business-question patterns layered above query templates and chart rules.
+description: >
+  Canonical question definitions for the Chatbot and Publisher pipeline. Each entry is the
+  single source of truth for a question pattern: it carries the semantic metadata (theme,
+  metrics, tables) AND the structured_query_plan used as a few-shot example by the LLM
+  intent parser. The parser loads this file directly — question_library.yml is retired.
 questions:
+
+  # ---------------------------------------------------------------------------
+  # Raw-metric questions (ranking, trend, comparison, distribution, benchmark, growth)
+  # ---------------------------------------------------------------------------
+
   - question_id: metros_highest_rent_to_income
     pattern: Which metros have the highest rent-to-income ratios in {year}?
+    natural_language_question: Which metros have the highest rent-to-income ratios in 2024?
     intent_type: ranking
     themes: [livability, opportunity]
     required_metrics: [rent_to_income]
@@ -11,10 +21,20 @@ questions:
     valid_geo_levels: [cbsa]
     default_template: ranking
     default_chart: ranking_default
-    notes: Seeded from `publisher/question_queue.yaml` q001.
+    notes: Seeded from publisher/question_queue.yaml q001.
+    structured_query_plan:
+      template_id: ranking
+      question_type: ranking
+      metric_id: rent_to_income
+      source_table: housing_core_wide
+      geo_level: cbsa
+      year: 2024
+      sort_direction: desc
+      limit: 10
 
   - question_id: states_highest_household_income
     pattern: Which states have the highest median household income in {year}?
+    natural_language_question: Which states have the highest median household income in 2024?
     intent_type: ranking
     themes: [opportunity]
     required_metrics: [median_hh_income]
@@ -23,9 +43,19 @@ questions:
     default_template: ranking
     default_chart: ranking_default
     notes: Seeded from question queue q002 and question library state-income examples.
+    structured_query_plan:
+      template_id: ranking
+      question_type: ranking
+      metric_id: median_hh_income
+      source_table: economics_income_wide
+      geo_level: state
+      year: 2024
+      sort_direction: desc
+      limit: 10
 
   - question_id: metros_highest_cost_burden
     pattern: Which metros have the highest share of cost-burdened renters in {year}?
+    natural_language_question: Which metros have the highest share of cost-burdened renters in 2024?
     intent_type: ranking
     themes: [livability]
     required_metrics: [pct_rent_burden_30plus]
@@ -34,9 +64,19 @@ questions:
     default_template: ranking
     default_chart: ranking_default
     notes: Seeded from question queue q003.
+    structured_query_plan:
+      template_id: ranking
+      question_type: ranking
+      metric_id: pct_rent_burden_30plus
+      source_table: housing_core_wide
+      geo_level: cbsa
+      year: 2024
+      sort_direction: desc
+      limit: 10
 
   - question_id: metros_rent_trend
     pattern: How has median gross rent changed in selected metros since {start_year}?
+    natural_language_question: How has median gross rent changed in Austin, Denver, and Nashville since 2015?
     intent_type: trend
     themes: [livability]
     required_metrics: [median_gross_rent]
@@ -45,9 +85,19 @@ questions:
     default_template: trend
     default_chart: trend_default
     notes: Seeded from question queue q004 and question library trend examples.
+    structured_query_plan:
+      template_id: trend
+      question_type: trend
+      metric_id: median_gross_rent
+      source_table: housing_core_wide
+      geo_level: cbsa
+      geo_ids: ["12420", "19740", "34980"]
+      start_year: 2015
+      end_year: 2024
 
   - question_id: metros_income_trend
-    pattern: How has median household income or per-capita income trended in selected metros since {start_year}?
+    pattern: How has per-capita income trended in selected metros since {start_year}?
+    natural_language_question: How has per-capita income trended in Raleigh and Charlotte since 2015?
     intent_type: trend
     themes: [opportunity]
     required_metrics: [median_hh_income, calc_income_pc]
@@ -56,9 +106,19 @@ questions:
     default_template: trend
     default_chart: trend_default
     notes: Combines question queue q005 with question library metro income trend cases.
+    structured_query_plan:
+      template_id: trend
+      question_type: trend
+      metric_id: calc_income_pc
+      source_table: economics_income_wide
+      geo_level: cbsa
+      geo_ids: ["39580", "16740"]
+      start_year: 2015
+      end_year: 2024
 
   - question_id: national_vacancy_trend
     pattern: How has the vacancy rate trended nationally since {start_year}?
+    natural_language_question: How has the vacancy rate trended nationally since 2015?
     intent_type: trend
     themes: [livability]
     required_metrics: [vacancy_rate]
@@ -66,10 +126,19 @@ questions:
     valid_geo_levels: [us]
     default_template: trend
     default_chart: trend_default
-    notes: Seeded from question queue q006; normalize user term `national` to `us`.
+    notes: Seeded from question queue q006; normalize user term "national" to "us".
+    structured_query_plan:
+      template_id: trend
+      question_type: trend
+      metric_id: vacancy_rate
+      source_table: housing_core_wide
+      geo_level: us
+      start_year: 2015
+      end_year: 2024
 
   - question_id: compare_selected_geographies
     pattern: Compare selected geographies on a single metric in a given year.
+    natural_language_question: Compare California, Texas, and Florida on median household income in 2024.
     intent_type: comparison
     themes: [character, livability, opportunity]
     required_metrics: [median_gross_rent, median_hh_income, pop_total]
@@ -78,9 +147,18 @@ questions:
     default_template: compare_selected
     default_chart: comparison_selected
     notes: Seeded from question queue q007 and question library compare-selected examples.
+    structured_query_plan:
+      template_id: compare_selected
+      question_type: comparison
+      metric_id: median_hh_income
+      source_table: economics_income_wide
+      geo_level: state
+      geo_ids: ["06", "48", "12"]
+      year: 2024
 
   - question_id: metric_distribution_by_grain
     pattern: How is a metric distributed across geographies at a common grain in {year}?
+    natural_language_question: Show the distribution of rent-to-income ratios across CBSAs in 2024.
     intent_type: distribution
     themes: [character, livability, opportunity]
     required_metrics: [rent_to_income, median_age, median_home_value]
@@ -89,9 +167,17 @@ questions:
     default_template: distribution
     default_chart: distribution_default
     notes: Seeded from question queue q009-q010 and question library distribution examples.
+    structured_query_plan:
+      template_id: distribution
+      question_type: distribution
+      metric_id: rent_to_income
+      source_table: housing_core_wide
+      geo_level: cbsa
+      year: 2024
 
   - question_id: target_vs_benchmark
-    pattern: How does a target geography compare to a benchmark geography or benchmark set in {year}?
+    pattern: How does a target geography compare to a benchmark geography or peer set in {year}?
+    natural_language_question: How does Texas household income stack up against the national average?
     intent_type: benchmark
     themes: [character, livability, opportunity]
     required_metrics: [pct_rent_burden_30plus, median_gross_rent, median_hh_income]
@@ -100,9 +186,21 @@ questions:
     default_template: benchmark
     default_chart: benchmark_default
     notes: Seeded from question queue q011-q012 and question library benchmark examples.
+    structured_query_plan:
+      template_id: benchmark
+      question_type: benchmark
+      metric_id: median_hh_income
+      source_table: economics_income_wide
+      target_geo_level: state
+      target_geo_id: "48"
+      year: 2024
+      benchmark_type: us
+      benchmark_geo_level: us
+      comparison_label: United States
 
   - question_id: population_growth_ranking
     pattern: Which geographies have had the fastest population growth over the last {window_years} years?
+    natural_language_question: Which states had the fastest population growth over 5 years ending in 2024?
     intent_type: ranking
     themes: [character, opportunity]
     required_metrics: [pop_total, pop_growth_5yr, pop_growth_10yr]
@@ -111,9 +209,20 @@ questions:
     default_template: growth
     default_chart: ranking_default
     notes: Seeded from question queue q013 and comparison follow-up q008.
+    structured_query_plan:
+      template_id: growth
+      question_type: ranking
+      base_metric_id: pop_total
+      source_table: population_demographics
+      geo_level: state
+      end_year: 2024
+      window_years: 5
+      sort_direction: desc
+      limit: 15
 
   - question_id: income_growth_ranking
     pattern: Which geographies have seen the fastest per-capita income growth over the last {window_years} years?
+    natural_language_question: Which CBSAs saw the biggest 5-year increase in per-capita income by 2023?
     intent_type: ranking
     themes: [opportunity]
     required_metrics: [income_pc_growth_5yr, income_pc_growth_10yr]
@@ -122,9 +231,20 @@ questions:
     default_template: growth
     default_chart: ranking_default
     notes: Seeded from question queue q014 and question library income-growth ranking example.
+    structured_query_plan:
+      template_id: growth
+      question_type: ranking
+      base_metric_id: calc_income_pc
+      source_table: economics_income_wide
+      geo_level: cbsa
+      end_year: 2023
+      window_years: 5
+      sort_direction: desc
+      limit: 20
 
   - question_id: diversity_ranking
     pattern: Which metros are the most racially and ethnically diverse in {year}?
+    natural_language_question: Which metros are the most racially and ethnically diverse in 2024?
     intent_type: ranking
     themes: [character]
     required_metrics: [diversity_index]
@@ -133,23 +253,171 @@ questions:
     default_template: ranking
     default_chart: ranking_default
     notes: Seeded from question queue q015.
+    structured_query_plan:
+      template_id: ranking
+      question_type: ranking
+      metric_id: diversity_index
+      source_table: population_demographics
+      geo_level: cbsa
+      year: 2024
+      sort_direction: desc
+      limit: 10
 
-  - question_id: character_profile_summary
-    pattern: What is the Character of {geography}?
-    intent_type: summary
-    themes: [character]
-    required_metrics:
-      - median_age
-      - diversity_index
-      - pct_ba_plus
-      - pct_same_house
-      - pct_foreign_born
-      - pct_struct_multifam
-    required_tables:
-      - population_demographics
-      - migration_wide
-      - housing_core_wide
-    valid_geo_levels: [tract, zcta, place, cbsa]
-    default_template: trend
+  # ---------------------------------------------------------------------------
+  # Intelligence frame questions (frame_lookup)
+  # ---------------------------------------------------------------------------
+
+  - question_id: metro_livability_score
+    pattern: What is the Livability score for {geography}?
+    natural_language_question: What is the Livability score for Richmond VA?
+    intent_type: frame_lookup
+    themes: [livability]
+    required_metrics: [livability_percentile_rank]
+    required_tables: [intelligence_livability]
+    valid_geo_levels: [cbsa]
+    default_template: frame_lookup
     default_chart: benchmark_default
-    notes: High-level theme question placeholder until Character archetype outputs are fully implemented in the planner.
+    notes: Returns livability_percentile_rank, livability_cluster, subject scores, and top-10 Livability peers.
+    structured_query_plan:
+      template_id: frame_lookup
+      question_type: frame_lookup
+      frame_id: livability
+      cbsa_code: "40060"
+      include_peers: true
+
+  - question_id: metro_opportunity_score
+    pattern: What is the Opportunity score for {geography}?
+    natural_language_question: What is the Opportunity score for Jacksonville FL?
+    intent_type: frame_lookup
+    themes: [opportunity]
+    required_metrics: [opportunity_percentile_rank]
+    required_tables: [intelligence_opportunity]
+    valid_geo_levels: [cbsa]
+    default_template: frame_lookup
+    default_chart: benchmark_default
+    notes: Returns opportunity_percentile_rank, opportunity_cluster, subject scores, and top-10 Opportunity peers.
+    structured_query_plan:
+      template_id: frame_lookup
+      question_type: frame_lookup
+      frame_id: opportunity
+      cbsa_code: "27260"
+      include_peers: true
+
+  - question_id: metro_character_archetype
+    pattern: What type of metro is {geography}?
+    natural_language_question: What type of metro is Austin TX?
+    intent_type: frame_lookup
+    themes: [character]
+    required_metrics: [character_cluster]
+    required_tables: [intelligence_character]
+    valid_geo_levels: [cbsa]
+    default_template: frame_lookup
+    default_chart: benchmark_default
+    notes: Returns character_cluster label, character_percentile_rank, GMM soft memberships, and top-10 Character peers.
+    structured_query_plan:
+      template_id: frame_lookup
+      question_type: frame_lookup
+      frame_id: character
+      cbsa_code: "12420"
+      include_peers: true
+      include_gmm: true
+
+  - question_id: metro_livability_opportunity_position
+    pattern: How does {geography} compare on Livability vs Opportunity?
+    natural_language_question: How does Charlotte compare on Livability vs Opportunity?
+    intent_type: frame_lookup
+    themes: [livability, opportunity]
+    required_metrics: [livability_percentile_rank, opportunity_percentile_rank]
+    required_tables: [intelligence_livability, intelligence_opportunity]
+    valid_geo_levels: [cbsa]
+    default_template: frame_lookup
+    default_chart: scatter_default
+    notes: Returns both frame percentile ranks for the four-quadrant positioning view. Article 1 question pattern.
+    structured_query_plan:
+      template_id: frame_lookup
+      question_type: frame_lookup
+      frame_id: livability
+      cbsa_code: "16740"
+      include_peers: false
+
+  - question_id: most_livable_metros
+    pattern: Which metros are the most livable?
+    natural_language_question: Which metros are the most livable?
+    intent_type: ranking
+    themes: [livability]
+    required_metrics: [livability_percentile_rank]
+    required_tables: [intelligence_livability]
+    valid_geo_levels: [cbsa]
+    default_template: ranking
+    default_chart: ranking_default
+    notes: Ranks CBSAs by livability_percentile_rank descending. Requires intelligence_livability in table_catalog.
+    structured_query_plan:
+      template_id: ranking
+      question_type: ranking
+      metric_id: livability_percentile_rank
+      source_table: intelligence_livability
+      geo_level: cbsa
+      year: null
+      sort_direction: desc
+      limit: 10
+
+  - question_id: most_opportunity_metros
+    pattern: Which metros have the most economic opportunity?
+    natural_language_question: Which metros have the most economic opportunity?
+    intent_type: ranking
+    themes: [opportunity]
+    required_metrics: [opportunity_percentile_rank]
+    required_tables: [intelligence_opportunity]
+    valid_geo_levels: [cbsa]
+    default_template: ranking
+    default_chart: ranking_default
+    notes: Ranks CBSAs by opportunity_percentile_rank descending.
+    structured_query_plan:
+      template_id: ranking
+      question_type: ranking
+      metric_id: opportunity_percentile_rank
+      source_table: intelligence_opportunity
+      geo_level: cbsa
+      year: null
+      sort_direction: desc
+      limit: 10
+
+  - question_id: metro_opportunity_peers
+    pattern: Which metros are most similar to {geography} on Opportunity?
+    natural_language_question: Which metros are most similar to Richmond VA on Opportunity?
+    intent_type: frame_lookup
+    themes: [opportunity]
+    required_metrics: [opportunity_percentile_rank]
+    required_tables: [intelligence_opportunity]
+    valid_geo_levels: [cbsa]
+    default_template: frame_lookup
+    default_chart: comparison_selected
+    notes: Returns the top-10 cosine-similarity Opportunity peers for the target CBSA.
+    structured_query_plan:
+      template_id: frame_lookup
+      question_type: frame_lookup
+      frame_id: opportunity
+      cbsa_code: "40060"
+      include_peers: true
+      include_gmm: false
+
+  - question_id: unicorn_metros
+    pattern: Which metros score well on both Livability and Opportunity?
+    natural_language_question: Which metros score well on both Livability and Opportunity?
+    intent_type: ranking
+    themes: [livability, opportunity]
+    required_metrics: [livability_percentile_rank, opportunity_percentile_rank]
+    required_tables: [intelligence_livability, intelligence_opportunity]
+    valid_geo_levels: [cbsa]
+    default_template: ranking
+    default_chart: scatter_default
+    notes: The four-quadrant unicorn filter — both percentile ranks above 60. Article 1 derived question.
+    structured_query_plan:
+      template_id: ranking
+      question_type: ranking
+      metric_id: livability_percentile_rank
+      source_table: intelligence_livability
+      geo_level: cbsa
+      year: null
+      sort_direction: desc
+      limit: 20

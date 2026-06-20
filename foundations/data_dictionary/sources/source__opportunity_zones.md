@@ -80,7 +80,7 @@ Foundations normalizes FHFA into:
 - Zero-pad all tract identifiers to 11 digits before validation or joins.
 - `silver.opportunity_zones` is a full tract-coverage table, not a list of designated tracts only.
 - `silver.fhfa_underserved` is a `geo_level + geo_id + year` table for the latest release year only in the first pass.
-- County and CBSA rollups use `silver.xwalk_tract_county` and `silver.xwalk_cbsa_county`.
+- County and CBSA rollups use `silver.xwalk_tract_county` plus the repo-standard `get_cbsa_rollup_xwalk()` helper, with the latest tract `silver.age_kpi.pop_total` snapshot supplying the population denominator for OZ population-share overlays.
 - Gold destination is `gold.dim_policy_designations`; do not add these flags to `gold.dim_geo`.
 
 ---
@@ -97,6 +97,6 @@ Foundations normalizes FHFA into:
 
 1. [`../../etl/staging/get_opportunity_zones.R`](../../etl/staging/get_opportunity_zones.R) queries the official CDFI ArcGIS Opportunity Zone layer and normalizes the response into `staging.opportunity_zones`.
 2. [`../../etl/staging/get_fhfa_underserved.R`](../../etl/staging/get_fhfa_underserved.R) resolves the latest FHFA yearly ZIP, parses the fixed-width text file, and writes `staging.fhfa_underserved`.
-3. [`../../etl/silver/opportunity_zones_silver.R`](../../etl/silver/opportunity_zones_silver.R) expands the OZ allowlist to a full tract backbone and derives county / CBSA rollups.
+3. [`../../etl/silver/opportunity_zones_silver.R`](../../etl/silver/opportunity_zones_silver.R) expands the OZ allowlist to a full tract backbone, joins the latest tract ACS population snapshot from `silver.age_kpi`, and derives county / CBSA tract-share and population-share rollups.
 4. [`../../etl/silver/fhfa_underserved_silver.R`](../../etl/silver/fhfa_underserved_silver.R) standardizes the tract flags and derives county / CBSA rollups for the current release year.
 5. [`../../etl/gold/gold_policy_designations.sql`](../../etl/gold/gold_policy_designations.sql) unions the static OZ rows and annual FHFA rows into `gold.dim_policy_designations`.

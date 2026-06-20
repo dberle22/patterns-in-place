@@ -16,8 +16,8 @@ source(here("foundations/visual_library/shared/standards.R"))
 # Database connection
 # ---------------------------------------------------------------------------
 
-db_connect <- function() {
-  dbConnect(duckdb(), Sys.getenv("DB_PATH"))
+db_connect <- function(read_only = TRUE) {
+  dbConnect(duckdb(), Sys.getenv("DB_PATH"), read_only = read_only)
 }
 
 # ---------------------------------------------------------------------------

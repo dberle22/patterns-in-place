@@ -1,162 +1,474 @@
-version: 1
+version: 2
 catalog_name: theme_catalog
-description: Theme and topic mappings that connect queryable metrics to the Character, Livability, and Opportunity intelligence frames.
+description: >
+  User-facing topic organization for the Chatbot and Area Explorer. Groups metrics into
+  browsable topics within each theme (Character / Livability / Opportunity). Topic structure
+  reflects the calibrated Phase 2–4 intelligence frame models. Updated after all three frames
+  reached status: calibrated. Metrics with standalone query value are retained even if dropped
+  from the default clustering set.
 themes:
+
+  # ---------------------------------------------------------------------------
+  # CHARACTER
+  # ---------------------------------------------------------------------------
+
   - theme_id: character
     display_name: Character
-    description: Who lives in a place, how rooted or diverse it is, and what makes it distinct.
+    description: Who lives in a place — demographic composition, social fabric, civic identity, and built form — and what makes it structurally distinct from other metros.
+
+    intelligence_outputs:
+      - character_percentile_rank
+      - character_cluster
+
     topics:
-      - topic_id: demographic_profile
-        display_name: Demographic Profile
+
+      - topic_id: race_and_ethnicity
+        display_name: Race and Ethnicity
+        intelligence_frame_topic: true
         metrics:
-          - median_age
-          - pct_age_under_18
-          - pct_age_18_64
-          - pct_age_over_64
-          - dependents_per_worker
-          - aging_index
-      - topic_id: race_ethnicity
-        display_name: Race And Ethnicity
-        metrics:
+          - diversity_index
           - pct_white_nh
           - pct_black_nh
           - pct_asian_nh
           - pct_hispanic
-          - diversity_index
-      - topic_id: education_attainment
-        display_name: Education Attainment
+          - pct_aian_nh
+          - pct_nhpi_nh
+
+      - topic_id: age_structure
+        display_name: Age Structure
+        intelligence_frame_topic: true
+        metrics:
+          - pct_age_over_64
+          - pct_age_under_18
+          - pct_age_18_64
+          - median_age
+          - dependents_per_worker
+          - aging_index
+
+      - topic_id: educational_attainment
+        display_name: Educational Attainment
+        intelligence_frame_topic: true
         metrics:
           - pct_ba_plus
           - pct_grad_plus
-      - topic_id: rootedness_and_mobility
-        display_name: Rootedness And Mobility
+
+      - topic_id: nativity_and_citizenship
+        display_name: Nativity and Citizenship
+        intelligence_frame_topic: true
         metrics:
-          - pct_same_house
-          - mobility_rate
-          - migration_churn
-          - pct_moved_diff_st
-          - pct_moved_abroad
           - pct_foreign_born
           - pct_non_citizen
-      - topic_id: built_form_context
-        display_name: Built Form Context
+
+      - topic_id: population_density
+        display_name: Population Density
+        intelligence_frame_topic: true
         metrics:
+          - pop_weighted_density_sqmi
+          - gross_density_sqmi
+
+      - topic_id: social_capital
+        display_name: Social Capital
+        intelligence_frame_topic: true
+        metrics:
+          - friending_bias
+          - civic_engagement_volunteering_rate
+          - civic_organizations_per_1000
+          - childhood_friending_bias
+          - economic_connectedness
+          - cohesion_clustering
+          - cohesion_support_ratio
+
+      - topic_id: nonprofits_and_civic_orgs
+        display_name: Nonprofits and Civic Organizations
+        intelligence_frame_topic: true
+        metrics:
+          - nonprofits_per_100k
+          - nonprofits_total_per_100k
+
+      - topic_id: residential_stability
+        display_name: Residential Stability and Migration
+        intelligence_frame_topic: true
+        metrics:
+          - irs_net_migration_rate
+          - pct_moved_diff_st
+          - pct_moved_abroad
+          - pct_moved_same_cnty
+          - mobility_rate
+          - pct_same_house
+          - irs_net_migration
+
+      - topic_id: social_associations
+        display_name: Social Associations
+        intelligence_frame_topic: true
+        metrics:
+          - social_associations_per_10k
+
+      - topic_id: built_form
+        display_name: Built Form
+        intelligence_frame_topic: true
+        metrics:
+          - pct_struct_multifam
           - owner_occ_rate
           - renter_occ_rate
-          - pct_struct_multifam
-          - gross_density_sqmi
-          - pop_weighted_density_sqmi
+
+      - topic_id: population_size_and_growth
+        display_name: Population Size and Growth
+        intelligence_frame_topic: false
+        metrics:
+          - pop_total
+          - pop_growth_1yr
+          - pop_growth_5yr
+          - pop_growth_10yr
+
+  # ---------------------------------------------------------------------------
+  # LIVABILITY
+  # ---------------------------------------------------------------------------
 
   - theme_id: livability
     display_name: Livability
-    description: Whether day-to-day living conditions, affordability, mobility, and basic services support quality of life.
+    description: Whether day-to-day living conditions — affordability, health, access, and physical environment — support quality of life for residents.
+
+    intelligence_outputs:
+      - livability_percentile_rank
+      - livability_cluster
+      - affordability_score
+      - health_and_safety_score
+      - access_and_infrastructure_score
+      - physical_environment_score
+
     topics:
-      - topic_id: affordability
-        display_name: Affordability
+
+      - topic_id: price_pressure
+        display_name: Price Pressure
+        intelligence_frame_topic: true
         metrics:
+          - value_to_income
+          - rent_to_income
+          - rpp_real_pc_income
+          - median_home_value
           - median_gross_rent
           - annualized_median_rent
-          - median_home_value
+
+      - topic_id: housing_burden
+        display_name: Housing Burden
+        intelligence_frame_topic: true
+        metrics:
           - pct_rent_burden_30plus
           - pct_rent_burden_50plus
-          - rent_to_income
-          - value_to_income
-          - rent_to_rpp_income
-          - value_to_rpp_income
-          - rpp_real_pc_income
-          - rpp_all_items
-      - topic_id: housing_supply
-        display_name: Housing Supply
+          - pct_cost_burdened
+          - pct_severely_cost_burdened
+          - pct_renter_severely_cost_burdened
+
+      - topic_id: poverty_context
+        display_name: Poverty Context
+        intelligence_frame_topic: true
         metrics:
-          - hu_total
-          - vacancy_rate
-          - permits_per_1000_housing_units
-          - permits_share_multifam_units
-          - fmr_gap_2br_vs_median_rent
-          - rent50_gap_2br_vs_median_rent
-      - topic_id: mobility
-        display_name: Mobility
-        metrics:
-          - pct_commute_drive_alone
-          - pct_commute_transit
-          - pct_commute_walk
-          - pct_commute_wfh
-          - pct_low_car_commute
-          - pct_hh_0_vehicles
-          - mean_travel_time
-      - topic_id: built_environment
-        display_name: Built Environment
-        metrics:
-          - density_population
-          - gross_density_sqmi
-          - pop_weighted_density_sqmi
-          - pct_struct_multifam
-      - topic_id: education_and_equity_context
-        display_name: Education And Equity Context
-        metrics:
-          - pct_ba_plus
           - pov_rate
           - gini_index
 
+      - topic_id: housing_supply
+        display_name: Housing Supply
+        intelligence_frame_topic: true
+        metrics:
+          - permits_per_1000_housing_units
+          - permits_share_units_5_plus
+          - permits_avg_units_per_bldg
+          - permits_share_multifam_units
+          - vacancy_rate
+          - hu_total
+          - fmr_gap_2br_vs_median_rent
+          - rent50_gap_2br_vs_median_rent
+
+      - topic_id: housing_structure_mix
+        display_name: Housing Structure Mix
+        intelligence_frame_topic: true
+        metrics:
+          - pct_struct_mobile
+          - pct_struct_small_mf
+          - pct_struct_mid_mf
+          - pct_struct_large_mf
+          - pct_struct_multifam
+
+      - topic_id: health_outcomes
+        display_name: Health Outcomes
+        intelligence_frame_topic: true
+        metrics:
+          - premature_death_rate
+          - child_mortality_rate
+          - life_expectancy
+          - infant_mortality_rate
+
+      - topic_id: health_behavior_and_access
+        display_name: Health Behavior and Access
+        intelligence_frame_topic: true
+        metrics:
+          - mental_health_provider_ratio
+          - drug_overdose_death_rate
+          - pct_uninsured_adults
+          - preventable_hospital_stay_rate
+          - primary_care_ratio
+          - child_care_cost_burden_rate
+          - physical_inactivity
+          - adult_obesity
+          - poor_mental_health_days
+          - food_insecurity_rate
+
+      - topic_id: violence_and_injury
+        display_name: Violence and Injury
+        intelligence_frame_topic: true
+        metrics:
+          - firearm_fatality_rate
+          - motor_vehicle_crash_rate
+          - homicide_rate
+
+      - topic_id: commute_and_mode
+        display_name: Commute and Mode Access
+        intelligence_frame_topic: true
+        metrics:
+          - pct_commute_walk
+          - pct_commute_wfh
+          - pct_commute_transit
+          - pct_commute_drive_alone
+          - pct_low_car_commute
+          - mean_travel_time
+
+      - topic_id: vehicle_access
+        display_name: Vehicle Access
+        intelligence_frame_topic: true
+        metrics:
+          - pct_hh_0_vehicles
+
+      - topic_id: digital_access
+        display_name: Digital Access
+        intelligence_frame_topic: true
+        metrics:
+          - pct_no_internet_access
+          - pct_broadband_subscription
+
+      - topic_id: walkability_baseline
+        display_name: Walkability and Transit Baseline
+        intelligence_frame_topic: true
+        metrics:
+          - walkability_index
+          - jobs_access_45min_transit
+          - transit_service_density
+          - jobs_access_45min_auto
+
+      - topic_id: food_access_baseline
+        display_name: Food Access Baseline
+        intelligence_frame_topic: true
+        metrics:
+          - pct_population_low_income_low_access_1_10
+          - pct_population_low_access_1_10
+
+      - topic_id: air_pollution
+        display_name: Air Pollution
+        intelligence_frame_topic: true
+        metrics:
+          - aqi_unhealthy_days
+          - aqi_median
+          - aqi_p90
+          - ej_pm25
+          - ej_diesel_pm
+          - air_pollution_pm25
+
+      - topic_id: climate_hazard_risk
+        display_name: Climate Hazard Risk
+        intelligence_frame_topic: true
+        metrics:
+          - fema_risk_score
+          - adverse_climate_events
+
+      - topic_id: hazard_exposure
+        display_name: Hazard Exposure
+        intelligence_frame_topic: true
+        metrics:
+          - ej_wastewater_discharge
+          - ej_superfund_proximity
+          - ej_drinking_water_noncompliance
+          - ej_traffic_proximity
+          - ej_rmp_proximity
+
+  # ---------------------------------------------------------------------------
+  # OPPORTUNITY
+  # ---------------------------------------------------------------------------
+
   - theme_id: opportunity
     display_name: Opportunity
-    description: Economic prospects for residents, investors, and businesses.
+    description: Economic prospects for residents, investors, and businesses — income trajectory, market momentum, and industry structure.
+
+    intelligence_outputs:
+      - opportunity_percentile_rank
+      - opportunity_cluster
+      - resident_opportunity_score
+      - market_opportunity_score
+      - business_and_industry_score
+
     topics:
-      - topic_id: income_and_wages
-        display_name: Income And Wages
+
+      - topic_id: income_growth
+        display_name: Income Growth
+        intelligence_frame_topic: true
         metrics:
-          - median_hh_income
-          - acs_income_pc
-          - calc_income_pc
-          - income_pc_growth_1yr
           - income_pc_growth_5yr
+          - income_pc_growth_1yr
           - income_pc_growth_10yr
-          - pi_total
+          - calc_income_pc
+          - acs_income_pc
+          - median_hh_income
+
+      - topic_id: wage_levels
+        display_name: Wage Levels
+        intelligence_frame_topic: true
+        metrics:
+          - qcew_private_avg_wkly_wage
+          - qcew_total_covered_avg_wkly_wage
           - pi_wages_salary
           - pi_wage_share
-      - topic_id: labor_market
-        display_name: Labor Market
+
+      - topic_id: labor_market_tightness
+        display_name: Labor Market Tightness
+        intelligence_frame_topic: true
         metrics:
-          - working_age_pop
-          - labor_force
+          - pct_unemployment_rate
           - lfpr
+          - unemployment_rate_change_1yr
           - lfpr_growth_5yr
           - employed
+          - labor_force
           - jobs_to_pop_ratio
-          - unemployed
-          - pct_unemployment_rate
-      - topic_id: economic_output
-        display_name: Economic Output
+
+      - topic_id: poverty_and_inclusion
+        display_name: Poverty and Inclusion
+        intelligence_frame_topic: true
         metrics:
-          - nominal_gdp_total
-          - nominal_gdp_growth_5yr
-          - nominal_gdp_pc
-          - real_gdp_total
-          - real_gdp_growth_5yr
-          - real_gdp_pc
-          - productivity_index
-          - productivity_growth_5yr
-      - topic_id: industry_mix
-        display_name: Industry Mix
+          - pov_rate_change_5yr
+          - pov_rate_change_1yr
+          - gini_index
+          - pov_rate
+
+      - topic_id: home_price_appreciation
+        display_name: Home Price Appreciation
+        intelligence_frame_topic: true
         metrics:
-          - acs_ind_total_emp
-          - pct_acs_ind_manufacturing
-          - pct_acs_ind_professional
-          - pct_acs_ind_educ_health
-          - pct_acs_ind_arts_accomm_food
-          - pct_real_gdp_manufacturing
-          - pct_real_gdp_professional
-          - pct_real_gdp_edu_health
-          - industry_concentration_hhi
-          - acs_industry_concentration_hhi
-      - topic_id: growth_and_momentum
-        display_name: Growth And Momentum
+          - hpi_5yr_pct
+          - hpi_yoy_pct
+          - hpi_10yr_pct
+
+      - topic_id: rent_growth
+        display_name: Rent Growth
+        intelligence_frame_topic: true
+        metrics:
+          - zori_annual_avg_yoy_pct
+          - zori_december_yoy_pct
+          - zori_annual_avg
+          - zori_december
+
+      - topic_id: population_growth
+        display_name: Population Growth
+        intelligence_frame_topic: true
         metrics:
           - pop_growth_5yr
+          - pop_growth_1yr
           - pop_growth_10yr
-          - irs_net_migration
+          - pop_total
+
+      - topic_id: migration_and_wealth_flows
+        display_name: Migration and Wealth Flows
+        intelligence_frame_topic: true
+        metrics:
           - irs_net_migration_rate
-          - rent_to_income
-          - value_to_income
-          - rent_to_rpp_income
-          - value_to_rpp_income
+          - irs_net_agi
+          - irs_net_migration
+
+      - topic_id: permit_activity
+        display_name: Permit Activity
+        intelligence_frame_topic: true
+        metrics:
+          - permits_per_1000_housing_units
+          - permits_share_units_5_plus
+          - permits_share_multifam_units
+          - permits_avg_units_per_bldg
+
+      - topic_id: gdp_growth
+        display_name: GDP and Productivity Growth
+        intelligence_frame_topic: true
+        metrics:
+          - productivity_growth_5yr
+          - real_gdp_growth_5yr
+          - nominal_gdp_growth_5yr
+          - real_gdp_total
+          - real_gdp_pc
+          - nominal_gdp_pc
+
+      - topic_id: industry_concentration
+        display_name: Industry Concentration
+        intelligence_frame_topic: true
+        metrics:
+          - industry_concentration_hhi
+          - acs_industry_concentration_hhi
+
+      - topic_id: human_capital_momentum
+        display_name: Human Capital Momentum
+        intelligence_frame_topic: true
+        metrics:
+          - pct_ba_plus_change_5yr
+          - pct_ba_plus
+
+      - topic_id: business_formation
+        display_name: Business Formation
+        intelligence_frame_topic: true
+        metrics:
+          - bfs_business_application_rate_per_1000_establishments
+          - bfs_business_applications_yoy_pct
+          - bfs_business_applications_per_1000_residents
+          - bfs_business_applications
+
+      - topic_id: establishment_density
+        display_name: Establishment Density
+        intelligence_frame_topic: true
+        metrics:
+          - cbp_estabs_per_1000_residents
+          - cbp_total_estabs
+
+      - topic_id: lq_specialization
+        display_name: Location Quotient Specialization
+        intelligence_frame_topic: true
+        metrics:
+          - lq_professional
+          - lq_information
+          - lq_manufacturing
+          - lq_educ_health
+          - lq_finance_real
+          - lq_construction
+          - lq_retail
+          - lq_transport_util
+          - lq_arts_accomm_food
+          - lq_wholesale
+          - lq_other_services
+          - lq_ag_mining
+
+      - topic_id: sector_gdp_mix
+        display_name: Sector GDP Mix
+        intelligence_frame_topic: true
+        metrics:
+          - pct_real_gdp_information
+          - pct_real_gdp_professional
+          - pct_real_gdp_manufacturing
+          - pct_real_gdp_edu_health
+
+      - topic_id: sector_employment_mix
+        display_name: Sector Employment Mix
+        intelligence_frame_topic: true
+        metrics:
+          - pct_acs_ind_professional
+          - pct_acs_ind_manufacturing
+          - pct_acs_ind_educ_health
+          - pct_acs_ind_arts_accomm_food
+          - acs_ind_total_emp
+
+      - topic_id: social_capital_signal
+        display_name: Social Capital as Opportunity Signal
+        intelligence_frame_topic: false
+        metrics:
+          - economic_connectedness

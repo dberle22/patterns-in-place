@@ -1,0 +1,91 @@
+---
+title: "Phase 6 - Environmental Risk Outliers"
+subtitle: "Dual-axis environmental worsening review"
+date: today
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 2
+    code-fold: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
+options(
+  dplyr.summarise.inform = FALSE,
+  knitr.kable.NA = ""
+)
+
+library(here)
+library(dplyr)
+library(readr)
+library(arrow)
+library(ggplot2)
+library(knitr)
+
+output_dir <- here("exploration/intelligence_framework/phase_6_trajectory", "outputs")
+
+trajectory_scores <- read_parquet(file.path(output_dir, "trajectory_scores.parquet")) |> as_tibble()
+pattern_summary <- read_csv(file.path(output_dir, "phase6_pattern_summary.csv"), show_col_types = FALSE)
+
+environmental_near_misses <- trajectory_scores |>
+  transmute(
+    cbsa_name,
+    census_division,
+    livability_direction,
+    worsening_rank_pct_aqi_unhealthy_days,
+    worsening_rank_pct_fema_risk_score,
+    candidate_rank
+  ) |>
+  arrange(desc(worsening_rank_pct_aqi_unhealthy_days + worsening_rank_pct_fema_risk_score), cbsa_name)
+```
+
+## Current Pattern Count
+
+```{r}
+pattern_summary |>
+  filter(pattern_flag == "is_environmental_risk_outlier") |>
+  kable()
+```
+
+## Near Misses
+
+```{r}
+environmental_near_misses |>
+  slice_head(n = 25) |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+## Dual-Axis Worsening Surface
+
+```{r fig.height=5}
+ggplot(
+  trajectory_scores,
+  aes(
+    x = worsening_rank_pct_aqi_unhealthy_days,
+    y = worsening_rank_pct_fema_risk_score,
+    color = is_environmental_risk_outlier
+  )
+) +
+  geom_vline(xintercept = 0.9, linetype = "dashed") +
+  geom_hline(yintercept = 0.9, linetype = "dashed") +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(
+    title = "Current default requires both environmental worsening ranks to hit the top decile",
+    x = "AQI worsening percentile",
+    y = "FEMA risk worsening percentile",
+    color = "Pattern match"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+## Review Lens
+
+Look for:
+
+- whether zero matches feels too strict for a first-pass environmental warning screen
+- whether the near misses would become more useful under a slightly looser threshold
+- whether the Livability direction requirement is screening out metros with genuine environmental deterioration but mixed non-environment Livability movement

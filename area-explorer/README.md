@@ -1,26 +1,44 @@
-# area-explorer
+# Area Explorer
 
-Interactive CBSA exploration tool. This is the research surface for the data platform: exploratory and iterative, not a publishing workflow.
+Metric-first interactive dashboards for the Patterns in Place data platform. You pick a theme, subject, topic, or metric — the map and charts update around that selection across all geographies.
 
-## Current state
+## Product structure
 
-Bare-bones MVP: `app/data_explorer.py` and `app/explorer_utils.py`, migrated from `metro_deep_dive_chatbot/reference_dashboard/`. It supports CBSA exploration over Gold-layer metrics.
+Three independent Streamlit apps connected by a landing page. Each is self-contained; cross-links open in a new tab.
 
-## Running the app
+| App | Audience | Intelligence frames | Status |
+|---|---|---|---|
+| `apps/cbsa_internal/` | Dan (analytical) | Yes — clusters, scores, peers | Phase 1 |
+| `apps/cbsa_public/` | Readers / clients | No — metrics + benchmarks | Phase 2 |
+| `apps/county_explorer/` | Both | No | Phase 3 |
+| `landing/` | Both | — | Phase 2 |
+
+See `AREA_EXPLORER_ROADMAP.md` for the full spec, layout, technical decisions, and build phases.
+
+## Running the apps
+
+Set the DB connection env var, then launch the desired app:
 
 ```bash
-export MONOREPO_ROOT=/path/to/patterns_in_place
-export DB_CONNECTION="$MONOREPO_ROOT/foundations/data/foundations.duckdb"
-cd "$MONOREPO_ROOT/area-explorer"
-PYTHONPATH=app streamlit run app/data_explorer.py
+export DB_CONNECTION="/path/to/patterns_in_place/foundations/data/foundations.duckdb"
+
+# CBSA Internal (analytical, with Intelligence frames)
+streamlit run apps/cbsa_internal/app.py
+
+# CBSA Public (reader-facing, no frame scores)
+streamlit run apps/cbsa_public/app.py
+
+# County Explorer
+streamlit run apps/county_explorer/app.py
 ```
 
-The app already reads `DB_CONNECTION` from the environment. Leave the fallback path alone and use the env var instead.
+The existing `app/data_explorer.py` and `app/explorer_utils.py` are migration-state reference — they remain runnable but are being replaced by the new structure above.
 
-## Build roadmap
+## Shared library
 
-- Phase 1 (current): CBSA choropleth, metric picker, and ranking table
-- Phase 2: Intelligence Frames (depends on F3 + F5)
-- Phase 3: Zone layer (depends on the F5 zones datamart)
+`shared/` contains the query layer, catalog loader, GeoJSON utilities, benchmark helpers, and reusable UI components. App files do not contain SQL or data logic — all of that lives in `shared/`.
 
-See `notes/patterns_in_place_notes/Products/Area Explorer.md` for the broader roadmap.
+## Related products
+
+- **Deep Dive Research Tool** (`metro-deep-dive/RESEARCH_TOOL_ROADMAP.md`) — place-first research surface; pick a metro and see its full profile. Different entry point, different purpose.
+- **Chatbot / Publisher** (`publisher/`) — question-first entry point. NL → SQL → chart pipeline.

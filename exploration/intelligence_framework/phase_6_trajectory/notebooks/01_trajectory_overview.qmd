@@ -1,0 +1,142 @@
+---
+title: "Phase 6 - Trajectory Overview"
+subtitle: "Cross-frame trajectory review over built Phase 6 artifacts"
+date: today
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 2
+    code-fold: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
+options(
+  dplyr.summarise.inform = FALSE,
+  knitr.kable.NA = ""
+)
+
+library(here)
+library(dplyr)
+library(readr)
+library(arrow)
+library(ggplot2)
+library(knitr)
+library(tidyr)
+library(scales)
+
+output_dir <- here("exploration/intelligence_framework/phase_6_trajectory", "outputs")
+
+trajectory_scores <- read_parquet(file.path(output_dir, "trajectory_scores.parquet")) |> as_tibble()
+kpi_trajectory_long <- read_csv(file.path(output_dir, "phase6_kpi_trajectory_long.csv"), show_col_types = FALSE)
+pattern_summary <- read_csv(file.path(output_dir, "phase6_pattern_summary.csv"), show_col_types = FALSE)
+candidate_list <- read_csv(file.path(output_dir, "phase6_candidate_list.csv"), show_col_types = FALSE)
+
+direction_counts <- bind_rows(
+  trajectory_scores |> count(direction = character_direction, name = "metros") |> mutate(frame = "Character"),
+  trajectory_scores |> count(direction = livability_direction, name = "metros") |> mutate(frame = "Livability"),
+  trajectory_scores |> count(direction = opportunity_direction, name = "metros") |> mutate(frame = "Opportunity")
+)
+
+strength_long <- trajectory_scores |>
+  transmute(
+    cbsa_name,
+    character = character_trajectory_strength,
+    livability = livability_trajectory_strength,
+    opportunity = opportunity_trajectory_strength
+  ) |>
+  pivot_longer(-cbsa_name, names_to = "frame", values_to = "trajectory_strength")
+```
+
+## Purpose
+
+This notebook is the top-level review layer for Phase 6. It reads only the saved outputs from `phase_6_trajectory/outputs/`.
+
+The current default analysis choices are:
+
+- pattern thresholds use top-decile national ranks
+- candidate scoring uses equal pattern weights with a smaller Phase 5 overlap bonus
+
+If those defaults change, the outputs will become either more selective or more inclusive. The sensitivity notes written into the Phase 6 CSVs call that out explicitly.
+
+## Model Snapshot
+
+```{r}
+tibble(
+  cbsa_universe = nrow(trajectory_scores),
+  trajectory_rows = nrow(kpi_trajectory_long),
+  candidate_rows = nrow(candidate_list),
+  patterns_with_any_members = sum(pattern_summary$cbsa_count > 0)
+) |>
+  kable()
+```
+
+## Direction Segmentation
+
+```{r}
+direction_counts |>
+  kable()
+```
+
+```{r fig.height=5}
+ggplot(direction_counts, aes(x = frame, y = metros, fill = direction)) +
+  geom_col(position = "stack") +
+  labs(
+    title = "Each frame splits metros into the same four direction buckets",
+    x = NULL,
+    y = "CBSAs",
+    fill = "Direction"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+## Strength Distribution
+
+```{r fig.height=5}
+ggplot(strength_long, aes(x = trajectory_strength, fill = frame)) +
+  geom_histogram(alpha = 0.7, bins = 30, position = "identity") +
+  facet_wrap(~frame, scales = "free_y") +
+  labs(
+    title = "Trajectory strength distributions by frame",
+    x = "Trajectory strength",
+    y = "CBSAs"
+  ) +
+  theme_minimal(base_size = 12) +
+  guides(fill = "none")
+```
+
+## Top Trajectory Movers
+
+```{r}
+trajectory_scores |>
+  transmute(
+    cbsa_name,
+    census_division,
+    character_trajectory_strength,
+    livability_trajectory_strength,
+    opportunity_trajectory_strength,
+    candidate_rank,
+    candidate_score
+  ) |>
+  arrange(candidate_rank) |>
+  slice_head(n = 20) |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+## Pattern Summary
+
+```{r}
+pattern_summary |>
+  kable()
+```
+
+## What Changed If We Tighten Or Loosen The Defaults
+
+Look here for review:
+
+- whether the top-decile default is producing too few members for a pattern, especially `bounce_back` and `environmental_risk_outlier`
+- whether the candidate top ranks look dominated by one narrative even under equal pattern weights
+- whether the high-ranked metros feel like real trajectory stories rather than just already-famous large metros

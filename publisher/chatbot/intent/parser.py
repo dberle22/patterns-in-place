@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 import json
 import logging
+import os
 from pathlib import Path
 import re
 from typing import Any
@@ -15,7 +16,7 @@ from chatbot.llm.provider import LLMProvider
 from chatbot.query.catalogs import REPO_ROOT, load_semantic_catalogs
 
 
-QUESTION_LIBRARY_PATH = REPO_ROOT / "publisher" / "examples" / "question_library.yml"
+QUESTION_CATALOG_PATH = Path(os.environ["FOUNDATIONS_PATH"]) / "semantic_layer" / "question_catalog.yml"
 DEFAULT_FEW_SHOT_COUNT = 8
 LOGGER = logging.getLogger(__name__)
 
@@ -28,6 +29,7 @@ QUESTION_TYPE_ALIASES = {
     "distribution": "distribution",
     "benchmark": "benchmark",
     "growth": "growth",
+    "frame_lookup": "frame_lookup",
 }
 
 
@@ -228,7 +230,7 @@ class IntentParser:
             "If required slots are missing, return JSON with keys clarification_needed=true, "
             "missing_fields, message, and partial_plan.\n"
             "Otherwise return JSON with clarification_needed=false and a query_plan object.\n\n"
-            "Supported question types: ranking, trend, comparison, distribution, benchmark, growth.\n"
+            "Supported question types: ranking, trend, comparison, distribution, benchmark, growth, frame_lookup.\n"
             "IMPORTANT question type guidance:\n"
             "- Use 'benchmark' when comparing ONE geography against the US, a national average, a regional "
             "average, or a named peer set (e.g. 'How does Texas compare to the US?', 'Is California above "
@@ -731,8 +733,8 @@ class IntentParser:
         return None
 
     def _load_examples(self) -> list[dict[str, Any]]:
-        payload = yaml.safe_load(QUESTION_LIBRARY_PATH.read_text(encoding="utf-8"))
-        return payload["examples"]
+        payload = yaml.safe_load(QUESTION_CATALOG_PATH.read_text(encoding="utf-8"))
+        return [q for q in payload["questions"] if "structured_query_plan" in q]
 
     def _normalize_text(self, value: str) -> str:
         return re.sub(r"\s+", " ", value.strip().lower())

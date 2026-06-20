@@ -36,7 +36,7 @@ cbsa_cagdp9_stage <- dbGetQuery(con, "SELECT * FROM staging.bea_regional_cbsa_ca
 state_cagdp9_stage <- dbGetQuery(con, "SELECT * FROM staging.bea_regional_state_cagdp9")
 
 ## CBSA <> County Xwalk ----
-cbsa_county_xwalk <- dbGetQuery(con, "SELECT * FROM silver.xwalk_cbsa_county")
+cbsa_county_xwalk <- get_cbsa_rollup_xwalk(con)
 
 
 ## Reference Tables ----

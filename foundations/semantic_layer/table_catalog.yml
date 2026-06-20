@@ -809,6 +809,222 @@ tables:
       - This table is planner support infrastructure, not a primary direct-query fact mart.
     status: restricted
 
+  # ---------------------------------------------------------------------------
+  # Intelligence frame score tables (Gold — promoted from Phase 2–4 parquets via Phase 8 loaders)
+  # These tables are read-only lookups: one row per CBSA, no year dimension.
+  # ---------------------------------------------------------------------------
+
+  - table_id: intelligence_livability
+    schema: gold
+    table_name: intelligence_livability
+    subject_areas: [livability, intelligence]
+    description: >
+      Precomputed Livability frame scores for all 401 CBSAs. Contains the cluster label,
+      GMM soft membership probabilities, topic and subject z-scores, composite percentile rank,
+      and top-10 cosine-similarity peers. One static row per CBSA — no time dimension.
+    grain: one row per cbsa_code
+    primary_key: [cbsa_code]
+    geo_id_field: cbsa_code
+    geo_level_field: null
+    geo_name_field: cbsa_name
+    time_field: null
+    supported_geo_levels: [cbsa]
+    sources:
+      - source_id: INTELLIGENCE_PHASE3
+        columns:
+          - livability_cluster
+          - livability_percentile_rank
+          - affordability_score
+          - health_and_safety_score
+          - access_and_infrastructure_score
+          - physical_environment_score
+    upstream_dependencies:
+      - exploration/intelligence_framework/phase_3_livability_calibration/outputs/livability_scores.parquet
+    columns:
+      - column_name: livability_cluster
+        type: string
+        description: Hard cluster label assigned by K-Means (k=6).
+        source_id: INTELLIGENCE_PHASE3
+        queryable: true
+      - column_name: livability_percentile_rank
+        type: integer
+        description: Composite Livability percentile rank (0-100) within the 401-CBSA universe.
+        source_id: INTELLIGENCE_PHASE3
+        queryable: true
+      - column_name: affordability_score
+        type: number_2dp
+        description: Affordability subject z-score (sign-flipped for scoring direction).
+        source_id: INTELLIGENCE_PHASE3
+        queryable: true
+      - column_name: health_and_safety_score
+        type: number_2dp
+        description: Health and Safety subject z-score.
+        source_id: INTELLIGENCE_PHASE3
+        queryable: true
+      - column_name: access_and_infrastructure_score
+        type: number_2dp
+        description: Access and Infrastructure subject z-score.
+        source_id: INTELLIGENCE_PHASE3
+        queryable: true
+      - column_name: physical_environment_score
+        type: number_2dp
+        description: Physical Environment subject z-score.
+        source_id: INTELLIGENCE_PHASE3
+        queryable: true
+    notes:
+      - No year filter — this is a static calibration snapshot, not a time series.
+      - Promoted to Gold via foundations/loaders/load_livability_scores.R in Phase 8.
+      - Peer columns (top10_peer_1_cbsa_code … top10_peer_10_cbsa_code) also present but not listed here individually.
+    status: active
+
+  - table_id: intelligence_opportunity
+    schema: gold
+    table_name: intelligence_opportunity
+    subject_areas: [opportunity, intelligence]
+    description: >
+      Precomputed Opportunity frame scores for all 401 CBSAs. Contains the cluster label,
+      GMM soft membership probabilities, topic and subject z-scores, composite percentile rank,
+      and top-10 cosine-similarity peers. One static row per CBSA — no time dimension.
+    grain: one row per cbsa_code
+    primary_key: [cbsa_code]
+    geo_id_field: cbsa_code
+    geo_level_field: null
+    geo_name_field: cbsa_name
+    time_field: null
+    supported_geo_levels: [cbsa]
+    sources:
+      - source_id: INTELLIGENCE_PHASE4
+        columns:
+          - opportunity_cluster
+          - opportunity_percentile_rank
+          - resident_opportunity_score
+          - market_opportunity_score
+          - business_and_industry_score
+    upstream_dependencies:
+      - exploration/intelligence_framework/phase_4_opportunity_calibration/outputs/opportunity_scores.parquet
+    columns:
+      - column_name: opportunity_cluster
+        type: string
+        description: Hard cluster label assigned by K-Means (k=6) on the reduced 20-KPI set.
+        source_id: INTELLIGENCE_PHASE4
+        queryable: true
+      - column_name: opportunity_percentile_rank
+        type: integer
+        description: Composite Opportunity percentile rank (0-100) within the 401-CBSA universe.
+        source_id: INTELLIGENCE_PHASE4
+        queryable: true
+      - column_name: resident_opportunity_score
+        type: number_2dp
+        description: Resident Opportunity subject z-score.
+        source_id: INTELLIGENCE_PHASE4
+        queryable: true
+      - column_name: market_opportunity_score
+        type: number_2dp
+        description: Market and Investor Opportunity subject z-score.
+        source_id: INTELLIGENCE_PHASE4
+        queryable: true
+      - column_name: business_and_industry_score
+        type: number_2dp
+        description: Business and Industry Opportunity subject z-score.
+        source_id: INTELLIGENCE_PHASE4
+        queryable: true
+    notes:
+      - No year filter — static calibration snapshot.
+      - Promoted to Gold via foundations/loaders/load_opportunity_scores.R in Phase 8.
+      - Peer columns (top10_peer_1_cbsa_code … top10_peer_10_cbsa_code) also present.
+    status: active
+
+  - table_id: intelligence_character
+    schema: gold
+    table_name: intelligence_character
+    subject_areas: [character, intelligence]
+    description: >
+      Precomputed Character frame scores for all 401 CBSAs. Contains the cluster label,
+      GMM soft membership probabilities (k=7), topic and subject z-scores, composite percentile rank,
+      and top-10 cosine-similarity peers. One static row per CBSA — no time dimension.
+    grain: one row per cbsa_code
+    primary_key: [cbsa_code]
+    geo_id_field: cbsa_code
+    geo_level_field: null
+    geo_name_field: cbsa_name
+    time_field: null
+    supported_geo_levels: [cbsa]
+    sources:
+      - source_id: INTELLIGENCE_PHASE2
+        columns:
+          - character_cluster
+          - character_percentile_rank
+          - demographics_score
+          - social_fabric_score
+    upstream_dependencies:
+      - exploration/intelligence_framework/phase_2_character_calibration/outputs/character_scores.parquet
+    columns:
+      - column_name: character_cluster
+        type: string
+        description: Hard cluster label assigned by K-Means (k=7).
+        source_id: INTELLIGENCE_PHASE2
+        queryable: true
+      - column_name: character_percentile_rank
+        type: integer
+        description: Composite Character percentile rank (0-100) within the 401-CBSA universe.
+        source_id: INTELLIGENCE_PHASE2
+        queryable: true
+      - column_name: demographics_score
+        type: number_2dp
+        description: Demographics subject z-score.
+        source_id: INTELLIGENCE_PHASE2
+        queryable: true
+      - column_name: social_fabric_score
+        type: number_2dp
+        description: Social Fabric subject z-score.
+        source_id: INTELLIGENCE_PHASE2
+        queryable: true
+    notes:
+      - No year filter — static calibration snapshot.
+      - Promoted to Gold via foundations/loaders/load_character_scores.R in Phase 8.
+      - GMM soft membership columns present (character_prob_k1 … character_prob_k7).
+      - Peer columns (top10_peer_1_cbsa_code … top10_peer_10_cbsa_code) also present.
+    status: active
+
+  - table_id: intelligence_cross_frame
+    schema: gold
+    table_name: intelligence_cross_frame
+    subject_areas: [character, livability, opportunity, intelligence]
+    description: >
+      Cross-frame combined cluster and similarity scores. Produced in Phase 5 after all three
+      frame models are stable. Contains the combined cluster label, GMM soft memberships,
+      cross-frame cosine similarity peers, and a divergence flag identifying CBSAs that rank
+      inconsistently across frames. One static row per CBSA — no time dimension.
+    grain: one row per cbsa_code
+    primary_key: [cbsa_code]
+    geo_id_field: cbsa_code
+    geo_level_field: null
+    geo_name_field: cbsa_name
+    time_field: null
+    supported_geo_levels: [cbsa]
+    sources:
+      - source_id: INTELLIGENCE_PHASE5
+        columns:
+          - combined_cluster
+          - cross_frame_divergence_flag
+    upstream_dependencies:
+      - exploration/intelligence_framework/phase_5_cross_frame/outputs/cross_frame_scores.parquet
+    columns:
+      - column_name: combined_cluster
+        type: string
+        description: Hard cluster label from the cross-frame combined K-Means model.
+        source_id: INTELLIGENCE_PHASE5
+        queryable: true
+      - column_name: cross_frame_divergence_flag
+        type: boolean
+        description: True when the CBSA's frame-specific cluster assignments diverge meaningfully across frames.
+        source_id: INTELLIGENCE_PHASE5
+        queryable: true
+    notes:
+      - Status is pending until Phase 5 is complete.
+      - Promoted to Gold via foundations/loaders/load_cross_frame_scores.R in Phase 8.
+    status: pending
+
   - table_id: tx_isd_metrics
     schema: gold
     table_name: tx_isd_metrics

@@ -1,0 +1,112 @@
+---
+title: "Phase 6 - Opportunity Turn Signals"
+subtitle: "Short-run versus medium-term Opportunity divergence"
+date: today
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 2
+    code-fold: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
+options(
+  dplyr.summarise.inform = FALSE,
+  knitr.kable.NA = ""
+)
+
+library(here)
+library(dplyr)
+library(readr)
+library(ggplot2)
+library(knitr)
+
+output_dir <- here("exploration/intelligence_framework/phase_6_trajectory", "outputs")
+
+opp_turn_signals <- read_csv(file.path(output_dir, "phase6_opp_turn_signals.csv"), show_col_types = FALSE)
+candidate_list <- read_csv(file.path(output_dir, "phase6_candidate_list.csv"), show_col_types = FALSE)
+```
+
+## Turn-Signal Summary
+
+```{r}
+tibble(
+  cbsa_universe = nrow(opp_turn_signals),
+  turn_signal_count = sum(opp_turn_signals$opp_turn_signal %in% TRUE, na.rm = TRUE)
+) |>
+  kable()
+```
+
+## Strongest Contradictions
+
+```{r}
+opp_turn_signals |>
+  filter(opp_turn_signal %in% TRUE) |>
+  mutate(
+    momentum_gap = abs(frame_momentum_z_window_1yr - frame_momentum_z_window_5yr)
+  ) |>
+  arrange(desc(momentum_gap), cbsa_name) |>
+  slice_head(n = 30) |>
+  select(
+    cbsa_name,
+    census_division,
+    frame_momentum_z_window_1yr,
+    frame_momentum_z_window_5yr,
+    frame_direction_window_1yr,
+    frame_direction_window_5yr,
+    opp_turn_signal_type
+  ) |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+## 1-Year Versus 5-Year Matrix
+
+```{r fig.height=5}
+ggplot(
+  opp_turn_signals,
+  aes(
+    x = frame_momentum_z_window_5yr,
+    y = frame_momentum_z_window_1yr,
+    color = opp_turn_signal
+  )
+) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(
+    title = "Opportunity turn signals are metros where 1-year and 5-year momentum disagree",
+    x = "5-year Opportunity momentum z-score",
+    y = "1-year Opportunity momentum z-score",
+    color = "Turn signal"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+## Candidate List Cross-Check
+
+```{r}
+candidate_list |>
+  filter(opp_turn_signal %in% TRUE) |>
+  slice_head(n = 25) |>
+  select(
+    candidate_rank,
+    cbsa_name,
+    opp_turn_signal_type,
+    opportunity_trajectory_score,
+    candidate_score
+  ) |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+## Review Lens
+
+Look for:
+
+- whether the turn-signal metros feel like real “market is turning” stories instead of noisy annual reversals
+- whether CT metros with reduced 5-year metric coverage need to be interpreted more cautiously here
+- whether the highest-ranked turn-signal metros belong in a Phase 6 story even when they do not score highly on the full candidate list

@@ -1,5 +1,5 @@
 -- Gold policy designation dimension
--- Grain: one row per tract designation record.
+-- Grain: one row per geography designation record.
 -- Static Opportunity Zone rows carry null year; annual FHFA underserved rows
 -- carry the release year.
 
@@ -14,6 +14,9 @@ with oz_rows as (
         oz_tract_count,
         total_tract_count,
         pct_oz_tracts,
+        oz_population,
+        total_population,
+        pct_population_in_oz,
         cast(null as boolean) as is_underserved,
         cast(null as boolean) as is_low_income_area,
         cast(null as boolean) as is_minority_area,
@@ -32,6 +35,9 @@ fhfa_rows as (
         cast(null as integer) as oz_tract_count,
         total_tract_count,
         cast(null as double) as pct_oz_tracts,
+        cast(null as double) as oz_population,
+        cast(null as double) as total_population,
+        cast(null as double) as pct_population_in_oz,
         is_underserved,
         is_low_income_area,
         is_minority_area,

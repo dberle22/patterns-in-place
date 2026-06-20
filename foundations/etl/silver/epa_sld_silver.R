@@ -134,13 +134,26 @@ state_xwalk <- DBI::dbGetQuery(con, "SELECT * FROM silver.xwalk_state_region") %
   ) %>%
   distinct()
 
-cbsa_xwalk <- DBI::dbGetQuery(con, "SELECT * FROM silver.xwalk_cbsa_county") %>%
+cbsa_xwalk <- get_cbsa_rollup_xwalk(con) %>%
   transmute(
     county_geoid = as.character(county_geoid),
     cbsa_code = as.character(cbsa_code),
     cbsa_name = as.character(cbsa_name)
   ) %>%
   distinct()
+
+bg_cbsa_xwalk <- epa_sld_stage %>%
+  distinct(.data$bg_geoid) %>%
+  transmute(
+    bg_geoid = as.character(.data$bg_geoid),
+    county_geoid = stringr::str_sub(.data$bg_geoid, 1, 5)
+  ) %>%
+  inner_join(cbsa_xwalk, by = "county_geoid") %>%
+  rename(
+    current_cbsa_code = .data$cbsa_code,
+    current_cbsa_name = .data$cbsa_name
+  ) %>%
+  distinct(.data$bg_geoid, .keep_all = TRUE)
 
 county_manual_lookup <- tibble::tribble(
   ~county_geoid, ~county_name_long, ~state_abbr,
@@ -275,21 +288,21 @@ epa_sld_county <- epa_sld_rollup_base %>%
   )
 
 # 7. Aggregate counties to CBSAs ----
-epa_sld_cbsa <- epa_sld_county %>%
-  inner_join(cbsa_xwalk, by = c("geo_id" = "county_geoid")) %>%
-  group_by(cbsa_code, cbsa_name, year) %>%
+epa_sld_cbsa <- epa_sld_rollup_base %>%
+  inner_join(bg_cbsa_xwalk, by = "bg_geoid") %>%
+  group_by(current_cbsa_code, current_cbsa_name, year) %>%
   aggregate_epa_sld_metrics() %>%
   left_join(
-    epa_sld_county %>%
-      inner_join(cbsa_xwalk, by = c("geo_id" = "county_geoid")) %>%
-      group_by(cbsa_code, cbsa_name, year) %>%
+    epa_sld_rollup_base %>%
+      inner_join(bg_cbsa_xwalk, by = "bg_geoid") %>%
+      group_by(current_cbsa_code, current_cbsa_name, year) %>%
       summarise(state_abbr = single_value_or_na(state_abbr), .groups = "drop"),
-    by = c("cbsa_code", "cbsa_name", "year")
+    by = c("current_cbsa_code", "current_cbsa_name", "year")
   ) %>%
   transmute(
     geo_level = "cbsa",
-    geo_id = cbsa_code,
-    geo_name = cbsa_name,
+    geo_id = current_cbsa_code,
+    geo_name = current_cbsa_name,
     year = year,
     state_abbr = state_abbr,
     state_fips = NA_character_,

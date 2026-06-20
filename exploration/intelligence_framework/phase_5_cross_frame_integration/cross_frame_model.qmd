@@ -1,0 +1,89 @@
+---
+title: "Phase 5 Cross-Frame Review"
+format:
+  html:
+    self-contained: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+library(here)
+library(dplyr)
+library(readr)
+library(arrow)
+library(ggplot2)
+
+output_dir <- here(
+  "exploration",
+  "intelligence_framework",
+  "phase_5_cross_frame_integration",
+  "outputs"
+)
+
+pca_variance <- read_csv(file.path(output_dir, "cross_frame_phase5_pca_variance.csv"), show_col_types = FALSE)
+kpi_decisions <- read_csv(file.path(output_dir, "cross_frame_phase5_kpi_decisions.csv"), show_col_types = FALSE)
+cluster_centroids <- read_csv(file.path(output_dir, "cross_frame_phase5_cluster_centroids.csv"), show_col_types = FALSE)
+cluster_representatives <- read_csv(file.path(output_dir, "cross_frame_phase5_cluster_representatives.csv"), show_col_types = FALSE)
+overlap_summary <- read_csv(file.path(output_dir, "cross_frame_phase5_overlap_summary.csv"), show_col_types = FALSE)
+candidate_list <- read_csv(file.path(output_dir, "cross_frame_phase5_candidate_list.csv"), show_col_types = FALSE)
+cross_frame_scores <- read_parquet(file.path(output_dir, "cross_frame_scores.parquet"))
+```
+
+## PCA Diagnostics
+
+```{r}
+ggplot(
+  pca_variance |> slice_head(n = 20),
+  aes(x = principal_component, y = cumulative_variance, group = 1)
+) +
+  geom_line() +
+  geom_point() +
+  labs(
+    x = NULL,
+    y = "Cumulative Variance",
+    title = "Cumulative Variance Explained"
+  ) +
+  coord_cartesian(ylim = c(0, 1))
+```
+
+```{r}
+kpi_decisions |>
+  count(recommendation) |>
+  knitr::kable()
+```
+
+## Cluster Overview
+
+```{r}
+cluster_centroids |>
+  knitr::kable(digits = 1)
+```
+
+```{r}
+cluster_representatives |>
+  group_by(cross_frame_cluster_name) |>
+  slice_head(n = 5) |>
+  ungroup() |>
+  select(cross_frame_cluster_name, cbsa_name, cross_frame_percentile, distance_to_center) |>
+  knitr::kable(digits = 2)
+```
+
+## Overlap Review
+
+```{r}
+overlap_summary |>
+  slice_head(n = 20) |>
+  knitr::kable()
+```
+
+## Candidate Markets
+
+```{r}
+candidate_list |>
+  slice_head(n = 25) |>
+  select(divergence_candidate_rank, cbsa_name, cross_frame_cluster_name, cross_frame_percentile, character_percentile, livability_percentile, opportunity_percentile, divergence_candidate_score) |>
+  knitr::kable(digits = 1)
+```

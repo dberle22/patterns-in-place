@@ -1,0 +1,324 @@
+---
+title: "Phase 4 - Opportunity Frame Review"
+subtitle: "Review notebook for the modular Phase 4 Opportunity build"
+date: today
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 2
+    code-fold: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE
+)
+
+options(
+  dplyr.summarise.inform = FALSE,
+  knitr.kable.NA = ""
+)
+
+library(here)
+library(dplyr)
+library(readr)
+library(arrow)
+library(ggplot2)
+library(scales)
+library(knitr)
+
+output_dir <- here("exploration/intelligence_framework/phase_4_opportunity_calibration", "outputs")
+
+comparison_summary <- readr::read_csv(file.path(output_dir, "opportunity_phase4_k5_k6_comparison_summary.csv"), show_col_types = FALSE)
+comparison_sizes <- readr::read_csv(file.path(output_dir, "opportunity_phase4_k5_k6_cluster_sizes.csv"), show_col_types = FALSE)
+cluster_centroids <- readr::read_csv(file.path(output_dir, "opportunity_phase4_cluster_centroids.csv"), show_col_types = FALSE)
+cluster_representatives <- readr::read_csv(file.path(output_dir, "opportunity_phase4_cluster_representatives.csv"), show_col_types = FALSE)
+cluster_metric_extremes <- readr::read_csv(file.path(output_dir, "opportunity_phase4_cluster_metric_extremes.csv"), show_col_types = FALSE)
+gmm_summary <- readr::read_csv(file.path(output_dir, "opportunity_phase4_gmm_summary.csv"), show_col_types = FALSE)
+gmm_hybrids <- readr::read_csv(file.path(output_dir, "opportunity_phase4_gmm_hybrids.csv"), show_col_types = FALSE)
+similarity_top10 <- readr::read_csv(file.path(output_dir, "opportunity_phase4_similarity_top10.csv"), show_col_types = FALSE)
+industry_leading_indicator_summary <- readr::read_csv(file.path(output_dir, "opportunity_phase4_industry_leading_indicator_summary.csv"), show_col_types = FALSE)
+industry_leading_indicator_scatter <- readr::read_csv(file.path(output_dir, "opportunity_phase4_industry_leading_indicator_scatter.csv"), show_col_types = FALSE)
+social_capital_summary <- readr::read_csv(file.path(output_dir, "opportunity_phase4_social_capital_summary.csv"), show_col_types = FALSE)
+social_capital_scatter <- readr::read_csv(file.path(output_dir, "opportunity_phase4_social_capital_scatter.csv"), show_col_types = FALSE)
+signal_divergence_summary <- readr::read_csv(file.path(output_dir, "opportunity_phase4_signal_divergence_summary.csv"), show_col_types = FALSE)
+signal_divergence_scatter <- readr::read_csv(file.path(output_dir, "opportunity_phase4_signal_divergence_scatter.csv"), show_col_types = FALSE)
+livability_opportunity_summary <- readr::read_csv(file.path(output_dir, "opportunity_phase4_livability_opportunity_summary.csv"), show_col_types = FALSE)
+livability_opportunity_scatter <- readr::read_csv(file.path(output_dir, "opportunity_phase4_livability_opportunity_scatter.csv"), show_col_types = FALSE)
+oz_high_opportunity_context <- readr::read_csv(file.path(output_dir, "opportunity_phase4_oz_high_opportunity_context.csv"), show_col_types = FALSE)
+opportunity_scores <- arrow::read_parquet(file.path(output_dir, "opportunity_scores.parquet"))
+
+selected_k <- 6
+selected_cluster_sizes <- comparison_sizes |>
+  filter(method == "kmeans", k == selected_k) |>
+  arrange(cluster)
+
+model_summary <- tibble::tibble(
+  modeling_universe = nrow(opportunity_scores),
+  selected_k = selected_k,
+  kmeans_silhouette_at_k6 = comparison_summary |>
+    filter(k == selected_k) |>
+    pull(kmeans_avg_silhouette),
+  hierarchical_silhouette_at_k6 = comparison_summary |>
+    filter(k == selected_k) |>
+    pull(hierarchical_avg_silhouette),
+  social_capital_correlation = social_capital_summary$raw_correlation,
+  industry_mix_model_r2 = industry_leading_indicator_summary$adjusted_r_squared,
+  market_short_long_correlation = signal_divergence_summary$market_short_long_correlation,
+  resident_short_long_correlation = signal_divergence_summary$resident_short_long_correlation
+)
+```
+
+## Purpose
+
+This notebook is the review layer for Phase 4, not the build pipeline.
+
+The canonical build now lives in:
+
+- `R/run_phase4_opportunity.R`
+- `R/phase4_*.R`
+
+This notebook reads the saved artifacts in `outputs/` so we can:
+
+- review the locked reduced-set `k = 6` Opportunity model
+- inspect the published cluster structure and names
+- sanity-check soft membership and peer outputs
+- review the first Opportunity hypothesis results
+- inspect the Livability / Opportunity quadrant surface
+
+## Model Snapshot
+
+```{r model-summary}
+model_summary |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+## Why `k = 6`
+
+The published Opportunity typology uses the reduced clustering set and locks `k = 6`. This accepts a slightly weaker `k`-means silhouette than `k = 5` in exchange for a more useful subtype split on the low-opportunity side and cleaner hierarchical structure.
+
+```{r k-comparison}
+comparison_summary |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+```{r cluster-sizes}
+selected_cluster_sizes |>
+  rename(opportunity_kmeans_cluster = cluster, metros_in_cluster = cluster_size) |>
+  left_join(
+    cluster_centroids |>
+      distinct(opportunity_kmeans_cluster, opportunity_cluster_name),
+    by = "opportunity_kmeans_cluster"
+  ) |>
+  select(opportunity_kmeans_cluster, opportunity_cluster_name, metros_in_cluster) |>
+  kable()
+```
+
+## Published Cluster Profiles
+
+```{r centroids}
+cluster_centroids |>
+  transmute(
+    opportunity_cluster_name,
+    metros_in_cluster,
+    opportunity_score = round(opportunity_score, 3),
+    opportunity_percentile = round(opportunity_percentile, 1),
+    business_score = round(subject_score_business_and_industry_opportunity, 3),
+    market_score = round(subject_score_market_opportunity, 3),
+    resident_score = round(subject_score_resident_opportunity, 3)
+  ) |>
+  kable()
+```
+
+```{r representatives}
+cluster_representatives |>
+  group_by(opportunity_cluster_name) |>
+  slice_head(n = 6) |>
+  ungroup() |>
+  mutate(
+    distance_to_center = round(distance_to_center, 2),
+    opportunity_percentile = round(opportunity_percentile, 1)
+  ) |>
+  select(opportunity_cluster_name, cbsa_name, distance_to_center, opportunity_percentile) |>
+  kable()
+```
+
+## Metric Signatures
+
+These are the strongest positive and negative clustering signals within each published cluster.
+
+```{r metric-extremes}
+cluster_metric_extremes |>
+  left_join(
+    cluster_centroids |>
+      distinct(opportunity_kmeans_cluster, opportunity_cluster_name),
+    by = "opportunity_kmeans_cluster"
+  ) |>
+  mutate(avg_metric_score = round(avg_metric_score, 3)) |>
+  arrange(opportunity_cluster_name, extreme_direction, desc(avg_metric_score)) |>
+  select(opportunity_cluster_name, metric_id, avg_metric_score, extreme_direction) |>
+  kable()
+```
+
+## Soft Membership Review
+
+```{r gmm-summary}
+gmm_summary |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+```{r gmm-hybrids}
+gmm_hybrids |>
+  arrange(membership_gap) |>
+  slice_head(n = 15) |>
+  mutate(across(contains("probability"), \(x) round(x, 3))) |>
+  kable()
+```
+
+## Similarity Sanity Check
+
+```{r peers}
+similarity_top10 |>
+  filter(cbsa_code %in% c(12580, 27260, 41700)) |>
+  mutate(cosine_similarity = round(cosine_similarity, 3)) |>
+  kable()
+```
+
+## Hypothesis Review
+
+### Industry Mix As A Leading Indicator
+
+```{r industry-leading-summary}
+industry_leading_indicator_summary |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+```{r industry-leading-plot, fig.height=5}
+industry_leading_indicator_scatter |>
+  ggplot(aes(
+    x = lq_professional,
+    y = income_pc_growth_5yr,
+    color = opportunity_cluster_name
+  )) +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(
+    title = "2015 industry mix has measurable signal for later income growth",
+    x = "2015 professional-services location quotient",
+    y = "2022 income per-capita growth, 5-year",
+    color = "Cluster"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+### Social Capital And Income Growth
+
+```{r social-capital-summary}
+social_capital_summary |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+```{r social-capital-plot, fig.height=5}
+social_capital_scatter |>
+  ggplot(aes(
+    x = economic_connectedness,
+    y = income_pc_growth_5yr,
+    color = opportunity_cluster_name
+  )) +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(
+    title = "Economic connectedness is not a simple positive Opportunity signal in the first pass",
+    x = "Economic connectedness",
+    y = "Income per-capita growth, 5-year",
+    color = "Cluster"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+### Short-Run Vs. Long-Run Signal Divergence
+
+```{r signal-summary}
+signal_divergence_summary |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+```{r signal-plot, fig.height=5}
+signal_divergence_scatter |>
+  ggplot(aes(
+    x = market_signal_gap,
+    y = resident_signal_gap,
+    color = opportunity_cluster_name
+  )) +
+  geom_hline(yintercept = 0, color = "#adb5bd", linewidth = 0.4) +
+  geom_vline(xintercept = 0, color = "#adb5bd", linewidth = 0.4) +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(
+    title = "Short-run and long-run Opportunity signals often diverge",
+    x = "Market short-run minus long-run signal",
+    y = "Resident short-run minus long-run signal",
+    color = "Cluster"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+## Livability / Opportunity Four Quadrants
+
+```{r quadrant-summary}
+livability_opportunity_summary |>
+  kable()
+```
+
+```{r livability-opportunity-plot, fig.height=5}
+livability_opportunity_scatter |>
+  ggplot(aes(
+    x = livability_percentile,
+    y = opportunity_percentile,
+    color = opportunity_cluster_name
+  )) +
+  geom_hline(yintercept = 50, color = "#adb5bd", linewidth = 0.4) +
+  geom_vline(xintercept = 50, color = "#adb5bd", linewidth = 0.4) +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(
+    title = "Livability and Opportunity create a balanced four-quadrant split",
+    x = "Livability percentile",
+    y = "Opportunity percentile",
+    color = "Opportunity cluster"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+## OZ Overlay Note
+
+`OZ` refers to `Opportunity Zones`, the federal tax-incentive designation for selected lower-income census tracts. The CBSA rollup is now live, so we can use both tract-share and population-share OZ exposure as contextual overlays on the Opportunity map.
+
+```{r oz-context}
+oz_high_opportunity_context |>
+  transmute(
+    cbsa_name,
+    opportunity_cluster_name,
+    opportunity_percentile = round(opportunity_percentile, 1),
+    pct_oz_tracts = scales::percent(pct_oz_tracts, accuracy = 0.1),
+    pct_population_in_oz = scales::percent(pct_population_in_oz, accuracy = 0.1),
+    oz_tract_count,
+    total_tract_count
+  ) |>
+  slice_head(n = 15) |>
+  kable()
+```
+
+## Final Read
+
+- The canonical Phase 4 build now lives in `R/run_phase4_opportunity.R`.
+- The published Opportunity typology uses the reduced clustering set and locks `k = 6`.
+- The six-cluster structure is coherent, with the added value of a distinct distressed / thin-base subtype.
+- Soft memberships and top-10 cosine peers are now available for ambiguity-sensitive review.
+- The first social-capital pass is cautionary rather than confirmatory, while the 1-year vs. 5-year divergence test looks substantively useful.
+- The Livability / Opportunity quadrant surface is now complete and ready for cross-frame follow-on work.
+- The OZ overlay is now available as metro-level context through both `pct_oz_tracts` and `pct_population_in_oz`.

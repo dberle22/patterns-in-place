@@ -1,166 +1,1086 @@
-version: 1
+version: 2
 catalog_name: intelligence_catalog
-description: Placeholder intelligence definitions seeded from the Character, Livability, and Opportunity notes. These entries are scaffolds for deeper methodology work, not finalized scoring specifications.
-scores:
-  - score_id: character_profile_archetype
-    display_name: Character Profile Archetype
-    theme: character
-    output_type: profile_label
-    description: Placeholder Character output intended to become an interpretable archetype rather than a single numeric score.
-    methodology: Placeholder hybrid clustering and rule-based labeling approach using demographic, diversity, migration, and built-form signals.
-    inputs:
-      - metric_id: median_age
-        weight: 0.10
-      - metric_id: diversity_index
-        weight: 0.20
-      - metric_id: pct_ba_plus
-        weight: 0.10
-      - metric_id: pct_same_house
-        weight: 0.15
-      - metric_id: pct_foreign_born
-        weight: 0.15
-      - metric_id: pct_struct_multifam
-        weight: 0.15
-      - metric_id: pop_weighted_density_sqmi
-        weight: 0.15
-    output_range: labeled archetype set
-    valid_geo_levels: [tract, zcta, place, cbsa]
-    status: placeholder
+description: >
+  Intelligence frame definitions for the Character, Livability, and Opportunity scoring models.
+  Each frame produces three outputs from the same standardized KPI vectors: cluster labels
+  (K-Means hard assignments), soft membership probabilities (GMM), and a composite percentile
+  score built from hierarchical weighted sub-scores. Cosine similarity on the scored vectors
+  produces frame-specific peer sets.
 
-  - score_id: livability_affordability_subscore
-    display_name: Livability Affordability Subscore
-    theme: livability
-    output_type: score
-    description: Placeholder affordability subscore based on burden, rent-to-income, vacancy, and benchmark-rent context.
-    methodology: Placeholder weighted blend to be replaced by deeper scoring and normalization analysis.
-    inputs:
-      - metric_id: pct_rent_burden_30plus
-        weight: 0.30
-      - metric_id: pct_rent_burden_50plus
-        weight: 0.15
-      - metric_id: rent_to_income
-        weight: 0.20
-      - metric_id: rent_to_rpp_income
-        weight: 0.20
-      - metric_id: vacancy_rate
-        weight: 0.10
-      - metric_id: permits_per_1000_housing_units
-        weight: 0.05
-    output_range: 0-100 placeholder
-    valid_geo_levels: [tract, zcta, place, cbsa, county, state]
-    status: placeholder
+  Architecture is locked. See INTELLIGENCE_LAYER_ROADMAP.md → "Scoring and Clustering Architecture"
+  for full methodology decisions. Status moves from "specified" → "calibrated" after each phase
+  notebook runs and the natural_k and calibration_notes fields are populated.
 
-  - score_id: livability_mobility_subscore
-    display_name: Livability Mobility Subscore
-    theme: livability
-    output_type: score
-    description: Placeholder mobility subscore based on commute mix, travel time, and vehicle access.
-    methodology: Placeholder weighted blend to be refined through deeper livability methodology work.
-    inputs:
-      - metric_id: pct_low_car_commute
-        weight: 0.30
-      - metric_id: pct_commute_transit
-        weight: 0.20
-      - metric_id: pct_commute_walk
-        weight: 0.15
-      - metric_id: pct_hh_0_vehicles
-        weight: 0.10
-      - metric_id: mean_travel_time
-        weight: -0.15
-      - metric_id: pct_commute_drive_alone
-        weight: -0.10
-    output_range: 0-100 placeholder
-    valid_geo_levels: [tract, zcta, place, cbsa, county, state]
-    status: placeholder
+  Catalog updates happen per phase — not deferred to Phase 8. Phase 8 verifies and promotes.
 
-  - score_id: livability_score
-    display_name: Livability Score
-    theme: livability
-    output_type: score
-    description: Placeholder top-level livability rollup seeded from provisional affordability and mobility subscore components.
-    methodology: Placeholder rollup pending fuller health, safety, services, and weighting analysis.
-    inputs:
-      - metric_id: pct_rent_burden_30plus
-        weight: 0.25
-      - metric_id: rent_to_rpp_income
-        weight: 0.20
-      - metric_id: pct_low_car_commute
-        weight: 0.20
-      - metric_id: mean_travel_time
-        weight: -0.15
-      - metric_id: vacancy_rate
-        weight: 0.10
-      - metric_id: pct_hh_0_vehicles
-        weight: 0.10
-    output_range: 0-100 placeholder
-    valid_geo_levels: [tract, zcta, place, cbsa, county, state]
-    status: placeholder
+architecture:
+  universe: 401 CBSAs with pop_total >= 100000
+  missing_data: median imputation per KPI; KNN considered only when missingness > 15% and non-random
+  standardization: z-score on all KPIs before clustering or scoring
+  polarity: positive = higher is better; negative = lower is better; negative KPIs sign-flipped before scoring only
+  clustering_sequence:
+    - step: hierarchical_agglomerative
+      purpose: discover natural k from dendrogram
+    - step: kmeans
+      purpose: hard cluster labels for publication
+    - step: gmm
+      purpose: soft membership probabilities; honest about hybrid metros
+  scoring_hierarchy: KPI z-score → topic mean → subject weighted mean → frame composite → percentile rank (0-100)
+  subject_weights: equal across subjects within each frame for initial model
+  topic_weights: coverage_share * reliability_factor; normalized within subject
+  reliability_factors:
+    core: 1.00
+    supplemental_baseline: 0.75
+    coverage_caution: 0.60
+  kpi_weights: equal split across selected core KPIs within topic
+  similarity: cosine distance on standardized KPI vectors
+  benchmarks: [national, census_division, cluster_peers]
+  output_format: parquet in exploration/intelligence_framework/outputs/
+  gold_promotion: Phase 8 via foundations/loaders/ R scripts
 
-  - score_id: resident_opportunity_score
-    display_name: Resident Opportunity Score
-    theme: opportunity
-    output_type: score
-    description: Placeholder resident-opportunity score focused on labor market and income trajectory.
-    methodology: Placeholder weighted blend pending deeper opportunity methodology work.
-    inputs:
-      - metric_id: income_pc_growth_5yr
-        weight: 0.25
-      - metric_id: calc_income_pc
-        weight: 0.15
-      - metric_id: lfpr
-        weight: 0.15
-      - metric_id: lfpr_growth_5yr
-        weight: 0.10
-      - metric_id: pct_unemployment_rate
-        weight: -0.20
-      - metric_id: jobs_to_pop_ratio
-        weight: 0.10
-      - metric_id: productivity_growth_5yr
-        weight: 0.05
-    output_range: 0-100 placeholder
-    valid_geo_levels: [place, cbsa, county, state]
-    status: placeholder
+frames:
 
-  - score_id: market_opportunity_score
-    display_name: Market Opportunity Score
-    theme: opportunity
-    output_type: score
-    description: Placeholder investor-market score for future FHFA, Opportunity Zone, and valuation methodology work.
-    methodology: Placeholder blend of appreciation, undervaluation, migration, and benchmarked affordability signals.
-    inputs:
-      - metric_id: pop_growth_5yr
-        weight: 0.20
-      - metric_id: irs_net_migration_rate
-        weight: 0.20
-      - metric_id: value_to_income
-        weight: -0.20
-      - metric_id: value_to_rpp_income
-        weight: -0.20
-      - metric_id: real_gdp_growth_5yr
-        weight: 0.20
-    output_range: 0-100 placeholder
-    valid_geo_levels: [zcta, place, cbsa, county, state]
-    status: placeholder
+  # ---------------------------------------------------------------------------
+  # LIVABILITY — Phase 3 (first in execution order)
+  # ---------------------------------------------------------------------------
 
-  - score_id: business_opportunity_score
-    display_name: Business Opportunity Score
-    theme: opportunity
-    output_type: score
-    description: Placeholder business-opportunity score based on labor pool depth, diversification, and output mix.
-    methodology: Placeholder weighted structure pending deeper commercial and business-location analysis.
-    inputs:
-      - metric_id: labor_force
-        weight: 0.20
-      - metric_id: pct_ba_plus
-        weight: 0.15
-      - metric_id: industry_concentration_hhi
-        weight: -0.20
-      - metric_id: acs_industry_concentration_hhi
-        weight: -0.15
-      - metric_id: pct_real_gdp_professional
-        weight: 0.15
-      - metric_id: pct_real_gdp_edu_health
-        weight: 0.15
-    output_range: 0-100 placeholder
-    valid_geo_levels: [place, cbsa, county, state]
-    status: placeholder
+  - frame_id: livability
+    display_name: Livability
+    description: Whether day-to-day living conditions — affordability, health, access, and physical environment — support quality of life for residents.
+    phase: 3
+    execution_order: 1
+    status: calibrated
+    natural_k: 6
+    calibration_notes: First calibrated notebook pass on the current 396-CBSA universe excluding Puerto Rico. Median imputation applied to 6 KPIs. A PCA and correlation audit was run for redundancy review, but the chosen published clustering pass retains all 26 KPIs. We keep k at 6 because it adds a meaningful extra split beyond k = 5 while still avoiding the over-fragmentation that begins at higher k values.
+    output_parquet: exploration/intelligence_framework/phase_3_livability_calibration/outputs/livability_scores.parquet
+    gold_table: gold.intelligence_livability
+    valid_geo_levels: [cbsa]
+
+    clustering:
+      method: hierarchical → kmeans → gmm
+      natural_k: 6
+      label_set: provisional centroid-derived labels from subject strengths and drags
+
+    scoring:
+      composite_output: livability_percentile_rank
+      smell_test: NYC / coastal metros near bottom on Affordability; Midwest interior near top
+
+    similarity:
+      method: cosine
+      output: top_10_livability_peers per CBSA
+
+    subjects:
+
+      - subject_id: affordability
+        display_name: Affordability
+        subject_weight: 0.25
+        topics:
+
+          - topic_id: price_pressure
+            display_name: Price Pressure
+            reliability: core
+            coverage: 0.959
+            kpis:
+              - metric_id: value_to_income
+                polarity: negative
+                model_role: core
+              - metric_id: rent_to_income
+                polarity: negative
+                model_role: sensitivity
+              - metric_id: rpp_real_pc_income
+                polarity: positive
+                model_role: sensitivity
+
+          - topic_id: housing_burden
+            display_name: Housing Burden
+            reliability: core
+            coverage: 0.991
+            kpis:
+              - metric_id: pct_rent_burden_30plus
+                polarity: negative
+                model_role: core
+              - metric_id: pct_cost_burdened
+                polarity: negative
+                model_role: descriptive
+              - metric_id: pct_severely_cost_burdened
+                polarity: negative
+                model_role: descriptive
+              - metric_id: pct_renter_severely_cost_burdened
+                polarity: negative
+                model_role: descriptive
+              - metric_id: pct_rent_burden_50plus
+                polarity: negative
+                model_role: dropped
+
+          - topic_id: poverty_context
+            display_name: Poverty Context
+            reliability: core
+            coverage: 1.000
+            kpis:
+              - metric_id: pov_rate
+                polarity: negative
+                model_role: core
+
+          - topic_id: housing_supply
+            display_name: Housing Supply
+            reliability: core
+            coverage: 1.000
+            kpis:
+              - metric_id: permits_per_1000_housing_units
+                polarity: positive
+                model_role: core
+              - metric_id: permits_share_units_5_plus
+                polarity: positive
+                model_role: core
+              - metric_id: permits_avg_units_per_bldg
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: permits_per_1000_population
+                polarity: positive
+                model_role: dropped
+              - metric_id: permits_share_multifam_units
+                polarity: positive
+                model_role: dropped
+
+          - topic_id: housing_structure_mix
+            display_name: Housing Structure Mix
+            reliability: core
+            coverage: 1.000
+            kpis:
+              - metric_id: pct_struct_mobile
+                polarity: negative
+                model_role: core
+              - metric_id: pct_struct_small_mf
+                polarity: positive
+                model_role: core
+              - metric_id: pct_struct_mid_mf
+                polarity: positive
+                model_role: core
+              - metric_id: pct_struct_large_mf
+                polarity: positive
+                model_role: descriptive
+              - metric_id: pct_struct_multifam
+                polarity: positive
+                model_role: descriptive
+              - metric_id: pct_struct_sf_det
+                polarity: negative
+                model_role: dropped
+
+      - subject_id: health_and_safety
+        display_name: Health And Safety
+        subject_weight: 0.25
+        topics:
+
+          - topic_id: health_outcomes
+            display_name: Health Outcomes
+            reliability: core
+            coverage: 0.976
+            kpis:
+              - metric_id: premature_death_rate
+                polarity: negative
+                model_role: core
+              - metric_id: child_mortality_rate
+                polarity: negative
+                model_role: sensitivity
+              - metric_id: life_expectancy
+                polarity: positive
+                model_role: descriptive
+              - metric_id: infant_mortality_rate
+                polarity: negative
+                model_role: dropped
+
+          - topic_id: health_behavior_and_access
+            display_name: Health Behavior And Access
+            reliability: core
+            coverage: 0.983
+            kpis:
+              - metric_id: mental_health_provider_ratio
+                polarity: negative
+                model_role: core
+              - metric_id: drug_overdose_death_rate
+                polarity: negative
+                model_role: core
+              - metric_id: pct_uninsured_adults
+                polarity: negative
+                model_role: core
+              - metric_id: preventable_hospital_stay_rate
+                polarity: negative
+                model_role: core
+              - metric_id: primary_care_ratio
+                polarity: negative
+                model_role: sensitivity
+              - metric_id: child_care_cost_burden_rate
+                polarity: negative
+                model_role: sensitivity
+              - metric_id: physical_inactivity
+                polarity: negative
+                model_role: descriptive
+              - metric_id: adult_obesity
+                polarity: negative
+                model_role: descriptive
+              - metric_id: poor_mental_health_days
+                polarity: negative
+                model_role: descriptive
+              - metric_id: food_insecurity_rate
+                polarity: negative
+                model_role: dropped
+
+          - topic_id: violence_and_injury
+            display_name: Violence And Injury
+            reliability: core
+            coverage: 0.980
+            kpis:
+              - metric_id: firearm_fatality_rate
+                polarity: negative
+                model_role: core
+              - metric_id: motor_vehicle_crash_rate
+                polarity: negative
+                model_role: core
+              - metric_id: homicide_rate
+                polarity: negative
+                model_role: sensitivity
+
+      - subject_id: access_and_infrastructure
+        display_name: Access And Infrastructure
+        subject_weight: 0.25
+        topics:
+
+          - topic_id: commute_and_mode
+            display_name: Commute And Mode Access
+            reliability: core
+            coverage: 1.000
+            kpis:
+              - metric_id: pct_commute_walk
+                polarity: positive
+                model_role: core
+              - metric_id: pct_commute_wfh
+                polarity: positive
+                model_role: core
+              - metric_id: pct_commute_transit
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: mean_travel_time
+                polarity: negative
+                model_role: descriptive
+
+          - topic_id: vehicle_access
+            display_name: Vehicle Access
+            reliability: core
+            coverage: 1.000
+            kpis:
+              - metric_id: pct_hh_0_vehicles
+                polarity: negative
+                model_role: core
+
+          - topic_id: housing_slack
+            display_name: Housing Slack
+            reliability: core
+            coverage: 1.000
+            kpis:
+              - metric_id: vacancy_rate
+                polarity: positive
+                model_role: core
+
+          - topic_id: digital_access
+            display_name: Digital Access
+            reliability: core
+            coverage: 1.000
+            kpis:
+              - metric_id: pct_no_internet_access
+                polarity: negative
+                model_role: core
+              - metric_id: pct_broadband_subscription
+                polarity: positive
+                model_role: descriptive
+
+          - topic_id: walkability_baseline
+            display_name: Walkability And Transit Baseline
+            reliability: supplemental_baseline
+            coverage: 0.985
+            kpis:
+              - metric_id: walkability_index
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: jobs_access_45min_transit
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: transit_service_density
+                polarity: positive
+                model_role: descriptive
+              - metric_id: jobs_access_45min_auto
+                polarity: positive
+                model_role: descriptive
+
+          - topic_id: food_access_baseline
+            display_name: Food Access Baseline
+            reliability: supplemental_baseline
+            coverage: 0.973
+            kpis:
+              - metric_id: pct_population_low_income_low_access_1_10
+                polarity: negative
+                model_role: sensitivity
+              - metric_id: pct_population_low_access_1_10
+                polarity: negative
+                model_role: descriptive
+
+          - topic_id: built_form_proxy
+            display_name: Built-Form Proxy
+            reliability: supplemental_baseline
+            coverage: 0.988
+            kpis:
+              - metric_id: pop_weighted_density_sqmi
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: gross_density_sqmi
+                polarity: positive
+                model_role: descriptive
+
+      - subject_id: physical_environment
+        display_name: Physical Environment
+        subject_weight: 0.25
+        topics:
+
+          - topic_id: air_pollution
+            display_name: Air Pollution
+            reliability: coverage_caution
+            coverage: 0.860
+            kpis:
+              - metric_id: aqi_unhealthy_days
+                polarity: negative
+                model_role: core
+              - metric_id: ej_diesel_pm
+                polarity: negative
+                model_role: sensitivity
+              - metric_id: air_pollution_pm25
+                polarity: negative
+                model_role: sensitivity
+              - metric_id: aqi_median
+                polarity: negative
+                model_role: descriptive
+              - metric_id: aqi_p90
+                polarity: negative
+                model_role: descriptive
+              - metric_id: ej_pm25
+                polarity: negative
+                model_role: descriptive
+              - metric_id: ej_ozone
+                polarity: negative
+                model_role: dropped
+
+          - topic_id: climate_hazard_risk
+            display_name: Climate Hazard Risk
+            reliability: coverage_caution
+            coverage: 0.880
+            kpis:
+              - metric_id: fema_risk_score
+                polarity: negative
+                model_role: core
+              - metric_id: adverse_climate_events
+                polarity: negative
+                model_role: sensitivity
+
+          - topic_id: hazard_exposure
+            display_name: Hazard Exposure
+            reliability: coverage_caution
+            coverage: 0.830
+            kpis:
+              - metric_id: ej_wastewater_discharge
+                polarity: negative
+                model_role: sensitivity
+              - metric_id: ej_superfund_proximity
+                polarity: negative
+                model_role: sensitivity
+              - metric_id: ej_drinking_water_noncompliance
+                polarity: negative
+                model_role: sensitivity
+              - metric_id: ej_traffic_proximity
+                polarity: negative
+                model_role: descriptive
+              - metric_id: ej_rmp_proximity
+                polarity: negative
+                model_role: descriptive
+
+    hypothesis_tests:
+      - id: southern_health_deficit
+        description: Do metros that score well on Affordability score poorly on Health & Safety? Article 3.
+        kpis: [value_to_income, pct_rent_burden_30plus, premature_death_rate, adult_obesity]
+      - id: environmental_risk_axis
+        description: Does fema_risk_score add non-redundant signal beyond aqi_unhealthy_days?
+        kpis: [fema_risk_score, aqi_unhealthy_days]
+
+
+  # ---------------------------------------------------------------------------
+  # OPPORTUNITY — Phase 4 (second in execution order)
+  # ---------------------------------------------------------------------------
+
+  - frame_id: opportunity
+    display_name: Opportunity
+    description: Economic prospects for residents, investors, and businesses — income trajectory, market momentum, and industry structure.
+    phase: 4
+    execution_order: 2
+    status: calibrated
+    natural_k: 6
+    calibration_notes:
+      - published Opportunity clustering uses a reduced 20-KPI clustering set, holding out pct_real_gdp_information and permits_per_1000_housing_units due to overlap with stronger retained signals
+      - k = 6 is the published hard-cluster count; it slightly trails k = 5 on kmeans silhouette but better preserves a narratively useful subtype split and stronger hierarchical structure
+      - economic_connectedness remains a hypothesis and audit proxy, not a default clustering input
+      - zori_annual_avg_yoy_pct remains in the model with coverage caution and median imputation
+    output_parquet: exploration/intelligence_framework/phase_4_opportunity_calibration/outputs/opportunity_scores.parquet
+    gold_table: gold.intelligence_opportunity
+    valid_geo_levels: [cbsa]
+
+    clustering:
+      method: hierarchical → kmeans → gmm
+      natural_k: 6
+      label_set:
+        - Superstar Knowledge Capitals
+        - Broad-Based Opportunity Hubs
+        - Emerging Momentum Markets
+        - Industrial Rebound Markets
+        - Uneven Transition Markets
+        - Thin-Base Distressed Markets
+
+    scoring:
+      composite_output: opportunity_percentile_rank
+
+    similarity:
+      method: cosine
+      output: top_10_opportunity_peers per CBSA
+
+    cross_frame_notes:
+      - permits_per_1000_housing_units appears in Livability (supply) and Opportunity (market activity) — intentional cross-frame overlap
+      - irs_net_migration_rate appears in Character (residential stability) and Opportunity (market momentum) — intentional
+      - pov_rate appears in Livability (burden) and Opportunity (trajectory context via pov_rate_change_5yr) — intentional
+
+    subjects:
+
+      - subject_id: resident_opportunity
+        display_name: Resident Opportunity
+        subject_weight: 0.33
+        topics:
+
+          - topic_id: income_growth
+            display_name: Income Growth
+            reliability: core
+            coverage: 0.963
+            kpis:
+              - metric_id: income_pc_growth_5yr
+                polarity: positive
+                model_role: core
+              - metric_id: income_pc_growth_1yr
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: income_pc_cagr_5yr
+                polarity: positive
+                model_role: dropped
+
+          - topic_id: wage_levels
+            display_name: Wage Levels
+            reliability: core
+            coverage: 1.000
+            kpis:
+              - metric_id: qcew_private_avg_wkly_wage
+                polarity: positive
+                model_role: core
+              - metric_id: qcew_total_covered_avg_wkly_wage
+                polarity: positive
+                model_role: dropped
+
+          - topic_id: labor_market_tightness
+            display_name: Labor Market Tightness
+            reliability: core
+            coverage: 0.996
+            kpis:
+              - metric_id: pct_unemployment_rate
+                polarity: negative
+                model_role: core
+              - metric_id: lfpr
+                polarity: positive
+                model_role: core
+              - metric_id: unemployment_rate_change_1yr
+                polarity: negative
+                model_role: sensitivity
+              - metric_id: lfpr_growth_5yr
+                polarity: positive
+                model_role: sensitivity
+
+          - topic_id: poverty_and_inclusion
+            display_name: Poverty And Inclusion
+            reliability: core
+            coverage: 0.996
+            kpis:
+              - metric_id: pov_rate_change_5yr
+                polarity: negative
+                model_role: core
+              - metric_id: pov_rate_change_1yr
+                polarity: negative
+                model_role: sensitivity
+              - metric_id: gini_index
+                polarity: negative
+                model_role: sensitivity
+              - metric_id: pov_rate
+                polarity: negative
+                model_role: descriptive
+
+          - topic_id: intergenerational_mobility_proxy
+            display_name: Intergenerational Mobility Proxy
+            reliability: supplemental_baseline
+            coverage: 0.973
+            kpis:
+              - metric_id: economic_connectedness
+                polarity: positive
+                model_role: sensitivity
+                calibration_note: retained in Opportunity hypothesis testing but excluded from the default clustering set pending direct mobility data expansion
+
+      - subject_id: market_opportunity
+        display_name: Market And Investor Opportunity
+        subject_weight: 0.33
+        topics:
+
+          - topic_id: home_price_appreciation
+            display_name: Home Price Appreciation
+            reliability: core
+            coverage: 0.973
+            kpis:
+              - metric_id: hpi_5yr_pct
+                polarity: positive
+                model_role: core
+              - metric_id: hpi_yoy_pct
+                polarity: positive
+                model_role: core
+              - metric_id: hpi_10yr_pct
+                polarity: positive
+                model_role: sensitivity
+
+          - topic_id: rent_growth
+            display_name: Rent Growth
+            reliability: coverage_caution
+            coverage: 0.481
+            kpis:
+              - metric_id: zori_annual_avg_yoy_pct
+                polarity: positive
+                model_role: core
+              - metric_id: zori_december_yoy_pct
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: zori_annual_avg
+                polarity: positive
+                model_role: descriptive
+              - metric_id: zori_december
+                polarity: positive
+                model_role: dropped
+
+          - topic_id: population_growth
+            display_name: Population Growth
+            reliability: core
+            coverage: 0.990
+            kpis:
+              - metric_id: pop_growth_5yr
+                polarity: positive
+                model_role: core
+              - metric_id: pop_growth_1yr
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: pop_cagr_5yr
+                polarity: positive
+                model_role: dropped
+
+          - topic_id: migration_and_wealth_flows
+            display_name: Migration And Wealth Flows
+            reliability: core
+            coverage: 0.988
+            kpis:
+              - metric_id: irs_net_migration_rate
+                polarity: positive
+                model_role: core
+              - metric_id: irs_net_agi
+                polarity: positive
+                model_role: core
+              - metric_id: irs_inflow_agi
+                polarity: positive
+                model_role: dropped
+              - metric_id: irs_outflow_agi
+                polarity: negative
+                model_role: dropped
+
+          - topic_id: permit_activity
+            display_name: Permit Activity
+            reliability: core
+            coverage: 1.000
+            kpis:
+              - metric_id: permits_per_1000_housing_units
+                polarity: positive
+                model_role: descriptive
+                calibration_note: retained for scoring and descriptive context but excluded from the published clustering set because it overlapped with pop_growth_5yr in the Phase 4 redundancy audit
+              - metric_id: permits_share_units_5_plus
+                polarity: positive
+                model_role: core
+              - metric_id: permits_share_multifam_units
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: permits_avg_units_per_bldg
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: permits_per_1000_population
+                polarity: positive
+                model_role: dropped
+
+      - subject_id: business_and_industry_opportunity
+        display_name: Business And Industry Opportunity
+        subject_weight: 0.33
+        topics:
+
+          - topic_id: gdp_growth
+            display_name: GDP Growth
+            reliability: core
+            coverage: 0.963
+            kpis:
+              - metric_id: productivity_growth_5yr
+                polarity: positive
+                model_role: core
+              - metric_id: real_gdp_growth_5yr
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: real_gdp_pc_growth_5yr
+                polarity: positive
+                model_role: dropped
+              - metric_id: real_gdp_cagr_5yr
+                polarity: positive
+                model_role: dropped
+
+          - topic_id: industry_concentration
+            display_name: Industry Concentration
+            reliability: core
+            coverage: 0.963
+            kpis:
+              - metric_id: industry_concentration_hhi
+                polarity: negative
+                model_role: core
+
+          - topic_id: human_capital_momentum
+            display_name: Human Capital Momentum
+            reliability: core
+            coverage: 0.993
+            kpis:
+              - metric_id: pct_ba_plus_change_5yr
+                polarity: positive
+                model_role: core
+              - metric_id: pct_ba_plus
+                polarity: positive
+                model_role: descriptive
+
+          - topic_id: business_formation
+            display_name: Business Formation
+            reliability: core
+            coverage: 0.988
+            kpis:
+              - metric_id: bfs_business_application_rate_per_1000_establishments
+                polarity: positive
+                model_role: core
+              - metric_id: bfs_business_applications_yoy_pct
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: bfs_business_applications_per_1000_residents
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: bfs_business_applications
+                polarity: positive
+                model_role: descriptive
+
+          - topic_id: establishment_density
+            display_name: Establishment Density
+            reliability: core
+            coverage: 0.988
+            kpis:
+              - metric_id: cbp_estabs_per_1000_residents
+                polarity: positive
+                model_role: core
+              - metric_id: cbp_total_estabs
+                polarity: positive
+                model_role: descriptive
+
+          - topic_id: lq_specialization
+            display_name: Location Quotient Specialization
+            reliability: core
+            coverage: 1.000
+            kpis:
+              - metric_id: lq_professional
+                polarity: positive
+                model_role: core
+              - metric_id: lq_information
+                polarity: positive
+                model_role: core
+              - metric_id: lq_manufacturing
+                polarity: positive
+                model_role: core
+              - metric_id: lq_educ_health
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: lq_finance_real
+                polarity: positive
+                model_role: descriptive
+              - metric_id: lq_construction
+                polarity: positive
+                model_role: descriptive
+              - metric_id: lq_retail
+                polarity: positive
+                model_role: descriptive
+              - metric_id: lq_transport_util
+                polarity: positive
+                model_role: descriptive
+              - metric_id: lq_arts_accomm_food
+                polarity: positive
+                model_role: descriptive
+              - metric_id: lq_wholesale
+                polarity: positive
+                model_role: descriptive
+              - metric_id: lq_other_services
+                polarity: positive
+                model_role: descriptive
+              - metric_id: lq_ag_mining
+                polarity: positive
+                model_role: descriptive
+
+          - topic_id: sector_gdp_mix
+            display_name: Sector GDP Mix
+            reliability: core
+            coverage: 0.963
+            kpis:
+              - metric_id: pct_real_gdp_information
+                polarity: positive
+                model_role: descriptive
+                calibration_note: retained for scoring and descriptive context but excluded from the published clustering set because it overlapped strongly with lq_information in the Phase 4 redundancy audit
+              - metric_id: pct_real_gdp_professional
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: pct_real_gdp_manufacturing
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: pct_real_gdp_edu_health
+                polarity: positive
+                model_role: sensitivity
+
+          - topic_id: sector_employment_mix
+            display_name: Sector Employment Mix
+            reliability: core
+            coverage: 1.000
+            kpis:
+              - metric_id: pct_acs_ind_professional
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: pct_acs_ind_manufacturing
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: pct_acs_ind_educ_health
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: pct_acs_ind_arts_accomm_food
+                polarity: positive
+                model_role: descriptive
+
+    hypothesis_tests:
+      - id: industry_leading_indicator
+        description: Does industry mix in 2015 predict income growth by 2022? Longitudinal test using QCEW 2010-2024. Article 4.
+        kpis: [lq_professional, lq_information, lq_manufacturing, income_pc_growth_5yr]
+      - id: social_capital_income_growth
+        description: Does economic_connectedness predict income_pc_growth_5yr beyond industry mix? Article 5.
+        kpis: [economic_connectedness, income_pc_growth_5yr, lq_professional]
+      - id: short_vs_long_run_divergence
+        description: Do 1yr signals tell a different story from 5yr signals for the same metros?
+        kpis: [income_pc_growth_1yr, income_pc_growth_5yr, pop_growth_1yr, pop_growth_5yr]
+      - id: oz_exposure
+        description: Flag pct_oz_tracts from gold.dim_policy_designations as contextual overlay on high-momentum metros.
+        kpis: []
+
+
+  # ---------------------------------------------------------------------------
+  # CHARACTER — Phase 2 (third in execution order)
+  # ---------------------------------------------------------------------------
+
+  - frame_id: character
+    display_name: Character
+    description: Who lives in a place — demographic composition, social fabric, civic identity, and built form — and what makes it structurally distinct from other metros.
+    phase: 2
+    execution_order: 3
+    status: calibrated
+    natural_k: 7
+    calibration_notes: Full 17-KPI Character set retained after redundancy audit; no pair crossed the |r| >= 0.75 reduction threshold. Waterbury-Shelton, CT required median imputation for four social_fabric_wide KPIs due to a missing source row. Published clustering currently uses k = 7, and the GMM step was regularized with smoothed mixture weights and variance shrinkage to keep soft memberships aligned with the hard cluster structure.
+    output_parquet: exploration/intelligence_framework/phase_2_character_calibration/outputs/character_scores.parquet
+    gold_table: gold.intelligence_character
+    valid_geo_levels: [cbsa]
+
+    clustering:
+      method: hierarchical → kmeans → gmm
+      natural_k: 7
+      label_set:
+        - Global Knowledge Capitals
+        - Retirement And Lifestyle Havens
+        - College And Civic Anchors
+        - Established Community Anchors
+        - Immigrant Growth Corridors
+        - Rooted Heartland Centers
+        - Interior Family Opportunity Hubs
+      literature_anchor_required: true
+      literature_anchor_sources:
+        - Brookings metro typologies
+        - Pew Research metro typologies
+        - Moretti Great Divergence framework
+
+    scoring:
+      composite_output: character_percentile_rank
+
+    similarity:
+      method: cosine
+      output: top_10_character_peers per CBSA
+
+    hypothesis_tests:
+      - id: economic_connectedness_cluster_shift
+        description: Does adding economic_connectedness materially change the Character cluster map relative to the default 17-KPI build?
+        kpis: [economic_connectedness, diversity_index, pct_ba_plus, friending_bias]
+      - id: size_dominance_check
+        description: Do Character clusters reflect structural differences or mostly metro size and density?
+        kpis: [pop_total, pop_weighted_density_sqmi, diversity_index]
+
+    subjects:
+
+      - subject_id: demographics
+        display_name: Demographics
+        subject_weight: 0.50
+        topics:
+
+          - topic_id: race_and_ethnicity
+            display_name: Race And Ethnicity
+            reliability: core
+            coverage: 0.998
+            kpis:
+              - metric_id: diversity_index
+                polarity: positive
+                model_role: core
+              - metric_id: pct_black_nh
+                polarity: positive
+                model_role: core
+              - metric_id: pct_asian_nh
+                polarity: positive
+                model_role: core
+              - metric_id: pct_hispanic
+                polarity: positive
+                model_role: core
+              - metric_id: pct_aian_nh
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: pct_nhpi_nh
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: pct_white_nh
+                polarity: positive
+                model_role: dropped
+
+          - topic_id: age_structure
+            display_name: Age Structure
+            reliability: core
+            coverage: 0.998
+            kpis:
+              - metric_id: pct_age_over_64
+                polarity: positive
+                model_role: core
+              - metric_id: median_age
+                polarity: positive
+                model_role: dropped
+              - metric_id: pct_age_under_18
+                polarity: positive
+                model_role: dropped
+              - metric_id: pct_age_18_64
+                polarity: positive
+                model_role: dropped
+
+          - topic_id: educational_attainment
+            display_name: Educational Attainment
+            reliability: core
+            coverage: 0.998
+            kpis:
+              - metric_id: pct_ba_plus
+                polarity: positive
+                model_role: core
+              - metric_id: pct_grad_plus
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: pct_ba
+                polarity: positive
+                model_role: dropped
+              - metric_id: pct_hs_or_less
+                polarity: negative
+                model_role: dropped
+
+          - topic_id: nativity_and_citizenship
+            display_name: Nativity And Citizenship
+            reliability: core
+            coverage: 0.998
+            kpis:
+              - metric_id: pct_foreign_born
+                polarity: positive
+                model_role: core
+              - metric_id: pct_non_citizen
+                polarity: positive
+                model_role: sensitivity
+
+          - topic_id: population_density
+            display_name: Population Density
+            reliability: core
+            coverage: 0.998
+            kpis:
+              - metric_id: pop_weighted_density_sqmi
+                polarity: positive
+                model_role: core
+              - metric_id: gross_density_sqmi
+                polarity: positive
+                model_role: sensitivity
+
+      - subject_id: social_fabric
+        display_name: Social Fabric
+        subject_weight: 0.50
+        topics:
+
+          - topic_id: social_capital
+            display_name: Social Capital
+            reliability: core
+            coverage: 0.973
+            kpis:
+              - metric_id: friending_bias
+                polarity: negative
+                model_role: core
+              - metric_id: civic_engagement_volunteering_rate
+                polarity: positive
+                model_role: core
+              - metric_id: civic_organizations_per_1000
+                polarity: positive
+                model_role: core
+              - metric_id: childhood_friending_bias
+                polarity: negative
+                model_role: sensitivity
+              - metric_id: economic_connectedness
+                polarity: positive
+                model_role: dropped
+              - metric_id: childhood_economic_connectedness
+                polarity: positive
+                model_role: dropped
+              - metric_id: cohesion_clustering
+                polarity: positive
+                model_role: dropped
+              - metric_id: cohesion_support_ratio
+                polarity: positive
+                model_role: dropped
+
+          - topic_id: nonprofits_and_civic_orgs
+            display_name: Nonprofits And Civic Organizations
+            reliability: core
+            coverage: 0.998
+            kpis:
+              - metric_id: nonprofits_per_100k
+                polarity: positive
+                model_role: core
+              - metric_id: nonprofits_total_per_100k
+                polarity: positive
+                model_role: sensitivity
+
+          - topic_id: residential_stability
+            display_name: Residential Stability
+            reliability: core
+            coverage: 0.988
+            kpis:
+              - metric_id: irs_net_migration_rate
+                polarity: positive
+                model_role: core
+              - metric_id: pct_moved_diff_st
+                polarity: positive
+                model_role: core
+              - metric_id: pct_moved_abroad
+                polarity: positive
+                model_role: core
+              - metric_id: pct_moved_same_cnty
+                polarity: negative
+                model_role: sensitivity
+              - metric_id: mobility_rate
+                polarity: positive
+                model_role: sensitivity
+              - metric_id: irs_net_migration
+                polarity: positive
+                model_role: descriptive
+              - metric_id: pct_moved_same_st
+                polarity: positive
+                model_role: descriptive
+              - metric_id: irs_inflow_agi
+                polarity: positive
+                model_role: dropped
+              - metric_id: irs_outflow_agi
+                polarity: negative
+                model_role: dropped
+              - metric_id: irs_net_agi
+                polarity: positive
+                model_role: dropped
+
+          - topic_id: social_associations
+            display_name: Social Associations
+            reliability: core
+            coverage: 0.988
+            kpis:
+              - metric_id: social_associations_per_10k
+                polarity: positive
+                model_role: core
+
+          - topic_id: built_form
+            display_name: Built Form
+            reliability: core
+            coverage: 1.000
+            kpis:
+              - metric_id: pct_struct_multifam
+                polarity: positive
+                model_role: core
+              - metric_id: owner_occ_rate
+                polarity: positive
+                model_role: dropped
+
+          - topic_id: household_structure
+            display_name: Household Structure
+            reliability: core
+            coverage: 1.000
+            kpis:
+              - metric_id: pct_hh_single_person
+                polarity: positive
+                model_role: dropped
+              - metric_id: pct_family_single_parent
+                polarity: positive
+                model_role: dropped
+
+  # ---------------------------------------------------------------------------
+  # CROSS-FRAME — Phase 5
+  # ---------------------------------------------------------------------------
+
+  - frame_id: cross_frame
+    display_name: Cross-Frame Combined Model
+    description: Combined clustering and similarity model built from the concatenated KPI vectors of all three frames. Answers which metros are alike overall and which are diverging across frames.
+    phase: 5
+    execution_order: 4
+    status: not_started
+    natural_k: TBD
+    calibration_notes: null
+    output_parquet: exploration/intelligence_framework/outputs/cross_frame_scores.parquet
+    gold_table: gold.intelligence_cross_frame
+    valid_geo_levels: [cbsa]
+
+    depends_on: [livability, opportunity, character]
+
+    clustering:
+      method: hierarchical → kmeans → gmm
+      input: concatenated standardized KPI vectors from all three frames
+      natural_k: TBD
+      label_set: TBD
+
+    similarity:
+      method: cosine
+      input: concatenated standardized KPI vectors from all three frames
+      output: top_10_overall_peers per CBSA
+
+    overlap_check:
+      description: Compare frame-specific cluster assignments to identify metros diverging across frames
+      output: cross_frame_divergence_flag per CBSA
+      use: primary Deep Dive candidate feed; highest-priority candidates are metros that diverge meaningfully across frames

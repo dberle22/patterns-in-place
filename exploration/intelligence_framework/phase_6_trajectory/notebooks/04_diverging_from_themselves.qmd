@@ -1,0 +1,105 @@
+---
+title: "Phase 6 - Diverging From Themselves"
+subtitle: "Cross-frame trajectory disagreement with Phase 5 overlap context"
+date: today
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 2
+    code-fold: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
+options(
+  dplyr.summarise.inform = FALSE,
+  knitr.kable.NA = ""
+)
+
+library(here)
+library(dplyr)
+library(readr)
+library(arrow)
+library(ggplot2)
+library(knitr)
+
+output_dir <- here("exploration/intelligence_framework/phase_6_trajectory", "outputs")
+
+trajectory_scores <- read_parquet(file.path(output_dir, "trajectory_scores.parquet")) |> as_tibble()
+candidate_list <- read_csv(file.path(output_dir, "phase6_candidate_list.csv"), show_col_types = FALSE)
+
+diverging <- trajectory_scores |>
+  filter(is_diverging_from_themselves) |>
+  arrange(desc(trajectory_disagreement_sd), candidate_rank, cbsa_name)
+```
+
+## Why This Pattern Matters
+
+This is the most direct Phase 6 continuation of the Phase 5 overlap logic.
+
+The current default requires:
+
+- at least one improving frame
+- at least one declining frame
+- trajectory disagreement in the top national decile
+
+## Matched Metros
+
+```{r}
+diverging |>
+  select(
+    cbsa_name,
+    census_division,
+    character_direction,
+    livability_direction,
+    opportunity_direction,
+    trajectory_disagreement_sd,
+    phase5_overlap_rank,
+    candidate_rank
+  ) |>
+  slice_head(n = 30) |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+## Phase 5 Enrichment
+
+```{r}
+candidate_list |>
+  filter(is_diverging_from_themselves) |>
+  count(overlap_profile, half_alignment, sort = TRUE) |>
+  kable()
+```
+
+## Trajectory Conflict Surface
+
+```{r fig.height=5}
+ggplot(
+  trajectory_scores,
+  aes(
+    x = character_trajectory_score,
+    y = opportunity_trajectory_score,
+    color = is_diverging_from_themselves
+  )
+) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(
+    title = "Character versus Opportunity trajectory disagreement",
+    x = "Character trajectory score",
+    y = "Opportunity trajectory score",
+    color = "Diverging"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+## Review Lens
+
+Look for:
+
+- whether the high-disagreement metros read like true multi-story markets
+- whether Phase 5 overlap rank is reinforcing the right edge cases rather than simply boosting already famous metros
+- whether Livability disagreement, rather than Character/Opportunity, is actually where the richest stories sit

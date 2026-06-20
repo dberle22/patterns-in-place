@@ -1,0 +1,273 @@
+---
+title: "Phase 2 - Character Frame Review"
+subtitle: "Review notebook for the modular Phase 2 Character build"
+date: today
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 2
+    code-fold: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE
+)
+
+options(
+  dplyr.summarise.inform = FALSE,
+  knitr.kable.NA = ""
+)
+
+library(here)
+library(dplyr)
+library(readr)
+library(arrow)
+library(ggplot2)
+library(scales)
+library(knitr)
+
+output_dir <- here("exploration/intelligence_framework/phase_2_character_calibration", "outputs")
+
+cluster_calibration <- readr::read_csv(file.path(output_dir, "character_phase2_cluster_count_calibration.csv"), show_col_types = FALSE)
+cluster_sizes <- readr::read_csv(file.path(output_dir, "character_phase2_cluster_count_sizes.csv"), show_col_types = FALSE)
+cluster_centroids <- readr::read_csv(file.path(output_dir, "character_phase2_cluster_centroids.csv"), show_col_types = FALSE)
+cluster_representatives <- readr::read_csv(file.path(output_dir, "character_phase2_cluster_representatives.csv"), show_col_types = FALSE)
+cluster_kpi_averages <- readr::read_csv(file.path(output_dir, "character_phase2_cluster_kpi_averages.csv"), show_col_types = FALSE)
+cluster_metric_extremes <- readr::read_csv(file.path(output_dir, "character_phase2_cluster_metric_extremes.csv"), show_col_types = FALSE)
+gmm_summary <- readr::read_csv(file.path(output_dir, "character_phase2_gmm_summary.csv"), show_col_types = FALSE)
+gmm_hybrids <- readr::read_csv(file.path(output_dir, "character_phase2_gmm_hybrids.csv"), show_col_types = FALSE)
+similarity_top10 <- readr::read_csv(file.path(output_dir, "character_phase2_similarity_top10.csv"), show_col_types = FALSE)
+size_dominance_summary <- readr::read_csv(file.path(output_dir, "character_phase2_size_dominance_summary.csv"), show_col_types = FALSE)
+size_dominance_scatter <- readr::read_csv(file.path(output_dir, "character_phase2_size_dominance_scatter.csv"), show_col_types = FALSE)
+connectedness_shift_summary <- readr::read_csv(file.path(output_dir, "character_phase2_connectedness_cluster_shift_summary.csv"), show_col_types = FALSE)
+connectedness_shift_outliers <- readr::read_csv(file.path(output_dir, "character_phase2_connectedness_cluster_shift_outliers.csv"), show_col_types = FALSE)
+character_scores <- arrow::read_parquet(file.path(output_dir, "character_scores.parquet"))
+
+selected_k <- 7
+selected_cluster_sizes <- cluster_sizes |>
+  filter(method == "kmeans", k == selected_k) |>
+  arrange(cluster)
+
+model_summary <- tibble::tibble(
+  modeling_universe = nrow(character_scores),
+  selected_k = selected_k,
+  kmeans_silhouette_at_k7 = cluster_calibration |>
+    filter(k == selected_k) |>
+    pull(kmeans_avg_silhouette),
+  size_correlation = size_dominance_summary$raw_correlation_log_pop,
+  density_correlation = size_dominance_summary$raw_correlation_density,
+  connectedness_shift_share = connectedness_shift_summary$share_changed
+)
+```
+
+## Purpose
+
+This notebook is the review layer for Phase 2, not the build pipeline.
+
+The canonical build now lives in:
+
+- `R/run_phase2_character.R`
+- `R/phase2_*.R`
+
+This notebook reads the saved artifacts in `outputs/` so we can:
+
+- review the chosen `k = 7` Character calibration
+- inspect the published cluster structure and provisional names
+- sanity-check soft membership and peer outputs
+- review the Character-specific hypothesis tests
+- identify any final naming or interpretation adjustments before broader promotion
+
+## Model Snapshot
+
+```{r model-summary}
+model_summary |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+## Cluster Count Calibration
+
+```{r cluster-calibration-plot, fig.height=4.5}
+cluster_calibration |>
+  ggplot(aes(x = k, y = kmeans_avg_silhouette)) +
+  geom_line(color = "#355070", linewidth = 0.8) +
+  geom_point(aes(color = k == selected_k), size = 2.8) +
+  scale_color_manual(values = c("FALSE" = "#6c757d", "TRUE" = "#d62828"), guide = "none") +
+  scale_x_continuous(breaks = cluster_calibration$k) +
+  labs(
+    title = "Character cluster-count calibration",
+    x = "Cluster count (k)",
+    y = "Average silhouette"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+```{r cluster-calibration-table}
+cluster_calibration |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+## Published Cluster Sizes
+
+```{r selected-cluster-sizes}
+selected_cluster_sizes |>
+  rename(character_kmeans_cluster = cluster, metros_in_cluster = cluster_size) |>
+  left_join(
+    cluster_centroids |>
+      distinct(character_kmeans_cluster, character_cluster_name),
+    by = "character_kmeans_cluster"
+  ) |>
+  select(character_kmeans_cluster, character_cluster_name, metros_in_cluster) |>
+  kable()
+```
+
+## Published Cluster Profiles
+
+```{r centroids}
+cluster_centroids |>
+  transmute(
+    character_cluster_name,
+    metros_in_cluster,
+    character_score = round(character_score, 3),
+    character_percentile = round(character_percentile, 1),
+    demographics_score = round(subject_score_demographics, 3),
+    social_fabric_score = round(subject_score_social_fabric, 3)
+  ) |>
+  kable()
+```
+
+```{r representatives}
+cluster_representatives |>
+  group_by(character_cluster_name) |>
+  slice_head(n = 6) |>
+  ungroup() |>
+  mutate(
+    distance_to_center = round(distance_to_center, 2),
+    character_percentile = round(character_percentile, 1)
+  ) |>
+  select(character_cluster_name, cbsa_name, distance_to_center, character_percentile) |>
+  kable()
+```
+
+## Cluster KPI Table
+
+This is the raw side-by-side view of the average KPI profile for each published cluster.
+
+```{r cluster-kpi-table}
+cluster_kpi_averages |>
+  transmute(
+    character_cluster_name,
+    metros,
+    diversity_index = round(imputed_diversity_index, 3),
+    pct_black_nh = round(imputed_pct_black_nh, 3),
+    pct_asian_nh = round(imputed_pct_asian_nh, 3),
+    pct_hispanic = round(imputed_pct_hispanic, 3),
+    pct_age_over_64 = round(imputed_pct_age_over_64, 3),
+    pct_ba_plus = round(imputed_pct_ba_plus, 3),
+    pct_foreign_born = round(imputed_pct_foreign_born, 3),
+    pop_weighted_density_sqmi = round(imputed_pop_weighted_density_sqmi, 0),
+    friending_bias = round(imputed_friending_bias, 3),
+    civic_engagement_volunteering_rate = round(imputed_civic_engagement_volunteering_rate, 3),
+    civic_organizations_per_1000 = round(imputed_civic_organizations_per_1000, 3),
+    nonprofits_per_100k = round(imputed_nonprofits_per_100k, 1),
+    irs_net_migration_rate = round(imputed_irs_net_migration_rate, 4),
+    pct_moved_diff_st = round(imputed_pct_moved_diff_st, 3),
+    pct_moved_abroad = round(imputed_pct_moved_abroad, 3),
+    social_associations_per_10k = round(imputed_social_associations_per_10k, 2),
+    pct_struct_multifam = round(imputed_pct_struct_multifam, 3)
+  ) |>
+  kable()
+```
+
+## Metric Signatures
+
+```{r metric-extremes}
+cluster_metric_extremes |>
+  left_join(
+    cluster_centroids |>
+      distinct(character_kmeans_cluster, character_cluster_name),
+    by = "character_kmeans_cluster"
+  ) |>
+  mutate(avg_metric_score = round(avg_metric_score, 3)) |>
+  arrange(character_cluster_name, extreme_direction, desc(avg_metric_score)) |>
+  select(character_cluster_name, metric_id, avg_metric_score, extreme_direction) |>
+  kable()
+```
+
+## Soft Membership Review
+
+```{r gmm-summary}
+gmm_summary |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+```{r gmm-hybrids}
+gmm_hybrids |>
+  arrange(membership_gap) |>
+  slice_head(n = 20) |>
+  mutate(across(contains("probability"), \(x) round(x, 3))) |>
+  kable()
+```
+
+## Similarity Sanity Check
+
+```{r peers}
+similarity_top10 |>
+  filter(cbsa_code %in% c(16980, 19660, 31540)) |>
+  mutate(cosine_similarity = round(cosine_similarity, 3)) |>
+  kable()
+```
+
+## Hypothesis Review
+
+### Size Dominance Check
+
+```{r size-dominance-summary}
+size_dominance_summary |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+```{r size-dominance-plot, fig.height=5}
+size_dominance_scatter |>
+  ggplot(aes(
+    x = log_pop_total,
+    y = character_score,
+    color = character_cluster_name
+  )) +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(
+    title = "Character score is related to scale, but not dominated by raw metro size",
+    x = "Log population",
+    y = "Character frame score",
+    color = "Cluster"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+### Connectedness Cluster Shift Check
+
+```{r connectedness-summary}
+connectedness_shift_summary |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+```{r connectedness-outliers}
+connectedness_shift_outliers |>
+  mutate(changed_under_connectedness = if_else(changed_under_connectedness, "yes", "no")) |>
+  kable()
+```
+
+## Final Read
+
+- The canonical Phase 2 build now lives in `R/run_phase2_character.R`.
+- The published Character clustering set keeps all `17` approved KPIs.
+- The current working Character typology uses `k = 7`.
+- The regularized GMM fit now produces usable soft-membership review outputs.
+- The main remaining judgment call is interpretive: whether any of the provisional cluster names or writeups should be tuned before broader promotion.
