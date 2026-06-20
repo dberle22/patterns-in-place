@@ -733,53 +733,113 @@ exploration/intelligence_framework/phase_6_trajectory/
 
 ## Phase 7 — Zone Methodology Definition
 
-**Status:** Not started
-**Depends on:** Phases 3–5 frame definitions (needs frame cluster labels and scored KPI vectors)
-**Goal:** Define the tract-level clustering approach that produces the Zone Analysis section of every Metro Deep Dive. Test it against Jacksonville and Richmond VA in parallel.
+**Status:** Not started  
+**Depends on:** Phases 3–5 complete (uses CBSA-level cluster labels as context); Phase 6 complete (candidate market list)  
+**Detailed plan:** `exploration/intelligence_framework/phase_7_zone_methodology/PHASE7_PLAN.md`  
+**Methodology reference:** `exploration/intelligence_framework/docs/zone_methodology_notes.md`
 
-**Clustering architecture:**
-Three cluster models, built and compared:
-1. **Character zones** — demographic archetype at tract level (who lives here)
-2. **Opportunity zones** — economic momentum at tract level (what's happening here)
-3. **Cross-theme zones** — the primary map shown in the Deep Dive report; blends all three frames
+**Goal:** Build the sub-metro zone classification system that produces the Zone Analysis section of every Metro Deep Dive. Two outputs from a single tract-level model: (1) nationally consistent zone type labels for every tract in the 396-CBSA universe, and (2) per-market corridor detection for Deep Dive markets using DBSCAN.
 
-**Input candidates (tract level):**
-- Character: race/ethnicity shares, `median_age`, `pct_foreign_born`, `pct_ba_plus`, `pct_same_house`, `pop_weighted_density_sqmi`
-- Livability: `pct_rent_burden_30plus`, `rent_to_income`, `value_to_income`, housing vintage; `aqi_median` + `fema_risk_score` where available at tract
-- Opportunity: `income_pc_growth_5yr`, home price appreciation (`hpi_5yr_pct`), `pct_unemployment_rate`, permit density; `is_opportunity_zone` flag from `gold.dim_policy_designations`
+---
 
-**Methodology options to evaluate:**
-- K-means on standardized tract metrics (simple, interpretable — start here)
-- Hierarchical clustering (better for natural group count discovery)
-- Latent class analysis (probabilistic, handles mixed types — evaluate if k-means feels fuzzy)
+### Two-stage architecture
 
-**Target zone label set (6–8 types, evaluate against what data produces):**
-- Core Hub — dense, diverse, high-activity urban core
-- Established Residential — stable, owner-occupied, slow-changing
-- Transitional / Emerging — demographic shift, rising prices, mixed signals
-- Affordable Fringe — lower cost, lower income, accessible to workforce
-- Knowledge / Creative Corridor — high education, professional, younger population
-- Growth Periphery — fast-growing suburban, new construction, family-oriented
-- Distressed — declining population, high poverty, disinvestment signals
+**Stage 1 — National zone type model (hierarchical → k-means → GMM, same pipeline as Phases 2–5)**
+- One combined KPI vector per tract across three themes: Character / Livability / Opportunity
+- Produces a nationally consistent `zone_type` label and GMM soft memberships per tract
+- Expected k = 7–10 zone types (higher than CBSA models; within-metro heterogeneity is real)
+- Three benchmark levels per tract: national percentile, CBSA percentile, zone-type-peer percentile
 
-**National vs. per-market decision:** Build the national model first. Per-market calibration can follow if the national model produces incoherent results for a specific market. National consistency is the stronger long-term product.
+**Stage 2 — Per-market corridor detection (DBSCAN, hybrid distance)**
+- Runs within each Deep Dive CBSA after Stage 1 labels are assigned
+- Hybrid distance: `α × feature_distance + (1−α) × spatial_distance` where α = 0.70 (feature-primary, spatially bounded)
+- Groups adjacent or near-adjacent same-type tracts into named corridors
+- Corridor naming: `{county_name}_{zone_type}_{rank}` (rank by corridor size)
+- Noise tracts (no coherent corridor) retain zone type but get no corridor assignment
+- DBSCAN chosen because: k is not pre-specified, noise points are valid, non-contiguous corridors are acceptable
 
-**Two-market stress test:** Run the same methodology against Jacksonville and Richmond VA simultaneously. If the zone labels feel coherent in both markets, the national model holds. If one market produces incoherent results, document why — that's a methodology post in itself (Article 9).
+**ZCTA rollup (derivative layer)**
+- Zone type majority-assigned to ZCTAs from tract model via `silver.xwalk_zcta_tract`
+- Presentation layer only — not the primary model; tract is the analytic base
 
-**Literature review (required before finalizing):**
-- Identify 3–4 published neighborhood typology frameworks (Urban Land Institute zone classifications, NCRC community types, Esri Tapestry segments, academic tract-level clustering studies)
-- Document what they used as inputs, how many clusters, and what labels
-- Note where our approach differs and why
+---
+
+### Data prerequisites (Sprint 0 — must complete before Stage 1 build)
+
+**1. LEHD/LODES Silver → Gold ETL**
+LODES WAC (Workplace Area Characteristics) provides the tract-level Opportunity signal ACS cannot: `jobs_per_resident`, `pct_jobs_high_wage`, `pct_jobs_professional_services`, `jobs_inflow_ratio`. Public, annual, tract-level, 2002–2022.
+
+**2. SLD and EJScreen tract re-surface**
+`walkability_index`, `jobs_access_45min_transit` (SLD) and `ejs_pm25` (EJScreen) are tract-native in Silver but rolled up to county/CBSA in current Gold ETL. Need tract rows added to `gold_transport_built_form_sld.sql` and `gold_environment_wide.sql`.
+
+---
+
+### KPI input set (three themes, combined vector)
+
+**Theme A — Character:** `diversity_index`, `pct_hispanic`, `pct_black_nh`, `pct_asian_nh`, `pct_age_over_64`, `pct_ba_plus`, `pct_foreign_born`, `pct_same_house`, `owner_occ_rate`, `pct_struct_multifam`, `pop_weighted_density_sqmi`
+
+**Theme B — Livability (ACS core + SLD re-surface + EJScreen re-surface):** `pct_rent_burden_30plus`, `median_gross_rent`, `median_home_value`, `pov_rate`, `vacancy_rate`, `pct_hh_0_vehicles`, `pct_commute_walk`, `pct_commute_transit`, `pct_no_internet_access`, `walkability_index`, `jobs_access_45min_transit`, `ejs_pm25`, `fema_risk_score`  
+*Excluded: CHR health outcomes (county-only source, no tract equivalent)*
+
+**Theme C — Opportunity (ACS proxies + LEHD):** `median_hh_income`, `pov_rate_change_5yr`, `pct_unemployment_rate`, `pct_ba_plus_change_5yr`, `jobs_per_resident`, `pct_jobs_high_wage`, `pct_jobs_professional_services`, `jobs_inflow_ratio`  
+*Context overlay (not in clustering vector): `is_opportunity_zone` flag*
+
+---
+
+### Draft zone type label set (to be validated against centroids)
+
+- **Knowledge Corridor** — high BA+, high density, walkable, professional jobs
+- **Established Residential** — owner-occupied, older, low mobility, low vacancy
+- **Emerging / Transitional** — increasing diversity, rising rents, income change positive
+- **Affordable Working Class** — mixed race/ethnicity, moderate income, renters, stable jobs
+- **Distressed** — high poverty, high vacancy, poor access, low jobs/resident
+- **Growth Periphery** — family-oriented, newer housing, moderate BA+, population growth
+- **Jobs Center / Commercial Core** — very high jobs/resident, low residential population
+- **Environmental Risk Zone** — may not emerge as standalone; may cross-cut other types
+
+---
 
 ### Tasks
 
-- [ ] Write `exploration/intelligence_framework/phase_7_zone_methodology/zone_methodology.qmd` using Jacksonville and Richmond VA as test markets
-- [ ] Build all three cluster models; compare outputs side-by-side
-- [ ] Test whether `is_opportunity_zone` flag from `gold.dim_policy_designations` produces meaningful overlap with the Distressed zone type
-- [ ] Document literature review in `docs/zone_methodology_notes.md`
-- [ ] Write a final cluster map for both markets with a written rationale for the chosen methodology
+**Sprint 0 — Data prerequisites:**
+- [ ] Write `foundations/etl/silver/lodes_wac_silver.R` — ingest LODES WAC at tract grain
+- [ ] Write `foundations/etl/gold/gold_lodes_wide.sql` — derive `jobs_per_resident`, `pct_jobs_high_wage`, `pct_jobs_professional_services`; validate with JAX + RVA spot check
+- [ ] Add tract rows to `gold_transport_built_form_sld.sql`
+- [ ] Expose tract rows in `gold_environment_wide.sql`
 
-**Deliverable:** `zone_methodology.qmd` with dual-market test. The validated methodology becomes the template for every subsequent Deep Dive. Feeds Article 9.
+**Sprint 1 — Methodology and literature review:**
+- [ ] Review NCRC, Urban Institute, Esri Tapestry, and Moretti — document in `docs/zone_methodology_notes.md`
+- [ ] Finalize KPI list, polarity flags, and coverage rules in `R/phase7_config.R`
+- [ ] Document DBSCAN hybrid distance formula and parameter design in `R/phase7_config.R`
+
+**Sprint 2 — National zone type model:**
+- [ ] Write `R/phase7_tract_frame_build.R` — pull and join all tract KPI tables for 396-CBSA universe
+- [ ] Write `R/phase7_imputation.R` — coverage audit, median imputation, z-score standardization
+- [ ] Write `R/phase7_national_cluster.R` — hierarchical → k-means → GMM; calibration outputs
+- [ ] Assign zone type labels from centroids; validate against JAX and RVA spot check
+- [ ] Write `R/phase7_scoring.R` — theme scores, national/CBSA/peer percentile ranks
+- [ ] Write canonical output to `outputs/zone_scores.parquet`
+
+**Sprint 3 — Deep Dive market stress tests:**
+- [ ] Write `R/phase7_corridor_detection.R` — DBSCAN with hybrid distance; parameterized by CBSA
+- [ ] Run Jacksonville corridor detection; calibrate `eps` and `min_samples` against map output
+- [ ] Run Richmond VA corridor detection with locked JAX parameters
+- [ ] Write `zone_methodology.qmd` — review notebook for both markets
+- [ ] Validate zone type distribution in both markets; confirm `is_opportunity_zone` overlap with Distressed type
+
+**Sprint 4 — ZCTA rollup and Gold promotion:**
+- [ ] Write `R/phase7_zcta_rollup.R` — majority-assign zone type to ZCTAs from tract model
+- [ ] Write `foundations/loaders/load_zone_scores.R` → `gold.intelligence_zones` (tract grain)
+- [ ] Write `foundations/loaders/load_zone_scores_zcta.R` → `gold.intelligence_zones_zcta`
+- [ ] Update `intelligence_catalog.yml` zone entries to `status: calibrated`
+
+**Expected canonical outputs:**
+- `outputs/zone_scores.parquet` — one row per tract; zone type, GMM probs, theme scores, percentile ranks
+- `outputs/zone_scores_zcta.parquet` — ZCTA rollup
+- `outputs/jax_corridors.csv`, `outputs/rva_corridors.csv` — per-market DBSCAN corridor assignments
+- `outputs/phase7_cluster_calibration.csv`, `outputs/phase7_cluster_centroids.csv`, `outputs/phase7_representative_tracts.csv`
+
+**Deliverable:** `zone_methodology.qmd` with dual-market validation. Two Gold tables promoted to DuckDB (`gold.intelligence_zones`, `gold.intelligence_zones_zcta`). Zone type labels locked and documented. Feeds Article 9 and the Deep Dive zone map template.
 
 ---
 

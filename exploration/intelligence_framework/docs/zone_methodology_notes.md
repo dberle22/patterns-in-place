@@ -1,0 +1,205 @@
+# Zone Methodology Notes
+
+*Last updated: 2026-06-20*
+
+This document is the canonical methodology reference for Phase 7: the Zone Methodology. It captures the design decisions, data architecture, algorithmic choices, and literature anchors that govern how Patterns in Place classifies sub-metro areas into zone types and corridors.
+
+---
+
+## What we are building
+
+Phase 7 produces two complementary analytical products from a single tract-level model:
+
+1. **National zone types** — a consistent label set assigned to every tract in the 396-CBSA universe (excluding Puerto Rico). Labels mean the same thing everywhere. A "Knowledge Corridor" tract in Jacksonville is directly comparable to a "Knowledge Corridor" tract in Richmond VA or Chicago. This is the primary output and the foundation for cross-market Deep Dive comparisons.
+
+2. **Per-market corridor detection** — within each Deep Dive market, adjacent or near-adjacent tracts sharing the same zone type are grouped into named corridors. Corridors are a secondary visual layer for Deep Dive maps and narrative. They do not define the zone type; they identify where clusters of same-type tracts are geographically concentrated within a specific market.
+
+A third derivative layer exists for presentation only:
+
+3. **ZCTA rollup** — once the tract model is stable, zone type labels are majority-assigned to ZCTAs via the tract-to-ZCTA crosswalk. ZCTAs are a presentation convenience (readers recognize ZIP codes); the analytic base is always the tract model.
+
+---
+
+## Two-stage architecture
+
+### Stage 1 — National zone type model (k-means / hierarchical)
+
+**Grain:** One row per census tract. Universe: all tracts in the 396 non-Puerto-Rico CBSAs.
+
+**Algorithm:** Same hierarchical → k-means → GMM pipeline used in Phases 2–5, applied at tract grain within the full 396-CBSA universe.
+
+- Hierarchical clustering (agglomerative) to discover natural k from the data — dendrogram + silhouette
+- K-means at natural k for hard zone type labels
+- GMM at same k for soft membership probabilities (captures tracts genuinely between types)
+
+**Expected k:** 7–10 zone types. More than the CBSA-level models because within-metro heterogeneity is real and meaningful. Fewer than Esri Tapestry's 67 because interpretability and narrative defensibility matter more than granularity.
+
+**Output per tract:**
+- `zone_type` — hard cluster label (national)
+- `zone_type_prob_k1 … zone_type_prob_kN` — GMM soft membership probabilities
+- Full KPI vector (standardized) retained for interpretation
+
+### Stage 2 — Per-market corridor detection (DBSCAN)
+
+**Grain:** One row per tract, filtered to a single CBSA. Run independently for each Deep Dive market.
+
+**Algorithm:** DBSCAN with a hybrid distance metric combining feature similarity and spatial proximity.
+
+**Hybrid distance:**
+
+```
+distance(tract_i, tract_j) = α × feature_distance(i, j) + (1 − α) × spatial_distance(i, j)
+```
+
+- `feature_distance` — cosine distance on the standardized KPI vector (same vectors used in Stage 1 clustering)
+- `spatial_distance` — Euclidean distance between tract centroids, normalized within the CBSA
+- `α = 0.70` as the default (feature-primary, spatially bounded); revisit if corridor maps look unreasonably fragmented
+
+**Why DBSCAN over k-means for Stage 2:**
+- k is not known in advance — the number of Knowledge Corridor clusters in Jacksonville is data-driven, not pre-specified
+- Noise points are valid — tracts that don't belong to any coherent corridor are labeled as noise rather than forced into a cluster
+- Non-contiguous corridors are acceptable — two tracts can share a corridor if they're both near similar tracts, even if there's a small gap between them
+
+**DBSCAN parameters:** `eps` (neighborhood radius) and `min_samples` (minimum tracts to form a corridor) are calibrated per-market in the Jacksonville and Richmond VA stress tests. The defaults are a starting point; the stress tests produce the locked calibration.
+
+**Corridor naming convention:**
+
+```
+{county_name}_{zone_type}_{rank}
+```
+
+Example: `Duval_Knowledge_Corridor_1`, `Duval_Knowledge_Corridor_2`, `Chesterfield_Affordable_Working_Class_1`
+
+Rank is assigned by corridor size (number of tracts), descending. This is a stored identifier — not a curated human name. Deep Dive narrative may reference the name of a recognizable neighborhood instead, but the stored key is always systematic.
+
+---
+
+## KPI input set
+
+Zone clustering operates on three KPI themes. Unlike the CBSA-level frames (which were split into three independent models), zone clustering uses a combined KPI vector — closer in spirit to Phase 5 than to Phases 2–4. The themes are kept visible in the output for interpretive use, but the clustering input is the full combined vector.
+
+### Theme A — Character (who lives here)
+
+All from ACS via existing Gold tables. Full tract coverage.
+
+| KPI | Table | Notes |
+|---|---|---|
+| `diversity_index` | `population_demographics` | |
+| `pct_hispanic`, `pct_black_nh`, `pct_asian_nh` | `population_demographics` | |
+| `pct_age_over_64` | `population_demographics` | |
+| `pct_ba_plus` | `population_demographics` | |
+| `pct_foreign_born` | `migration_wide` | |
+| `pct_same_house` | `migration_wide` | Residential stability proxy |
+| `owner_occ_rate` | `housing_core_wide` | |
+| `pct_struct_multifam` | `housing_core_wide` | |
+| `pop_weighted_density_sqmi` | `transport_built_form_wide` | |
+
+### Theme B — Livability (what it's like to live here)
+
+ACS core has full tract coverage. SLD and EJScreen are tract-native in Silver but rolled up in the current Gold surface — re-surfaced from Silver for this phase. CHR health metrics are county-only and excluded.
+
+| KPI | Table | Tract available | Notes |
+|---|---|---|---|
+| `pct_rent_burden_30plus` | `housing_core_wide` | ✅ | |
+| `median_gross_rent` | `housing_core_wide` | ✅ | |
+| `median_home_value` | `housing_core_wide` | ✅ | |
+| `pov_rate` | `economics_income_wide` | ✅ | |
+| `vacancy_rate` | `housing_core_wide` | ✅ | |
+| `pct_hh_0_vehicles` | `transport_built_form_wide` | ✅ | |
+| `pct_commute_walk`, `pct_commute_transit` | `transport_built_form_wide` | ✅ | |
+| `pct_no_internet_access` | `housing_core_wide` | ✅ | |
+| `walkability_index`, `jobs_access_45min_transit` | EPA SLD (silver re-surface) | ✅ | Tract-native in source; needs Gold promotion |
+| `ejs_pm25` | EJScreen (silver re-surface) | ✅ | Tract-native in source; needs Gold promotion |
+| `fema_risk_score` | FEMA NRI (silver re-surface) | ✅ | Tract-native in source; needs Gold promotion |
+| `is_opportunity_zone` | `dim_policy_designations` | ✅ | Binary flag; carried as context, not in clustering KPI vector |
+
+*Excluded: CHR health outcomes (`premature_death_rate`, `drug_overdose_death_rate`, etc.) — county-level source only, no tract equivalent.*
+
+### Theme C — Opportunity (what's happening here economically)
+
+ACS provides income and labor at tract grain. LEHD/LODES provides the jobs-side signal that ACS cannot — jobs per resident, job sector mix, and commute inflow/outflow. **LEHD is a data prerequisite for Phase 7 and must be added to Gold before Phase 7 runs.**
+
+| KPI | Table | Tract available | Notes |
+|---|---|---|---|
+| `median_hh_income` | `economics_income_wide` | ✅ | |
+| `pov_rate_change_5yr` | `economics_income_wide` | ✅ | |
+| `pct_unemployment_rate` | `economics_labor_wide` | ✅ | ACS-based |
+| `pct_ba_plus_change_5yr` | `population_demographics` | ✅ | Human capital momentum proxy |
+| `jobs_per_resident` | **LEHD/LODES WAC** | ✅ if ETL added | Jobs center vs. bedroom community |
+| `pct_jobs_high_wage` | **LEHD/LODES WAC** | ✅ if ETL added | Share of jobs in CE03 earnings tier |
+| `pct_jobs_professional_services` | **LEHD/LODES WAC** | ✅ if ETL added | Knowledge economy sector mix |
+| `jobs_inflow_ratio` | **LEHD/LODES OD** | ✅ if ETL added | Commute inflow vs. resident workers |
+
+*Excluded: FHFA HPI, ZORI, BPS permits, QCEW, IRS migration — none available at tract grain.*
+
+---
+
+## Data prerequisites
+
+Two data gaps must be resolved before Phase 7 can run:
+
+**1. LEHD/LODES Silver → Gold ETL (required)**
+
+LODES WAC (Workplace Area Characteristics) and OD (Origin-Destination) tables are public, tract-level, and cover 2002–2022 for all 50 states. This is a new Silver ingestion + Gold mart. The WAC table is the priority (job counts by sector and earnings tier per tract). The OD table is secondary (commute inflow/outflow).
+
+This is a data engineering prerequisite, not an analytical prerequisite. It can run in parallel with Phase 7 planning. Phase 7 Stage 1 build is blocked until LODES WAC Gold rows exist for the 396-CBSA tract universe.
+
+**2. Tract-level Silver re-surface for SLD, EJScreen, FEMA NRI (required)**
+
+These three sources are tract-native in Silver but were rolled up to county/CBSA in the current Gold ETL. Phase 7 needs them at tract grain. The fix is adding a `geo_level = 'tract'` pass to the relevant Gold ETL scripts:
+- `gold_transport_built_form_sld.sql` — add tract rows from `silver.epa_sld`
+- `gold_environment_wide.sql` — already has tract bridge logic; expose `geo_level = 'tract'` rows
+
+---
+
+## Draft zone type label set
+
+To be evaluated against what the data produces — labels are not pre-specified, they are assigned after inspecting cluster centroids. These are the expected types based on prior CBSA-level work and published neighborhood typology frameworks.
+
+| Draft label | Character profile | Livability profile | Opportunity profile |
+|---|---|---|---|
+| **Knowledge Corridor** | High BA+, high density, younger | Low vacancy, walkable, transit-accessible | High jobs/resident, professional sector, income growth |
+| **Established Residential** | Older, owner-occupied, low mobility | Low burden, stable | Low jobs/resident, low change |
+| **Emerging / Transitional** | Increasing diversity, younger in-movers | Rising rents, some burden | Income change positive, gentrification signals |
+| **Affordable Working Class** | Mixed race/ethnicity, moderate BA+, renters | Moderate burden, lower rents | Jobs present but lower wage, stable labor |
+| **Distressed** | High poverty, lower BA+, renters | High burden, high vacancy, poor access | Low income, high unemployment, declining |
+| **Growth Periphery** | Family-oriented, newer housing, moderate BA+ | Low burden (relatively), newer stock | Permit activity, population growth |
+| **Jobs Center / Commercial Core** | Low residential population | Low residential density | Very high jobs/resident, mixed sector |
+| **Environmental Risk Zone** | Varies | High EJ burden, high FEMA risk | Often lower income |
+
+*"Environmental Risk Zone" may not emerge as a standalone type — it may appear as a modifier on other types. The EJ and FEMA KPIs are in the clustering vector, but environmental risk may cross-cut rather than define a zone type.*
+
+---
+
+## Benchmark strategy
+
+Each tract is benchmarked at three levels (mirroring the CBSA benchmark architecture):
+
+1. **National:** percentile rank within all tracts in the 396-CBSA universe
+2. **CBSA:** percentile rank within the tract's home CBSA — "how does this tract rank within its own metro?"
+3. **Zone type peers:** percentile rank within tracts sharing the same zone type nationally
+
+The CBSA benchmark is the most important for Deep Dive use: it answers "is this a strong or weak Knowledge Corridor relative to other Knowledge Corridors in this metro?"
+
+---
+
+## Literature anchors
+
+The following published frameworks must be reviewed before finalizing zone type labels:
+
+- **NCRC Changing America Neighborhood Typologies (2023)** — race, income, housing cost change, investment. The most methodologically similar published work.
+- **Urban Institute Neighborhood Change Typologies** — gentrification and displacement framing at tract level. Key reference for the Emerging/Transitional and Distressed types.
+- **Esri Tapestry Segmentation** — block-group lifestyle segmentation (67 types, proprietary consumer data). Useful to know what level of granularity is achievable and what inputs the commercial version uses.
+- **Moretti "The New Geography of Jobs" (2012)** — the intellectual foundation for the Knowledge Corridor type and the jobs/education clustering dynamic.
+- **REDCAP/SKATER spatial clustering literature** — Guo (2008); `rgeoda` R package. Methodological grounding for the spatially-constrained clustering alternative to DBSCAN.
+
+Document where our approach aligns and diverges from each. Write up in `docs/zone_methodology_notes.md` (this file) under a Literature Review section as the review is completed.
+
+---
+
+## What this methodology does not cover
+
+- **Chatbot zone-level queries:** Zone types will be materialized in Gold but are not wired into the chatbot query pipeline in Phase 7. That is a Phase 8+ decision once labels are calibrated and stable.
+- **Area Explorer zone layer:** Deep Dive zone maps are standalone outputs. Area Explorer integration with zone types is a future product track.
+- **ZCTA-grain model:** ZCTAs are derived by majority-assignment from the tract model. A separate ZCTA clustering pass may be run for comparison, but it is not the primary model and would not be used for production scoring.
+- **Temporal trajectory at zone level:** Phase 6 trajectory analysis operates at CBSA grain. Zone-level trajectory (is this corridor gentrifying?) is a natural next step but is not part of Phase 7 scope.
