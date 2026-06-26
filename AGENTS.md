@@ -135,6 +135,8 @@ Each folder may have its own `README.md` and language-specific tooling (R, Pytho
 
 ## 8. Inline Notes Style
 
+Include inline codes on all .R, .sql, .py files. And any other scripts. We want to be able to understand our code when we come back to it in the future.
+
 When adding inline code comments, prefer richer explanatory notes over terse labels.
 Comments should help a human quickly understand:
 - what the block is doing

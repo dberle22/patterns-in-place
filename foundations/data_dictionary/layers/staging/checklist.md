@@ -3,7 +3,7 @@
 Coverage unit: source/theme family contract.
 Replica tables listed in a family doc's coverage matrix are considered documented there and should not be tracked as missing standalone dictionaries.
 
-Contract family count: 23
+Contract family count: 25
 
 | Status | Source | Theme | Contract dictionary | Materialized coverage |
 | --- | --- | --- | --- | --- |
@@ -20,9 +20,11 @@ Contract family count: 23
 | [x] | BEA | CAGDP9 | [staging__bea_cagdp9.md](./staging__bea_cagdp9.md) | `bea_regional_cbsa_cagdp9, bea_regional_county_cagdp9, bea_regional_state_cagdp9` |
 | [x] | BEA | CAINC1 | [staging__bea_cainc1.md](./staging__bea_cainc1.md) | `bea_regional_cbsa_cainc1, bea_regional_county_cainc1, bea_regional_state_cainc1` |
 | [x] | BEA | CAINC4 | [staging__bea_cainc4.md](./staging__bea_cainc4.md) | `bea_regional_cbsa_cainc4, bea_regional_county_cainc4, bea_regional_state_cainc4` |
+| [x] | BEA | CAINC5N | [staging__bea_cainc5n.md](./staging__bea_cainc5n.md) | `bea_cainc5n, bea_cainc5n_line_codes` |
 | [x] | BEA | MARPP | [staging__bea_marpp.md](./staging__bea_marpp.md) | `bea_regional_cbsa_marpp, bea_regional_state_marpp` |
 | [x] | BEA | Metadata | [staging__bea_metadata.md](./staging__bea_metadata.md) | `bea_regional_tables, bea_regional_line_codes` |
 | [x] | BLS | LAUS | [staging__bls_laus.md](./staging__bls_laus.md) | `bls_laus_county` |
+| [x] | LEHD | J2J | [staging__lehd_j2j.md](./staging__lehd_j2j.md) | `lehd_j2j` |
 | [x] | BPS | Building Permits Survey | [staging__bps.md](./staging__bps.md) | `bps_region, bps_division, bps_state, bps_county, bps_place` |
 | [x] | HUD | CHAS | [staging__hud_chas.md](./staging__hud_chas.md) | `hud_chas_state, hud_chas_county, hud_chas_place` |
 | [x] | HUD | FMR | [staging__hud_fmr.md](./staging__hud_fmr.md) | `hud_fmr_county, hud_fmr_zip, hud_rent50_county` |

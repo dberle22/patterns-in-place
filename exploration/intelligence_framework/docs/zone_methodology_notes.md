@@ -1,6 +1,6 @@
 # Zone Methodology Notes
 
-*Last updated: 2026-06-20*
+*Last updated: 2026-06-25*
 
 This document is the canonical methodology reference for Phase 7: the Zone Methodology. It captures the design decisions, data architecture, algorithmic choices, and literature anchors that govern how Patterns in Place classifies sub-metro areas into zone types and corridors.
 
@@ -96,7 +96,7 @@ All from ACS via existing Gold tables. Full tract coverage.
 
 ### Theme B — Livability (what it's like to live here)
 
-ACS core has full tract coverage. SLD and EJScreen are tract-native in Silver but rolled up in the current Gold surface — re-surfaced from Silver for this phase. CHR health metrics are county-only and excluded.
+ACS core has full tract coverage. EJScreen is tract-native in Silver and now surfaces tract rows in Gold. FEMA NRI has tract-native staging and tract rows in Silver / Gold after the tract promotion pass. SLD has lower-level source data in staging, and we now also have a REST-backed staging prototype, but tract promotion is paused because coverage and tract-backbone reconciliation are still too incomplete for production use. CHR health metrics are county-only and excluded.
 
 | KPI | Table | Tract available | Notes |
 |---|---|---|---|
@@ -108,9 +108,9 @@ ACS core has full tract coverage. SLD and EJScreen are tract-native in Silver bu
 | `pct_hh_0_vehicles` | `transport_built_form_wide` | ✅ | |
 | `pct_commute_walk`, `pct_commute_transit` | `transport_built_form_wide` | ✅ | |
 | `pct_no_internet_access` | `housing_core_wide` | ✅ | |
-| `walkability_index`, `jobs_access_45min_transit` | EPA SLD (silver re-surface) | ✅ | Tract-native in source; needs Gold promotion |
-| `ejs_pm25` | EJScreen (silver re-surface) | ✅ | Tract-native in source; needs Gold promotion |
-| `fema_risk_score` | FEMA NRI (silver re-surface) | ✅ | Tract-native in source; needs Gold promotion |
+| `walkability_index`, `jobs_access_45min_transit` | EPA SLD (silver re-surface) | ❌ paused | County / CBSA / state SLD remains modeled, but tract SLD is paused and should stay out of Phase 7 clustering until tract coverage and relationship quality improve materially |
+| `ejs_pm25` | EJScreen (silver re-surface) | ✅ | Tract-native in Silver and now promoted into `gold.environment_wide` |
+| `fema_risk_score` | FEMA NRI (silver re-surface) | ✅ | Tract staging is now promoted into Silver and surfaced in `gold.environment_wide` |
 | `is_opportunity_zone` | `dim_policy_designations` | ✅ | Binary flag; carried as context, not in clustering KPI vector |
 
 *Excluded: CHR health outcomes (`premature_death_rate`, `drug_overdose_death_rate`, etc.) — county-level source only, no tract equivalent.*
@@ -144,11 +144,16 @@ LODES WAC (Workplace Area Characteristics) and OD (Origin-Destination) tables ar
 
 This is a data engineering prerequisite, not an analytical prerequisite. It can run in parallel with Phase 7 planning. Phase 7 Stage 1 build is blocked until LODES WAC Gold rows exist for the 396-CBSA tract universe.
 
-**2. Tract-level Silver re-surface for SLD, EJScreen, FEMA NRI (required)**
+**2. Tract-level transport / environment promotion (partially resolved; SLD paused)**
 
-These three sources are tract-native in Silver but were rolled up to county/CBSA in the current Gold ETL. Phase 7 needs them at tract grain. The fix is adding a `geo_level = 'tract'` pass to the relevant Gold ETL scripts:
-- `gold_transport_built_form_sld.sql` — add tract rows from `silver.epa_sld`
-- `gold_environment_wide.sql` — already has tract bridge logic; expose `geo_level = 'tract'` rows
+Phase 7 needs tract-grain livability and environmental context, but the three source families are not all at the same readiness level:
+- `gold_environment_wide.sql` now exposes tract rows for `EJScreen` and `FEMA NRI`
+- `silver.fema_nri` now includes tract rows promoted from `staging.fema_nri_tract`
+- tract `EJScreen` and tract `FEMA NRI` are therefore live in governed Gold and available for Phase 7
+- `silver.epa_sld` and `gold_transport_built_form_sld.sql` remain county / CBSA / state only
+- `staging.epa_sld_rest` now exists as a REST-backed prototype that preserves both `GEOID10` and `GEOID20`, but it has not been promoted into governed Silver / Gold
+
+The remaining tract gap is SLD. We now have both the original CSV-backed staging path and a REST-backed staging prototype, but tract SLD is paused for Phase 7 because the tract coverage gap remains too large and too uneven across major states to support clustering defensibly. Until we add a stronger tract relationship bridge or another governed reconciliation method, SLD tract KPIs should stay out of the clustering vector.
 
 ---
 
@@ -185,15 +190,32 @@ The CBSA benchmark is the most important for Deep Dive use: it answers "is this 
 
 ## Literature anchors
 
-The following published frameworks must be reviewed before finalizing zone type labels:
+Sprint 1.1 literature review is complete. Full review with alignment/divergence analysis and data gap inventory:  
+→ [`docs/zone_methodology_literature_review.md`](zone_methodology_literature_review.md)
 
-- **NCRC Changing America Neighborhood Typologies (2023)** — race, income, housing cost change, investment. The most methodologically similar published work.
-- **Urban Institute Neighborhood Change Typologies** — gentrification and displacement framing at tract level. Key reference for the Emerging/Transitional and Distressed types.
-- **Esri Tapestry Segmentation** — block-group lifestyle segmentation (67 types, proprietary consumer data). Useful to know what level of granularity is achievable and what inputs the commercial version uses.
-- **Moretti "The New Geography of Jobs" (2012)** — the intellectual foundation for the Knowledge Corridor type and the jobs/education clustering dynamic.
-- **REDCAP/SKATER spatial clustering literature** — Guo (2008); `rgeoda` R package. Methodological grounding for the spatially-constrained clustering alternative to DBSCAN.
+**Key findings from the review:**
 
-Document where our approach aligns and diverges from each. Write up in `docs/zone_methodology_notes.md` (this file) under a Literature Review section as the review is completed.
+- **NCRC Gentrification Series (2019–2025):** Rule-based threshold classifier using ACS income, home value, education, and HMDA lending data. Central city tracts only. Our Emerging/Transitional type ≈ their "Gentrifying" category; our Distressed type ≈ their "Eligible/Non-gentrifying." High input overlap with our platform; their addition we lack is HMDA mortgage lending data.
+- **Urban Displacement Project (UC Berkeley, 2015–2020+):** Eight-stage rule-based decision tree using income relative to regional median, Zillow HVI/ZRI for price change, and ACS stability proxies. Metro-by-metro, not a consistent national model. Our CBSA percentile rank architecture reproduces the relative income threshold logic. Their addition we lack: Zillow HVI/ZRI for rent and home value change at tract grain.
+- **Esri Tapestry (2024):** 67 segments at block-group grain using ACS demographics + proprietary MRI-Simmons consumer survey data. Commercial product for marketing. Confirms our 7–10 type target is deliberate parsimony. Consumer behavior data is not our objective and is explicitly out of scope.
+- **Moretti "The New Geography of Jobs" (2012):** Metro-scale labor economics research — not a tract typology. Intellectual foundation for the Knowledge Corridor type. Our LODES WAC KPIs (`pct_jobs_professional_services`, `pct_jobs_high_wage`, `jobs_per_resident`) are the tract-level operationalization of his brain hub concept. His analysis operates entirely at the MSA level — our model reveals the within-metro spatial structure his work obscures.
+
+**Frameworks referenced in PHASE7_PLAN but clarified here:**
+- "NCRC Changing America Neighborhood Typologies (2023)" → refers to the NCRC Gentrification and Neighborhood Change research series; the closest current report is *Displaced by Design* (2025).
+- "Urban Institute Neighborhood Change Typologies" → the published tract-level typology with Emerging/Transitional framing is the Urban **Displacement** Project at UC Berkeley, not the Urban Institute.
+
+**Data gaps surfaced by the review** (variables in the literature absent from our platform):
+
+| Variable | Source | Phase 7 impact |
+|---|---|---|
+| HMDA mortgage lending activity (loan counts, denial rates by tract) | NCRC | Not blocking; future signal for displacement risk |
+| Zillow Home Value Index / Rent Index (tract/ZIP) | UDP | Not blocking; useful for trajectory; not public-domain |
+| Net change in low-income households below 80% AMI | UDP | Computable from ACS income quintile data; not in scope for Phase 7 |
+| Eviction filing rates (Princeton Eviction Lab) | Displacement literature broadly | Not blocking; relevant to Distressed type validation |
+| USPTO patent counts at tract grain | Moretti | Out of scope; relevant for future Knowledge Corridor validation |
+| Brown University LTDB (harmonized decennial Census 1970–2020) | NCRC | Only relevant if longitudinal tract analysis added in a future phase |
+
+- **REDCAP/SKATER spatial clustering literature** — Guo (2008); `rgeoda` R package. Methodological grounding for the spatially-constrained clustering alternative to DBSCAN. Not yet reviewed.
 
 ---
 

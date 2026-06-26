@@ -1,0 +1,71 @@
+table_name: usda_county_typology
+schema: silver
+grain: One row per geo_level + geo_id (county-equivalent USDA ERS classification dimension).
+primary_key:
+  - geo_level
+  - geo_id
+foreign_keys: []
+time_coverage:
+  type: static
+  notes:
+    - rucc_vintage_year=2023
+    - typology_vintage_year=2025
+geo_coverage:
+  notes:
+    - geo_levels=county
+    - full_fips_union_rows=3243
+    - current_backbone_rows=3235
+    - legacy_ct_county_rows=8
+quality_notes:
+  - Silver widens the long ERS staging tables to one county-equivalent row per FIPS while preserving source-coverage flags.
+  - The table keeps the full `3,243`-FIPS union of RUCC and County Typology keys rather than silently dropping rows that only appear in one source family.
+  - `3,235` rows align to the current county-equivalent backbone in `gold.dim_geo`; the remaining `8` rows are legacy Connecticut counties that still appear in County Typology but not in the current RUCC backbone.
+  - CBSA aggregation is intentionally deferred from Silver to Gold because the mixed Connecticut geography makes metro summarization an analytical choice rather than a source-faithful Silver transform.
+  - Typology sentinel values such as `Industry_Dependence_2025 = 99` and `Persistent_Poverty_1721 in (-1, 99)` are preserved through `*_raw` columns and surfaced through `has_typology_exception_values`.
+sources:
+  - staging.usda_rucc
+  - staging.usda_county_typology
+  - gold.dim_geo
+columns:
+  - { name: geo_level, type: VARCHAR, definition: Geographic level for the row (`county` in the current first pass). }
+  - { name: geo_id, type: VARCHAR, definition: Five-digit county or county-equivalent FIPS identifier. }
+  - { name: geo_name, type: VARCHAR, definition: Geographic display name. Uses the current county-equivalent backbone name where available and the ERS source county name otherwise. }
+  - { name: state_fips, type: VARCHAR, definition: Two-digit state or territory FIPS code derived from the first two digits of `geo_id`. }
+  - { name: state_abbr, type: VARCHAR, definition: State or territory abbreviation carried from the ERS source files, with current-backbone fallback where available. }
+  - { name: has_rucc, type: BOOLEAN, definition: Whether the county-equivalent has a RUCC record in the current staged source. }
+  - { name: has_typology, type: BOOLEAN, definition: Whether the county-equivalent has a County Typology record in the current staged source. }
+  - { name: in_current_county_backbone, type: BOOLEAN, definition: Whether the row resolves directly to the current county-equivalent backbone in `gold.dim_geo`. }
+  - { name: rucc_vintage_year, type: INTEGER, definition: RUCC vintage year for the current release (`2023`). }
+  - { name: rucc_2023_code, type: INTEGER, definition: Rural-Urban Continuum Code from the `2023` ERS release. }
+  - { name: rucc_2023_description, type: VARCHAR, definition: ERS-published description text associated with `rucc_2023_code`. }
+  - { name: population_2020, type: DOUBLE, definition: Population count published in the RUCC source file. }
+  - { name: typology_vintage_year, type: INTEGER, definition: County Typology vintage year for the current release (`2025`). }
+  - { name: metro2023_flag, type: INTEGER, definition: Source metro/nonmetro indicator from the County Typology file, normalized to `0` or `1` where published. }
+  - { name: high_farming_flag, type: INTEGER, definition: Whether the county has a high farming concentration in the `2025` County Typology release. }
+  - { name: high_government_flag, type: INTEGER, definition: Whether the county has a high government concentration in the `2025` County Typology release. }
+  - { name: high_manufacturing_flag, type: INTEGER, definition: Whether the county has a high manufacturing concentration in the `2025` County Typology release. }
+  - { name: high_mining_flag, type: INTEGER, definition: Whether the county has a high mining concentration in the `2025` County Typology release. }
+  - { name: high_recreation_flag, type: INTEGER, definition: Whether the county has a high recreation concentration in the `2025` County Typology release. }
+  - { name: housing_stress_flag, type: INTEGER, definition: Whether the county is classified as housing stressed in the `2025` County Typology release. }
+  - { name: low_employment_flag, type: INTEGER, definition: Whether the county is classified as low employment in the `2025` County Typology release. }
+  - { name: low_postsecondary_ed_flag, type: INTEGER, definition: Whether the county is classified as low post-secondary education in the `2025` County Typology release. }
+  - { name: nonspecialized_flag, type: INTEGER, definition: Whether the county is classified as nonspecialized in the `2025` County Typology release. }
+  - { name: population_loss_flag, type: INTEGER, definition: Whether the county is classified as having population loss in the `2025` County Typology release. }
+  - { name: retirement_destination_flag, type: INTEGER, definition: Whether the county is classified as a retirement destination in the `2025` County Typology release. }
+  - { name: persistent_poverty_raw, type: INTEGER, definition: Raw persistent-poverty code from the ERS County Typology release before sentinel cleanup. }
+  - { name: persistent_poverty_flag, type: INTEGER, definition: Normalized persistent-poverty flag (`0` or `1`) where the ERS source publishes a standard binary value. }
+  - { name: industry_dependence_raw, type: INTEGER, definition: Raw ERS industry-dependence code before sentinel cleanup. }
+  - { name: industry_dependence_code, type: INTEGER, definition: Normalized industry-dependence code where the ERS source publishes one of the standard `0-5` values. }
+  - { name: industry_dependence_label, type: VARCHAR, definition: Analytical label derived from `industry_dependence_code` (`not_dependent`, `farming_dependent`, `mining_dependent`, `manufacturing_dependent`, `government_dependent`, `recreation_dependent`). }
+  - { name: has_typology_exception_values, type: BOOLEAN, definition: Whether the row carries a nonstandard County Typology sentinel value that needs special downstream handling. }
+lineage:
+  - step: read_sources
+    script: foundations/etl/staging/get_usda_ers_typology.R
+    details: Downloads the live RUCC and County Typology CSVs, preserves the long `attribute` / `value` layout in staging, and writes `staging.usda_rucc` plus `staging.usda_county_typology`.
+  - step: widen_and_standardize
+    script: foundations/etl/silver/usda_ers_typology_silver.R
+    details: Pivots each staged ERS file to one county-equivalent row per FIPS, normalizes binary flags and coded fields, joins the current county-equivalent backbone, and preserves source-coverage and sentinel-value flags.
+  - step: write_target
+    script: foundations/etl/silver/usda_ers_typology_silver.R
+    details: Writes `silver.usda_county_typology` with overwrite enabled after uniqueness and expected-row-count checks pass.
+kpi_definitions: []

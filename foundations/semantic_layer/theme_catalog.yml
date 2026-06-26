@@ -3,9 +3,9 @@ catalog_name: theme_catalog
 description: >
   User-facing topic organization for the Chatbot and Area Explorer. Groups metrics into
   browsable topics within each theme (Character / Livability / Opportunity). Topic structure
-  reflects the calibrated Phase 2–4 intelligence frame models. Updated after all three frames
-  reached status: calibrated. Metrics with standalone query value are retained even if dropped
-  from the default clustering set.
+  reflects the calibrated Phase 2–4 intelligence frame models. Cross-Frame combined outputs
+  live primarily in the DataMart and question layer rather than as a fourth navigation theme.
+  Metrics with standalone query value are retained even if dropped from the default clustering set.
 themes:
 
   # ---------------------------------------------------------------------------

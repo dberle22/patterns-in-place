@@ -43,7 +43,7 @@ Every entry in `foundations/semantic_layer/intelligence_catalog.yml` is currentl
 **Decision:** Median imputation as the default. KNN imputation considered only when a KPI has >15% missingness AND the missing pattern is clearly non-random (e.g. a source that systematically excludes small metros).
 
 **Implementation:**
-- Replace missing values with the national median for that KPI across the 401-CBSA universe
+- Replace missing values with the national median for that KPI across the published CBSA universe
 - Log which KPIs triggered imputation and how many CBSAs were affected
 - Flag imputed values in the output so downstream analysis can identify imputation-sensitive results
 
@@ -96,7 +96,7 @@ KPI z-score (sign-flipped for negative polarity)
     → Topic score      (mean of KPI z-scores within topic)
         → Subject score    (weighted mean of topic scores within subject)
             → Frame composite  (weighted mean of subject scores)
-                → Percentile rank  (0–100 within 401-CBSA universe)
+                → Percentile rank  (0–100 within the published CBSA universe)
 ```
 
 **Subject weights:** Equal weight across subjects within each frame for the initial model (e.g. Livability = 25% Affordability + 25% Health & Safety + 25% Access & Infrastructure + 25% Physical Environment). Revisit after first calibration pass if one subject is clearly dominating or underweighting.
@@ -120,9 +120,9 @@ topic_weight = subject_weight × (raw_topic_weight / sum(raw_topic_weights in su
 
 **KPI weights within topic:** Equal split across selected core KPIs within the topic.
 
-**Final output:** Percentile rank (0–100) within the 401-CBSA universe. Percentile is the public-facing number — more interpretable than a raw z-score. Sub-scores at topic and subject level are also retained for drill-down analysis.
+**Final output:** Percentile rank (0–100) within the published CBSA universe. Percentile is the public-facing number — more interpretable than a raw z-score. Sub-scores at topic and subject level are also retained for drill-down analysis.
 
-**Score anchoring:** Percentile ranks are relative to the current 401-CBSA universe. This is the correct default for the initial model. Anchoring scores to a base year for longitudinal comparability is a future calibration decision — flag it in the catalog entry when it becomes relevant.
+**Score anchoring:** Percentile ranks are relative to the current published CBSA universe. This is the correct default for the initial model. Anchoring scores to a base year for longitudinal comparability is a future calibration decision — flag it in the catalog entry when it becomes relevant.
 
 ---
 
@@ -843,11 +843,11 @@ LODES WAC (Workplace Area Characteristics) provides the tract-level Opportunity 
 
 ---
 
-## Phase 8 — Catalog Finalization and DuckDB Promotion
+## Phase 8 — Catalog Finalization and Intelligence DataMart Promotion
 
 **Status:** Not started
 **Depends on:** All prior phases
-**Goal:** Two parallel workstreams: (1) verify and finalize the semantic layer — every `status: placeholder` entry promoted to `status: calibrated`; (2) build the R scripts that load all intelligence outputs into DuckDB as production data products.
+**Goal:** Two parallel workstreams: (1) verify and finalize the semantic layer — every `status: placeholder` entry promoted to `status: calibrated`; (2) build the R scripts that load all completed intelligence outputs into a dedicated `mart_intelligence` DataMart schema in DuckDB. Gold remains the source KPI layer; the scored intelligence products now sit downstream as product marts rather than Gold-on-Gold tables.
 
 **Note on catalog updates:** Individual frame catalog entries (`intelligence_catalog.yml`) are updated at the end of each Phase 2–4 notebook — not deferred to Phase 8. Phase 8 is a *verification and promotion* pass, not a catch-up pass. By the time Phase 8 runs, most catalog entries should already be at `status: calibrated`.
 
@@ -867,44 +867,50 @@ LODES WAC (Workplace Area Characteristics) provides the tract-level Opportunity 
 - `question_catalog.yml` — add questions that surfaced during analysis
 - `metric_catalog.yml` — add any derived metrics created during calibration (growth rates, RPP-adjusted versions, etc.)
 
-### Workstream 2 — DuckDB Data Product Scripts
+### Workstream 2 — DuckDB DataMart Loaders
 
-One R script per data product. Each script reads the corresponding parquet from `outputs/`, applies any final transformations, and writes to the appropriate Gold or scores schema in DuckDB. These scripts are the production pipeline — they replace the parquets as the authoritative output once they're validated.
+One R script per data product. Each script reads the corresponding parquet from `outputs/`, applies the final semantic-column normalization, and writes to the `analytics` schema in DuckDB. These scripts are the production pipeline for the Intelligence DataMart — they replace the phase-local parquets as the authoritative query surface once they're validated.
 
 **Scripts to build:**
 
 | Script | Source parquet | Target table | Notes |
 |---|---|---|---|
-| `load_livability_scores.R` | `phase_3_livability_calibration/outputs/livability_scores.parquet` | `gold.intelligence_livability` | Cluster labels, GMM probs, topic/subject/composite scores, percentile ranks, top-10 peers |
-| `load_opportunity_scores.R` | `phase_4_opportunity_calibration/outputs/opportunity_scores.parquet` | `gold.intelligence_opportunity` | Same structure as Livability |
-| `load_character_scores.R` | `phase_2_character_calibration/outputs/character_scores.parquet` | `gold.intelligence_character` | Same structure |
-| `load_cross_frame_scores.R` | `phase_5_cross_frame/outputs/cross_frame_scores.parquet` | `gold.intelligence_cross_frame` | Combined cluster, cross-frame similarity, overlap flags |
-| `load_zone_assignments.R` | Zone methodology outputs | `gold.intelligence_zones` | Tract-level zone labels (after Phase 7) |
+| `load_livability_scores.R` | `phase_3_livability_calibration/outputs/livability_scores.parquet` | `mart_intelligence.intelligence_livability` | Cluster labels, GMM probs, topic/subject/composite scores, percentile ranks |
+| `load_opportunity_scores.R` | `phase_4_opportunity_calibration/outputs/opportunity_scores.parquet` | `mart_intelligence.intelligence_opportunity` | Same structure as Livability |
+| `load_character_scores.R` | `phase_2_character_calibration/outputs/character_scores.parquet` | `mart_intelligence.intelligence_character` | Same structure |
+| `load_cross_frame_scores.R` | `phase_5_cross_frame_integration/outputs/cross_frame_scores.parquet` | `mart_intelligence.intelligence_cross_frame` | Combined cluster, frame-level percentile carrythrough, cross-frame similarity fields |
+| `load_zone_assignments.R` | Zone methodology outputs | `mart_intelligence.intelligence_zones` | Tract-level zone labels (after Phase 7; deferred until zone work is complete) |
 
 **Schema notes:**
-- All intelligence Gold tables join to the CBSA spine on `cbsa_code`
+- The Intelligence DataMart lives in DuckDB schema `mart_intelligence`
+- All CBSA-grain intelligence DataMart tables join to the CBSA spine on `cbsa_code`
 - Zone table joins to the tract dimension on `geoid`
-- Percentile ranks are stored as integers (0–100); raw z-scores stored alongside for downstream flexibility
+- Percentile ranks are stored as integers (0–100) under stable semantic names; raw percentile / score fields can also be carried through for downstream flexibility
 - GMM soft membership probabilities stored as individual columns (`prob_cluster_1` … `prob_cluster_k`) — not as arrays, for DuckDB compatibility
+- Loader scripts normalize the phase-local column names into stable semantic-layer aliases so `table_catalog.yml` and `metric_catalog.yml` point at actual queryable columns
 
 ### Tasks
 
 **Semantic layer:**
-- [ ] Verify all `intelligence_catalog.yml` entries are at `status: calibrated`; promote any that were missed during phases
-- [ ] Write `exploration/intelligence_framework/docs/intelligence_calibration_notes.md` summarizing key decisions across all phases
-- [ ] Update `theme_catalog.yml` to remove low-variance / redundant metrics
-- [ ] Update `question_catalog.yml` with questions that surfaced during analysis
-- [ ] Update `metric_catalog.yml` with any derived metrics created during calibration
+- [x] Verify all completed `intelligence_catalog.yml` entries are at `status: calibrated`; promote any that were missed during phases
+- [x] Write `exploration/intelligence_framework/docs/intelligence_calibration_notes.md` summarizing key decisions across all phases
+- [x] Update `theme_catalog.yml` to reflect the calibrated frame navigation structure and downstream Cross-Frame positioning
+- [x] Update `question_catalog.yml` with Intelligence questions surfaced during analysis, including Cross-Frame lookups and divergence rankings
+- [x] Update `metric_catalog.yml` with promoted Intelligence metrics created during calibration
+- [x] Define the Intelligence DataMart boundary so scored outputs live in `mart_intelligence.intelligence_*` instead of `gold.intelligence_*`
+- [x] Repoint semantic-layer and Area Explorer references from Gold intelligence tables to the `mart_intelligence` DataMart
 
 **DuckDB scripts:**
-- [ ] Write and validate `foundations/loaders/load_livability_scores.R`
-- [ ] Write and validate `foundations/loaders/load_opportunity_scores.R`
-- [ ] Write and validate `foundations/loaders/load_character_scores.R`
-- [ ] Write and validate `foundations/loaders/load_cross_frame_scores.R`
-- [ ] Write and validate `foundations/loaders/load_zone_assignments.R`
-- [ ] Confirm all five Gold tables are queryable from MotherDuck and accessible to Area Explorer and the Chatbot
+- [x] Write and validate `foundations/loaders/load_livability_scores.R`
+- [x] Write and validate `foundations/loaders/load_opportunity_scores.R`
+- [x] Write and validate `foundations/loaders/load_character_scores.R`
+- [x] Write and validate `foundations/loaders/load_cross_frame_scores.R`
+- [ ] Write and validate `foundations/loaders/load_zone_assignments.R` once Phase 7 is complete
+- [ ] Confirm all completed Intelligence DataMart tables are queryable from MotherDuck and accessible to Area Explorer and the Chatbot
 
-**Deliverable:** All `intelligence_catalog.yml` entries at `status: calibrated`. Five Gold intelligence tables in DuckDB. `intelligence_calibration_notes.md` complete. Area Explorer Phase 2 and Chatbot wire-up are now unblocked.
+**Deliverable:** All completed `intelligence_catalog.yml` entries at `status: calibrated`. Four CBSA-grain `mart_intelligence.intelligence_*` tables in DuckDB, with zone tables added after Phase 7 completes. `intelligence_calibration_notes.md` complete. Area Explorer Phase 2 and Chatbot wire-up are now unblocked.
+
+**Completed summary:** Phase 8 now has a working `mart_intelligence` promotion path for the completed CBSA score products. The roadmap, semantic layer, and Area Explorer references now treat Intelligence outputs as a dedicated downstream DataMart built on top of Gold rather than as Gold-on-Gold tables. Validated loader scripts now materialize `mart_intelligence.intelligence_character`, `mart_intelligence.intelligence_livability`, `mart_intelligence.intelligence_opportunity`, and `mart_intelligence.intelligence_cross_frame` from the canonical phase outputs, with semantic alias columns, promoted top-10 peers, and Cross-Frame overlap context added so the catalogs point at stable queryable fields. The Phase 8 calibration summary doc now lives at `exploration/intelligence_framework/docs/intelligence_calibration_notes.md`.
 
 ---
 
@@ -927,7 +933,7 @@ Phase 6 — Trajectory Analysis             (depends on Phases 2–5; uses calib
     ↓
 Phase 7 — Zone Methodology               (depends on Phases 3–5 frame definitions and cluster labels)
     ↓
-Phase 8 — Catalog Finalization           (verify semantic layer; build DuckDB loader scripts; promote to Gold)
+Phase 8 — Catalog Finalization           (verify semantic layer; build DuckDB loader scripts; promote to the `mart_intelligence` DataMart)
 ```
 
 **Execution order rationale:**
@@ -936,7 +942,7 @@ Phase 8 — Catalog Finalization           (verify semantic layer; build DuckDB 
 - Phase 5 after Phases 2–4: cross-frame model needs all three frame KPI vectors and cluster labels
 - Phase 6 depends on Phases 2–5: it uses calibrated frame scores as output expressions and the Phase 5 overlap flags as direct input to the candidate list
 - Phase 7 depends on Phases 3–5 for tract-level zone inputs and CBSA-level frame context
-- Phase 8 is the finalization and promotion pass — catalog verification + DuckDB loader scripts; unblocks Area Explorer Phase 2 and Chatbot
+- Phase 8 is the finalization and promotion pass — catalog verification + `mart_intelligence` DataMart loader scripts; unblocks Area Explorer Phase 2 and Chatbot
 
 ---
 
@@ -1010,11 +1016,11 @@ exploration/
       intelligence_calibration_notes.md   ← summary of key decisions across all phases
 foundations/
   loaders/
-    load_livability_scores.R              ← Phase 8: writes gold.intelligence_livability to DuckDB
-    load_opportunity_scores.R             ← Phase 8: writes gold.intelligence_opportunity to DuckDB
-    load_character_scores.R               ← Phase 8: writes gold.intelligence_character to DuckDB
-    load_cross_frame_scores.R             ← Phase 8: writes gold.intelligence_cross_frame to DuckDB
-    load_zone_assignments.R               ← Phase 8: writes gold.intelligence_zones to DuckDB
+    load_livability_scores.R              ← Phase 8: writes mart_intelligence.intelligence_livability to DuckDB
+    load_opportunity_scores.R             ← Phase 8: writes mart_intelligence.intelligence_opportunity to DuckDB
+    load_character_scores.R               ← Phase 8: writes mart_intelligence.intelligence_character to DuckDB
+    load_cross_frame_scores.R             ← Phase 8: writes mart_intelligence.intelligence_cross_frame to DuckDB
+    load_zone_assignments.R               ← Phase 8: writes mart_intelligence.intelligence_zones to DuckDB
 ```
 
 ---
@@ -1039,7 +1045,7 @@ Each article is a Substack post. The Quarto notebook is the source of record and
 
 ## What This Roadmap Does Not Cover
 
-- **Chatbot integration:** `intelligence_catalog.yml` gets wired into the chatbot query pipeline after Phase 8 promotes outputs to DuckDB Gold (Track B2 in ROADMAP.md). The five Gold intelligence tables are the prerequisite.
-- **Area Explorer dashboards:** Phase 2 of Area Explorer (Intelligence Frames views) is built after Phase 8 completes. The Gold intelligence tables are the data layer for those dashboards.
+- **Chatbot integration:** `intelligence_catalog.yml` gets wired into the chatbot query pipeline after Phase 8 promotes outputs to the DuckDB `mart_intelligence` schema (Track B2 in ROADMAP.md). The Intelligence DataMart tables are the prerequisite.
+- **Area Explorer dashboards:** Phase 2 of Area Explorer (Intelligence Frames views) is built after Phase 8 completes. The `mart_intelligence` tables are the data layer for those dashboards.
 - **Stoop integration:** Livability and Opportunity scoring feeds Stoop Search after calibration, but that's a Stoop track decision.
 - **Track gaps still open:** HMDA (Track 13), IPEDS (Track 10), Track 11 Gold wiring (11.6–11.8), K-12 quality (Track 22) are all noted as gaps in the metric map. The Intelligence Layer work does not pause for them — gaps are flagged in the relevant phase notebooks and revisited if a missing signal turns out to be blocking.

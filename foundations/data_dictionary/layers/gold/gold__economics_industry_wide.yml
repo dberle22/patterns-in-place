@@ -177,6 +177,90 @@ columns:
     type: DOUBLE
     definition: ACS total employed population used as the denominator for ACS industry mix fields.
     needs_confirmation: no
+  - name: bea_earnings_total
+    type: DOUBLE
+    definition: BEA CAINC5N total earnings by place of work from the `all_industries` row.
+    needs_confirmation: no
+  - name: bea_compensation_total
+    type: DOUBLE
+    definition: Derived BEA CAINC5N all-industry compensation total equal to wages and salaries plus supplements.
+    needs_confirmation: no
+  - name: bea_wages_salaries
+    type: DOUBLE
+    definition: BEA CAINC5N all-industry wages and salaries.
+    needs_confirmation: no
+  - name: bea_supplements
+    type: DOUBLE
+    definition: BEA CAINC5N all-industry supplements to wages and salaries.
+    needs_confirmation: no
+  - name: bea_pension_insurance_supplements
+    type: DOUBLE
+    definition: BEA CAINC5N all-industry employer contributions for employee pension and insurance funds.
+    needs_confirmation: no
+  - name: bea_govt_social_insurance_supplements
+    type: DOUBLE
+    definition: BEA CAINC5N all-industry employer contributions for government social insurance.
+    needs_confirmation: no
+  - name: bea_proprietors_income
+    type: DOUBLE
+    definition: BEA CAINC5N all-industry proprietors' income.
+    needs_confirmation: no
+  - name: bea_earnings_private_nonfarm
+    type: DOUBLE
+    definition: BEA CAINC5N private nonfarm earnings total.
+    needs_confirmation: no
+  - name: bea_earnings_ag_mining
+    type: DOUBLE
+    definition: BEA CAINC5N broad-family earnings for agriculture, forestry, fishing, and mining.
+    needs_confirmation: no
+  - name: bea_earnings_construction
+    type: DOUBLE
+    definition: BEA CAINC5N broad-family earnings for construction.
+    needs_confirmation: no
+  - name: bea_earnings_manufacturing
+    type: DOUBLE
+    definition: BEA CAINC5N broad-family earnings for manufacturing.
+    needs_confirmation: no
+  - name: bea_earnings_wholesale
+    type: DOUBLE
+    definition: BEA CAINC5N broad-family earnings for wholesale trade.
+    needs_confirmation: no
+  - name: bea_earnings_retail
+    type: DOUBLE
+    definition: BEA CAINC5N broad-family earnings for retail trade.
+    needs_confirmation: no
+  - name: bea_earnings_transport_util
+    type: DOUBLE
+    definition: BEA CAINC5N broad-family earnings for transportation, warehousing, and utilities.
+    needs_confirmation: no
+  - name: bea_earnings_information
+    type: DOUBLE
+    definition: BEA CAINC5N broad-family earnings for information.
+    needs_confirmation: no
+  - name: bea_earnings_finance_real
+    type: DOUBLE
+    definition: BEA CAINC5N broad-family earnings for finance, insurance, and real estate.
+    needs_confirmation: no
+  - name: bea_earnings_professional
+    type: DOUBLE
+    definition: BEA CAINC5N broad-family earnings for professional and business services.
+    needs_confirmation: no
+  - name: bea_earnings_educ_health
+    type: DOUBLE
+    definition: BEA CAINC5N broad-family earnings for education and health services.
+    needs_confirmation: no
+  - name: bea_earnings_arts_accomm_food
+    type: DOUBLE
+    definition: BEA CAINC5N broad-family earnings for arts, accommodation, and food services.
+    needs_confirmation: no
+  - name: bea_earnings_other_services
+    type: DOUBLE
+    definition: BEA CAINC5N broad-family earnings for other services.
+    needs_confirmation: no
+  - name: bea_earnings_public_admin
+    type: DOUBLE
+    definition: BEA CAINC5N broad-family earnings for government and government enterprises.
+    needs_confirmation: no
   - name: real_gdp_total
     type: DOUBLE
     definition: Total real GDP from `silver.bea_regional_cagdp9_wide`.
@@ -421,6 +505,62 @@ columns:
     type: DOUBLE
     definition: Share of total covered QCEW employment accounted for by Public Administration.
     needs_confirmation: no
+  - name: pct_bea_earnings_private_nonfarm
+    type: DOUBLE
+    definition: Share of total BEA CAINC5N earnings represented by private nonfarm earnings.
+    needs_confirmation: no
+  - name: pct_bea_earnings_ag_mining
+    type: DOUBLE
+    definition: Share of total BEA CAINC5N earnings represented by the agriculture and mining family.
+    needs_confirmation: no
+  - name: pct_bea_earnings_construction
+    type: DOUBLE
+    definition: Share of total BEA CAINC5N earnings represented by construction.
+    needs_confirmation: no
+  - name: pct_bea_earnings_manufacturing
+    type: DOUBLE
+    definition: Share of total BEA CAINC5N earnings represented by manufacturing.
+    needs_confirmation: no
+  - name: pct_bea_earnings_wholesale
+    type: DOUBLE
+    definition: Share of total BEA CAINC5N earnings represented by wholesale trade.
+    needs_confirmation: no
+  - name: pct_bea_earnings_retail
+    type: DOUBLE
+    definition: Share of total BEA CAINC5N earnings represented by retail trade.
+    needs_confirmation: no
+  - name: pct_bea_earnings_transport_util
+    type: DOUBLE
+    definition: Share of total BEA CAINC5N earnings represented by transportation, warehousing, and utilities.
+    needs_confirmation: no
+  - name: pct_bea_earnings_information
+    type: DOUBLE
+    definition: Share of total BEA CAINC5N earnings represented by information.
+    needs_confirmation: no
+  - name: pct_bea_earnings_finance_real
+    type: DOUBLE
+    definition: Share of total BEA CAINC5N earnings represented by finance, insurance, and real estate.
+    needs_confirmation: no
+  - name: pct_bea_earnings_professional
+    type: DOUBLE
+    definition: Share of total BEA CAINC5N earnings represented by professional and business services.
+    needs_confirmation: no
+  - name: pct_bea_earnings_educ_health
+    type: DOUBLE
+    definition: Share of total BEA CAINC5N earnings represented by education and health services.
+    needs_confirmation: no
+  - name: pct_bea_earnings_arts_accomm_food
+    type: DOUBLE
+    definition: Share of total BEA CAINC5N earnings represented by arts, accommodation, and food services.
+    needs_confirmation: no
+  - name: pct_bea_earnings_other_services
+    type: DOUBLE
+    definition: Share of total BEA CAINC5N earnings represented by other services.
+    needs_confirmation: no
+  - name: pct_bea_earnings_public_admin
+    type: DOUBLE
+    definition: Share of total BEA CAINC5N earnings represented by government and government enterprises.
+    needs_confirmation: no
   - name: sector_sum
     type: DOUBLE
     definition: Sum of the BEA industry GDP sector columns used in this Gold mart.
@@ -456,6 +596,10 @@ column_groups:
     definition: ACS industry employment shares from `silver.labor_kpi`.
   - prefix: lq_
     definition: QCEW location quotients comparing local private-sector employment shares to a state-aggregated national benchmark for the same year.
+  - prefix: bea_earnings_
+    definition: BEA CAINC5N earnings levels by broad family from `silver.bea_cainc5n`.
+  - prefix: pct_bea_earnings_
+    definition: BEA CAINC5N earnings shares relative to `bea_earnings_total`.
   - prefix: real_gdp_
     definition: BEA real GDP levels from `silver.bea_regional_cagdp9_wide`.
   - prefix: pct_real_gdp_

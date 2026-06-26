@@ -2,14 +2,14 @@
 
 ## Overview
 - **Table**: `silver.fema_nri`
-- **Purpose**: Standardized FEMA National Risk Index table at county-equivalent and derived CBSA grain for the compact analytical climate-and-hazard risk contract.
-- **Row count**: 4,167
+- **Purpose**: Standardized FEMA National Risk Index table at tract, county-equivalent, and derived CBSA grain for the compact analytical climate-and-hazard risk contract.
 - **Time coverage**: 2025 only
 
 ## Grain & Keys
 - **Declared grain**: One row per `geo_level + geo_id + year`.
 - **Primary key candidate (recommended)**: (`geo_level`, `geo_id`, `year`)
 - **Observed geo coverage**:
+  - `tract`: expected after tract promotion from `staging.fema_nri_tract`
   - `county`: 3,232 rows
   - `cbsa`: 935 rows
 - **Key QA**: live duplicate check on `geo_level + geo_id + year` returned zero duplicates.
@@ -22,6 +22,10 @@
 - **Hazard annualized frequencies**: one `*_annualized_frequency` column for each FEMA hazard family
 
 ## Data Quality Notes
+- Tract rows are promoted from `staging.fema_nri_tract` using the same compact metric selection as county and CBSA rows.
+  - The Silver script resolves tract names from `gold.dim_geo` first and falls back to `silver.xwalk_tract_county` when the canonical tract display name is missing.
+  - Supported-state tract rows must clear both `silver.xwalk_tract_county` and `gold.dim_geo` match-rate audits before the script writes the Silver table.
+  - Territorial and Puerto Rico archive tracts outside the governed tract backbone remain excluded from the analytical contract.
 - County rows preserve FEMA's county-equivalent release rather than filtering to literal `County` records.
   - Parishes, municipios, boroughs, planning regions, census areas, and other county-equivalent designations stay in the Silver contract.
 - County `geo_id` uses staged `stcofips` after zero-padding and validation in staging.
@@ -31,7 +35,6 @@
   - The first-pass rollup uses staged `population` as the weight for all promoted FEMA score and frequency fields.
 - This Silver table intentionally keeps a compact analytical subset rather than the full FEMA hazard matrix.
   - The much wider exposure, loss-component, and raw helper fields remain in staging only.
-- The tract FEMA release is staged in `staging.fema_nri_tract` but is not yet promoted into Silver.
 
 ## Hazard Prefix Reference
 - `avalanche` = `AVLN`
@@ -55,9 +58,8 @@
 
 ## Lineage
 1. `foundations/etl/staging/get_fema_nri.R` downloads the FEMA county-equivalent and tract NRI ZIP bundles, preserves the full source-faithful hazard matrices in staging, pads and validates the helper geography keys, and writes `staging.fema_nri` plus `staging.fema_nri_tract`.
-2. `foundations/etl/silver/fema_nri_silver.R` keeps the county-equivalent FEMA release at county grain, assigns canonical display names where possible, selects the approved composite and hazard metrics, derives CBSA rows with population-weighted averages, and writes `silver.fema_nri`.
+2. `foundations/etl/silver/fema_nri_silver.R` promotes the tract release into the governed tract backbone, keeps the county-equivalent FEMA release at county grain, selects the approved compact metric set, derives CBSA rows with population-weighted averages, and writes `silver.fema_nri`.
 
 ## Known Gaps / To-Dos
-- Tract rows are staged but intentionally deferred from the Silver contract until we explicitly decide how they should interact with the current tract backbone and downstream environment marts.
 - FEMA is currently a single-release `2025` surface rather than a longitudinal historical series, so downstream joins only populate for `year = 2025`.
 - The first-pass CBSA rollup uses population-weighted means for all promoted FEMA fields. If we later decide some hazard metrics should aggregate differently, that should be introduced as a documented method change rather than silently replacing the current contract.

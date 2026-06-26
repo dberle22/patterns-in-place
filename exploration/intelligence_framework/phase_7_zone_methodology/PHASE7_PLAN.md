@@ -76,11 +76,11 @@ SLD (`walkability_index`, `jobs_access_45min_transit`) and EJScreen (`ejs_pm25`)
 
 Review the four published frameworks and document alignment/divergence:
 
-- [ ] Review **NCRC Changing America Neighborhood Typologies (2023)** — document inputs, cluster count, label set, and where ours aligns/diverges
-- [ ] Review **Urban Institute Neighborhood Change Typologies** — focus on gentrification/displacement framing; how does their Emerging/Transitional type map to ours?
-- [ ] Skim **Esri Tapestry** documentation — note inputs (proprietary consumer data) and granularity (67 types); document why our approach is analytically distinct
-- [ ] Review **Moretti "New Geography of Jobs"** — grounding for Knowledge Corridor type and the education/jobs clustering dynamic
-- [ ] Write up in `docs/zone_methodology_notes.md` under a Literature Review section
+- [x] Review **NCRC Changing America Neighborhood Typologies (2023)** — document inputs, cluster count, label set, and where ours aligns/diverges
+- [x] Review **Urban Displacement Project Neighborhood Change Typologies** — focus on gentrification/displacement framing; how does their Emerging/Transitional type map to ours?
+- [x] Skim **Esri Tapestry** documentation — note inputs (proprietary consumer data) and granularity (67 types); document why our approach is analytically distinct
+- [x] Review **Moretti "New Geography of Jobs"** — grounding for Knowledge Corridor type and the education/jobs clustering dynamic
+- [x] Write up in `docs/zone_methodology_notes.md` under a Literature Review section
 
 ### 1.2 — Input KPI finalization
 

@@ -1,0 +1,288 @@
+table_name: lehd_lodes_rac
+schema: silver
+grain: One row per geo_level + geo_id + year.
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2023'
+  max: '2023'
+geo_coverage:
+  notes:
+    - row_count=88158
+    - distinct_geo_levels=5
+    - cbsa_rows=925
+    - county_rows=3144
+    - division_rows=9
+    - state_rows=51
+    - tract_rows=84029
+columns:
+  - name: geo_level
+    type: VARCHAR
+    definition: Geographic level for the observation row.
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    definition: Canonical geographic identifier for the observation row.
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    definition: Canonical geographic display name for the observation row.
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    definition: Observation year for the annual LODES row.
+    needs_confirmation: no
+  - name: workers_total
+    type: DOUBLE
+    definition: Total resident workers in the geography-year row from LODES RAC.
+    needs_confirmation: no
+  - name: workers_age_29_or_younger
+    type: DOUBLE
+    definition: Count in the named age bucket.
+    needs_confirmation: no
+  - name: workers_age_30_54
+    type: DOUBLE
+    definition: Count in the named age bucket.
+    needs_confirmation: no
+  - name: workers_age_55_plus
+    type: DOUBLE
+    definition: Count in the named age bucket.
+    needs_confirmation: no
+  - name: workers_earnings_low
+    type: DOUBLE
+    definition: Count in the named earnings bucket.
+    needs_confirmation: no
+  - name: workers_earnings_mid
+    type: DOUBLE
+    definition: Count in the named earnings bucket.
+    needs_confirmation: no
+  - name: workers_earnings_high
+    type: DOUBLE
+    definition: Count in the named earnings bucket.
+    needs_confirmation: no
+  - name: workers_edu_less_than_hs
+    type: DOUBLE
+    definition: Count in the named education bucket.
+    needs_confirmation: no
+  - name: workers_edu_hs_or_some_college
+    type: DOUBLE
+    definition: Count in the named education bucket.
+    needs_confirmation: no
+  - name: workers_edu_bachelors_or_advanced
+    type: DOUBLE
+    definition: Count in the named education bucket.
+    needs_confirmation: no
+  - name: workers_edu_not_available
+    type: DOUBLE
+    definition: Count in the named education bucket.
+    needs_confirmation: no
+  - name: workers_ind_ag_forest_fish_hunt
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_mining_quarry_oil_gas
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_utilities
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_construction
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_manufacturing
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_wholesale
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_retail
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_transport_warehouse
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_information
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_finance_insurance
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_real_estate
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_professional_scientific_technical
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_management_companies
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_admin_support_waste
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_educational_services
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_health_care_social_assistance
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_arts_entertainment_recreation
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_accommodation_food
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_other_services
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_public_administration
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: pct_workers_age_29_or_younger
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_age_30_54
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_age_55_plus
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_earnings_low
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_earnings_mid
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_earnings_high
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_edu_less_than_hs
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_edu_hs_or_some_college
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_edu_bachelors_or_advanced
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_edu_not_available
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_ag_forest_fish_hunt
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_mining_quarry_oil_gas
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_utilities
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_construction
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_manufacturing
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_wholesale
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_retail
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_transport_warehouse
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_information
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_finance_insurance
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_real_estate
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_professional_scientific_technical
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_management_companies
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_admin_support_waste
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_educational_services
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_health_care_social_assistance
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_arts_entertainment_recreation
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_accommodation_food
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_other_services
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_public_administration
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+lineage:
+  - step: materialize
+    script: foundations/etl/silver/lehd_lodes_silver.R
+    details: Validates tract coverage against the geography backbone, rolls the tract base to higher geographies, and writes the governed LODES analytical surface.
+kpi_definitions: []

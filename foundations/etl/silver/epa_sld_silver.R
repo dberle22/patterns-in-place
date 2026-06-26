@@ -116,6 +116,23 @@ epa_sld_stage <- DBI::dbGetQuery(con, "SELECT * FROM staging.epa_sld") %>%
     county_geoid = paste0(as.character(state_fips), as.character(county_fips))
   )
 
+bg_xwalk_2020 <- DBI::dbGetQuery(con, "SELECT bg_geoid_2010, bg_geoid_2020, tract_geoid_2020, land_area_weight FROM staging.census_bg_xwalk_2010_2020") %>%
+  mutate(
+    bg_geoid_2010    = as.character(bg_geoid_2010),
+    bg_geoid_2020    = as.character(bg_geoid_2020),
+    tract_geoid_2020 = as.character(tract_geoid_2020),
+    land_area_weight = as.numeric(land_area_weight)
+  )
+
+tract_xwalk <- DBI::dbGetQuery(con, "SELECT tract_geoid, state_fip, tract_name_long, state_abbr FROM silver.xwalk_tract_county") %>%
+  transmute(
+    tract_geoid     = as.character(tract_geoid),
+    tract_name_long = as.character(tract_name_long),
+    state_abbr      = as.character(state_abbr),
+    state_fips      = as.character(state_fip)
+  ) %>%
+  distinct(tract_geoid, .keep_all = TRUE)
+
 county_xwalk <- DBI::dbGetQuery(con, "SELECT * FROM silver.xwalk_county_state") %>%
   transmute(
     county_geoid = as.character(county_geoid),
@@ -335,7 +352,66 @@ epa_sld_cbsa <- epa_sld_rollup_base %>%
     housing_density_gross
   )
 
-# 8. Aggregate counties to states ----
+# 8. Aggregate block groups to tracts via 2010→2020 BG crosswalk ----
+# Each SLD 2010 BG may map to multiple 2020 BGs (when a 2010 BG was split).
+# The land_area_weight (share of 2010 BG land in each 2020 BG) is multiplied
+# into the population weight so that split BGs contribute proportionally.
+epa_sld_tract <- epa_sld_rollup_base %>%
+  inner_join(bg_xwalk_2020, by = c("bg_geoid" = "bg_geoid_2010")) %>%
+  inner_join(
+    tract_xwalk %>% select(tract_geoid, tract_name_long, tract_state_fips = state_fips, tract_state_abbr = state_abbr),
+    by = c("tract_geoid_2020" = "tract_geoid")
+  ) %>%
+  mutate(
+    # Scale population-based denominators by the land-area weight so split BGs
+    # don't double-count their full population into multiple tracts.
+    total_population    = total_population    * land_area_weight,
+    total_employment    = total_employment    * land_area_weight,
+    housing_units       = housing_units       * land_area_weight,
+    households          = households          * land_area_weight,
+    land_acres_unprotected = land_acres_unprotected * land_area_weight,
+    transit_metric_population_covered    = transit_metric_population_covered    * land_area_weight,
+    walkability_metric_population_covered = walkability_metric_population_covered * land_area_weight
+  ) %>%
+  group_by(tract_geoid_2020, tract_name_long, tract_state_fips, tract_state_abbr, year) %>%
+  aggregate_epa_sld_metrics() %>%
+  transmute(
+    geo_level = "tract",
+    geo_id    = tract_geoid_2020,
+    geo_name  = tract_name_long,
+    year      = year,
+    state_abbr = tract_state_abbr,
+    state_fips = tract_state_fips,
+    total_population,
+    total_employment,
+    housing_units,
+    households,
+    land_acres_unprotected,
+    block_group_count,
+    block_group_count_transit_non_null,
+    block_group_count_walkability_non_null,
+    transit_metric_population_covered,
+    walkability_metric_population_covered,
+    transit_population_coverage_share,
+    walkability_population_coverage_share,
+    walkability_index,
+    employment_housing_mix,
+    employment_mix,
+    street_intersection_density,
+    auto_oriented_intersection_share,
+    transit_service_density,
+    transit_frequency_peak,
+    distance_to_transit,
+    jobs_access_45min_transit,
+    workers_access_45min_transit,
+    jobs_access_45min_auto,
+    workers_access_45min_auto,
+    employment_density_gross,
+    population_density_gross,
+    housing_density_gross
+  )
+
+# 10. Aggregate counties to states ----
 epa_sld_state <- epa_sld_county %>%
   left_join(state_xwalk, by = "state_fips", suffix = c("", "_state")) %>%
   mutate(
@@ -379,8 +455,9 @@ epa_sld_state <- epa_sld_county %>%
     housing_density_gross
   )
 
-# 9. Materialize unified Silver table ----
+# 11. Materialize unified Silver table ----
 epa_sld_silver <- bind_rows(
+  epa_sld_tract,
   epa_sld_county,
   epa_sld_cbsa,
   epa_sld_state

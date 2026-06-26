@@ -3,10 +3,10 @@
 -- Notes:
 --   * The table now uses the union of AQI, EJScreen, and FEMA geographies so
 --     sparse AQI coverage does not suppress FEMA or EJScreen rows.
---   * EJScreen is rolled up from tract to county / CBSA with population-weighted
---     averages so we can preserve the shared Gold geography contract while still
---     carrying the tract-first archive into the environment mart.
---   * FEMA NRI is joined from the county + CBSA Silver table at the shared
+--   * EJScreen now keeps tract rows directly while still rolling tract values
+--     up to county / CBSA with population-weighted averages for the shared
+--     higher-level contract.
+--   * FEMA NRI is joined from the tract + county + CBSA Silver table at the shared
 --     `geo_level + geo_id + year` grain and promoted as a compact risk slice.
 
 create or replace table patterns_in_place.gold.environment_wide as
@@ -36,7 +36,7 @@ geo_reference as (
         geo_id,
         geo_name
     from patterns_in_place.gold.dim_geo
-    where geo_level in ('county', 'cbsa')
+    where geo_level in ('tract', 'county', 'cbsa')
 ),
 ejscreen_tract_bridge as (
     select
@@ -68,6 +68,33 @@ ejscreen_tract_bridge as (
         on e.geo_level = 'tract'
        and d.geo_level = 'tract'
        and e.geo_id = d.geo_id
+),
+ejscreen_tract as (
+    select
+        'tract' as geo_level,
+        geo_id,
+        year,
+        total_population as ejs_population_covered,
+        pm25 as ejs_pm25,
+        ozone as ejs_ozone,
+        diesel_pm as ejs_diesel_pm,
+        traffic_proximity as ejs_traffic_proximity,
+        superfund_proximity as ejs_superfund_proximity,
+        rmp_proximity as ejs_rmp_proximity,
+        wastewater_discharge as ejs_wastewater_discharge,
+        drinking_water_noncompliance as ejs_drinking_water_noncompliance,
+        pctile_pm25_us as ejs_pctile_pm25_us,
+        pctile_ozone_us as ejs_pctile_ozone_us,
+        pctile_diesel_pm_us as ejs_pctile_diesel_pm_us,
+        pctile_traffic_us as ejs_pctile_traffic_us,
+        pctile_superfund_us as ejs_pctile_superfund_us,
+        pctile_rmp_us as ejs_pctile_rmp_us,
+        pctile_wastewater_us as ejs_pctile_wastewater_us,
+        pctile_drinking_water_us as ejs_pctile_drinking_water_us,
+        count_high_exposure_indicators as ejs_avg_high_exposure_indicators,
+        count_high_exposure_supplemental as ejs_avg_high_exposure_supplemental
+    from patterns_in_place.silver.ejscreen
+    where geo_level = 'tract'
 ),
 ejscreen_county as (
     select
@@ -125,6 +152,8 @@ ejscreen_cbsa as (
     group by 1, 2, 3
 ),
 ejscreen_rollup as (
+    select * from ejscreen_tract
+    union all
     select * from ejscreen_county
     union all
     select * from ejscreen_cbsa
@@ -161,33 +190,25 @@ fema as (
     from patterns_in_place.silver.fema_nri
 ),
 environment_backbone as (
-    select geo_level, geo_id, geo_name, year
+    select geo_level, geo_id, year
     from aqi
     union
     select
         ejs.geo_level,
         ejs.geo_id,
-        ref.geo_name,
         ejs.year
     from ejscreen_rollup ejs
-    left join geo_reference ref
-        on ejs.geo_level = ref.geo_level
-       and ejs.geo_id = ref.geo_id
     union
     select
         f.geo_level,
         f.geo_id,
-        ref.geo_name,
         f.year
     from fema f
-    left join geo_reference ref
-        on f.geo_level = ref.geo_level
-       and f.geo_id = ref.geo_id
 )
 select
     b.geo_level,
     b.geo_id,
-    coalesce(b.geo_name, ref.geo_name) as geo_name,
+    coalesce(aqi.geo_name, ref.geo_name) as geo_name,
     b.year,
     aqi.days_with_aqi,
     aqi.good_days,

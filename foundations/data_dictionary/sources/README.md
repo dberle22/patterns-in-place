@@ -23,6 +23,7 @@ These docs sit above the layer contracts and answer the higher-level questions t
 - [source__bea.md](./source__bea.md)
 - [source__bfs.md](./source__bfs.md)
 - [source__bls.md](./source__bls.md)
+- [source__bls_oews.md](./source__bls_oews.md)
 - [source__bps.md](./source__bps.md)
 - [source__cbp.md](./source__cbp.md)
 - [source__social_capital_atlas.md](./source__social_capital_atlas.md)
@@ -30,6 +31,10 @@ These docs sit above the layer contracts and answer the higher-level questions t
 - [source__epa.md](./source__epa.md)
 - [source__irs.md](./source__irs.md)
 - [source__opportunity_atlas.md](./source__opportunity_atlas.md)
+- [source__usda_ers_typology.md](./source__usda_ers_typology.md)
+- [source__lehd_lodes.md](./source__lehd_lodes.md)
+- [source__lehd_j2j.md](./source__lehd_j2j.md)
+- [source__lehd_qwi.md](./source__lehd_qwi.md)
 - [source__zillow.md](./source__zillow.md)
 
 Coverage tracking:

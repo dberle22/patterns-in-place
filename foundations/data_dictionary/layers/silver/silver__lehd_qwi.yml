@@ -1,0 +1,414 @@
+table_name: lehd_qwi
+schema: silver
+grain: One row per geo_level + geo_id + year + demo_family + demo_code + industry_code.
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+  - demo_family
+  - demo_code
+  - industry_code
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2007'
+  max: '2025'
+geo_coverage:
+  notes:
+    - geo_levels=county,cbsa,state,division,us
+    - row_count=11387040
+    - county_first_rollup=true
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 5
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 8
+    top_values: []
+    definition: Geographic level for the row (`county`, `cbsa`, `state`, `division`, or `us`).
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 5
+    top_values: []
+    definition: Geographic identifier for the row.
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Geographic display name for the row.
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 19
+    min_value: 2007
+    max_value: 2025
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Observation year for the annualized QWI row.
+    needs_confirmation: no
+  - name: state_fips
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values: []
+    definition: State FIPS code for county and state rows; null for aggregate non-state geographies.
+    needs_confirmation: no
+  - name: state_abbr
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values: []
+    definition: State abbreviation for county and state rows; null for aggregate non-state geographies.
+    needs_confirmation: no
+  - name: demo_family
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 2
+    min_value: ~
+    max_value: ~
+    min_length: 3
+    max_length: 9
+    top_values: []
+    definition: Demographic family represented by the row (`age` or `education`).
+    needs_confirmation: no
+  - name: demo_code
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 14
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 3
+    top_values: []
+    definition: LEHD demographic code for the row's age or education bucket.
+    needs_confirmation: no
+  - name: demo_label
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 14
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Human-readable label for `demo_code`.
+    needs_confirmation: no
+  - name: demo_sort_order
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 9
+    min_value: 0
+    max_value: 8
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Stable sort order for the demographic code within its family.
+    needs_confirmation: no
+  - name: is_total_demo
+    type: BOOLEAN
+    null_pct: 0.0
+    distinct_count: 2
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Whether the demographic code is the all-category total row within its family.
+    needs_confirmation: no
+  - name: industry_code
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 21
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 5
+    top_values: []
+    definition: LEHD industry sector code carried into the curated Silver contract.
+    needs_confirmation: no
+  - name: industry_label
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 21
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Human-readable label for `industry_code`.
+    needs_confirmation: no
+  - name: industry_rollup_family
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 13
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Broad industry family aligned to the repo's cross-source economy taxonomy.
+    needs_confirmation: no
+  - name: is_total_industry
+    type: BOOLEAN
+    null_pct: 0.0
+    distinct_count: 2
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Whether the row is the all-industry total (`industry_code = 00`).
+    needs_confirmation: no
+  - name: ownercode
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: ~
+    max_value: ~
+    min_length: 3
+    max_length: 3
+    top_values: []
+    definition: LEHD ownership code; the current Silver contract keeps only all-private `A05`.
+    needs_confirmation: no
+  - name: periodicity
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 1
+    top_values: []
+    definition: Managed periodicity code for the Silver row; current contract is annual `A`.
+    needs_confirmation: no
+  - name: source_periodicity
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: ~
+    max_value: ~
+    min_length: 1
+    max_length: 1
+    top_values: []
+    definition: Native source periodicity for the staged QWI rows; current contract is quarterly `Q`.
+    needs_confirmation: no
+  - name: quarters_observed
+    type: INTEGER
+    null_pct: 0.0
+    distinct_count: 4
+    min_value: 1
+    max_value: 4
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Number of quarterly source rows that contributed to the annualized Silver row.
+    needs_confirmation: no
+  - name: release_id
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: LEHD release stamp such as `R2026Q2`.
+    needs_confirmation: no
+  - name: schema_version
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: LEHD schema version reported by the release metadata.
+    needs_confirmation: no
+  - name: metadata_period_range
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Source metadata period range carried from `version_qwi.txt`.
+    needs_confirmation: no
+  - name: employment
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Canonical annual average employment measure derived from `annual_avg_emp`.
+    needs_confirmation: no
+  - name: avg_earnings
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Canonical annual average earnings measure, weighted after rollup by employment.
+    needs_confirmation: no
+  - name: new_hire_avg_earnings
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Annualized new-hire average earnings measure, weighted after rollup by hires.
+    needs_confirmation: no
+  - name: separation_avg_earnings
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Annualized separation average earnings measure, weighted after rollup by separations.
+    needs_confirmation: no
+  - name: hires
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Annual hires count derived from `annual_hira`.
+    needs_confirmation: no
+  - name: separations
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Annual separations count derived from `annual_sep`.
+    needs_confirmation: no
+  - name: replacements
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Annual replacement hires count derived from `annual_hiraendrepl`.
+    needs_confirmation: no
+  - name: payroll
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Annual payroll measure derived from `annual_payroll`.
+    needs_confirmation: no
+  - name: hire_rate
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Hires divided by employment, recomputed after rollup.
+    needs_confirmation: no
+  - name: separation_rate
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Separations divided by employment, recomputed after rollup.
+    needs_confirmation: no
+  - name: replacement_rate
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Replacements divided by employment, recomputed after rollup.
+    needs_confirmation: no
+  - name: payroll_per_employee
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Payroll divided by employment, recomputed after rollup.
+    needs_confirmation: no
+  - name: source
+    type: VARCHAR
+    null_pct: 0.0
+    distinct_count: 1
+    min_value: ~
+    max_value: ~
+    min_length: 15
+    max_length: 15
+    top_values:
+      - value: Census LEHD QWI
+        count: ~
+    definition: Source system or provider for the row.
+    needs_confirmation: no
+lineage:
+  - step: write_target
+    script: foundations/etl/silver/lehd_qwi_silver.R
+    details: Table materialized from `staging.lehd_qwi`, standardized at county grain, then rolled to CBSA, state, division, and U.S. geographies.
+kpi_definitions: []

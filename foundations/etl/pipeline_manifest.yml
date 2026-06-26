@@ -95,6 +95,16 @@ steps:
       - seed_staging
     enabled: true
 
+  - id: bls_oews_staging
+    layer: staging
+    script: foundations/etl/staging/get_bls_oews.R
+    outputs:
+      - staging.bls_oews_state
+      - staging.bls_oews_metro_nonmetro
+    depends_on:
+      - seed_staging
+    enabled: true
+
   - id: cbp_county_staging
     layer: staging
     script: foundations/etl/staging/get_cbp.R
@@ -113,11 +123,49 @@ steps:
       - seed_staging
     enabled: true
 
+  - id: lehd_lodes_staging
+    layer: staging
+    script: foundations/etl/staging/get_lehd_lodes.R
+    outputs:
+      - staging.lehd_lodes_wac
+      - staging.lehd_lodes_rac
+    depends_on:
+      - seed_staging
+    enabled: true
+
+  - id: lehd_qwi_staging
+    layer: staging
+    script: foundations/etl/staging/get_lehd_qwi.R
+    outputs:
+      - staging.lehd_qwi
+    depends_on:
+      - seed_staging
+    enabled: true
+
+  - id: lehd_j2j_staging
+    layer: staging
+    script: foundations/etl/staging/get_lehd_j2j.R
+    outputs:
+      - staging.lehd_j2j
+    depends_on:
+      - seed_staging
+    enabled: true
+
   - id: usda_food_atlas_staging
     layer: staging
     script: foundations/etl/staging/get_usda_food_atlas.R
     outputs:
       - staging.usda_food_atlas
+    depends_on:
+      - seed_staging
+    enabled: true
+
+  - id: usda_ers_typology_staging
+    layer: staging
+    script: foundations/etl/staging/get_usda_ers_typology.R
+    outputs:
+      - staging.usda_rucc
+      - staging.usda_county_typology
     depends_on:
       - seed_staging
     enabled: true
@@ -141,6 +189,16 @@ steps:
       - seed_staging
     enabled: true
 
+  - id: bea_cainc5n_staging
+    layer: staging
+    script: foundations/etl/staging/get_bea_cainc5n.R
+    outputs:
+      - staging.bea_cainc5n
+      - staging.bea_cainc5n_line_codes
+    depends_on:
+      - seed_staging
+    enabled: true
+
   - id: bea_metric_dictionary
     layer: silver
     script: foundations/etl/silver/bea_metric_dictionary.R
@@ -160,6 +218,17 @@ steps:
     depends_on:
       - seed_staging
       - geo_crosswalks
+    enabled: true
+
+  - id: bea_cainc5n
+    layer: silver
+    script: foundations/etl/silver/bea_cainc5n_silver.R
+    outputs:
+      - silver.bea_cainc5n
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+      - bea_cainc5n_staging
     enabled: true
 
   - id: acs_edu
@@ -329,6 +398,37 @@ steps:
       - geo_crosswalks
     enabled: true
 
+  - id: lehd_lodes
+    layer: silver
+    script: foundations/etl/silver/lehd_lodes_silver.R
+    outputs:
+      - silver.lehd_lodes_wac
+      - silver.lehd_lodes_rac
+    depends_on:
+      - lehd_lodes_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: lehd_qwi
+    layer: silver
+    script: foundations/etl/silver/lehd_qwi_silver.R
+    outputs:
+      - silver.lehd_qwi
+    depends_on:
+      - lehd_qwi_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: lehd_j2j
+    layer: silver
+    script: foundations/etl/silver/lehd_j2j_silver.R
+    outputs:
+      - silver.lehd_j2j
+    depends_on:
+      - lehd_j2j_staging
+      - geo_crosswalks
+    enabled: true
+
   - id: opportunity_insights_social_capital
     layer: silver
     script: foundations/etl/silver/opportunity_insights_social_capital_silver.R
@@ -358,6 +458,16 @@ steps:
     depends_on:
       - usda_food_atlas_staging
       - geo_crosswalks
+    enabled: true
+
+  - id: usda_ers_typology
+    layer: silver
+    script: foundations/etl/silver/usda_ers_typology_silver.R
+    outputs:
+      - silver.usda_county_typology
+    depends_on:
+      - usda_ers_typology_staging
+      - gold_dim_geo
     enabled: true
 
   - id: ejscreen
@@ -450,6 +560,17 @@ steps:
       - seed_staging
       - geo_crosswalks
     enabled: true
+
+  - id: bls_oews
+    layer: silver
+    script: foundations/etl/silver/bls_oews_silver.R
+    outputs:
+      - silver.bls_oews
+    depends_on:
+      - bls_oews_staging
+      - geo_crosswalks
+    enabled: true
+    notes: Builds the curated 2025 OEWS state and CBSA occupation surface from the staged state and metro/nonmetro workbooks.
 
   - id: bps
     layer: silver
@@ -573,6 +694,7 @@ steps:
       - gold.dim_geo
     depends_on:
       - geo_crosswalks
+      - usda_ers_typology
     enabled: true
 
   - id: gold_policy_designations
@@ -640,6 +762,34 @@ steps:
     depends_on:
       - acs_age
       - bls_laus
+      - lehd_qwi
+    enabled: true
+
+  - id: gold_economics_occupation_wide
+    layer: gold
+    script: foundations/etl/gold/gold_economics_occupation_wide.sql
+    outputs:
+      - gold.economics_occupation_wide
+    depends_on:
+      - bls_oews
+    enabled: true
+
+  - id: gold_economics_lodes
+    layer: gold
+    script: foundations/etl/gold/gold_economics_lodes.sql
+    outputs:
+      - gold.economics_lodes_wide
+    depends_on:
+      - lehd_lodes
+    enabled: true
+
+  - id: gold_labor_j2j_wide
+    layer: gold
+    script: foundations/etl/gold/gold_labor_j2j_wide.sql
+    outputs:
+      - gold.labor_j2j_wide
+    depends_on:
+      - lehd_j2j
     enabled: true
 
   - id: gold_housing_core
@@ -758,5 +908,6 @@ steps:
       - gold_economy_gdp
       - gold_economy_industry
       - gold_economy_labor
+      - gold_economics_occupation_wide
     enabled: false
     notes: Legacy exploratory SQL; does not currently materialize a gold table.

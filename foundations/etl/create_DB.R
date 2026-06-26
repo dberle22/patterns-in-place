@@ -27,10 +27,16 @@ staging_scripts <- c(
   "get_irs_bmf.R",
   "get_epa_aqi.R",
   "get_epa_sld.R",
+  "get_bls_oews.R",
   "get_cbp.R",
   "get_cbp_zip.R",
   "get_bfs.R",
+  "get_bea_cainc5n.R",
+  "get_lehd_lodes.R",
+  "get_lehd_qwi.R",
+  "get_lehd_j2j.R",
   "get_usda_food_atlas.R",
+  "get_usda_ers_typology.R",
   "get_ejscreen.R",
   "get_fema_nri.R"
 )
@@ -58,8 +64,10 @@ silver_scripts <- c(
   "bea_cagdp9_silver.R",
   "bea_cainc1_silver.R",
   "bea_cainc4_silver.R",
+  "bea_cainc5n_silver.R",
   "bea_marpp_silver.R",
   "bls_laus_silver.R",
+  "bls_oews_silver.R",
   "bps_silver.R",
   "hud_fmr_silver.R",
   "zillow_silver.R",
@@ -68,6 +76,10 @@ silver_scripts <- c(
   "cbp_silver.R",
   "cbp_zip_silver.R",
   "bfs_silver.R",
+  "lehd_lodes_silver.R",
+  "lehd_qwi_silver.R",
+  "lehd_j2j_silver.R",
+  "usda_ers_typology_silver.R",
   "opportunity_insights_social_capital_silver.R",
   "irs_bmf_silver.R",
   "acs_variable_dictionary_silver.R",
@@ -82,6 +94,9 @@ gold_scripts <- c(
   "gold_economy_gdp.sql",
   "gold_economy_industry.sql",
   "gold_economy_labor.sql",
+  "gold_economics_occupation_wide.sql",
+  "gold_economics_lodes.sql",
+  "gold_labor_j2j_wide.sql",
   "gold_housing_core.sql",
   "gold_housing_market_wide.sql",
   "gold_health_wide.sql",
@@ -99,6 +114,7 @@ dbExecute(setup_con, "CREATE SCHEMA IF NOT EXISTS staging;")
 dbExecute(setup_con, "CREATE SCHEMA IF NOT EXISTS geo;")
 dbExecute(setup_con, "CREATE SCHEMA IF NOT EXISTS silver;")
 dbExecute(setup_con, "CREATE SCHEMA IF NOT EXISTS gold;")
+dbExecute(setup_con, "CREATE SCHEMA IF NOT EXISTS mart_intelligence;")
 dbDisconnect(setup_con)
 
 message("Building staged designation tables from source.")

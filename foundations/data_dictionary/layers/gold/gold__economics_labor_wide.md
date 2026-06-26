@@ -3,17 +3,73 @@
 ## Overview
 - **Table**: `gold.economics_labor_wide`
 - **Purpose**: Gold layer analytical output table.
-- **Row count**: 50,422
+- **Row count**: `54,631`
 - **KPI applicability**: Gold output table; may contain derived KPI fields.
+
+## LEHD QWI Expansion
+
+`gold.economics_labor_wide` is now the Gold home for the LEHD QWI labor-dynamics layer.
+
+- QWI belongs here rather than in `gold.economics_industry_wide` because its main value is labor-market churn, worker composition, and earnings dynamics rather than establishment or GDP structure.
+- The Gold grain will remain one row per `geo_level + geo_id + year`.
+- QWI fields are built as geography-year summaries from the all-sector private totals in `silver.lehd_qwi`.
+
+Current QWI headline column family:
+- `qwi_private_emp`
+- `qwi_private_hires`
+- `qwi_private_separations`
+- `qwi_private_replacements`
+- `qwi_private_payroll`
+- `qwi_private_avg_earnings`
+- `qwi_private_new_hire_avg_earnings`
+- `qwi_private_separation_avg_earnings`
+- `qwi_private_hire_rate`
+- `qwi_private_separation_rate`
+- `qwi_private_replacement_rate`
+
+Current workforce-composition share family:
+- `qwi_pct_emp_age_14_18`
+- `qwi_pct_emp_age_19_21`
+- `qwi_pct_emp_age_22_24`
+- `qwi_pct_emp_age_25_34`
+- `qwi_pct_emp_age_35_44`
+- `qwi_pct_emp_age_45_54`
+- `qwi_pct_emp_age_55_64`
+- `qwi_pct_emp_age_65_99`
+- `qwi_pct_emp_edu_less_than_hs`
+- `qwi_pct_emp_edu_hs`
+- `qwi_pct_emp_edu_some_college`
+- `qwi_pct_emp_edu_bachelors_plus`
+- `qwi_pct_emp_edu_not_available`
+
+QWI composition rule:
+- age shares use the LEHD all-age total row `A00` as the denominator
+- education attainment shares use only `E1` through `E4` in the main denominator
+- `E5` is carried separately as `qwi_pct_emp_edu_not_available` because LEHD defines it as `Educational attainment not available (workers aged 24 or younger)`
+- the detailed `geo + year + industry + demographic slice` QWI surface remains in `silver.lehd_qwi`
 
 ## Grain & Keys
 - **Declared grain (inferred)**: One row per `geo_level + geo_id + year`.
 - **Primary key candidate (recommended)**: (`geo_level`, `geo_id`, `year`)
-  - `geo_level + geo_id + year` => rows=50422, distinct=50422, duplicates=0
-  - `geo_id + year` => rows=50422, distinct=50422, duplicates=0
-  - `geo_level` => rows=50422, distinct=3, duplicates=50419
-- **Time coverage**: `year` min=2012, max=2023
-- **Geo coverage**: distinct_geo_levels=3; distinct_geo_id=4221
+  - `geo_level + geo_id + year` => rows=`54631`, distinct=`54631`, duplicates=`0`
+  - `geo_id + year` => rows=`54631`, distinct=`54631`, duplicates=`0`
+  - `geo_level` => rows=`54631`, distinct=`3`, duplicates=`54628`
+- **Time coverage**: `year` min=`2012`, max=`2024`
+- **Geo coverage**: distinct_geo_levels=`3`; distinct_geo_id=`4,551`
+
+## QWI Coverage Notes
+
+QWI now supplies the private labor-dynamics layer for this Gold mart.
+
+- The Gold table keeps QWI on the same `county`, `cbsa`, and `state` geography surface as the rest of the mart.
+- QWI headline fields are populated where `silver.lehd_qwi` overlaps the ACS/LAUS base geography-year spine.
+- Live profile after materialization:
+  - total rows with non-null `qwi_private_emp`: `37,743`
+  - `county` rows with QWI coverage: `28,877`
+  - `cbsa` rows with QWI coverage: `8,401`
+  - `state` rows with QWI coverage: `465`
+- Age shares use LEHD `A00` all-ages employment as the denominator.
+- Education attainment shares use only `E1` through `E4` in the main denominator, while `E5` is carried separately as `qwi_pct_emp_edu_not_available`.
 
 ## Columns
 
@@ -38,10 +94,11 @@
 - Columns with non-zero null rates: labor_force=0.353%, lfpr=0.353%, lfpr_growth_5yr=41.9956%, lfpr_cagr_5yr=41.9956%, employed=0.353%, jobs_to_pop_ratio=0.353%, unemployed=0.353%, pct_unemployment_rate=0.353%, unemployment_rate_change_1yr=8.8572%
 - Key uniqueness check for recommended PK (`geo_level + geo_id + year`) returns zero duplicates in current snapshot.
 - Primary/foreign keys are not enforced as DB constraints in current pipeline.
+- QWI age-share rows can fail to sum exactly to `1.0` in some geographies because the current annual staging contract does not retain the quarter-level suppression/status flags; null subgroup measures therefore propagate through the Gold share block as missing components rather than being backfilled.
 
 ## Lineage
 1. **Creation/write references**:
-   - `scripts/etl/gold/gold_economy_labor.sql:4:create or replace table metro_deep_dive.gold.economics_labor_wide as `
+   - `foundations/etl/gold/gold_economy_labor.sql` builds `gold.economics_labor_wide` from `silver.age_kpi`, `silver.bls_laus_wide`, and the all-sector private totals plus composition slices in `silver.lehd_qwi`.
 
 ## Known Gaps / To-Dos
 - Add business definitions for high-priority consumption columns.

@@ -148,7 +148,7 @@ templates:
       measures: [percentile_rank, subject_scores, topic_scores, peer_list]
       time_series: false
     sql_pattern_notes:
-      - Source table is determined by frame_id — livability → gold.intelligence_livability, opportunity → gold.intelligence_opportunity, character → gold.intelligence_character, cross_frame → gold.intelligence_cross_frame.
+      - Source table is determined by frame_id — livability → mart_intelligence.intelligence_livability, opportunity → mart_intelligence.intelligence_opportunity, character → mart_intelligence.intelligence_character, cross_frame → mart_intelligence.intelligence_cross_frame.
       - Filter to WHERE cbsa_code = :cbsa_code; return one row.
-      - Peer list columns are top10_peer_1_cbsa_code through top10_peer_10_cbsa_code — join back to the CBSA spine for names.
+      - Peer fields live directly on the mart tables as `top10_peer_1_cbsa_code` through `top10_peer_10_cbsa_code` plus matching `_cbsa_name` and `_similarity` columns.
       - subject_id is optional; when provided, return only that subject's topic scores instead of all subject scores.

@@ -48,7 +48,8 @@
   - The table keeps population-coverage helper fields so downstream users can distinguish low-service places from low-coverage source areas.
 - Multi-state CBSAs intentionally leave `state_abbr` null rather than implying a single-state identity.
 - This first-pass Silver contract is intentionally tract-free.
-  - Tract-level recovery remains a future follow-on that likely requires the official Census 2010/2020 tract relationship files or the geodatabase-based SLD delivery rather than the current CSV-only path.
+  - The direct CSV staging path reconstructs tract identity from `STATEFP + COUNTYFP + TRACTCE`, but the live tract match rate to the governed tract backbone is too incomplete to support production tract rows.
+  - Tract-level recovery therefore remains a future follow-on that likely requires the official Census 2010/2020 tract relationship files or the geodatabase-based SLD delivery rather than the current CSV-only path.
 
 ## Lineage
 1. `foundations/etl/staging/get_epa_sld.R` downloads the direct EPA Smart Location CSV, reconstructs canonical block-group GEOIDs from component geography parts, keeps the agreed compact indicator set plus `TotEmp`, and materializes `staging.epa_sld`.
@@ -56,4 +57,4 @@
 
 ## Known Gaps / To-Dos
 - `walkability_index` remains a weighted county approximation of EPA's block-group score rather than a true county-level EPA re-estimation.
-- If downstream Gold work needs tract transportation summaries, the next step should be to revisit tract normalization with a 2010/2020 tract relationship bridge rather than re-aggregate block groups in multiple places.
+- If downstream Gold work needs tract transportation summaries, the next step should be to add a tract relationship bridge or move to a source artifact that preserves tract identity reliably enough for the governed tract backbone rather than re-aggregating block groups in multiple places.

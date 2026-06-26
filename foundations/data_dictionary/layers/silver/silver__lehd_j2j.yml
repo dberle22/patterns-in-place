@@ -1,0 +1,119 @@
+table_name: lehd_j2j
+schema: silver
+grain: One row per geo_level + geo_id + year + demo_code + industry_code.
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+  - demo_code
+  - industry_code
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2011'
+  max: '2024'
+geo_coverage:
+  notes:
+    - geo_levels=state,cbsa
+    - row_count=457889
+    - state_rows=48138
+    - cbsa_rows=409751
+    - per_scope_completed_year_window=true
+    - complete_year_rows=456022
+    - incomplete_year_rows=1867
+    - unmatched_legacy_cbsa_codes=48
+    - unmatched_legacy_cbsa_rows=45309
+columns:
+  - name: geo_level
+    type: VARCHAR
+    definition: Canonical geography level for the row (`state` or `cbsa`).
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    definition: Canonical geographic identifier for the row.
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    definition: Geographic display name for the row, with a legacy-code fallback for unmatched metro rows.
+    needs_confirmation: no
+  - name: source_scope_type
+    type: VARCHAR
+    definition: Upstream J2J file family scope used to produce the row (`state` or `metro`).
+    needs_confirmation: no
+  - name: source_scope_id
+    type: VARCHAR
+    definition: Upstream state abbreviation or metro code used to produce the row.
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    definition: Observation year for the annualized J2J row.
+    needs_confirmation: no
+  - name: demo_family
+    type: VARCHAR
+    definition: Retained demographic family; current contract keeps only `age`.
+    needs_confirmation: no
+  - name: demo_code
+    type: VARCHAR
+    definition: LEHD age-group code for the row.
+    needs_confirmation: no
+  - name: demo_label
+    type: VARCHAR
+    definition: Human-readable label for `demo_code`.
+    needs_confirmation: no
+  - name: industry_code
+    type: VARCHAR
+    definition: LEHD industry code retained in the J2J Silver contract.
+    needs_confirmation: no
+  - name: industry_label
+    type: VARCHAR
+    definition: Human-readable label for `industry_code`.
+    needs_confirmation: no
+  - name: hires_total
+    type: DOUBLE
+    definition: Annual sum of J2J `MHire`.
+    needs_confirmation: no
+  - name: separations_total
+    type: DOUBLE
+    definition: Annual sum of J2J `MSep`.
+    needs_confirmation: no
+  - name: j2j_hires
+    type: DOUBLE
+    definition: Annual sum of direct job-to-job hires.
+    needs_confirmation: no
+  - name: j2j_separations
+    type: DOUBLE
+    definition: Annual sum of direct job-to-job separations.
+    needs_confirmation: no
+  - name: avg_ee_hire_earnings_dest
+    type: DOUBLE
+    definition: Annual average destination-side earnings for employment-to-employment hires.
+    needs_confirmation: no
+  - name: avg_ee_sep_earnings_orig
+    type: DOUBLE
+    definition: Annual average origin-side earnings for employment-to-employment separations.
+    needs_confirmation: no
+  - name: avg_ee_earnings_delta
+    type: DOUBLE
+    definition: Difference between destination and origin employment-to-employment average earnings for complete annual rows.
+    needs_confirmation: no
+  - name: j2j_hire_share
+    type: DOUBLE
+    definition: Share of total hires that are direct job-to-job hires for complete annual rows.
+    needs_confirmation: no
+  - name: j2j_sep_share
+    type: DOUBLE
+    definition: Share of total separations that are direct job-to-job separations for complete annual rows.
+    needs_confirmation: no
+  - name: quarters_observed
+    type: INTEGER
+    definition: Number of source quarters contributing to the annual row.
+    needs_confirmation: no
+  - name: is_complete_year
+    type: BOOLEAN
+    definition: Whether all four source quarters were observed for the annual row.
+    needs_confirmation: no
+  - name: has_current_cbsa_match
+    type: BOOLEAN
+    definition: Whether a metro row matched the current CBSA crosswalk naming reference.
+    needs_confirmation: no

@@ -1,0 +1,411 @@
+table_name: bls_oews
+schema: silver
+grain: One row per geo_level + geo_id + year + soc_code.
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+  - soc_code
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2025'
+  max: '2025'
+geo_coverage:
+  notes:
+    - geo_levels=state,cbsa
+    - first_pass_excludes=nonmetro,territory
+    - row_count=186419
+    - sourced_from=staging.bls_oews_state,staging.bls_oews_metro_nonmetro
+columns:
+  - name: geo_level
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: 4
+    max_length: 5
+    top_values: []
+    definition: Canonical geography level for the row (`state` or `cbsa`).
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 5
+    top_values: []
+    definition: Canonical geography identifier for the row.
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Canonical geography display name for the row.
+    needs_confirmation: no
+  - name: state_fips
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values: []
+    definition: Two-digit state FIPS code for the row's state context.
+    needs_confirmation: no
+  - name: state_abbr
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values: []
+    definition: USPS state abbreviation for the row's state context.
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    null_pct: ~
+    distinct_count: ~
+    min_value: 2025
+    max_value: 2025
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: OEWS release year carried into the Silver contract.
+    needs_confirmation: no
+  - name: soc_code
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Standard Occupational Classification code for the OEWS row.
+    needs_confirmation: no
+  - name: soc_title
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Published SOC occupation title for the row.
+    needs_confirmation: no
+  - name: soc_major_group
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: 2
+    max_length: 2
+    top_values: []
+    definition: Two-digit SOC major-group code derived from `soc_code` where applicable.
+    needs_confirmation: no
+  - name: soc_major_group_title
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Human-readable title for the row's SOC major group.
+    needs_confirmation: no
+  - name: o_group
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: OEWS occupation-group indicator describing whether the row is a total, major-group, or detailed occupation record.
+    needs_confirmation: no
+  - name: occupation_bucket
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Repo-defined archetype bucket derived from SOC major groups.
+    needs_confirmation: no
+  - name: is_stem
+    type: BOOLEAN
+    null_pct: ~
+    distinct_count: 2
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Whether the occupation belongs to the pinned OEWS STEM auxiliary definition.
+    needs_confirmation: no
+  - name: employment
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Estimated employment for the occupation in the geography.
+    needs_confirmation: no
+  - name: employment_prse_pct
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Percent relative standard error for the employment estimate.
+    needs_confirmation: no
+  - name: jobs_per_1000
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Jobs in the occupation per 1,000 jobs in the geography.
+    needs_confirmation: no
+  - name: location_quotient
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Occupational employment concentration relative to the U.S.
+    needs_confirmation: no
+  - name: hourly_mean_wage
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Mean hourly wage for the occupation-geography row.
+    needs_confirmation: no
+  - name: annual_mean_wage
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Mean annual wage for the occupation-geography row.
+    needs_confirmation: no
+  - name: mean_wage_prse_pct
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Percent relative standard error for the mean wage estimate.
+    needs_confirmation: no
+  - name: hourly_p10_wage
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: 10th-percentile hourly wage.
+    needs_confirmation: no
+  - name: hourly_p25_wage
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: 25th-percentile hourly wage.
+    needs_confirmation: no
+  - name: hourly_median_wage
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Median hourly wage.
+    needs_confirmation: no
+  - name: hourly_p75_wage
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: 75th-percentile hourly wage.
+    needs_confirmation: no
+  - name: hourly_p90_wage
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: 90th-percentile hourly wage.
+    needs_confirmation: no
+  - name: annual_p10_wage
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: 10th-percentile annual wage.
+    needs_confirmation: no
+  - name: annual_p25_wage
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: 25th-percentile annual wage.
+    needs_confirmation: no
+  - name: annual_median_wage
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Median annual wage.
+    needs_confirmation: no
+  - name: annual_p75_wage
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: 75th-percentile annual wage.
+    needs_confirmation: no
+  - name: annual_p90_wage
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: 90th-percentile annual wage.
+    needs_confirmation: no
+  - name: annual_note
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Source note field preserved from OEWS annual wage availability or conversion flags.
+    needs_confirmation: no
+  - name: hourly_note
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Source note field preserved from OEWS hourly wage availability or conversion flags.
+    needs_confirmation: no
+  - name: source_area_code
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Original OEWS `area` code retained for lineage and QA.
+    needs_confirmation: no
+  - name: source_area_title
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Original OEWS `area_title` retained for lineage and QA.
+    needs_confirmation: no
+  - name: source_workbook
+    type: VARCHAR
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Exact OEWS workbook filename from which the row was staged.
+    needs_confirmation: no
+lineage:
+  - step: planned_write_target
+    script: foundations/etl/silver/bls_oews_silver.R
+    details: Silver script reads staged OEWS state and metro/nonmetro rows, keeps the approved first-pass subset, joins the official May 2025 STEM occupation list, normalizes geography and occupation metadata, and materializes `silver.bls_oews`.
+kpi_definitions: []

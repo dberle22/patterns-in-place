@@ -9,7 +9,7 @@
 - **Declared grain**: One row per `geo_level + geo_id + year`.
 - **Primary key candidate**: (`geo_level`, `geo_id`, `year`)
 - **Current scope**:
-  - `geo_level = county`, `cbsa`, `state`
+  - `geo_level = tract`, `county`, `cbsa`, `state`
   - `year = 2021`
 
 ## Column Groups
@@ -23,17 +23,19 @@
 - This table is intentionally separate from `gold.transport_built_form_wide`.
   - SLD is a sparse, single-vintage (`2021`) baseline source.
   - Keeping it separate avoids implying that the SLD fields are recurring annual transport series.
-- The current Gold contract includes county, CBSA, and state rows promoted directly from `silver.epa_sld`.
+- The Gold contract includes tract, county, CBSA, and state rows promoted directly from `silver.epa_sld`.
+- Tract rows use the Census Bureau 2010→2020 block group relationship file (`staging.census_bg_xwalk_2010_2020`) to map SLD's 2010 BG boundaries onto 2020 tract GEOIDs. Each split BG contributes proportionally via land-area weights, and the resulting 2020 tract GEOIDs align with the TIGRIS 2023 tract backbone in `silver.xwalk_tract_county`. Coverage is 83,220 tracts (99.7% have a walkability index).
+- Tracts not resolved: Puerto Rico, US territories, and Connecticut's 2022 planning district restructuring — the same geographic edge cases excluded at county level.
 - The `2021` Connecticut rows use the legacy county GEOIDs (`09001` through `09015`) via an explicit manual fallback so the SLD baseline aligns with the `2021` county ACS transport contract.
 - Alaska county-equivalent `02261` remains excluded because the current county crosswalk no longer carries that retired geography.
 - Multi-state CBSAs intentionally keep `state_abbr` null rather than implying a single-state identity.
-- Tract-level SLD recovery remains deferred pending a stronger 2010/2020 tract relationship strategy or a geodatabase-based ingest path.
 
 ## Lineage
 1. `foundations/etl/staging/get_epa_sld.R` downloads the direct EPA Smart Location CSV, reconstructs canonical block-group GEOIDs, keeps the approved compact indicator set plus `TotEmp`, and writes `staging.epa_sld`.
-2. `foundations/etl/silver/epa_sld_silver.R` aggregates block groups to counties using exact recomputation where possible and documented weighted means elsewhere, derives CBSA and state rows from that county base, and writes `silver.epa_sld`.
-3. `foundations/etl/gold/gold_transport_built_form_sld.sql` promotes the modeled baseline directly into `gold.transport_built_form_sld`.
+2. `foundations/etl/staging/get_census_bg_crosswalk.R` downloads the Census Bureau 2010→2020 block group relationship file and writes `staging.census_bg_xwalk_2010_2020` with land-area weights.
+3. `foundations/etl/silver/epa_sld_silver.R` aggregates block groups to tracts (via the BG crosswalk), counties, CBSAs, and states using population-weighted means, and writes `silver.epa_sld`.
+4. `foundations/etl/gold/gold_transport_built_form_sld.sql` promotes the modeled baseline directly into `gold.transport_built_form_sld`.
 
 ## Known Gaps / To-Dos
-- No tract rows are included in the current Gold contract.
-- If we later recover tract-level SLD cleanly, we should revisit whether this table adds a parallel tract baseline.
+- Tract rows for Puerto Rico, US territories, and CT planning districts are excluded by design — the same boundary edge cases excluded at county level.
+- The Census BG crosswalk uses land-area weights as a proxy for population distribution within split BGs. NHGIS target-density weights would be more precise but require an account; land-area weights are a well-accepted fallback for most use cases.

@@ -81,7 +81,7 @@ Low. Bulk download available as flat XLSX or CSV files by geography type (nation
 
 **Suggested Gold table**
 
-`gold.labor_occupation_wide` — grain: `(geo_level, geo_id, geo_name, year, soc_code)` with employment, wage percentiles, location quotient (computed vs. national share), and occupation group rollups (STEM, management/professional, service, production, etc.)
+`gold.economics_occupation_wide` — grain: `(geo_level, geo_id, year)` with occupation-family employment, employment shares, state-benchmarked location quotients, weighted mean wages, and compact OEWS quality counts for the managed `STEM`, `management_professional`, `service`, `production_transportation`, and `other` families
 
 **Links**
 

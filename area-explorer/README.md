@@ -17,6 +17,14 @@ See `AREA_EXPLORER_ROADMAP.md` for the full spec, layout, technical decisions, a
 
 ## Running the apps
 
+Create and activate the local virtual environment first:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
 Set the DB connection env var, then launch the desired app:
 
 ```bash
@@ -37,6 +45,8 @@ The existing `app/data_explorer.py` and `app/explorer_utils.py` are migration-st
 ## Shared library
 
 `shared/` contains the query layer, catalog loader, GeoJSON utilities, benchmark helpers, and reusable UI components. App files do not contain SQL or data logic — all of that lives in `shared/`.
+
+For the internal app, Intelligence data is read from `mart_intelligence.*` when those tables exist in DuckDB. If they are not yet promoted in the active database, the app falls back to the canonical phase parquets under `exploration/intelligence_framework/.../outputs/`.
 
 ## Related products
 

@@ -116,6 +116,54 @@ columns:
   - name: county_count
     type: INTEGER
     definition: Number of counties represented by a CBSA row.
+  - name: rucc_2023_code
+    type: INTEGER
+    definition: USDA ERS Rural-Urban Continuum Code for county rows on the current county-equivalent backbone.
+  - name: rucc_2023_description
+    type: VARCHAR
+    definition: USDA ERS description associated with rucc_2023_code for county rows.
+  - name: ers_industry_dependence_code
+    type: INTEGER
+    definition: USDA ERS normalized county industry-dependence code for county rows on the current county-equivalent backbone.
+  - name: ers_industry_dependence_label
+    type: VARCHAR
+    definition: USDA ERS analytical county industry-dependence label derived from ers_industry_dependence_code.
+  - name: ers_persistent_poverty_flag
+    type: INTEGER
+    definition: USDA ERS persistent-poverty county flag for county rows where the source publishes a standard binary value.
+  - name: ers_retirement_destination_flag
+    type: INTEGER
+    definition: USDA ERS retirement-destination county flag for county rows.
+  - name: ers_population_loss_flag
+    type: INTEGER
+    definition: USDA ERS population-loss county flag for county rows.
+  - name: ers_housing_stress_flag
+    type: INTEGER
+    definition: USDA ERS housing-stress county flag for county rows.
+  - name: ers_low_employment_flag
+    type: INTEGER
+    definition: USDA ERS low-employment county flag for county rows.
+  - name: ers_low_postsecondary_ed_flag
+    type: INTEGER
+    definition: USDA ERS low-postsecondary-education county flag for county rows.
+  - name: ers_high_farming_flag
+    type: INTEGER
+    definition: USDA ERS high-farming county flag for county rows.
+  - name: ers_high_mining_flag
+    type: INTEGER
+    definition: USDA ERS high-mining county flag for county rows.
+  - name: ers_high_manufacturing_flag
+    type: INTEGER
+    definition: USDA ERS high-manufacturing county flag for county rows.
+  - name: ers_high_government_flag
+    type: INTEGER
+    definition: USDA ERS high-government county flag for county rows.
+  - name: ers_high_recreation_flag
+    type: INTEGER
+    definition: USDA ERS high-recreation county flag for county rows.
+  - name: ers_nonspecialized_flag
+    type: INTEGER
+    definition: USDA ERS nonspecialized county flag for county rows.
   - name: vintage
     type: INTEGER
     definition: Source vintage used to assemble the geography dimension.
@@ -128,11 +176,13 @@ lineage:
     - silver.xwalk_county_state
     - silver.xwalk_cbsa_county
     - silver.xwalk_tract_county
+    - silver.usda_county_typology
   build_asset: etl/gold/gold_dim_geo.sql
 notes:
   - This is a serving-layer dimension table, not a time-series fact table.
   - Place and zcta are intentionally excluded from the first release until dedicated parent crosswalks are added.
   - primary_city_name is reserved in the schema for future enrichment but is null in the first release.
+  - USDA ERS classification fields are populated only on county rows; CBSA rollups are intentionally deferred to a future explicit Gold transform.
 backlog:
   - Add a canonical place-to-county and place-to-state crosswalk, then extend gold.dim_geo with place rows.
   - Add a canonical zcta hierarchy strategy, likely via weighted zcta-to-county and zcta-to-cbsa rollups, before extending gold.dim_geo with zcta rows.

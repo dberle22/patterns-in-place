@@ -298,7 +298,7 @@ PERCENT_RANK() OVER (
 ) * 100 AS division_pct_rank
 ```
 
-For the internal CBSA app, these are supplemented by the pre-computed frame percentile ranks from `gold.intelligence_livability`, `gold.intelligence_opportunity`, `gold.intelligence_character` once those tables are populated (Intelligence Phase 8).
+For the internal CBSA app, these are supplemented by the pre-computed frame percentile ranks from `mart_intelligence.intelligence_livability`, `mart_intelligence.intelligence_opportunity`, `mart_intelligence.intelligence_character` once those tables are populated (Intelligence Phase 8).
 
 ### State management
 
@@ -338,7 +338,7 @@ Streamlit `session_state` tracks:
 
 **Prerequisites:**
 - Intelligence Phases 3, 4, 2 complete (all CBSA frame models built) ✓
-- `gold.intelligence_livability`, `gold.intelligence_opportunity`, `gold.intelligence_character` populated in DuckDB (Intelligence Phase 8)
+- `mart_intelligence.intelligence_livability`, `mart_intelligence.intelligence_opportunity`, `mart_intelligence.intelligence_character` populated in DuckDB (Intelligence Phase 8)
 - Pre-baked CBSA GeoJSON in `area-explorer/data/`
 
 **Work:**
@@ -411,13 +411,13 @@ Streamlit `session_state` tracks:
 
 **Prerequisites:**
 - Intelligence Phase 7 (Zone Methodology) complete
-- `gold.intelligence_zones` populated in DuckDB
+- `mart_intelligence.intelligence_zones` populated in DuckDB
 - Tract-level GeoJSON for the Deep Dive markets (Jacksonville, Richmond VA) — not full national at tract grain
 
 **Scope:**
 - Zone layer is a Deep Dive-specific view, not a national map
 - Add a "Zone Map" view to the internal app that accepts a CBSA selection and renders the tract-level zone clusters for that market
-- Populates from `gold.intelligence_zones` joined to tract GeoJSON for the selected market
+- Populates from `mart_intelligence.intelligence_zones` joined to tract GeoJSON for the selected market
 - Feeds the Deep Dive Research Tool (separate product) as a reference layer
 
 ---

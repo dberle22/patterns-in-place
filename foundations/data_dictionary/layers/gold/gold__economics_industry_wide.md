@@ -2,7 +2,7 @@
 
 ## Overview
 - **Table**: `gold.economics_industry_wide`
-- **Purpose**: Gold-layer industry structure mart that combines ACS industry employment mix, curated CBP establishment structure, annual BFS business-application metrics, curated QCEW industry employment and wage levels, and BEA industry GDP structure in one geography-year table.
+- **Purpose**: Gold-layer industry structure mart that combines ACS industry employment mix, curated CBP establishment structure, annual BFS business-application metrics, curated QCEW industry employment and wage levels, BEA CAINC5N earnings-and-compensation structure, and BEA industry GDP structure in one geography-year table.
 - **Row count**: `54,631`
 - **KPI applicability**: Gold analytical output table.
 
@@ -88,6 +88,8 @@ The Gold table keeps the existing broad industry families used by ACS and BEA, t
 | QCEW public administration | `qcew_public_admin_emp`, `qcew_public_admin_avg_wkly_wage` | Government-slice Public Administration metrics carried through from the explicit Silver exception for `industry_code = 92`. |
 | QCEW private-sector shares | `pct_qcew_private_emp_*`, `pct_qcew_private_emp_of_total_covered`, `pct_qcew_public_admin_emp_of_total_covered` | Industry employment shares relative to private-sector total employment, plus the share of total covered employment represented by private employment and Public Administration. |
 | QCEW location quotients | `lq_ag_mining`, `lq_construction`, `lq_manufacturing`, `lq_wholesale`, `lq_retail`, `lq_transport_util`, `lq_information`, `lq_finance_real`, `lq_professional`, `lq_educ_health`, `lq_arts_accomm_food`, `lq_other_services` | Local private-sector employment share divided by the same-year national share, where the national benchmark is reconstructed by aggregating the state QCEW rows. |
+| BEA earnings and compensation levels | `bea_earnings_*`, `bea_compensation_total`, `bea_wages_salaries`, `bea_supplements`, `bea_pension_insurance_supplements`, `bea_govt_social_insurance_supplements`, `bea_proprietors_income` | BEA CAINC5N earnings levels by broad family plus all-industry compensation components from `silver.bea_cainc5n`. |
+| BEA earnings shares | `pct_bea_earnings_*` | CAINC5N earnings shares relative to `bea_earnings_total`. |
 | BEA industry GDP levels | `real_gdp_*` | Real GDP levels by broad industry family from `silver.bea_regional_cagdp9_wide`. |
 | BEA industry GDP shares | `pct_real_gdp_*` | GDP shares by industry family from `silver.bea_regional_cagdp9_wide`. |
 | Derived diagnostics | `sector_sum`, `calc_real_gdp_other`, `pct_calc_real_gdp_other`, `industry_concentration_hhi`, `acs_industry_concentration_hhi`, `sector_sum_ratio`, `sector_sum_ratio_quality_flag` | Derived GDP balance and industry concentration diagnostics layered onto the ACS/BEA/QCEW joins. |
@@ -109,6 +111,10 @@ The Gold table keeps the existing broad industry families used by ACS and BEA, t
   - `10` total covered from `own_code = 0`
   - most industry detail from private `own_code = 5`
   - `92 Public administration` from the government slices
+- CAINC5N fields in Gold are derived from the curated Silver contract:
+  - broad industry rows contribute `bea_earnings_*`
+  - `bea_compensation_total`, `bea_wages_salaries`, and the supplements components are populated from the `all_industries` CAINC5N row only
+  - this is intentional because the source does not publish parallel industry-detail compensation rows
 - The new `lq_*` columns use same-year state-aggregated QCEW shares as the national benchmark because the underlying Silver QCEW table does not currently publish a source-native U.S. row.
 - In the current snapshot, `lq_professional` is populated on `54,454` of `54,631` rows and ranges from `0` to `6.1190`; `lq_manufacturing` is also populated on `54,454` rows and ranges from `0` to `9.6468`.
 
@@ -118,8 +124,9 @@ The Gold table keeps the existing broad industry families used by ACS and BEA, t
 3. `foundations/etl/silver/cbp_silver.R` materializes the curated CBP long table joined here.
 4. `foundations/etl/silver/bfs_silver.R` materializes the annual BFS business-applications table joined here.
 5. `foundations/etl/silver/bls_qcew_silver.R` materializes the curated QCEW long table joined here.
-6. `foundations/etl/silver/bea_cagdp9_silver.R` materializes BEA regional GDP metrics joined here.
-7. `foundations/etl/gold/gold_economy_industry.sql` builds `gold.economics_industry_wide`.
+6. `foundations/etl/silver/bea_cainc5n_silver.R` materializes the curated BEA CAINC5N earnings-and-compensation table joined here.
+7. `foundations/etl/silver/bea_cagdp9_silver.R` materializes BEA regional GDP metrics joined here.
+8. `foundations/etl/gold/gold_economy_industry.sql` builds `gold.economics_industry_wide`.
 
 ## Known Gaps / To-Dos
 - If we later need lower ACS-only geographies such as `tract`, `zcta`, or `place`, add a separate industry-mix surface rather than widening this cross-source Gold mart again.

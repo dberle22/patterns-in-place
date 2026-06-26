@@ -36,7 +36,7 @@ architecture:
   similarity: cosine distance on standardized KPI vectors
   benchmarks: [national, census_division, cluster_peers]
   output_format: parquet in exploration/intelligence_framework/outputs/
-  gold_promotion: Phase 8 via foundations/loaders/ R scripts
+  datamart_promotion: Phase 8 via foundations/loaders/ R scripts into mart_intelligence.intelligence_*
 
 frames:
 
@@ -53,7 +53,7 @@ frames:
     natural_k: 6
     calibration_notes: First calibrated notebook pass on the current 396-CBSA universe excluding Puerto Rico. Median imputation applied to 6 KPIs. A PCA and correlation audit was run for redundancy review, but the chosen published clustering pass retains all 26 KPIs. We keep k at 6 because it adds a meaningful extra split beyond k = 5 while still avoiding the over-fragmentation that begins at higher k values.
     output_parquet: exploration/intelligence_framework/phase_3_livability_calibration/outputs/livability_scores.parquet
-    gold_table: gold.intelligence_livability
+    datamart_table: mart_intelligence.intelligence_livability
     valid_geo_levels: [cbsa]
 
     clustering:
@@ -426,7 +426,7 @@ frames:
       - economic_connectedness remains a hypothesis and audit proxy, not a default clustering input
       - zori_annual_avg_yoy_pct remains in the model with coverage caution and median imputation
     output_parquet: exploration/intelligence_framework/phase_4_opportunity_calibration/outputs/opportunity_scores.parquet
-    gold_table: gold.intelligence_opportunity
+    datamart_table: mart_intelligence.intelligence_opportunity
     valid_geo_levels: [cbsa]
 
     clustering:
@@ -806,7 +806,7 @@ frames:
     natural_k: 7
     calibration_notes: Full 17-KPI Character set retained after redundancy audit; no pair crossed the |r| >= 0.75 reduction threshold. Waterbury-Shelton, CT required median imputation for four social_fabric_wide KPIs due to a missing source row. Published clustering currently uses k = 7, and the GMM step was regularized with smoothed mixture weights and variance shrinkage to keep soft memberships aligned with the hard cluster structure.
     output_parquet: exploration/intelligence_framework/phase_2_character_calibration/outputs/character_scores.parquet
-    gold_table: gold.intelligence_character
+    datamart_table: mart_intelligence.intelligence_character
     valid_geo_levels: [cbsa]
 
     clustering:
@@ -1060,11 +1060,11 @@ frames:
     description: Combined clustering and similarity model built from the concatenated KPI vectors of all three frames. Answers which metros are alike overall and which are diverging across frames.
     phase: 5
     execution_order: 4
-    status: not_started
-    natural_k: TBD
-    calibration_notes: null
-    output_parquet: exploration/intelligence_framework/outputs/cross_frame_scores.parquet
-    gold_table: gold.intelligence_cross_frame
+    status: calibrated
+    natural_k: 6
+    calibration_notes: The combined model now runs from the completed Phase 5 integration build and keeps the published reduced 35-KPI bundle with k = 6. The production parquet is the Phase 5 integration output, and the downstream `mart_intelligence` table carries the combined cluster, soft memberships, frame-level percentile carrythrough, and similarity context for the 396-CBSA published universe.
+    output_parquet: exploration/intelligence_framework/phase_5_cross_frame_integration/outputs/cross_frame_scores.parquet
+    datamart_table: mart_intelligence.intelligence_cross_frame
     valid_geo_levels: [cbsa]
 
     depends_on: [livability, opportunity, character]
@@ -1072,8 +1072,8 @@ frames:
     clustering:
       method: hierarchical → kmeans → gmm
       input: concatenated standardized KPI vectors from all three frames
-      natural_k: TBD
-      label_set: TBD
+      natural_k: 6
+      label_set: published centroid-derived labels from Phase 5 integration
 
     similarity:
       method: cosine

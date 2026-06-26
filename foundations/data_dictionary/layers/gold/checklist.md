@@ -1,7 +1,7 @@
 # Gold Layer Coverage Checklist
 
 Schema: `gold`
-Table count: 13
+Table count: 14
 
 ## Housing
 - [x] Dictionary: [gold__housing_core_wide.md](./gold__housing_core_wide.md)
@@ -34,6 +34,8 @@ Table count: 13
 - [x] `economics_labor_wide`
 - [x] Dictionary: [gold__economics_industry_wide.md](./gold__economics_industry_wide.md)
 - [x] `economics_industry_wide`
+- [x] Dictionary: [gold__labor_j2j_wide.md](./gold__labor_j2j_wide.md)
+- [x] `labor_j2j_wide`
 
 ## Population
 - [x] Dictionary: [gold__population_demographics.md](./gold__population_demographics.md)

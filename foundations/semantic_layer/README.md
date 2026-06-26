@@ -9,7 +9,7 @@ The semantic layer is the contract between the data warehouse and every product 
 The warehouse holds facts. The semantic layer answers three questions that facts alone can't answer:
 
 1. **What does this column mean?** (`metric_catalog.yml`) — display name, unit format, which themes it belongs to, whether it can be used in growth calculations, and any caveats about coverage or interpretation.
-2. **How do metrics combine into scores?** (`intelligence_catalog.yml`) — the full scoring and clustering models for the three Intelligence frames (Character, Livability, Opportunity), including KPI polarity, model roles, subject weights, and calibration status.
+2. **How do metrics combine into scores?** (`intelligence_catalog.yml`) — the full scoring and clustering models for the three Intelligence frames (Character, Livability, Opportunity) plus the Cross-Frame combined model, including KPI polarity, model roles, subject weights, and calibration status.
 3. **How does the product surface this to a user?** (`theme_catalog.yml`, `question_catalog.yml`, `query_templates.yml`, `chart_rules.yml`) — topic groupings, pre-built question patterns, SQL execution templates, and chart selection rules.
 
 ---
@@ -41,11 +41,12 @@ semantic_layer/
 │
 │  ── Tier 2: Intelligence ─────────────────────────────────────────────────
 │
-├── intelligence_catalog.yml   The scoring and clustering models for all three
+├── intelligence_catalog.yml   The scoring and clustering models for the three
 │                              Intelligence frames. Subject → topic → KPI hierarchy
 │                              with polarity flags, model roles (core / sensitivity /
 │                              descriptive / dropped), reliability tiers, coverage
-│                              rates, and calibration status per frame.
+│                              rates, and calibration status per frame, plus the
+│                              Cross-Frame combined surface.
 │
 │  ── Tier 3: Navigation and Presentation ──────────────────────────────────
 │
@@ -108,7 +109,7 @@ SQLGenerator
 Result → Chart (chart_rules.yml selects chart type)
 ```
 
-For Intelligence frame questions (score lookups, archetype queries, peer comparisons), the `question_type` is `frame_lookup` and the template routes to a row lookup against the appropriate `gold.intelligence_*` table rather than an aggregation query.
+For Intelligence frame questions (score lookups, archetype queries, peer comparisons), the `question_type` is `frame_lookup` and the template routes to a row lookup against the appropriate `mart_intelligence.intelligence_*` table rather than an aggregation query.
 
 ---
 
@@ -122,7 +123,7 @@ KPI z-score (sign-flipped for negative polarity)
     → Topic score      (mean of KPI z-scores within topic)
         → Subject score    (weighted mean of topic scores)
             → Frame composite  (weighted mean of subject scores)
-                → Percentile rank  (0–100 within 401-CBSA universe)
+                → Percentile rank  (0–100 within the published CBSA universe)
 ```
 
 **Clustering sequence** (run on the same standardized KPI vectors)
@@ -137,22 +138,22 @@ KPI z-score (sign-flipped for negative polarity)
 - `specified` — architecture defined, not yet run
 - `calibrated` — notebook complete, natural_k confirmed, outputs written
 
-Current status: Livability (Phase 3), Opportunity (Phase 4), and Character (Phase 2) are all `calibrated`. Cross-frame combined model (Phase 5) is `not_started`.
+Current status: Livability (Phase 3), Opportunity (Phase 4), Character (Phase 2), and Cross-Frame combined model (Phase 5) are all `calibrated`.
 
 ---
 
-## Gold intelligence tables
+## Intelligence DataMart tables
 
-The scored outputs from each frame phase are promoted to DuckDB Gold tables via loader scripts in `foundations/loaders/`. These are the tables the Chatbot and Area Explorer query for Intelligence frame questions.
+The scored outputs from each frame phase are promoted to DuckDB `mart_intelligence` tables via loader scripts in `foundations/loaders/`. These are the tables the Chatbot and Area Explorer query for Intelligence frame questions.
 
 | Table | Frame | Status | Loader script |
 |---|---|---|---|
-| `gold.intelligence_livability` | Livability | Active | `load_livability_scores.R` |
-| `gold.intelligence_opportunity` | Opportunity | Active | `load_opportunity_scores.R` |
-| `gold.intelligence_character` | Character | Active | `load_character_scores.R` |
-| `gold.intelligence_cross_frame` | Combined | Pending (Phase 5) | `load_cross_frame_scores.R` |
+| `mart_intelligence.intelligence_livability` | Livability | Active | `load_livability_scores.R` |
+| `mart_intelligence.intelligence_opportunity` | Opportunity | Active | `load_opportunity_scores.R` |
+| `mart_intelligence.intelligence_character` | Character | Active | `load_character_scores.R` |
+| `mart_intelligence.intelligence_cross_frame` | Combined | Active | `load_cross_frame_scores.R` |
 
-All intelligence tables are static CBSA-grain lookups — one row per CBSA, no year dimension. They contain: cluster label, GMM soft membership probabilities, subject z-scores, frame composite percentile rank, and top-10 cosine-similarity peers.
+All intelligence tables are static CBSA-grain lookups — one row per CBSA, no year dimension. They contain normalized semantic aliases for cluster label, GMM soft membership probabilities, subject z-scores, frame composite percentile rank, and promoted top-10 peer columns. The Cross-Frame mart also carries overlap/divergence context such as `frame_percentile_gap`, `overlap_profile`, and frame leaders/laggards.
 
 ---
 
@@ -184,7 +185,7 @@ All intelligence tables are static CBSA-grain lookups — one row per CBSA, no y
 1. Verify all `intelligence_catalog.yml` entries are `status: calibrated`
 2. Verify all `metric_catalog.yml` entries referenced in Intelligence exist with correct `source_table`
 3. Confirm `theme_catalog.yml` topic structure matches calibrated frames
-4. Run `foundations/loaders/` R scripts to promote parquets to Gold tables
+4. Run `foundations/loaders/` R scripts to promote parquets to the `mart_intelligence` DataMart
 5. Regenerate artifacts: `python3 -m semantic_layer.visualize --format artifacts`
 
 ---

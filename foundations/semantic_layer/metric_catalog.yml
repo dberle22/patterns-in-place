@@ -3359,13 +3359,13 @@ metrics:
 
   # ---------------------------------------------------------------------------
   # Intelligence frame score outputs (Phases 2–4)
-  # Sourced from the Gold intelligence tables, not from raw fact marts.
+  # Sourced from the mart_intelligence tables, not from raw fact marts.
   # These are precomputed per-CBSA values with no year dimension.
   # ---------------------------------------------------------------------------
 
   - metric_id: livability_percentile_rank
     display_name: Livability Score
-    description: Composite Livability percentile rank (0-100) within the 401-CBSA universe. Higher is better. Derived from hierarchical weighted scoring across Affordability, Health and Safety, Access and Infrastructure, and Physical Environment subjects.
+    description: Composite Livability percentile rank (0-100) within the published CBSA universe. Higher is better. Derived from hierarchical weighted scoring across Affordability, Health and Safety, Access and Infrastructure, and Physical Environment subjects.
     source_table: intelligence_livability
     source_column: livability_percentile_rank
     formula: null
@@ -3375,7 +3375,7 @@ metrics:
     valid_geo_levels: [cbsa]
     growth_eligible: false
     growth_windows: []
-    caveats: Static calibration snapshot — not a time series. Percentile rank is relative to the current 401-CBSA universe.
+    caveats: Static calibration snapshot — not a time series. Percentile rank is relative to the current published CBSA universe.
     status: active
 
   - metric_id: livability_cluster
@@ -3455,7 +3455,7 @@ metrics:
 
   - metric_id: opportunity_percentile_rank
     display_name: Opportunity Score
-    description: Composite Opportunity percentile rank (0-100) within the 401-CBSA universe. Higher is better. Derived from hierarchical weighted scoring across Resident Opportunity, Market and Investor Opportunity, and Business and Industry Opportunity subjects.
+    description: Composite Opportunity percentile rank (0-100) within the published CBSA universe. Higher is better. Derived from hierarchical weighted scoring across Resident Opportunity, Market and Investor Opportunity, and Business and Industry Opportunity subjects.
     source_table: intelligence_opportunity
     source_column: opportunity_percentile_rank
     formula: null
@@ -3465,7 +3465,7 @@ metrics:
     valid_geo_levels: [cbsa]
     growth_eligible: false
     growth_windows: []
-    caveats: Static calibration snapshot. Percentile rank relative to 401-CBSA universe.
+    caveats: Static calibration snapshot. Percentile rank relative to the current published CBSA universe.
     status: active
 
   - metric_id: opportunity_cluster
@@ -3530,7 +3530,7 @@ metrics:
 
   - metric_id: character_percentile_rank
     display_name: Character Score
-    description: Composite Character percentile rank (0-100) within the 401-CBSA universe. Derived from hierarchical weighted scoring across Demographics and Social Fabric subjects using the full 17-KPI set.
+    description: Composite Character percentile rank (0-100) within the published CBSA universe. Derived from hierarchical weighted scoring across Demographics and Social Fabric subjects using the full 17-KPI set.
     source_table: intelligence_character
     source_column: character_percentile_rank
     formula: null
@@ -3540,7 +3540,7 @@ metrics:
     valid_geo_levels: [cbsa]
     growth_eligible: false
     growth_windows: []
-    caveats: Static calibration snapshot. Percentile rank relative to 401-CBSA universe. Character score reflects structural distinctiveness, not a normative better-or-worse judgment.
+    caveats: Static calibration snapshot. Percentile rank relative to the current published CBSA universe. Character score reflects structural distinctiveness, not a normative better-or-worse judgment.
     status: active
 
   - metric_id: character_cluster
@@ -3586,4 +3586,64 @@ metrics:
     growth_eligible: false
     growth_windows: []
     caveats: Z-score scale; Waterbury CT imputed for four social_fabric_wide KPIs.
+    status: active
+
+  - metric_id: cross_frame_percentile_rank
+    display_name: Combined Intelligence Score
+    description: Composite Cross-Frame percentile rank (0-100) within the published CBSA universe. Summarizes the combined Character, Livability, and Opportunity model.
+    source_table: intelligence_cross_frame
+    source_column: cross_frame_percentile_rank
+    formula: null
+    unit_format: integer
+    subject_areas: [intelligence, character, livability, opportunity]
+    themes: [character, livability, opportunity]
+    valid_geo_levels: [cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Static calibration snapshot. Use alongside frame-specific scores because the combined model is descriptive rather than a universal best-place ranking.
+    status: active
+
+  - metric_id: combined_cluster
+    display_name: Combined Intelligence Type
+    description: Published cluster label from the Cross-Frame combined model.
+    source_table: intelligence_cross_frame
+    source_column: combined_cluster
+    formula: null
+    unit_format: string
+    subject_areas: [intelligence, character, livability, opportunity]
+    themes: [character, livability, opportunity]
+    valid_geo_levels: [cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Labels summarize the joint Character, Livability, and Opportunity pattern rather than any single frame.
+    status: active
+
+  - metric_id: frame_percentile_gap
+    display_name: Cross-Frame Divergence Gap
+    description: Difference between the highest and lowest frame percentile ranks for a metro. Higher values indicate stronger disagreement across Character, Livability, and Opportunity.
+    source_table: intelligence_cross_frame
+    source_column: frame_percentile_gap
+    formula: null
+    unit_format: number_2dp
+    subject_areas: [intelligence, character, livability, opportunity]
+    themes: [character, livability, opportunity]
+    valid_geo_levels: [cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Static calibration snapshot. This is a spread measure, not a quality score.
+    status: active
+
+  - metric_id: overlap_profile
+    display_name: Cross-Frame Overlap Profile
+    description: Text summary of how a metro aligns or diverges across the three Intelligence frames.
+    source_table: intelligence_cross_frame
+    source_column: overlap_profile
+    formula: null
+    unit_format: string
+    subject_areas: [intelligence, character, livability, opportunity]
+    themes: [character, livability, opportunity]
+    valid_geo_levels: [cbsa]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Interpretation helper generated from the published overlap flags.
     status: active

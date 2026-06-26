@@ -97,6 +97,37 @@ bea_industry as (
     from patterns_in_place.silver.bea_regional_cagdp9_wide
 ),
 
+bea_cainc5n as (
+    select
+        lower(geo_level) as geo_level,
+        geo_id,
+        geo_name,
+        period as year,
+        max(case when industry_key = 'all_industries' then earnings_total end) as bea_earnings_total,
+        max(case when industry_key = 'all_industries' then compensation_total end) as bea_compensation_total,
+        max(case when industry_key = 'all_industries' then wages_salaries end) as bea_wages_salaries,
+        max(case when industry_key = 'all_industries' then supplements end) as bea_supplements,
+        max(case when industry_key = 'all_industries' then pension_insurance_supplements end) as bea_pension_insurance_supplements,
+        max(case when industry_key = 'all_industries' then govt_social_insurance_supplements end) as bea_govt_social_insurance_supplements,
+        max(case when industry_key = 'all_industries' then proprietors_income end) as bea_proprietors_income,
+        max(case when industry_key = 'private_nonfarm' then earnings_total end) as bea_earnings_private_nonfarm,
+        max(case when industry_key = 'ag_mining' then earnings_total end) as bea_earnings_ag_mining,
+        max(case when industry_key = 'construction' then earnings_total end) as bea_earnings_construction,
+        max(case when industry_key = 'manufacturing' then earnings_total end) as bea_earnings_manufacturing,
+        max(case when industry_key = 'wholesale' then earnings_total end) as bea_earnings_wholesale,
+        max(case when industry_key = 'retail' then earnings_total end) as bea_earnings_retail,
+        max(case when industry_key = 'transport_util' then earnings_total end) as bea_earnings_transport_util,
+        max(case when industry_key = 'information' then earnings_total end) as bea_earnings_information,
+        max(case when industry_key = 'finance_real' then earnings_total end) as bea_earnings_finance_real,
+        max(case when industry_key = 'professional' then earnings_total end) as bea_earnings_professional,
+        max(case when industry_key = 'educ_health' then earnings_total end) as bea_earnings_educ_health,
+        max(case when industry_key = 'arts_accomm_food' then earnings_total end) as bea_earnings_arts_accomm_food,
+        max(case when industry_key = 'other_services' then earnings_total end) as bea_earnings_other_services,
+        max(case when industry_key = 'public_admin' then earnings_total end) as bea_earnings_public_admin
+    from patterns_in_place.silver.bea_cainc5n
+    group by 1, 2, 3, 4
+),
+
 qcew_industry as (
     select
         lower(geo_level) as geo_level,
@@ -348,6 +379,27 @@ final as (
         bfs.bfs_business_applications,
         bfs.bfs_business_applications_yoy_pct,
         bfs.bfs_business_application_rate_per_1000_establishments,
+        cainc.bea_earnings_total,
+        cainc.bea_compensation_total,
+        cainc.bea_wages_salaries,
+        cainc.bea_supplements,
+        cainc.bea_pension_insurance_supplements,
+        cainc.bea_govt_social_insurance_supplements,
+        cainc.bea_proprietors_income,
+        cainc.bea_earnings_private_nonfarm,
+        cainc.bea_earnings_ag_mining,
+        cainc.bea_earnings_construction,
+        cainc.bea_earnings_manufacturing,
+        cainc.bea_earnings_wholesale,
+        cainc.bea_earnings_retail,
+        cainc.bea_earnings_transport_util,
+        cainc.bea_earnings_information,
+        cainc.bea_earnings_finance_real,
+        cainc.bea_earnings_professional,
+        cainc.bea_earnings_educ_health,
+        cainc.bea_earnings_arts_accomm_food,
+        cainc.bea_earnings_other_services,
+        cainc.bea_earnings_public_admin,
         bea.real_gdp_total,
         bea.real_gdp_natural_resources,
         bea.real_gdp_manufacturing,
@@ -380,6 +432,10 @@ final as (
         on b.geo_level = bea.geo_level
        and b.geo_id = bea.geo_id
        and b.year = bea.year
+    left join bea_cainc5n cainc
+        on b.geo_level = cainc.geo_level
+       and b.geo_id = cainc.geo_id
+       and b.year = cainc.year
     left join qcew_industry q
         on b.geo_level = q.geo_level
        and b.geo_id = q.geo_id
@@ -438,6 +494,20 @@ select
     (qcew_private_emp_other_services / nullif(qcew_private_emp_total, 0)) / nullif(national_pct_qcew_private_emp_other_services, 0) as lq_other_services,
     qcew_private_emp_total / nullif(qcew_total_covered_emp, 0) as pct_qcew_private_emp_of_total_covered,
     qcew_public_admin_emp / nullif(qcew_total_covered_emp, 0) as pct_qcew_public_admin_emp_of_total_covered,
+    bea_earnings_private_nonfarm / nullif(bea_earnings_total, 0) as pct_bea_earnings_private_nonfarm,
+    bea_earnings_ag_mining / nullif(bea_earnings_total, 0) as pct_bea_earnings_ag_mining,
+    bea_earnings_construction / nullif(bea_earnings_total, 0) as pct_bea_earnings_construction,
+    bea_earnings_manufacturing / nullif(bea_earnings_total, 0) as pct_bea_earnings_manufacturing,
+    bea_earnings_wholesale / nullif(bea_earnings_total, 0) as pct_bea_earnings_wholesale,
+    bea_earnings_retail / nullif(bea_earnings_total, 0) as pct_bea_earnings_retail,
+    bea_earnings_transport_util / nullif(bea_earnings_total, 0) as pct_bea_earnings_transport_util,
+    bea_earnings_information / nullif(bea_earnings_total, 0) as pct_bea_earnings_information,
+    bea_earnings_finance_real / nullif(bea_earnings_total, 0) as pct_bea_earnings_finance_real,
+    bea_earnings_professional / nullif(bea_earnings_total, 0) as pct_bea_earnings_professional,
+    bea_earnings_educ_health / nullif(bea_earnings_total, 0) as pct_bea_earnings_educ_health,
+    bea_earnings_arts_accomm_food / nullif(bea_earnings_total, 0) as pct_bea_earnings_arts_accomm_food,
+    bea_earnings_other_services / nullif(bea_earnings_total, 0) as pct_bea_earnings_other_services,
+    bea_earnings_public_admin / nullif(bea_earnings_total, 0) as pct_bea_earnings_public_admin,
     real_gdp_natural_resources
         + real_gdp_manufacturing
         + real_gdp_construction

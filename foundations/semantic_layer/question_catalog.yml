@@ -421,3 +421,60 @@ questions:
       year: null
       sort_direction: desc
       limit: 20
+
+  - question_id: metro_cross_frame_profile
+    pattern: What is the overall combined Intelligence profile for {geography}?
+    natural_language_question: What is the overall combined Intelligence profile for Richmond VA?
+    intent_type: frame_lookup
+    themes: [character, livability, opportunity]
+    required_metrics: [cross_frame_percentile_rank, combined_cluster, overlap_profile]
+    required_tables: [intelligence_cross_frame]
+    valid_geo_levels: [cbsa]
+    default_template: frame_lookup
+    default_chart: benchmark_default
+    notes: Returns the combined Cross-Frame percentile rank, cluster label, overlap profile, and frame alignment context.
+    structured_query_plan:
+      template_id: frame_lookup
+      question_type: frame_lookup
+      frame_id: cross_frame
+      cbsa_code: "40060"
+      include_peers: false
+
+  - question_id: metro_cross_frame_peers
+    pattern: Which metros are most similar to {geography} overall?
+    natural_language_question: Which metros are most similar to Richmond VA overall?
+    intent_type: frame_lookup
+    themes: [character, livability, opportunity]
+    required_metrics: [cross_frame_percentile_rank]
+    required_tables: [intelligence_cross_frame]
+    valid_geo_levels: [cbsa]
+    default_template: frame_lookup
+    default_chart: comparison_selected
+    notes: Returns the top-10 Cross-Frame cosine-similarity peers for the target CBSA.
+    structured_query_plan:
+      template_id: frame_lookup
+      question_type: frame_lookup
+      frame_id: cross_frame
+      cbsa_code: "40060"
+      include_peers: true
+
+  - question_id: biggest_cross_frame_gaps
+    pattern: Which metros diverge the most across Character, Livability, and Opportunity?
+    natural_language_question: Which metros diverge the most across Character, Livability, and Opportunity?
+    intent_type: ranking
+    themes: [character, livability, opportunity]
+    required_metrics: [frame_percentile_gap]
+    required_tables: [intelligence_cross_frame]
+    valid_geo_levels: [cbsa]
+    default_template: ranking
+    default_chart: ranking_default
+    notes: Ranks metros by cross-frame percentile spread descending.
+    structured_query_plan:
+      template_id: ranking
+      question_type: ranking
+      metric_id: frame_percentile_gap
+      source_table: intelligence_cross_frame
+      geo_level: cbsa
+      year: null
+      sort_direction: desc
+      limit: 20

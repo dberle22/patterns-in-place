@@ -10,11 +10,11 @@ time_coverage:
   type: range
   column: year
   min: '2012'
-  max: '2023'
+  max: '2024'
 geo_coverage:
   notes:
     - distinct_geo_levels=3
-    - distinct_geo_id=4221
+    - distinct_geo_id=4551
 columns:
   - name: geo_level
     type: VARCHAR
@@ -331,9 +331,272 @@ columns:
         count: 1116
     definition: Unemployment rate change from previous year.
     needs_confirmation: no
+  - name: qwi_private_emp
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: All-sector private annual average employment from `silver.lehd_qwi`, using LEHD age total row `A00` and industry total row `00`.
+    needs_confirmation: no
+  - name: qwi_private_hires
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: All-sector private annual hires count from `silver.lehd_qwi`.
+    needs_confirmation: no
+  - name: qwi_private_separations
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: All-sector private annual separations count from `silver.lehd_qwi`.
+    needs_confirmation: no
+  - name: qwi_private_replacements
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: All-sector private annual replacement hires count from `silver.lehd_qwi`.
+    needs_confirmation: no
+  - name: qwi_private_payroll
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: All-sector private annual payroll from `silver.lehd_qwi`.
+    needs_confirmation: no
+  - name: qwi_private_avg_earnings
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: All-sector private annual average earnings from `silver.lehd_qwi`.
+    needs_confirmation: no
+  - name: qwi_private_new_hire_avg_earnings
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: All-sector private annual new-hire average earnings from `silver.lehd_qwi`.
+    needs_confirmation: no
+  - name: qwi_private_separation_avg_earnings
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: All-sector private annual separation average earnings from `silver.lehd_qwi`.
+    needs_confirmation: no
+  - name: qwi_private_hire_rate
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: All-sector private annual hires divided by employment from `silver.lehd_qwi`.
+    needs_confirmation: no
+  - name: qwi_private_separation_rate
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: All-sector private annual separations divided by employment from `silver.lehd_qwi`.
+    needs_confirmation: no
+  - name: qwi_private_replacement_rate
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: ~
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: All-sector private annual replacements divided by employment from `silver.lehd_qwi`.
+    needs_confirmation: no
+  - name: qwi_pct_emp_age_14_18
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Share of all-sector private employment in the 14-18 age bucket, using LEHD age total `A00` as the denominator.
+    needs_confirmation: no
+  - name: qwi_pct_emp_age_19_21
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Share of all-sector private employment in the 19-21 age bucket, using LEHD age total `A00` as the denominator.
+    needs_confirmation: no
+  - name: qwi_pct_emp_age_22_24
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Share of all-sector private employment in the 22-24 age bucket, using LEHD age total `A00` as the denominator.
+    needs_confirmation: no
+  - name: qwi_pct_emp_age_25_34
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: 0.0
+    max_value: 0.3892165
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Share of all-sector private employment in the 25-34 age bucket, using LEHD age total `A00` as the denominator.
+    needs_confirmation: no
+  - name: qwi_pct_emp_age_35_44
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Share of all-sector private employment in the 35-44 age bucket, using LEHD age total `A00` as the denominator.
+    needs_confirmation: no
+  - name: qwi_pct_emp_age_45_54
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Share of all-sector private employment in the 45-54 age bucket, using LEHD age total `A00` as the denominator.
+    needs_confirmation: no
+  - name: qwi_pct_emp_age_55_64
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Share of all-sector private employment in the 55-64 age bucket, using LEHD age total `A00` as the denominator.
+    needs_confirmation: no
+  - name: qwi_pct_emp_age_65_99
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Share of all-sector private employment in the 65-99 age bucket, using LEHD age total `A00` as the denominator.
+    needs_confirmation: no
+  - name: qwi_pct_emp_edu_less_than_hs
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Share of known education employment in the `E1` less-than-high-school bucket.
+    needs_confirmation: no
+  - name: qwi_pct_emp_edu_hs
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Share of known education employment in the `E2` high-school-or-equivalent bucket.
+    needs_confirmation: no
+  - name: qwi_pct_emp_edu_some_college
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: 0.0
+    max_value: ~
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Share of known education employment in the `E3` some-college or Associate-degree bucket.
+    needs_confirmation: no
+  - name: qwi_pct_emp_edu_bachelors_plus
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: 0.0
+    max_value: 0.6183746
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Share of known education employment in the `E4` Bachelor's-degree-or-advanced-degree bucket.
+    needs_confirmation: no
+  - name: qwi_pct_emp_edu_not_available
+    type: DOUBLE
+    null_pct: ~
+    distinct_count: ~
+    min_value: 0.0
+    max_value: 0.336209
+    min_length: ~
+    max_length: ~
+    top_values: []
+    definition: Share of all-sector private employment in LEHD `E5`, defined as educational attainment not available for workers aged 24 or younger.
+    needs_confirmation: no
 lineage:
   - step: write_target
-    script: scripts/etl/gold/gold_economy_labor.sql
-    details: 'scripts/etl/gold/gold_economy_labor.sql:4:create or replace table metro_deep_dive.gold.economics_labor_wide
-      as '
+    script: foundations/etl/gold/gold_economy_labor.sql
+    details: Table materialized from `silver.age_kpi`, `silver.bls_laus_wide`, and the all-sector private totals plus composition slices in `silver.lehd_qwi`.
 kpi_definitions: []

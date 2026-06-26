@@ -1,7 +1,8 @@
-# In this script we normalize FEMA National Risk Index county-equivalent staging
-# rows into a compact analytical Silver table. We keep county rows directly and
-# derive CBSA rows from county-equivalent staging using population-weighted
-# averages across the selected composite and hazard metrics.
+# In this script we normalize FEMA National Risk Index county-equivalent and
+# tract staging rows into a compact analytical Silver table. We keep tract and
+# county rows directly, then derive CBSA rows from the county-equivalent slice
+# using population-weighted averages across the selected composite and hazard
+# metrics.
 
 getwd()
 
@@ -49,6 +50,9 @@ check_unique_annual_grain <- function(df, table_name) {
     )
   }
 }
+
+match_floor <- 0.99
+unsupported_state_abbrevs <- c("AS", "GU", "MP", "PR", "VI")
 
 build_metric_exprs <- function(mapping) {
   purrr::imap(
@@ -114,6 +118,7 @@ selected_metric_names <- names(selected_metric_map)
 
 # 3. Read staging and crosswalks ----
 fema_nri_stage <- DBI::dbGetQuery(con, "SELECT * FROM staging.fema_nri")
+fema_nri_tract_stage <- DBI::dbGetQuery(con, "SELECT * FROM staging.fema_nri_tract")
 
 cbsa_county_xwalk <- DBI::dbGetQuery(con, "SELECT * FROM silver.xwalk_cbsa_county") %>%
   transmute(
@@ -131,7 +136,134 @@ county_state_xwalk <- DBI::dbGetQuery(con, "SELECT * FROM silver.xwalk_county_st
   ) %>%
   distinct()
 
-# 4. Standardize county rows ----
+tract_xwalk <- DBI::dbGetQuery(con, "SELECT * FROM silver.xwalk_tract_county") %>%
+  transmute(
+    tract_geoid = as.character(tract_geoid),
+    tract_name_long = as.character(tract_name_long),
+    county_name = as.character(county_name),
+    state_abbr = as.character(state_abbr),
+    state_name = as.character(state_name)
+  ) %>%
+  distinct()
+
+tract_dim_geo <- DBI::dbGetQuery(
+  con,
+  "
+  SELECT geo_id, geo_name
+  FROM gold.dim_geo
+  WHERE geo_level = 'tract'
+  "
+) %>%
+  transmute(
+    tract_geoid = as.character(geo_id),
+    tract_geo_name = as.character(geo_name)
+  ) %>%
+  distinct()
+
+# 4. Audit tract-key match quality before modeling ----
+# The tract file is public and stageable, but we only want governed Silver
+# rows that cleanly resolve to the current tract backbone.
+tract_match_audit <- fema_nri_tract_stage %>%
+  mutate(
+    tractfips = as.character(tractfips),
+    stateabbrv = as.character(stateabbrv)
+  ) %>%
+  distinct(tractfips, stateabbrv) %>%
+  rename(tract_geoid = tractfips, state_abbrev = stateabbrv) %>%
+  left_join(
+    tract_xwalk %>% transmute(tract_geoid, in_xwalk = TRUE),
+    by = "tract_geoid"
+  ) %>%
+  left_join(
+    tract_dim_geo %>% transmute(tract_geoid, in_dim_geo = TRUE),
+    by = "tract_geoid"
+  ) %>%
+  mutate(
+    in_xwalk = dplyr::coalesce(in_xwalk, FALSE),
+    in_dim_geo = dplyr::coalesce(in_dim_geo, FALSE)
+  )
+
+supported_tract_match_audit <- tract_match_audit %>%
+  filter(!state_abbrev %in% unsupported_state_abbrevs)
+
+supported_xwalk_match_rate <- mean(supported_tract_match_audit$in_xwalk)
+supported_dim_geo_match_rate <- mean(supported_tract_match_audit$in_dim_geo)
+unsupported_tract_count <- tract_match_audit %>%
+  filter(state_abbrev %in% unsupported_state_abbrevs) %>%
+  nrow()
+supported_unmatched_count <- supported_tract_match_audit %>%
+  filter(!in_xwalk | !in_dim_geo) %>%
+  nrow()
+
+if (supported_xwalk_match_rate < match_floor || supported_dim_geo_match_rate < match_floor) {
+  stop(
+    sprintf(
+      paste(
+        "FEMA tract coverage audit failed after excluding archive geographies",
+        "that are outside the current canonical tract backbone.",
+        "Supported-state xwalk_tract_county match rate = %.4f, gold.dim_geo tract match rate = %.4f,",
+        "both of which must be at least %.2f before Silver proceeds."
+      ),
+      supported_xwalk_match_rate,
+      supported_dim_geo_match_rate,
+      match_floor
+    ),
+    call. = FALSE
+  )
+}
+
+message(
+  sprintf(
+    paste(
+      "FEMA tract audit summary:",
+      "supported-state xwalk match = %.4f, supported-state dim_geo match = %.4f,",
+      "unsupported archive tracts excluded from Silver = %s,",
+      "supported unmatched tracts dropped = %s."
+    ),
+    supported_xwalk_match_rate,
+    supported_dim_geo_match_rate,
+    unsupported_tract_count,
+    supported_unmatched_count
+  )
+)
+
+# 5. Standardize tract rows ----
+# The tract contract mirrors the compact county metric selection. We resolve
+# tract names from the canonical geography dimension first so downstream Gold
+# joins use the shared tract naming backbone.
+fema_nri_tract <- fema_nri_tract_stage %>%
+  mutate(
+    tractfips = as.character(tractfips),
+    stateabbrv = as.character(stateabbrv),
+    nri_release_year = as.integer(nri_release_year)
+  ) %>%
+  rename(tract_geoid = tractfips, state_abbrev = stateabbrv) %>%
+  left_join(
+    tract_xwalk,
+    by = "tract_geoid"
+  ) %>%
+  left_join(
+    tract_dim_geo,
+    by = "tract_geoid"
+  ) %>%
+  left_join(
+    tract_match_audit %>%
+      select(tract_geoid, in_xwalk, in_dim_geo),
+    by = "tract_geoid"
+  ) %>%
+  filter(!state_abbrev %in% unsupported_state_abbrevs) %>%
+  filter(in_xwalk, in_dim_geo) %>%
+  transmute(
+    geo_level = "tract",
+    geo_id = tract_geoid,
+    geo_name = dplyr::coalesce(tract_geo_name, tract_name_long, tract_geoid),
+    year = nri_release_year,
+    !!!build_metric_exprs(selected_metric_map)
+  ) %>%
+  filter(!is.na(geo_id), !is.na(year)) %>%
+  distinct()
+
+# 6. Standardize county rows ----
 # FEMA's county release is actually a county-equivalent layer. We keep every
 # published county-equivalent row at county grain in Silver and only use the
 # OMB crosswalk to derive CBSA rollups for counties that participate in a CBSA.
@@ -170,7 +302,7 @@ fema_nri_county <- fema_nri_stage %>%
   filter(!is.na(geo_id), !is.na(year)) %>%
   distinct()
 
-# 5. Rebase county rows to CBSA using staged population weights ----
+# 7. Rebase county rows to CBSA using staged population weights ----
 # The FEMA NRI provider file has no native CBSA geometry, so we derive metro rows
 # by joining county-equivalent rows to the current county->CBSA crosswalk. The
 # selected risk and hazard metrics are treated as score-like fields and rolled
@@ -197,8 +329,9 @@ fema_nri_cbsa <- fema_nri_county %>%
     dplyr::across(dplyr::all_of(selected_metric_names))
   )
 
-# 6. Materialize Silver ----
+# 8. Materialize Silver ----
 fema_nri <- bind_rows(
+  fema_nri_tract,
   fema_nri_county %>%
     select(-population_weight),
   fema_nri_cbsa

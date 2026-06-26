@@ -308,6 +308,11 @@ Track 6 reusables for the next source waves:
   added FEMA staging and Silver steps to `foundations/etl/pipeline_manifest.yml` and added the corresponding script calls to `foundations/etl/create_DB.R`, keeping the source in the documented build path after geo crosswalks and before Gold environment assembly.
 
 - [x] **7.9** Add FEMA to `create_DB.R` / `pipeline_manifest.yml`
+- [x] **7.10** Promote tract FEMA into governed Silver and Gold
+- Completed 2026-06-25:
+  extended `foundations/etl/silver/fema_nri_silver.R` so the staged tract release now promotes into the governed tract backbone with tract-key audits against `silver.xwalk_tract_county` and `gold.dim_geo`, while keeping the compact FEMA metric contract unchanged.
+  extended `foundations/etl/gold/gold_environment_wide.sql` so tract `EJScreen` rows surface directly from `silver.ejscreen` and tract `FEMA NRI` rows surface directly from the upgraded `silver.fema_nri`, while preserving existing county / CBSA behavior.
+  refreshed the tract-related methodology and dictionary artifacts so the governed boundary now reads correctly: tract `EJScreen` and tract `FEMA` are live in the environment surface, while tract `SLD` remains explicitly deferred.
 
 ---
 
@@ -335,6 +340,7 @@ The EPA Smart Location Database (SLD) provides 90+ built-environment indicators 
 - [x] **9.8** Add EPA SLD row to `source_topic_checklist.md` (Ingested)
 - [x] **9.9** Add EPA SLD to `create_DB.R` / `pipeline_manifest.yml`
 - [x] **9.10** Follow-on rollup completion: promoted the county base to derived CBSA and state rows in Silver and Gold while explicitly keeping tract recovery deferred
+- [ ] **9.11** Tract SLD normalization follow-on: add a governed tract relationship bridge or switch to a source artifact that preserves tract identity reliably enough for the canonical tract backbone before attempting tract Silver / Gold promotion
 
 Track 9 lessons learned:
 - The direct EPA CSV is good enough for staging and county modeling, but not trustworthy enough for tract-first canonical modeling because the delivered `GEOID10` / `GEOID20` keys are scientific-notation strings and a meaningful tract share still needs a 2010/2020 bridge.
@@ -834,35 +840,38 @@ All three data products come from the Census Bureau's Longitudinal Employer-Hous
 
 QWI is the only public source that cross-tabulates employment, hires, separations, and earnings simultaneously by worker characteristics (age, education, race/ethnicity) and firm characteristics (industry, firm age, firm size) at CBSA/county grain with quarterly cadence. It answers questions that QCEW and BLS LAUS cannot: how many 25–34 year olds with a bachelor's degree were hired in healthcare in this metro this quarter, and what did they earn?
 
-First-pass scope: age × industry and education × industry cross-tabs at CBSA and county grain, using `lehdr::get_qwi()`. Pulling all cross-tab combinations is too large; these two cuts deliver the highest analytical value for the Opportunity and Character frames. Education and race/ethnicity variables are available from 2009 onward.
+First-pass scope: county-only age × industry and education × industry cross-tabs, retaining only all-sex rows and the latest rolling `10` years. Pulling all cross-tab combinations is too large; these two cuts deliver the highest analytical value for the Opportunity and Character frames. Current live Delaware QWI files show education and race/ethnicity tabulations back to `1998 Q3`, so the older `2009` boundary should not be treated as a default assumption without revalidation during staging.
 
-- [ ] **23.1.1** Research & spec: confirm current QWI API parameters via `lehdr`; verify state availability gaps and the 2009 education/race coverage start; document recommended cross-tab scope (age × industry, education × industry) and expected row volume per state; write `foundations/data_dictionary/sources/source__lehd_qwi.md`; update `SOURCES.md`
-- [ ] **23.1.2** Write `foundations/etl/staging/get_lehd_qwi.R` — use `lehdr::get_qwi()` to download QWI by state across the approved cross-tab dimensions; bind state files; produce `staging.lehd_qwi` at `(state_fips, geo_level, geo_id, year, quarter, industry_sector, age_group, education)` grain; document suppressed cells
-- [ ] **23.1.3** Write staging contract: `layers/staging/staging__lehd_qwi.md`; document cross-tab scope decisions, suppression handling, and 2009 education/race start boundary
-- [ ] **23.1.4** Write `foundations/etl/silver/lehd_qwi_silver.R` — normalize to canonical `geo_level + geo_id`, resolve CBSA codes from state/county staging, compute annual summaries (employment, full-quarter employment, hires, separations, avg monthly earnings) from quarterly source; produce `silver.lehd_qwi`
-- [ ] **23.1.5** Write Silver YAML + Markdown: `layers/silver/silver__lehd_qwi.yml` + `.md`; document quarterly vs. annual grain, suppression policy, and cross-tab coverage
-- [ ] **23.1.6** Write `foundations/etl/gold/gold_labor_qwi_wide.sql` — new Gold table at `(geo_level, geo_id, year, industry_sector, age_group)` grain with employment, full-quarter employment, earnings, hire rate, and separation rate; designed as the canonical workforce-composition mart
-- [ ] **23.1.7** Write Gold data dictionary: `layers/gold/gold__labor_qwi_wide.yml` + `.md`
-- [ ] **23.1.8** Add LEHD QWI row to `source_topic_checklist.md` (Ingested)
-- [ ] **23.1.9** Add LEHD QWI to `create_DB.R` / `pipeline_manifest.yml`
+- [x] **23.1.1** Research & spec: confirmed the live QWI release index, current schema `V4.14.0`, state coverage, file naming, and observed row shape; wrote `foundations/data_dictionary/sources/source__lehd_qwi.md`; updated `SOURCES.md`; documented that the older `2009` education/race note was not confirmed by the current live Delaware files and that direct file ingestion is the reliable fallback if a `lehdr` QWI wrapper is not pinned
+- [x] **23.1.2** Wrote `foundations/etl/staging/get_lehd_qwi.R` — current implementation uses direct QWI county release files rather than assuming a working `lehdr::get_qwi()` wrapper; filters to the approved all-sex age and education cuts, keeps only the latest rolling `10` years, annualizes the quarterly source rows, and writes `staging.lehd_qwi`
+- [x] **23.1.3** Wrote staging contract: `foundations/data_dictionary/layers/staging/staging__lehd_qwi.md`; documented the annual county-first managed scope, cross-tab filters, annualization rules, suppression tradeoff, and the rolling `10`-year history window
+- [x] **23.1.4** Wrote `foundations/etl/silver/lehd_qwi_silver.R` and materialized `silver.lehd_qwi` — the Silver contract now standardizes county rows, adds demo and industry labels, rolls the county base to `cbsa`, `state`, `division`, and `us`, and recomputes weighted earnings plus headline labor-dynamics rates after rollup
+- [x] **23.1.5** Wrote Silver YAML + finalized Markdown: `layers/silver/silver__lehd_qwi.yml` + `.md`; the contract now reflects the live annual county-first build, canonical labor-dynamics measures, and county-to-higher-geo rollup rules
+- [x] **23.1.6** Added QWI headline fields into `foundations/etl/gold/gold_economy_labor.sql`; `gold.economics_labor_wide` now carries the private labor-dynamics block plus age and education composition shares on the existing county / CBSA / state surface
+- [x] **23.1.7** Finalized the Gold data dictionary: refreshed `layers/gold/gold__economics_labor_wide.md` / `.yml` against the live rebuilt table and documented the QWI labor-dynamics and workforce-composition block
+- [x] **23.1.8** Added LEHD QWI to `foundations/data_dictionary/sources/checklist.md` as an ingested child topic spec
+- [x] **23.1.9** Added LEHD QWI to `foundations/etl/create_DB.R` / `foundations/etl/pipeline_manifest.yml` with staging, Silver, and Gold dependency wiring
 
 ### Track 23.2 — LODES (Origin-Destination Employment Statistics)
 
 LODES is the spatial layer of the LEHD program — the data product powering Census OnTheMap. It provides census block-grain employment characteristics that aggregate to tract/county/CBSA, enabling jobs/housing spatial mismatch analysis and neighborhood employment profiling. Two file types for the first pass: Workplace Area Characteristics (WAC, profiling jobs at work locations) and Residence Area Characteristics (RAC, profiling workers at home locations). Origin-Destination (OD) flows are deferred until the Deep Dive zone methodology is actively being built.
 
-Block-grain data stays in Silver as a processing artifact; Gold surfaces tract-aggregated tables. The block → tract aggregation requires the TIGER tract-block relationship file and follows the same geographic backbone already used in EJScreen and FEMA NRI tract work.
+The public source files are block-grain, but the managed first-pass Foundations path should aggregate WAC and RAC to tract during staging. Gold still surfaces tract-aggregated tables. The block → tract aggregation follows the same geographic backbone already used in EJScreen and FEMA NRI tract work.
 
 _Note on analytical value: LODES is most powerful once Deep Dive zone analysis is active — the WAC file at tract grain is the employment-side input to neighborhood cluster modeling alongside ACS residential demographics. The Places-layer value (county/CBSA rollups) is real but secondary. Ingest now to have it ready; the full analytical payoff comes at Deep Dive time._
 
-- [ ] **23.2.1** Research & spec: confirm LODES 8.3 bulk download structure (state-based files, WAC/RAC/OD types, `lehdr::grab_lodes()` parameters); verify `2022` as the most recent available year; document first-pass scope (WAC + RAC at tract grain; OD deferred); write `foundations/data_dictionary/sources/source__lehd_lodes.md`; update `SOURCES.md`
-- [ ] **23.2.2** Write `foundations/etl/staging/get_lehd_lodes.R` — use `lehdr::grab_lodes()` to download WAC and RAC files by state for the most recent available year; bind state files; reconstruct 11-digit tract GEOIDs from block GEOIDs (drop last 4 digits); produce `staging.lehd_lodes_wac` and `staging.lehd_lodes_rac` at block grain; document private-sector only coverage and suppression/noise-infusion behavior
-- [ ] **23.2.3** Write staging contracts: `layers/staging/staging__lehd_lodes_wac.md`, `staging__lehd_lodes_rac.md`; note block-grain scale, noise-infusion policy for small counts, and the deferred OD path
-- [ ] **23.2.4** Write `foundations/etl/silver/lehd_lodes_silver.R` — aggregate block staging rows → tract grain using tract GEOID prefix; keep jobs by earnings band, broad NAICS sector, worker age band, and worker education; validate aggregated tract GEOIDs against `silver.xwalk_tract_county`; exclude Alaska `02261` and PR/territorial tracts consistent with platform geography policy; produce `silver.lehd_lodes_wac` and `silver.lehd_lodes_rac`
-- [ ] **23.2.5** Write Silver YAML + Markdown: `layers/silver/silver__lehd_lodes_wac.yml` + `.md`, `silver__lehd_lodes_rac.yml` + `.md`; document block → tract aggregation methodology, suppression handling, and OD deferral
-- [ ] **23.2.6** Write `foundations/etl/gold/gold_lodes_tract.sql` — two Gold tables: `gold.lodes_wac_tract` (jobs by sector/earnings/age at tract grain) and `gold.lodes_rac_tract` (resident workers by sector/earnings/age at tract grain); designed as the canonical tract-level employment layer for zone analysis
-- [ ] **23.2.7** Write Gold data dictionary: `layers/gold/gold__lodes_wac_tract.yml` + `.md`, `gold__lodes_rac_tract.yml` + `.md`
-- [ ] **23.2.8** Add LEHD LODES row to `source_topic_checklist.md` (Ingested — WAC + RAC only; OD deferred)
-- [ ] **23.2.9** Add LEHD LODES to `create_DB.R` / `pipeline_manifest.yml`
+Completed `2026-06-22`:
+the managed LODES path now lands tract-aggregated WAC and RAC staging tables, canonical Silver tables at `geo_level + geo_id + geo_name + year`, and one joined Gold mart `gold.economics_lodes_wide` with jobs-versus-workers mismatch metrics. OD remains intentionally deferred.
+
+- [x] **23.2.1** Research & spec: confirmed the live LODES bulk structure and current wrapper interface, including state-based `wac` / `rac` / `od` families, per-state crosswalk files, and local `lehdr::grab_lodes()` parameters; documented that the old `8.3 / 2022` planning assumption is stale and that current Census docs now show `LODES 8.4` with data through `2023`; wrote `foundations/data_dictionary/sources/source__lehd_lodes.md`; updated source indexes / `SOURCES.md`; noted the current `2022-2023` Alaska and Michigan `OD` / `WAC` gaps as an implementation choice to resolve in `23.2.2`
+- [x] **23.2.2** Wrote `foundations/etl/staging/get_lehd_lodes.R` — current implementation uses direct LODES bulk file downloads with a local-download fallback rather than depending on a runtime `lehdr` downloader path; validates block-to-crosswalk coverage, aggregates WAC and RAC to tract during the staging run, and writes tract-level `staging.lehd_lodes_wac` and `staging.lehd_lodes_rac` for the approved `JT02 / S000 / latest-year` first pass
+- [x] **23.2.3** Wrote staging contracts: `layers/staging/staging__lehd_lodes_wac.md`, `staging__lehd_lodes_rac.md`; documented the block-grain upstream versus tract-grain managed staging decision, current `JT02 / S000` first-pass scope, WAC/RAC schema asymmetry, and the deferred OD path
+- [x] **23.2.4** Wrote `foundations/etl/silver/lehd_lodes_silver.R` — reads tract staging rows, validates tract GEOIDs against `silver.xwalk_tract_county`, excludes the currently unmatched tract rows from governed outputs, and materializes wide `silver.lehd_lodes_wac` and `silver.lehd_lodes_rac` surfaces at `geo_level + geo_id + year` for `tract`, `county`, `cbsa`, `state`, and `division`; WAC retains firm age and firm size while RAC stays intentionally narrower
+- [x] **23.2.5** Finalized the Silver contracts: added `layers/silver/silver__lehd_lodes_wac.yml` + `.md` and `silver__lehd_lodes_rac.yml` + `.md`, aligned to the live materialized tables and the cleaned `geo_level + geo_id + geo_name + year` Silver fact shape
+- [x] **23.2.6** Wrote `foundations/etl/gold/gold_economics_lodes.sql` — the approved Gold design is one joined mart, `gold.economics_lodes_wide`, rather than two separate tract-only tables; it keeps the full WAC and RAC analytical families and adds jobs-versus-workers mismatch metrics on the same geography-year surface
+- [x] **23.2.7** Finalized the Gold data dictionary: added `layers/gold/gold__economics_lodes_wide.yml` + `.md` and documented the joined WAC/RAC design, full-outer-join coverage rule, and Gold-only mismatch metrics
+- [x] **23.2.8** Confirmed LEHD LODES is present in `foundations/data_dictionary/sources/checklist.md` as an ingested child topic spec for the managed WAC/RAC-first scope with OD deferred
+- [x] **23.2.9** Added LEHD LODES staging, Silver, and Gold steps to `create_DB.R` and `pipeline_manifest.yml`
 
 ### Track 23.3 — J2J (Job-to-Job Flows)
 
@@ -870,15 +879,27 @@ J2J tracks workers moving directly from one employer to another without an inter
 
 _Depends on: Track 23.1 (QWI) completing first. J2J uses the same LEHD API infrastructure and rewards having the QWI worker-characteristic framework established. CBSA-level geographic flows have higher suppression rates for smaller metros — document this in the staging contract._
 
-- [ ] **23.3.1** Research & spec: confirm J2J API parameters via `lehdr` or direct LEHD API; verify state availability and recommended cross-tab scope (origin/destination industry sector, earnings change, worker age); document geographic flow suppression behavior at CBSA grain; write `foundations/data_dictionary/sources/source__lehd_j2j.md`; update `SOURCES.md`
-- [ ] **23.3.2** Write `foundations/etl/staging/get_lehd_j2j.R` — download J2J flows by state at CBSA/county grain for the available year range; scope to origin × destination industry and earnings-change breakdowns; produce `staging.lehd_j2j`; document suppressed cells
-- [ ] **23.3.3** Write staging contract: `layers/staging/staging__lehd_j2j.md`; note quarterly grain, suppression behavior at small-metro CBSA level, and the earnings-interval-scale data handling requirement
-- [ ] **23.3.4** Write `foundations/etl/silver/lehd_j2j_silver.R` — normalize to canonical `geo_level + geo_id`, compute annual job-to-job transition rate, earnings-change distribution (share gaining / losing / stable), and top industry-switching pairs; produce `silver.lehd_j2j`
-- [ ] **23.3.5** Write Silver YAML + Markdown: `layers/silver/silver__lehd_j2j.yml` + `.md`; document suppression policy, earnings-interval handling, and the geographic origin-destination flow deferral for small CBSAs
-- [ ] **23.3.6** Decide Gold placement: extend `gold.labor_qwi_wide` with J2J mobility columns or create a dedicated `gold.labor_j2j_wide`; document decision (J2J industry-switching pairs are a different grain than QWI workforce composition — likely warrants its own table)
-- [ ] **23.3.7** Update or write the appropriate Gold SQL and data dictionary
-- [ ] **23.3.8** Add LEHD J2J row to `source_topic_checklist.md` (Ingested)
-- [ ] **23.3.9** Add LEHD J2J to `create_DB.R` / `pipeline_manifest.yml`
+- [x] **23.3.1** Research & spec: confirm J2J API parameters via `lehdr` or direct LEHD API; verify state availability and recommended cross-tab scope (origin/destination industry sector, earnings change, worker age); document geographic flow suppression behavior at CBSA grain; write `foundations/data_dictionary/sources/source__lehd_j2j.md`; update `SOURCES.md`
+- [x] **23.3.2** Write `foundations/etl/staging/get_lehd_j2j.R` — download `J2J` counts for both state and metro scopes from the public bulk release; keep the age-family first-pass slice, annualize quarter rows to annual rows, retain the rolling latest `5` completed years per source file, and produce `staging.lehd_j2j`; defer `J2JR` to validation-only use and `J2JOD` to later Deep Dive-specific work
+- [x] **23.3.3** Write staging contract: `layers/staging/staging__lehd_j2j.md`; document the annualized state + metro grain, the per-file completed-year retention rule, partial-year / incomplete-quarter handling through `quarters_observed`, and the `J2JR` / `J2JOD` deferral
+- [x] **23.3.4** Write `foundations/etl/silver/lehd_j2j_silver.R` — normalize staged state and metro rows to canonical `geo_level + geo_id`, preserve annual mobility counts, compute annual transition-share metrics and compact earnings-delta signals for complete-year rows, and produce `silver.lehd_j2j`; defer industry-switching pairs and O-D labor import/export detail until `J2JOD`
+- [x] **23.3.5** Write Silver YAML + Markdown: `layers/silver/silver__lehd_j2j.yml` + `.md`; document the state + CBSA Silver contract, incomplete-year handling, legacy metro-code fallback behavior, and the `J2JOD` deferral
+- [x] **23.3.6** Decide Gold placement: create a dedicated `gold.labor_j2j_wide`; document the contract as a state + CBSA complete-year geography-year mart built from the all-age / all-industry Silver slice, rather than widening `gold.economics_labor_wide`
+- [x] **23.3.7** Write `foundations/etl/gold/gold_labor_j2j_wide.sql`, materialize `gold.labor_j2j_wide`, and update the Gold YAML + Markdown with the live complete-year state + CBSA profile
+- [x] **23.3.8** Add LEHD J2J row to `source_topic_checklist.md` (Ingested)
+- [x] **23.3.9** Add LEHD J2J to `create_DB.R` / `pipeline_manifest.yml`
+
+- Completed 2026-06-24:
+  materialized `silver.lehd_j2j` from the new annualized `J2J`-only staging contract and documented the live Silver profile.
+  The landed table currently holds `457,889` rows at `state` + `cbsa` grain over the age-family surface, with `456,022` complete-year rows, `1,867` incomplete-year rows, and `48` legacy metro codes retained through the explicit CBSA fallback flag rather than being dropped.
+
+- Completed 2026-06-24:
+  decided Gold placement for LEHD J2J as a dedicated `gold.labor_j2j_wide` mart rather than an extension of `gold.economics_labor_wide`.
+  The approved proposal keeps Gold narrow: one `geo_level + geo_id + year` row for `state` and `cbsa`, filtered to complete-year `A00` all-ages and `00` all-industry Silver rows, with compact mobility counts, transition shares, earnings-delta signals, and legacy-metro QA flags documented in `layers/gold/gold__labor_j2j_wide.md` and `.yml`.
+
+- Completed 2026-06-24:
+  wrote `foundations/etl/gold/gold_labor_j2j_wide.sql`, materialized `gold.labor_j2j_wide`, and wired LEHD J2J into the documented build path.
+  The landed Gold mart currently holds `2,430` rows at `state` + `cbsa` geography-year grain with `0` duplicate keys, `255` state rows, `2,175` CBSA rows, and `240` rows tied to `48` retained legacy metro codes that remain queryable through the explicit match flag.
 
 ---
 
@@ -888,36 +909,79 @@ _Depends on: Track 23.1 (QWI) completing first. J2J uses the same LEHD API infra
 
 OEWS is the most significant omission from the current platform stack. QCEW and BEA tell you employment and wages by *industry sector*. OEWS tells you employment and wages by *occupation* — how many registered nurses, software engineers, or truck drivers a metro has, and what each earns at the 10th, 25th, 50th, 75th, and 90th wage percentiles. These are orthogonal analytical cuts. The occupation mix is often a better leading indicator of a metro's economic trajectory than industry mix alone, and wage percentile distribution reveals whether growth is broad-based or concentrated at the top. The ~830 SOC occupation codes also provide the empirical foundation for demographic archetype labels: "Creative Class / Knowledge Hub" is measurable via STEM + management + arts/media share; "Production Town" shows up as a high share of production/transportation occupations.
 
-Annual, released each spring for the prior May reference period. Most recent: May 2024 (released April 2025). ~530 MSAs and nonmetropolitan areas. Bulk download as flat CSV/XLSX by geography type — no API key required.
+Annual, released each spring for the prior May reference period. Most recent verified public release: May 2025 (released May 15, 2026). ~530 MSAs and nonmetropolitan areas. Bulk download as flat CSV/XLSX by geography type — no API key required.
 
-- [ ] **24.1** Research & spec: confirm current OEWS MSA flat-file download URL and column layout (`area_code`, `occ_code`, `occ_title`, `emp`, `h_pct10`, `h_pct25`, `h_median`, `h_pct75`, `h_pct90`); verify SOC group rollup approach for STEM / management / service / production archetypes; document suppression flag handling; write `foundations/data_dictionary/sources/source__bls_oews.md`; update `SOURCES.md`
-- [ ] **24.2** Write `foundations/etl/staging/get_bls_oews.R` — download OEWS MSA flat files for available years (recommend backfill to at least 2019 for COVID-period comparison), parse to `staging.bls_oews`; retain `area_code`, `occ_code`, `occ_title`, employment, all wage percentiles, and suppression flags; use `DB_PATH` from `.Renviron`
-- [ ] **24.3** Write staging contract: `layers/staging/staging__bls_oews.md`; document MSA-first scope decision (national and state files are supplemental), SOC 2018 revision boundary, and wage-interval interpolation note
-- [ ] **24.4** Write `foundations/etl/silver/bls_oews_silver.R` — normalize MSA `area_code` → `cbsa_code` via CBSA crosswalk; derive occupation group rollups (STEM, management/professional, service, production/transportation, other) using SOC major group codes; compute location quotient (`emp_share / national_emp_share`) for each occupation at CBSA grain; produce `silver.bls_oews` at `(geo_level, geo_id, year, soc_code)` grain
-- [ ] **24.5** Write Silver YAML + Markdown: `layers/silver/silver__bls_oews.yml` + `.md`; document SOC group rollup definitions, location quotient methodology, and wage-interpolation approach
-- [ ] **24.6** Write `foundations/etl/gold/gold_labor_occupation_wide.sql` — new Gold table at `(geo_level, geo_id, year, soc_group)` grain with employment, wage percentiles, and location quotient for SOC group rollups; occupation-group employment shares as the primary archetype-classification input; designed as an extension point for full SOC-code detail if needed later
-- [ ] **24.7** Write Gold data dictionary: `layers/gold/gold__labor_occupation_wide.yml` + `.md`
-- [ ] **24.8** Add BLS OEWS row to `source_topic_checklist.md` (Ingested)
-- [ ] **24.9** Add BLS OEWS to `create_DB.R` / `pipeline_manifest.yml`
+- Completed 2026-06-22:
+  wrote `foundations/data_dictionary/sources/source__bls_oews.md`, confirming the live `May 2025` OEWS metro/nonmetro release surface, the current metro XLSX ZIP path, the recent-history comparability boundaries, the official suppression / footnote behavior, and the recommended first-pass SOC rollup strategy.
+  Also updated `foundations/etl/staging/SOURCES.md` and the source-spec coverage index so OEWS now follows the same provider/child-spec pattern already used for the LEHD dataset families.
+
+- [x] **24.1** Research & spec: confirm current OEWS MSA flat-file download URL and column layout (`area_code`, `occ_code`, `occ_title`, `emp`, `h_pct10`, `h_pct25`, `h_median`, `h_pct75`, `h_pct90`); verify SOC group rollup approach for STEM / management / service / production archetypes; document suppression flag handling; write `foundations/data_dictionary/sources/source__bls_oews.md`; update `SOURCES.md`
+- Completed 2026-06-23:
+  wrote `foundations/etl/staging/get_bls_oews.R` and loaded the live `May 2025` OEWS state plus metro/nonmetro workbooks into DuckDB as `staging.bls_oews_state` and `staging.bls_oews_metro_nonmetro`.
+  Landed row counts:
+  `staging.bls_oews_state` = `37,408`,
+  `staging.bls_oews_metro_nonmetro` = `198,712`,
+  with `530` distinct metro/nonmetro areas and `54` distinct state/territory areas.
+
+- [x] **24.2** Write `foundations/etl/staging/get_bls_oews.R` — download the current OEWS state and metro/nonmetro workbooks, parse them into source-faithful staging tables, retain the published geography IDs, occupation IDs, employment, wage percentiles, and source note fields, and use `DB_PATH` from `.Renviron`
+- [x] **24.3** Write staging contract: `layers/staging/staging__bls_oews.md`; document the state + metro/nonmetro first-pass scope decision, the light-touch staging cleanup, the source note handling, and the recommended keep/drop path into Silver
+- Completed 2026-06-23:
+  wrote `foundations/etl/silver/bls_oews_silver.R` and materialized `silver.bls_oews` from the staged `May 2025` OEWS state and metro rows.
+  The first-pass Silver table keeps `51` states plus `393` CBSAs, preserves total / major / detailed SOC rows, joins the official BLS `May 2025` STEM occupation list, and carries row-level flags for employment suppression plus wage-missing and wage-topcoded source notes.
+  Landed Silver row counts:
+  `state` = `36,396`,
+  `cbsa` = `150,023`,
+  total `silver.bls_oews` rows = `186,419`.
+
+- [x] **24.4** Write `foundations/etl/silver/bls_oews_silver.R` — normalize MSA `area_code` → `cbsa_code` via CBSA crosswalk; derive occupation group rollups (STEM, management/professional, service, production/transportation, other) using SOC major group codes; compute location quotient (`emp_share / national_emp_share`) for each occupation at CBSA grain; produce `silver.bls_oews` at `(geo_level, geo_id, year, soc_code)` grain
+- [x] **24.5** Write Silver YAML + Markdown: `layers/silver/silver__bls_oews.yml` + `.md`; document SOC group rollup definitions, location quotient methodology, and wage-interpolation approach
+- Completed 2026-06-24:
+  refactored the drafted OEWS Gold mart into the final peer-economics shape as `gold.economics_occupation_wide`, keeping the agreed occupation-family rollups while using OEWS total rows as the `2025` geography-year base because the current ACS spine stops at `2024`.
+  Materialized the table and documented the live first-pass profile:
+  `444` rows total,
+  `51` state rows,
+  `393` CBSA rows,
+  duplicate key count at `geo_level + geo_id + year` = `0`.
+  Also updated `source_topic_checklist.md`, `pipeline_manifest.yml`, and `create_DB.R` so OEWS is now part of the documented shared build path from staging through Gold.
+
+- [x] **24.6** Write `foundations/etl/gold/gold_economics_occupation_wide.sql` — new Gold table at `geo_level + geo_id + year` grain with occupation-family employment, shares, recomputed family location quotients, employment-weighted mean wages, and compact OEWS quality counts; use total rows only as denominators and detailed SOC rows only as the family inputs
+- [x] **24.7** Write Gold data dictionary: `layers/gold/gold__economics_occupation_wide.yml` + `.md`
+- [x] **24.8** Add BLS OEWS row to `source_topic_checklist.md` (Ingested)
+- [x] **24.9** Add BLS OEWS to `create_DB.R` / `pipeline_manifest.yml`
 
 ---
 
 ## Track 25 — BEA CAINC5N (Compensation of Employees by NAICS Industry)
 
-**Priority: Medium — minor extension to existing BEA Silver script**
+**Priority: Medium — dedicated first-pass BEA ingest, with consolidation deferred**
 
-CAINC5N is a table in the BEA Regional API already in the pipeline (BEA GDP and RPP are already ingested). It breaks down compensation of employees (wages + employer benefit supplements) by NAICS sector at county and state grain, annually back to 2001. The distinction from QCEW: QCEW gives payroll (wages paid by employers from UI records); CAINC5N gives total compensation including benefits and is the official wage series BEA uses for GDP accounting. Adding it is primarily a Silver script extension — the API infrastructure is already established.
+Completed 2026-06-24:
+- Added a dedicated first-pass CAINC5N staging script at `foundations/etl/staging/get_bea_cainc5n.R` rather than extending the shared BEA ingest.
+- Added pipeline wiring in `pipeline_manifest.yml` and `create_DB.R` for the dedicated CAINC5N path.
+- Added a first-pass Silver script at `foundations/etl/silver/bea_cainc5n_silver.R` that keeps the live CAINC5N source shape at `geo_level + geo_id + period + line_code`, derives CBSA rows from county inputs, and defers the final curated compensation-vs-earnings contract until after the source documentation and broader QA pass are complete.
 
-This is likely a half-day implementation: one new table code in the existing BEA Silver script, one new column group in `gold.economics_industry_wide`, and the corresponding data dictionary updates.
+Completed 2026-06-25:
+- Confirmed from the live staged payload that CAINC5N publishes broad industry detail as earnings rows, while wages and supplements are published as all-industries component totals rather than parallel industry-detail compensation rows.
+- Replaced the source-faithful first-pass Silver path with the real curated contract at `geo_level + geo_id + period + industry_key` in `foundations/etl/silver/bea_cainc5n_silver.R`.
+- Materialized `silver.bea_cainc5n` with `1,416,915` rows across `county`, `cbsa`, `state`, and `us`, with `15` curated industry buckets per geography-year.
+- Added the Silver dictionary artifacts `foundations/data_dictionary/layers/silver/silver__bea_cainc5n.yml` and `.md`.
+- Extended `foundations/data_dictionary/sources/source__bea.md` and `foundations/etl/staging/SOURCES.md` to document the dedicated CAINC5N path and the source-true compensation-versus-earnings distinction.
+- Added CAINC5N into `gold.economics_industry_wide` as a new BEA earnings-and-compensation family, keeping it aligned with the existing ACS/QCEW/BEA GDP industry mart rather than creating a separate Gold table.
 
-- [ ] **25.1** Research & spec: confirm CAINC5N table code and API parameters in the existing BEA Regional API infrastructure; verify NAICS sector codes available at county grain and note any suppression behavior; document the wages vs. compensation distinction and how to handle the model-based supplements at county level; write `foundations/data_dictionary/sources/source__bea_cainc5n.md` (or extend `source__bea.md` with a new section); update `SOURCES.md`
-- [ ] **25.2** Extend `foundations/etl/staging/get_bea_*.R` (whichever script handles regional BEA tables) to also pull CAINC5N compensation by NAICS sector at county and state grain; produce `staging.bea_cainc5n`
-- [ ] **25.3** Write staging contract: `layers/staging/staging__bea_cainc5n.md`; document suppression (D) handling, supplements-are-model-based note, and the NAICS sector grain available at county vs. more detail at state
-- [ ] **25.4** Extend `foundations/etl/silver/bea_*.R` to normalize CAINC5N rows into a long `(geo_level, geo_id, year, naics_sector, compensation_total, wages_salaries, supplements)` Silver table; derive CBSA rows from county using `silver.xwalk_cbsa_county` with employment-weighted rollup; produce `silver.bea_cainc5n`
-- [ ] **25.5** Write Silver YAML + Markdown: `layers/silver/silver__bea_cainc5n.yml` + `.md`
-- [ ] **25.6** Update `foundations/etl/gold/gold_economy_industry.sql` to join CAINC5N compensation columns alongside existing QCEW and BEA industry families; add `bea_compensation_total`, `bea_wages_salaries`, `bea_supplements` columns (or indexed by sector for the curated broad-family set); update Gold data dictionary
-- [ ] **25.7** Add BEA CAINC5N row to `source_topic_checklist.md` (Ingested)
-- [ ] **25.8** Add BEA CAINC5N to `pipeline_manifest.yml`
+CAINC5N is a table in the BEA Regional API already in the pipeline (BEA GDP and RPP are already ingested). It breaks down compensation of employees (wages + employer benefit supplements) by NAICS sector at county and state grain, annually back to 2001. The distinction from QCEW: QCEW gives payroll (wages paid by employers from UI records); CAINC5N gives total compensation including benefits and is the official wage series BEA uses for GDP accounting. The API infrastructure is already established, but the approved first pass should use a dedicated CAINC5N staging script so we can validate the new path end to end without risking regressions in the existing BEA ingest. Once that separate path is working, we can come back and consolidate the BEA scripts if it still looks worthwhile.
+
+This is still likely a relatively small implementation: one new dedicated BEA staging script, one new CAINC5N Silver path, one new column group in `gold.economics_industry_wide`, and the corresponding data dictionary updates.
+
+- [x] **25.1** Research & spec: confirm CAINC5N table code and API parameters in the existing BEA Regional API infrastructure; verify NAICS sector codes available at county grain and note any suppression behavior; document the wages vs. compensation distinction and how to handle the model-based supplements at county level; write `foundations/data_dictionary/sources/source__bea_cainc5n.md` (or extend `source__bea.md` with a new section); update `SOURCES.md`
+- [x] **25.2** Write a dedicated CAINC5N staging script (for example `foundations/etl/staging/get_bea_cainc5n.R`) to pull CAINC5N compensation / earnings lines at county and state grain; produce `staging.bea_cainc5n`
+- [x] **25.3** Write staging contract: `layers/staging/staging__bea_cainc5n.md`; document suppression (D) handling, supplements-are-model-based note, and the NAICS sector grain available at county vs. more detail at state
+- [x] **25.4** Normalize CAINC5N into the real Silver contract at `geo_level + geo_id + period + industry_key`, keeping broad industry `earnings_total` rows source-faithful and populating `compensation_total`, `wages_salaries`, and `supplements` only on the `all_industries` row; derive CBSA rows from county with additive dollar rollups; produce `silver.bea_cainc5n`
+- [x] **25.4a** Unplanned but required: write a first-pass dedicated Silver script `foundations/etl/silver/bea_cainc5n_silver.R` that preserves the live CAINC5N line-code grain while we finalize the narrower curated compensation/earnings contract
+- [x] **25.5** Write Silver YAML + Markdown: `layers/silver/silver__bea_cainc5n.yml` + `.md`
+- [x] **25.6** Update `foundations/etl/gold/gold_economy_industry.sql` to join CAINC5N compensation columns alongside existing QCEW and BEA industry families; add `bea_compensation_total`, `bea_wages_salaries`, `bea_supplements` columns (or indexed by sector for the curated broad-family set); update Gold data dictionary
+- [x] **25.7** Add BEA CAINC5N row to `source_topic_checklist.md` (Ingested)
+- [x] **25.8** Add BEA CAINC5N to `pipeline_manifest.yml`
+- [x] **25.8a** Unplanned but required: add the dedicated CAINC5N staging and Silver scripts to `foundations/etl/create_DB.R`
 
 ---
 
@@ -929,15 +993,16 @@ The USDA Economic Research Service publishes county-level classification schemes
 
 This is a dimension table ingest, not a recurring panel — small flat files (~3,200 rows each), one row per county, updated every 5–10 years. The payoff is clean CBSA characterization and a persistent-poverty flag that is independently useful across multiple Gold tables.
 
-- [ ] **26.1** Research & spec: confirm USDA ERS download URLs for Rural-Urban Continuum Codes (2023) and County Typology Codes (most recent release); verify county FIPS identifier; note update cadence; write `foundations/data_dictionary/sources/source__usda_ers_typology.md`; update `SOURCES.md`
-- [ ] **26.2** Write `foundations/etl/staging/get_usda_ers_typology.R` — download both classification files, normalize county FIPS, produce `staging.usda_rucc` (Rural-Urban Continuum Codes) and `staging.usda_county_typology` (economic base + persistent challenge flags)
-- [ ] **26.3** Write staging contracts: `layers/staging/staging__usda_rucc.md`, `staging__usda_county_typology.md`; note slow-moving classification nature (not a time series) and vintage year
-- [ ] **26.4** Write `foundations/etl/silver/usda_ers_typology_silver.R` — join both classification tables on county FIPS, derive CBSA summary rows (modal RUCC code, any-county persistent-poverty flag, share of counties by economic base type); produce `silver.usda_county_typology` as a unified dimension table
-- [ ] **26.5** Write Silver YAML + Markdown: `layers/silver/silver__usda_county_typology.yml` + `.md`
-- [ ] **26.6** Decide Gold placement: add RUCC code and key typology flags (`is_persistent_poverty`, `is_recreation_destination`, `economic_base_type`) as enrichment columns on `gold.dim_geo` (the geography identity table) rather than a new fact table — these are structural attributes of a place, not metrics; document decision
-- [ ] **26.7** Update or write the appropriate Gold SQL and data dictionary
-- [ ] **26.8** Add USDA ERS Typology to `source_topic_checklist.md` (Ingested)
-- [ ] **26.9** Add USDA ERS Typology to `pipeline_manifest.yml`
+- [x] **26.1** Research & spec: confirmed live USDA ERS download URLs for `2023` Rural-Urban Continuum Codes and `2025` County Typology Codes, verified 5-character county FIPS keys (`FIPS`, `FIPStxt`), noted the rough decennial update cadence, documented the delivered long `Attribute` / `Value` file shapes plus the Connecticut planning-region vs. legacy-county wrinkle in `foundations/data_dictionary/sources/source__usda_ers_typology.md`, and updated `SOURCES.md`
+- [x] **26.2** Wrote `foundations/etl/staging/get_usda_ers_typology.R` — downloads the live ERS `2023` RUCC and `2025` County Typology CSVs, normalizes county-equivalent FIPS as 5-character text, preserves the long `attribute` / `value` shape with a numeric parse helper, keeps Connecticut planning regions source-faithfully in staging, and lands `staging.usda_rucc` (`9,703` data rows; `3,235` distinct FIPS) plus `staging.usda_county_typology` (`40,976` data rows; `3,152` distinct FIPS)
+- [x] **26.3** Wrote staging contracts: `layers/staging/staging__usda_rucc.md`, `staging__usda_county_typology.md`; documented the source-faithful long `attribute` / `value` shape, the slow-moving non-timeseries nature of the files, the landed row counts, and the mixed Connecticut planning-region vs. legacy-county geography note
+- [x] **26.4** Wrote `foundations/etl/silver/usda_ers_typology_silver.R` as a county-only unified dimension table — it joins the RUCC and County Typology families on county-equivalent FIPS, widens the long source files to one row per `geo_level + geo_id`, preserves source-coverage flags and sentinel-value audit fields, and explicitly defers any CBSA summarization to Gold
+- [x] **26.4a** Unplanned but required: wrote a first-pass county-wide `foundations/etl/silver/usda_ers_typology_silver.R` and materialized `silver.usda_county_typology` at `geo_level + geo_id` grain; the live table currently holds the full `3,243`-FIPS union of RUCC plus County Typology keys, with `3,235` rows on the current county-equivalent backbone and `8` legacy Connecticut county rows explicitly flagged as outside the current backbone rather than being silently dropped or remapped
+- [x] **26.5** Wrote Silver YAML + Markdown: `layers/silver/silver__usda_county_typology.yml` + `.md`; documented the full `3,243`-FIPS union, the `3,235` current-backbone rows, the `8` legacy Connecticut county exceptions, and the county-only Silver scope
+- [x] **26.6** Decided Gold placement: county-native ERS classifications belong as enrichment columns on `gold.dim_geo`, while any CBSA-level characterization should be derived in Gold rather than stored in Silver; documented the common-backbone-only requirement and the need for explicit rollup logic
+- [x] **26.7** Updated `gold/gold_dim_geo.sql` plus the Gold YAML / Markdown dictionary so county rows in `gold.dim_geo` are now the canonical Gold home for county-native USDA ERS classifications (`rucc_2023_code`, `rucc_2023_description`, industry dependence, persistent poverty, and related challenge flags); CBSA summaries remain explicitly deferred to a future Gold-only derived transform
+- [x] **26.8** Added USDA ERS Typology to `source_topic_checklist.md` (Ingested)
+- [x] **26.9** Added USDA ERS Typology staging + Silver steps to `pipeline_manifest.yml`
 
 ---
 
@@ -999,7 +1064,7 @@ Recommended execution order:
 13. **Track 22** (Stanford SEDA) — Education; depends on Track 15 (NCES CCD) for the district-county crosswalk
 14. **Track 24** (BLS OEWS) — Occupation/workforce; highest analytical value of the new tracks; no dependencies; run in parallel with any economics track
 15. **Track 25** (BEA CAINC5N) — Minor BEA Silver extension; run alongside any BEA refresh
-16. **Track 26** (USDA ERS County Typology) — Trivial dimension table; run whenever convenient; enriches `gold.dim_geo`
+16. **Track 26** (USDA ERS County Typology) — County-only Silver is complete; next step is county-native `gold.dim_geo` enrichment plus any explicit Gold-only CBSA summaries
 17. **Track 23.1** (LEHD QWI) — Quarterly workforce cross-tabs; run after QCEW is stable; use `lehdr`
 18. **Track 23.2** (LEHD LODES WAC + RAC) — Tract-level employment spatial layer; run after QWI is established; most value realized at Deep Dive time
 19. **Track 27** (Economic Census 2022) — Structural benchmark; 5-year cadence; run as a dedicated pass for priority sectors (Retail, Professional Services, Healthcare, Manufacturing)

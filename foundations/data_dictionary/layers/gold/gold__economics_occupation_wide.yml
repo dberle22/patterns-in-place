@@ -1,0 +1,158 @@
+table_name: economics_occupation_wide
+schema: gold
+grain: One row per geo_level + geo_id + year.
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: point_release
+  column: year
+  min: '2025'
+  max: '2025'
+geo_coverage:
+  notes:
+    - geo_levels=state,cbsa
+    - row_count=444
+    - state_rows=51
+    - cbsa_rows=393
+    - base_surface=silver.bls_oews total rows only
+columns:
+  - name: geo_level
+    type: VARCHAR
+    definition: Canonical geography level for the row (`state` or `cbsa`).
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    definition: Canonical geography identifier for the row.
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    definition: Canonical geography display name for the row.
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    definition: OEWS release year for the Gold row.
+    needs_confirmation: no
+  - name: oews_emp_total
+    type: DOUBLE
+    definition: Total all-occupation employment used as the denominator for the Gold occupation-family shares.
+    needs_confirmation: no
+  - name: oews_emp_stem
+    type: DOUBLE
+    definition: Employment in detailed occupations included in the pinned BLS OEWS STEM occupation list.
+    needs_confirmation: no
+  - name: oews_emp_management_professional
+    type: DOUBLE
+    definition: Employment in the repo-defined management/professional occupation bucket.
+    needs_confirmation: no
+  - name: oews_emp_service
+    type: DOUBLE
+    definition: Employment in the repo-defined service occupation bucket.
+    needs_confirmation: no
+  - name: oews_emp_production_transportation
+    type: DOUBLE
+    definition: Employment in the repo-defined production/transportation occupation bucket.
+    needs_confirmation: no
+  - name: oews_emp_other
+    type: DOUBLE
+    definition: Employment in the residual occupation bucket for rows not mapped to the other exclusive families.
+    needs_confirmation: no
+  - name: oews_pct_emp_stem
+    type: DOUBLE
+    definition: STEM employment divided by `oews_emp_total`.
+    needs_confirmation: no
+  - name: oews_pct_emp_management_professional
+    type: DOUBLE
+    definition: Management/professional employment divided by `oews_emp_total`.
+    needs_confirmation: no
+  - name: oews_pct_emp_service
+    type: DOUBLE
+    definition: Service employment divided by `oews_emp_total`.
+    needs_confirmation: no
+  - name: oews_pct_emp_production_transportation
+    type: DOUBLE
+    definition: Production/transportation employment divided by `oews_emp_total`.
+    needs_confirmation: no
+  - name: oews_pct_emp_other
+    type: DOUBLE
+    definition: Residual-bucket employment divided by `oews_emp_total`.
+    needs_confirmation: no
+  - name: oews_lq_stem
+    type: DOUBLE
+    definition: STEM employment share relative to the national state-based STEM employment share.
+    needs_confirmation: no
+  - name: oews_lq_management_professional
+    type: DOUBLE
+    definition: Management/professional employment share relative to the national state-based family share.
+    needs_confirmation: no
+  - name: oews_lq_service
+    type: DOUBLE
+    definition: Service employment share relative to the national state-based family share.
+    needs_confirmation: no
+  - name: oews_lq_production_transportation
+    type: DOUBLE
+    definition: Production/transportation employment share relative to the national state-based family share.
+    needs_confirmation: no
+  - name: oews_lq_other
+    type: DOUBLE
+    definition: Residual-bucket employment share relative to the national state-based family share.
+    needs_confirmation: no
+  - name: oews_mean_annual_wage_stem
+    type: DOUBLE
+    definition: Employment-weighted mean annual wage across detailed STEM occupations with non-null annual wage estimates.
+    needs_confirmation: no
+  - name: oews_mean_annual_wage_management_professional
+    type: DOUBLE
+    definition: Employment-weighted mean annual wage across detailed management/professional occupations with non-null annual wage estimates.
+    needs_confirmation: no
+  - name: oews_mean_annual_wage_service
+    type: DOUBLE
+    definition: Employment-weighted mean annual wage across detailed service occupations with non-null annual wage estimates.
+    needs_confirmation: no
+  - name: oews_mean_annual_wage_production_transportation
+    type: DOUBLE
+    definition: Employment-weighted mean annual wage across detailed production/transportation occupations with non-null annual wage estimates.
+    needs_confirmation: no
+  - name: oews_mean_annual_wage_other
+    type: DOUBLE
+    definition: Employment-weighted mean annual wage across detailed occupations in the residual bucket with non-null annual wage estimates.
+    needs_confirmation: no
+  - name: oews_mean_hourly_wage_stem
+    type: DOUBLE
+    definition: Employment-weighted mean hourly wage across detailed STEM occupations with non-null hourly wage estimates.
+    needs_confirmation: no
+  - name: oews_mean_hourly_wage_management_professional
+    type: DOUBLE
+    definition: Employment-weighted mean hourly wage across detailed management/professional occupations with non-null hourly wage estimates.
+    needs_confirmation: no
+  - name: oews_mean_hourly_wage_service
+    type: DOUBLE
+    definition: Employment-weighted mean hourly wage across detailed service occupations with non-null hourly wage estimates.
+    needs_confirmation: no
+  - name: oews_mean_hourly_wage_production_transportation
+    type: DOUBLE
+    definition: Employment-weighted mean hourly wage across detailed production/transportation occupations with non-null hourly wage estimates.
+    needs_confirmation: no
+  - name: oews_mean_hourly_wage_other
+    type: DOUBLE
+    definition: Employment-weighted mean hourly wage across detailed occupations in the residual bucket with non-null hourly wage estimates.
+    needs_confirmation: no
+  - name: oews_unreleased_emp_soc_count
+    type: DOUBLE
+    definition: Count of detailed SOC rows in the geography-year where employment was not released in the source OEWS file.
+    needs_confirmation: no
+  - name: oews_missing_wage_soc_count
+    type: DOUBLE
+    definition: Count of detailed SOC rows in the geography-year where one or more wage fields were unavailable in the source OEWS file.
+    needs_confirmation: no
+  - name: oews_topcoded_wage_soc_count
+    type: DOUBLE
+    definition: Count of detailed SOC rows in the geography-year where one or more wage fields were top-coded in the source OEWS file.
+    needs_confirmation: no
+lineage:
+  - step: materialized_gold_output
+    script: foundations/etl/gold/gold_economics_occupation_wide.sql
+    details: Gold SQL reads `silver.bls_oews`, uses OEWS total rows as the geography-year base, rolls detailed occupations into the approved family buckets, and writes one wide occupation-family mart at geography-year grain.
+kpi_definitions: []

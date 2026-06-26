@@ -1,0 +1,155 @@
+table_name: labor_j2j_wide
+schema: gold
+grain: One row per geo_level + geo_id + year.
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2011'
+  max: '2024'
+geo_coverage:
+  notes:
+    - geo_levels=state,cbsa
+    - row_count=2430
+    - state_rows=255
+    - cbsa_rows=2175
+    - source_filter=demo_code:A00|industry_code:00|is_complete_year:true
+    - uneven_history_by_geography=true
+    - legacy_metro_fallback_flag_retained=true
+    - unmatched_legacy_cbsa_rows=240
+    - unmatched_legacy_cbsa_geos=48
+    - sourced_from=silver.lehd_j2j
+columns:
+  - name: geo_level
+    type: VARCHAR
+    definition: Canonical geography level for the row (`state` or `cbsa`).
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    definition: Canonical geographic identifier for the row.
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    definition: Canonical geography display name for the row.
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    definition: Observation year for the Gold labor-fluidity row.
+    needs_confirmation: no
+  - name: j2j_quarters_observed
+    type: INTEGER
+    definition: Number of source quarters contributing to the Silver annual row; expected to be 4 for all Gold rows in the first pass.
+    needs_confirmation: no
+  - name: j2j_has_current_cbsa_match
+    type: BOOLEAN
+    definition: Whether a CBSA row matched the current CBSA crosswalk naming reference.
+    needs_confirmation: no
+  - name: j2j_release_id
+    type: VARCHAR
+    definition: LEHD J2J release identifier carried through from Silver for provenance.
+    needs_confirmation: no
+  - name: j2j_keep_start_year
+    type: INTEGER
+    definition: Earliest retained year from the geography's source-file retention window.
+    needs_confirmation: no
+  - name: j2j_keep_end_year
+    type: INTEGER
+    definition: Latest retained year from the geography's source-file retention window.
+    needs_confirmation: no
+  - name: j2j_hires_total
+    type: DOUBLE
+    definition: Annual total hires from the all-age, all-industry J2J slice.
+    needs_confirmation: no
+  - name: j2j_separations_total
+    type: DOUBLE
+    definition: Annual total separations from the all-age, all-industry J2J slice.
+    needs_confirmation: no
+  - name: j2j_job_starts_total
+    type: DOUBLE
+    definition: Annual total job starts from the all-age, all-industry J2J slice.
+    needs_confirmation: no
+  - name: j2j_job_ends_total
+    type: DOUBLE
+    definition: Annual total job endings from the all-age, all-industry J2J slice.
+    needs_confirmation: no
+  - name: j2j_hires_from_employment
+    type: DOUBLE
+    definition: Annual hires coming directly from prior employment.
+    needs_confirmation: no
+  - name: j2j_hires_from_nonemployment
+    type: DOUBLE
+    definition: Annual hires coming from nonemployment.
+    needs_confirmation: no
+  - name: j2j_separations_to_employment
+    type: DOUBLE
+    definition: Annual separations going directly to subsequent employment.
+    needs_confirmation: no
+  - name: j2j_separations_to_nonemployment
+    type: DOUBLE
+    definition: Annual separations going to nonemployment.
+    needs_confirmation: no
+  - name: j2j_direct_hires
+    type: DOUBLE
+    definition: Annual count of direct job-to-job hires.
+    needs_confirmation: no
+  - name: j2j_direct_separations
+    type: DOUBLE
+    definition: Annual count of direct job-to-job separations.
+    needs_confirmation: no
+  - name: j2j_direct_hire_share
+    type: DOUBLE
+    definition: Share of total hires that are direct job-to-job hires.
+    needs_confirmation: no
+  - name: j2j_direct_sep_share
+    type: DOUBLE
+    definition: Share of total separations that are direct job-to-job separations.
+    needs_confirmation: no
+  - name: j2j_ee_hire_share
+    type: DOUBLE
+    definition: Share of total hires that come directly from prior employment.
+    needs_confirmation: no
+  - name: j2j_ne_hire_share
+    type: DOUBLE
+    definition: Share of total hires that come from nonemployment.
+    needs_confirmation: no
+  - name: j2j_ee_sep_share
+    type: DOUBLE
+    definition: Share of total separations that go directly to subsequent employment.
+    needs_confirmation: no
+  - name: j2j_en_sep_share
+    type: DOUBLE
+    definition: Share of total separations that go to nonemployment.
+    needs_confirmation: no
+  - name: j2j_avg_ee_hire_earnings_dest
+    type: DOUBLE
+    definition: Annual average destination-side earnings for employment-to-employment hires.
+    needs_confirmation: no
+  - name: j2j_avg_ee_sep_earnings_orig
+    type: DOUBLE
+    definition: Annual average origin-side earnings for employment-to-employment separations.
+    needs_confirmation: no
+  - name: j2j_avg_ee_earnings_delta
+    type: DOUBLE
+    definition: Difference between destination and origin employment-to-employment average earnings.
+    needs_confirmation: no
+  - name: j2j_avg_job_stayers_count
+    type: DOUBLE
+    definition: Annual average count of stable job stayers from the all-age, all-industry J2J slice.
+    needs_confirmation: no
+  - name: j2j_avg_main_job_beginning_count
+    type: DOUBLE
+    definition: Annual average count of main jobs at the beginning of the quarter sequence.
+    needs_confirmation: no
+  - name: j2j_avg_main_job_ending_count
+    type: DOUBLE
+    definition: Annual average count of main jobs at the end of the quarter sequence.
+    needs_confirmation: no
+lineage:
+  - step: materialized_write_target
+    script: foundations/etl/gold/gold_labor_j2j_wide.sql
+    details: Gold SQL reads `silver.lehd_j2j`, filters to complete-year all-age all-industry state and CBSA rows, and writes one wide annual labor-fluidity mart.
+kpi_definitions: []

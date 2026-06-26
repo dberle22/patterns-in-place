@@ -1,0 +1,748 @@
+table_name: economics_lodes_wide
+schema: gold
+grain: One row per geo_level + geo_id + year.
+primary_key:
+  - geo_level
+  - geo_id
+  - year
+foreign_keys: []
+time_coverage:
+  type: range
+  column: year
+  min: '2023'
+  max: '2023'
+geo_coverage:
+  notes:
+    - row_count=88158
+    - distinct_geo_levels=5
+    - cbsa_rows=925
+    - county_rows=3144
+    - division_rows=9
+    - state_rows=51
+    - tract_rows=84029
+columns:
+  - name: geo_level
+    type: VARCHAR
+    definition: Geographic level for the observation row.
+    needs_confirmation: no
+  - name: geo_id
+    type: VARCHAR
+    definition: Canonical geographic identifier for the observation row.
+    needs_confirmation: no
+  - name: geo_name
+    type: VARCHAR
+    definition: Canonical geographic display name for the observation row.
+    needs_confirmation: no
+  - name: year
+    type: INTEGER
+    definition: Observation year for the annual LODES row.
+    needs_confirmation: no
+  - name: jobs_total
+    type: DOUBLE
+    definition: Total jobs in the geography-year row from LODES WAC.
+    needs_confirmation: no
+  - name: jobs_age_29_or_younger
+    type: DOUBLE
+    definition: Count in the named age bucket.
+    needs_confirmation: no
+  - name: jobs_age_30_54
+    type: DOUBLE
+    definition: Count in the named age bucket.
+    needs_confirmation: no
+  - name: jobs_age_55_plus
+    type: DOUBLE
+    definition: Count in the named age bucket.
+    needs_confirmation: no
+  - name: jobs_earnings_low
+    type: DOUBLE
+    definition: Count in the named earnings bucket.
+    needs_confirmation: no
+  - name: jobs_earnings_mid
+    type: DOUBLE
+    definition: Count in the named earnings bucket.
+    needs_confirmation: no
+  - name: jobs_earnings_high
+    type: DOUBLE
+    definition: Count in the named earnings bucket.
+    needs_confirmation: no
+  - name: jobs_edu_less_than_hs
+    type: DOUBLE
+    definition: Count in the named education bucket.
+    needs_confirmation: no
+  - name: jobs_edu_hs_or_some_college
+    type: DOUBLE
+    definition: Count in the named education bucket.
+    needs_confirmation: no
+  - name: jobs_edu_bachelors_or_advanced
+    type: DOUBLE
+    definition: Count in the named education bucket.
+    needs_confirmation: no
+  - name: jobs_edu_not_available
+    type: DOUBLE
+    definition: Count in the named education bucket.
+    needs_confirmation: no
+  - name: jobs_ind_ag_forest_fish_hunt
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_ind_mining_quarry_oil_gas
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_ind_utilities
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_ind_construction
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_ind_manufacturing
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_ind_wholesale
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_ind_retail
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_ind_transport_warehouse
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_ind_information
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_ind_finance_insurance
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_ind_real_estate
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_ind_professional_scientific_technical
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_ind_management_companies
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_ind_admin_support_waste
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_ind_educational_services
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_ind_health_care_social_assistance
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_ind_arts_entertainment_recreation
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_ind_accommodation_food
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_ind_other_services
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_ind_public_administration
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: jobs_firm_age_0_1
+    type: DOUBLE
+    definition: Workplace jobs in establishments within the named firm-age bucket.
+    needs_confirmation: no
+  - name: jobs_firm_age_2_3
+    type: DOUBLE
+    definition: Workplace jobs in establishments within the named firm-age bucket.
+    needs_confirmation: no
+  - name: jobs_firm_age_4_5
+    type: DOUBLE
+    definition: Workplace jobs in establishments within the named firm-age bucket.
+    needs_confirmation: no
+  - name: jobs_firm_age_6_10
+    type: DOUBLE
+    definition: Workplace jobs in establishments within the named firm-age bucket.
+    needs_confirmation: no
+  - name: jobs_firm_age_11_plus
+    type: DOUBLE
+    definition: Workplace jobs in establishments within the named firm-age bucket.
+    needs_confirmation: no
+  - name: jobs_firm_size_0_19
+    type: DOUBLE
+    definition: Workplace jobs in establishments within the named firm-size bucket.
+    needs_confirmation: no
+  - name: jobs_firm_size_20_49
+    type: DOUBLE
+    definition: Workplace jobs in establishments within the named firm-size bucket.
+    needs_confirmation: no
+  - name: jobs_firm_size_50_249
+    type: DOUBLE
+    definition: Workplace jobs in establishments within the named firm-size bucket.
+    needs_confirmation: no
+  - name: jobs_firm_size_250_499
+    type: DOUBLE
+    definition: Workplace jobs in establishments within the named firm-size bucket.
+    needs_confirmation: no
+  - name: jobs_firm_size_500_plus
+    type: DOUBLE
+    definition: Workplace jobs in establishments within the named firm-size bucket.
+    needs_confirmation: no
+  - name: pct_jobs_age_29_or_younger
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_age_30_54
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_age_55_plus
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_earnings_low
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_earnings_mid
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_earnings_high
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_edu_less_than_hs
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_edu_hs_or_some_college
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_edu_bachelors_or_advanced
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_edu_not_available
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_ag_forest_fish_hunt
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_mining_quarry_oil_gas
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_utilities
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_construction
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_manufacturing
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_wholesale
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_retail
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_transport_warehouse
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_information
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_finance_insurance
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_real_estate
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_professional_scientific_technical
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_management_companies
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_admin_support_waste
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_educational_services
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_health_care_social_assistance
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_arts_entertainment_recreation
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_accommodation_food
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_other_services
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_ind_public_administration
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_firm_age_0_1
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_firm_age_2_3
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_firm_age_4_5
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_firm_age_6_10
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_firm_age_11_plus
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_firm_size_0_19
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_firm_size_20_49
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_firm_size_50_249
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_firm_size_250_499
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: pct_jobs_firm_size_500_plus
+    type: DOUBLE
+    definition: Share of total jobs in the named LODES WAC composition slice.
+    needs_confirmation: no
+  - name: workers_total
+    type: DOUBLE
+    definition: Total resident workers in the geography-year row from LODES RAC.
+    needs_confirmation: no
+  - name: workers_age_29_or_younger
+    type: DOUBLE
+    definition: Count in the named age bucket.
+    needs_confirmation: no
+  - name: workers_age_30_54
+    type: DOUBLE
+    definition: Count in the named age bucket.
+    needs_confirmation: no
+  - name: workers_age_55_plus
+    type: DOUBLE
+    definition: Count in the named age bucket.
+    needs_confirmation: no
+  - name: workers_earnings_low
+    type: DOUBLE
+    definition: Count in the named earnings bucket.
+    needs_confirmation: no
+  - name: workers_earnings_mid
+    type: DOUBLE
+    definition: Count in the named earnings bucket.
+    needs_confirmation: no
+  - name: workers_earnings_high
+    type: DOUBLE
+    definition: Count in the named earnings bucket.
+    needs_confirmation: no
+  - name: workers_edu_less_than_hs
+    type: DOUBLE
+    definition: Count in the named education bucket.
+    needs_confirmation: no
+  - name: workers_edu_hs_or_some_college
+    type: DOUBLE
+    definition: Count in the named education bucket.
+    needs_confirmation: no
+  - name: workers_edu_bachelors_or_advanced
+    type: DOUBLE
+    definition: Count in the named education bucket.
+    needs_confirmation: no
+  - name: workers_edu_not_available
+    type: DOUBLE
+    definition: Count in the named education bucket.
+    needs_confirmation: no
+  - name: workers_ind_ag_forest_fish_hunt
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_mining_quarry_oil_gas
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_utilities
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_construction
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_manufacturing
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_wholesale
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_retail
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_transport_warehouse
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_information
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_finance_insurance
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_real_estate
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_professional_scientific_technical
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_management_companies
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_admin_support_waste
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_educational_services
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_health_care_social_assistance
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_arts_entertainment_recreation
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_accommodation_food
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_other_services
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: workers_ind_public_administration
+    type: DOUBLE
+    definition: Count in the named broad industry bucket.
+    needs_confirmation: no
+  - name: pct_workers_age_29_or_younger
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_age_30_54
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_age_55_plus
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_earnings_low
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_earnings_mid
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_earnings_high
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_edu_less_than_hs
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_edu_hs_or_some_college
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_edu_bachelors_or_advanced
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_edu_not_available
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_ag_forest_fish_hunt
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_mining_quarry_oil_gas
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_utilities
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_construction
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_manufacturing
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_wholesale
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_retail
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_transport_warehouse
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_information
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_finance_insurance
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_real_estate
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_professional_scientific_technical
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_management_companies
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_admin_support_waste
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_educational_services
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_health_care_social_assistance
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_arts_entertainment_recreation
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_accommodation_food
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_other_services
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: pct_workers_ind_public_administration
+    type: DOUBLE
+    definition: Share of total resident workers in the named LODES RAC composition slice.
+    needs_confirmation: no
+  - name: jobs_minus_workers
+    type: DOUBLE
+    definition: Difference between workplace jobs and resident workers for the geography-year row.
+    needs_confirmation: no
+  - name: workers_minus_jobs
+    type: DOUBLE
+    definition: Difference between resident workers and workplace jobs for the geography-year row.
+    needs_confirmation: no
+  - name: jobs_to_workers_ratio
+    type: DOUBLE
+    definition: Ratio of workplace jobs to resident workers for the geography-year row.
+    needs_confirmation: no
+  - name: workers_to_jobs_ratio
+    type: DOUBLE
+    definition: Ratio of resident workers to workplace jobs for the geography-year row.
+    needs_confirmation: no
+  - name: pct_point_gap_age_29_or_younger
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_age_30_54
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_age_55_plus
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_earnings_low
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_earnings_mid
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_earnings_high
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_edu_less_than_hs
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_edu_hs_or_some_college
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_edu_bachelors_or_advanced
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_edu_not_available
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_ag_forest_fish_hunt
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_mining_quarry_oil_gas
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_utilities
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_construction
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_manufacturing
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_wholesale
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_retail
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_transport_warehouse
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_information
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_finance_insurance
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_real_estate
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_professional_scientific_technical
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_management_companies
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_admin_support_waste
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_educational_services
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_health_care_social_assistance
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_arts_entertainment_recreation
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_accommodation_food
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_other_services
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+  - name: pct_point_gap_ind_public_administration
+    type: DOUBLE
+    definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.
+    needs_confirmation: no
+lineage:
+  - step: materialize
+    script: foundations/etl/gold/gold_economics_lodes.sql
+    details: Joins the WAC and RAC Silver surfaces by geography-year and adds jobs-versus-workers mismatch metrics for downstream tract and regional analysis.
+kpi_definitions: []
