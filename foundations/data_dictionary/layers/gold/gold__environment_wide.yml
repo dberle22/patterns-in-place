@@ -13,33 +13,31 @@ time_coverage:
   max: '2025'
 geo_coverage:
   notes:
-    - distinct_geo_levels=2
-    - distinct_geo_id=1626
-    - county_rows=10057
-    - cbsa_rows=5088
-    - ejscreen_rows_2024_county=977
-    - ejscreen_rows_2024_cbsa=482
-    - fema_rows_2025_county=959
-    - fema_rows_2025_cbsa=478
+    - distinct_geo_levels=3
+    - tract_rows are now included alongside county and cbsa rows
+    - AQI remains county and cbsa only
+    - EJScreen includes direct tract rows plus county and cbsa population-weighted rollups
+    - FEMA includes tract, county, and cbsa rows where silver.fema_nri is available
 quality_notes:
   - Live key check on 2026-06-08 found zero duplicates on geo_level + geo_id + year.
-  - AQI remains the source-faithful county + CBSA backbone of the table.
+  - AQI remains the source-faithful county + CBSA slice of the table.
   - County rows inherit the Silver county-identification strategy: normalized EPA state and county names matched to canonical county GEOIDs, with a small documented manual alias fallback.
   - CBSA rows inherit the source-published 5-digit `cbsa_code` as `geo_id`.
   - Ten county rows were intentionally dropped upstream in Silver because they could not be matched to a canonical county GEOID after normalization.
   - EJScreen indicators are rolled up from tract to county and CBSA with population-weighted averages using tract population as the weight.
-  - Because AQI remains the Gold backbone, EJScreen fields are currently populated only for AQI rows that intersect the 2024 EJScreen county / CBSA rollup.
+  - EJScreen tract rows are promoted directly from `silver.ejscreen`, while county and CBSA rows remain tract rollups.
   - EJScreen inherits the tract-Silver supported-geography boundary, so Puerto Rico and territorial archive rows are not represented in the current Gold rollup.
-  - FEMA NRI joins from `silver.fema_nri` at the shared `geo_level + geo_id + year` grain, so the current FEMA slice only populates for `2025` AQI rows that intersect the FEMA county / CBSA contract.
-  - FEMA Silver preserves county-equivalent rows beyond the monitored AQI backbone, so only the AQI-overlapping subset appears in this Gold table.
+  - Because AQI has no tract contract, AQI fields remain null on tract rows.
+  - FEMA NRI joins from `silver.fema_nri` at the shared `geo_level + geo_id + year` grain for tract, county, and cbsa rows.
+  - Because FEMA is currently a single-release `2025` surface, FEMA fields are non-null only for `year = 2025`.
 sources:
   - silver.epa_aqi
   - silver.ejscreen
   - silver.fema_nri
   - gold.dim_geo
 columns:
-  - { name: geo_level, type: VARCHAR, definition: Geographic level for the row (`county` or `cbsa`). }
-  - { name: geo_id, type: VARCHAR, definition: Geographic identifier for the row. County rows use 5-digit county FIPS and CBSA rows use 5-digit CBSA codes. }
+  - { name: geo_level, type: VARCHAR, definition: Geographic level for the row (`tract`, `county`, or `cbsa`). }
+  - { name: geo_id, type: VARCHAR, definition: Geographic identifier for the row. Tract rows use 11-digit tract GEOIDs, county rows use 5-digit county FIPS, and CBSA rows use 5-digit CBSA codes. }
   - { name: geo_name, type: VARCHAR, definition: Geographic display name for the row. }
   - { name: year, type: INTEGER, definition: Observation year. }
   - { name: days_with_aqi, type: INTEGER, definition: Number of days in the year with AQI observations for the geography. }

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la *)",
+      "Bash(ls -1 *)",
+      "Bash(find /Users/danberle/Documents/projects/patterns_in_place *)",
+      "Bash(find /Users/danberle/Documents/projects/patterns_in_place/foundations *)",
+      "Bash(find /Users/danberle/Documents/projects/patterns_in_place/exploration *)",
+      "Bash(find /Users/danberle/Documents/projects/patterns_in_place/metro-deep-dive *)",
+      "Bash(find /Users/danberle/Documents/projects/patterns_in_place/publisher *)",
+      "Bash(find /Users/danberle/Documents/projects/patterns_in_place/notes *)",
+      "Bash(streamlit run *)"
+    ]
+  }
+}

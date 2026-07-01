@@ -18,7 +18,7 @@ Gold tables (facts)
                         → First Deep Dives (Jacksonville + Richmond VA)
 ```
 
-Every entry in `foundations/semantic_layer/intelligence_catalog.yml` is currently `status: placeholder`. The goal of this roadmap is to move them to `status: calibrated` through actual analysis — not through upfront spec work.
+The four CBSA-grain frame entries in `foundations/semantic_layer/intelligence_catalog.yml` are now `status: calibrated`, and the Phase 7 tract / ZCTA zone outputs are promoted through `foundations/loaders/` into `mart_intelligence`. The remaining work is consumer-side: verifying downstream products against the final marts and using the zone surfaces in Deep Dive workflows.
 
 **Phase 0 is complete.** The confirmed, gap-annotated metric map lives at `exploration/intelligence_framework/docs/metric_map.md`.
 
@@ -733,113 +733,56 @@ exploration/intelligence_framework/phase_6_trajectory/
 
 ## Phase 7 — Zone Methodology Definition
 
-**Status:** Not started  
-**Depends on:** Phases 3–5 complete (uses CBSA-level cluster labels as context); Phase 6 complete (candidate market list)  
+**Status:** Complete  
+**Depends on:** Phases 3–6 complete  
 **Detailed plan:** `exploration/intelligence_framework/phase_7_zone_methodology/PHASE7_PLAN.md`  
 **Methodology reference:** `exploration/intelligence_framework/docs/zone_methodology_notes.md`
 
-**Goal:** Build the sub-metro zone classification system that produces the Zone Analysis section of every Metro Deep Dive. Two outputs from a single tract-level model: (1) nationally consistent zone type labels for every tract in the 396-CBSA universe, and (2) per-market corridor detection for Deep Dive markets using DBSCAN.
+**Goal:** Build the sub-metro zone classification system that produces the Zone Analysis section of every Metro Deep Dive. The canonical Phase 7 deliverable is now complete: a nationally consistent tract model plus a downstream ZCTA rollup, both promoted into `mart_intelligence`. Per-market corridor detection remains optional Deep Dive follow-on work rather than part of the completion gate.
 
 ---
 
-### Two-stage architecture
+### Completed architecture
 
-**Stage 1 — National zone type model (hierarchical → k-means → GMM, same pipeline as Phases 2–5)**
-- One combined KPI vector per tract across three themes: Character / Livability / Opportunity
-- Produces a nationally consistent `zone_type` label and GMM soft memberships per tract
-- Expected k = 7–10 zone types (higher than CBSA models; within-metro heterogeneity is real)
-- Three benchmark levels per tract: national percentile, CBSA percentile, zone-type-peer percentile
+**Stage 1 — National tract zone model**
+- One combined KPI vector per tract across Character, Livability, and Opportunity
+- Sampled hierarchical calibration plus full-matrix k-means on the full tract universe
+- Final published tract solution keeps `k = 7`
+- GMM remains optional and is skipped by default at tract scale
+- Final zone names:
+  - `Entry-Market Neighborhoods`
+  - `Emerging Knowledge Districts`
+  - `Knowledge Corridor`
+  - `Established Residential`
+  - `Mixed-Income Middle Neighborhoods`
+  - `Working Neighborhoods`
+  - `Commercial Core / Jobs Center`
 
-**Stage 2 — Per-market corridor detection (DBSCAN, hybrid distance)**
-- Runs within each Deep Dive CBSA after Stage 1 labels are assigned
-- Hybrid distance: `α × feature_distance + (1−α) × spatial_distance` where α = 0.70 (feature-primary, spatially bounded)
-- Groups adjacent or near-adjacent same-type tracts into named corridors
-- Corridor naming: `{county_name}_{zone_type}_{rank}` (rank by corridor size)
-- Noise tracts (no coherent corridor) retain zone type but get no corridor assignment
-- DBSCAN chosen because: k is not pre-specified, noise points are valid, non-contiguous corridors are acceptable
+**Stage 2 — ZCTA rollup**
+- Uses `silver.xwalk_zcta_tract` with HUD population weights
+- A ZCTA inherits a tract zone only when one zone exceeds `50%` of the weighted tract mix
+- Otherwise the published ZCTA label is `Mixed Zone`
+- The full weighted zone-share vector is carried through so thresholds can change later without recomputing the rollup
 
-**ZCTA rollup (derivative layer)**
-- Zone type majority-assigned to ZCTAs from tract model via `silver.xwalk_zcta_tract`
-- Presentation layer only — not the primary model; tract is the analytic base
+**Optional Deep Dive extension**
+- Per-market DBSCAN corridor detection remains available as a true Deep Dive workflow
+- It is no longer a dependency for the canonical tract or ZCTA marts
 
----
+### Canonical outputs
 
-### Data prerequisites (Sprint 0 — must complete before Stage 1 build)
+- `outputs/zone_scores.parquet` — tract-level zone labels, scores, percentiles, and interpretation fields
+- `outputs/zone_scores_zcta.parquet` — population-weighted ZCTA rollup with dominant-vs-mixed assignment and full share vector
+- `outputs/phase7_cluster_calibration.csv`
+- `outputs/phase7_cluster_centroids.csv`
+- `outputs/phase7_representative_tracts.csv`
+- optional market artifacts such as `jax_corridors.csv` and `rva_corridors.csv` for later Deep Dive work
 
-**1. LEHD/LODES Silver → Gold ETL**
-LODES WAC (Workplace Area Characteristics) provides the tract-level Opportunity signal ACS cannot: `jobs_per_resident`, `pct_jobs_high_wage`, `pct_jobs_professional_services`, `jobs_inflow_ratio`. Public, annual, tract-level, 2002–2022.
+### Promoted marts
 
-**2. SLD and EJScreen tract re-surface**
-`walkability_index`, `jobs_access_45min_transit` (SLD) and `ejs_pm25` (EJScreen) are tract-native in Silver but rolled up to county/CBSA in current Gold ETL. Need tract rows added to `gold_transport_built_form_sld.sql` and `gold_environment_wide.sql`.
+- `mart_intelligence.intelligence_zones`
+- `mart_intelligence.intelligence_zones_zcta`
 
----
-
-### KPI input set (three themes, combined vector)
-
-**Theme A — Character:** `diversity_index`, `pct_hispanic`, `pct_black_nh`, `pct_asian_nh`, `pct_age_over_64`, `pct_ba_plus`, `pct_foreign_born`, `pct_same_house`, `owner_occ_rate`, `pct_struct_multifam`, `pop_weighted_density_sqmi`
-
-**Theme B — Livability (ACS core + SLD re-surface + EJScreen re-surface):** `pct_rent_burden_30plus`, `median_gross_rent`, `median_home_value`, `pov_rate`, `vacancy_rate`, `pct_hh_0_vehicles`, `pct_commute_walk`, `pct_commute_transit`, `pct_no_internet_access`, `walkability_index`, `jobs_access_45min_transit`, `ejs_pm25`, `fema_risk_score`  
-*Excluded: CHR health outcomes (county-only source, no tract equivalent)*
-
-**Theme C — Opportunity (ACS proxies + LEHD):** `median_hh_income`, `pov_rate_change_5yr`, `pct_unemployment_rate`, `pct_ba_plus_change_5yr`, `jobs_per_resident`, `pct_jobs_high_wage`, `pct_jobs_professional_services`, `jobs_inflow_ratio`  
-*Context overlay (not in clustering vector): `is_opportunity_zone` flag*
-
----
-
-### Draft zone type label set (to be validated against centroids)
-
-- **Knowledge Corridor** — high BA+, high density, walkable, professional jobs
-- **Established Residential** — owner-occupied, older, low mobility, low vacancy
-- **Emerging / Transitional** — increasing diversity, rising rents, income change positive
-- **Affordable Working Class** — mixed race/ethnicity, moderate income, renters, stable jobs
-- **Distressed** — high poverty, high vacancy, poor access, low jobs/resident
-- **Growth Periphery** — family-oriented, newer housing, moderate BA+, population growth
-- **Jobs Center / Commercial Core** — very high jobs/resident, low residential population
-- **Environmental Risk Zone** — may not emerge as standalone; may cross-cut other types
-
----
-
-### Tasks
-
-**Sprint 0 — Data prerequisites:**
-- [ ] Write `foundations/etl/silver/lodes_wac_silver.R` — ingest LODES WAC at tract grain
-- [ ] Write `foundations/etl/gold/gold_lodes_wide.sql` — derive `jobs_per_resident`, `pct_jobs_high_wage`, `pct_jobs_professional_services`; validate with JAX + RVA spot check
-- [ ] Add tract rows to `gold_transport_built_form_sld.sql`
-- [ ] Expose tract rows in `gold_environment_wide.sql`
-
-**Sprint 1 — Methodology and literature review:**
-- [ ] Review NCRC, Urban Institute, Esri Tapestry, and Moretti — document in `docs/zone_methodology_notes.md`
-- [ ] Finalize KPI list, polarity flags, and coverage rules in `R/phase7_config.R`
-- [ ] Document DBSCAN hybrid distance formula and parameter design in `R/phase7_config.R`
-
-**Sprint 2 — National zone type model:**
-- [ ] Write `R/phase7_tract_frame_build.R` — pull and join all tract KPI tables for 396-CBSA universe
-- [ ] Write `R/phase7_imputation.R` — coverage audit, median imputation, z-score standardization
-- [ ] Write `R/phase7_national_cluster.R` — hierarchical → k-means → GMM; calibration outputs
-- [ ] Assign zone type labels from centroids; validate against JAX and RVA spot check
-- [ ] Write `R/phase7_scoring.R` — theme scores, national/CBSA/peer percentile ranks
-- [ ] Write canonical output to `outputs/zone_scores.parquet`
-
-**Sprint 3 — Deep Dive market stress tests:**
-- [ ] Write `R/phase7_corridor_detection.R` — DBSCAN with hybrid distance; parameterized by CBSA
-- [ ] Run Jacksonville corridor detection; calibrate `eps` and `min_samples` against map output
-- [ ] Run Richmond VA corridor detection with locked JAX parameters
-- [ ] Write `zone_methodology.qmd` — review notebook for both markets
-- [ ] Validate zone type distribution in both markets; confirm `is_opportunity_zone` overlap with Distressed type
-
-**Sprint 4 — ZCTA rollup and Gold promotion:**
-- [ ] Write `R/phase7_zcta_rollup.R` — majority-assign zone type to ZCTAs from tract model
-- [ ] Write `foundations/loaders/load_zone_scores.R` → `gold.intelligence_zones` (tract grain)
-- [ ] Write `foundations/loaders/load_zone_scores_zcta.R` → `gold.intelligence_zones_zcta`
-- [ ] Update `intelligence_catalog.yml` zone entries to `status: calibrated`
-
-**Expected canonical outputs:**
-- `outputs/zone_scores.parquet` — one row per tract; zone type, GMM probs, theme scores, percentile ranks
-- `outputs/zone_scores_zcta.parquet` — ZCTA rollup
-- `outputs/jax_corridors.csv`, `outputs/rva_corridors.csv` — per-market DBSCAN corridor assignments
-- `outputs/phase7_cluster_calibration.csv`, `outputs/phase7_cluster_centroids.csv`, `outputs/phase7_representative_tracts.csv`
-
-**Deliverable:** `zone_methodology.qmd` with dual-market validation. Two Gold tables promoted to DuckDB (`gold.intelligence_zones`, `gold.intelligence_zones_zcta`). Zone type labels locked and documented. Feeds Article 9 and the Deep Dive zone map template.
+**Deliverable:** Final tract and ZCTA zone surfaces promoted to DuckDB and ready for downstream consumers. Per-market corridor detection remains optional Deep Dive follow-on work rather than part of the canonical Phase 7 completion gate.
 
 ---
 
@@ -879,7 +822,8 @@ One R script per data product. Each script reads the corresponding parquet from 
 | `load_opportunity_scores.R` | `phase_4_opportunity_calibration/outputs/opportunity_scores.parquet` | `mart_intelligence.intelligence_opportunity` | Same structure as Livability |
 | `load_character_scores.R` | `phase_2_character_calibration/outputs/character_scores.parquet` | `mart_intelligence.intelligence_character` | Same structure |
 | `load_cross_frame_scores.R` | `phase_5_cross_frame_integration/outputs/cross_frame_scores.parquet` | `mart_intelligence.intelligence_cross_frame` | Combined cluster, frame-level percentile carrythrough, cross-frame similarity fields |
-| `load_zone_assignments.R` | Zone methodology outputs | `mart_intelligence.intelligence_zones` | Tract-level zone labels (after Phase 7; deferred until zone work is complete) |
+| `load_zone_assignments.R` | Zone methodology outputs | `mart_intelligence.intelligence_zones` | Tract-level zone labels from the final `k = 7` Phase 7 surface |
+| `load_zone_scores_zcta.R` | Phase 7 ZCTA rollup outputs | `mart_intelligence.intelligence_zones_zcta` | Population-weighted ZCTA rollup with dominant-vs-mixed assignment and full share vector |
 
 **Schema notes:**
 - The Intelligence DataMart lives in DuckDB schema `mart_intelligence`
@@ -905,12 +849,13 @@ One R script per data product. Each script reads the corresponding parquet from 
 - [x] Write and validate `foundations/loaders/load_opportunity_scores.R`
 - [x] Write and validate `foundations/loaders/load_character_scores.R`
 - [x] Write and validate `foundations/loaders/load_cross_frame_scores.R`
-- [ ] Write and validate `foundations/loaders/load_zone_assignments.R` once Phase 7 is complete
+- [x] Write and validate `foundations/loaders/load_zone_assignments.R`
+- [x] Write and validate `foundations/loaders/load_zone_scores_zcta.R`
 - [ ] Confirm all completed Intelligence DataMart tables are queryable from MotherDuck and accessible to Area Explorer and the Chatbot
 
-**Deliverable:** All completed `intelligence_catalog.yml` entries at `status: calibrated`. Four CBSA-grain `mart_intelligence.intelligence_*` tables in DuckDB, with zone tables added after Phase 7 completes. `intelligence_calibration_notes.md` complete. Area Explorer Phase 2 and Chatbot wire-up are now unblocked.
+**Deliverable:** All completed `intelligence_catalog.yml` entries at `status: calibrated`. The Intelligence DataMart now includes the four CBSA-grain frame tables plus the two Phase 7 zone tables in DuckDB. `intelligence_calibration_notes.md` is complete. Area Explorer Phase 2 and Chatbot wire-up are now unblocked.
 
-**Completed summary:** Phase 8 now has a working `mart_intelligence` promotion path for the completed CBSA score products. The roadmap, semantic layer, and Area Explorer references now treat Intelligence outputs as a dedicated downstream DataMart built on top of Gold rather than as Gold-on-Gold tables. Validated loader scripts now materialize `mart_intelligence.intelligence_character`, `mart_intelligence.intelligence_livability`, `mart_intelligence.intelligence_opportunity`, and `mart_intelligence.intelligence_cross_frame` from the canonical phase outputs, with semantic alias columns, promoted top-10 peers, and Cross-Frame overlap context added so the catalogs point at stable queryable fields. The Phase 8 calibration summary doc now lives at `exploration/intelligence_framework/docs/intelligence_calibration_notes.md`.
+**Completed summary:** Phase 8 now has a working `mart_intelligence` promotion path for the completed Intelligence products. The roadmap, semantic layer, and Area Explorer references now treat Intelligence outputs as a dedicated downstream DataMart built on top of Gold rather than as Gold-on-Gold tables. Validated loader scripts now materialize `mart_intelligence.intelligence_character`, `mart_intelligence.intelligence_livability`, `mart_intelligence.intelligence_opportunity`, `mart_intelligence.intelligence_cross_frame`, `mart_intelligence.intelligence_zones`, and `mart_intelligence.intelligence_zones_zcta` from the canonical phase outputs, with semantic alias columns, promoted peer context, and zone-share carrythrough so the catalogs point at stable queryable fields. The Phase 8 calibration summary doc now lives at `exploration/intelligence_framework/docs/intelligence_calibration_notes.md`.
 
 ---
 
@@ -1021,6 +966,7 @@ foundations/
     load_character_scores.R               ← Phase 8: writes mart_intelligence.intelligence_character to DuckDB
     load_cross_frame_scores.R             ← Phase 8: writes mart_intelligence.intelligence_cross_frame to DuckDB
     load_zone_assignments.R               ← Phase 8: writes mart_intelligence.intelligence_zones to DuckDB
+    load_zone_scores_zcta.R               ← Phase 8: writes mart_intelligence.intelligence_zones_zcta to DuckDB
 ```
 
 ---

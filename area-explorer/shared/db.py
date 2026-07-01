@@ -21,6 +21,60 @@ INTELLIGENCE_PARQUETS = {
     "intelligence_cross_frame": "exploration/intelligence_framework/phase_5_cross_frame_integration/outputs/cross_frame_scores.parquet",
 }
 VALID_IDENTIFIER = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+PRIMARY_STATE_ABBR_PATTERN = re.compile(r",\s*([A-Z]{2})(?:-[A-Z]{2})*$")
+STATE_ABBR_TO_NAME = {
+    "AL": "Alabama",
+    "AK": "Alaska",
+    "AZ": "Arizona",
+    "AR": "Arkansas",
+    "CA": "California",
+    "CO": "Colorado",
+    "CT": "Connecticut",
+    "DE": "Delaware",
+    "FL": "Florida",
+    "GA": "Georgia",
+    "HI": "Hawaii",
+    "ID": "Idaho",
+    "IL": "Illinois",
+    "IN": "Indiana",
+    "IA": "Iowa",
+    "KS": "Kansas",
+    "KY": "Kentucky",
+    "LA": "Louisiana",
+    "ME": "Maine",
+    "MD": "Maryland",
+    "MA": "Massachusetts",
+    "MI": "Michigan",
+    "MN": "Minnesota",
+    "MS": "Mississippi",
+    "MO": "Missouri",
+    "MT": "Montana",
+    "NE": "Nebraska",
+    "NV": "Nevada",
+    "NH": "New Hampshire",
+    "NJ": "New Jersey",
+    "NM": "New Mexico",
+    "NY": "New York",
+    "NC": "North Carolina",
+    "ND": "North Dakota",
+    "OH": "Ohio",
+    "OK": "Oklahoma",
+    "OR": "Oregon",
+    "PA": "Pennsylvania",
+    "RI": "Rhode Island",
+    "SC": "South Carolina",
+    "SD": "South Dakota",
+    "TN": "Tennessee",
+    "TX": "Texas",
+    "UT": "Utah",
+    "VT": "Vermont",
+    "VA": "Virginia",
+    "WA": "Washington",
+    "WV": "West Virginia",
+    "WI": "Wisconsin",
+    "WY": "Wyoming",
+    "DC": "District of Columbia",
+}
 
 
 def _repo_root() -> Path:
@@ -44,6 +98,45 @@ def _quote_identifier(identifier: str) -> str:
     if not VALID_IDENTIFIER.match(identifier):
         raise ValueError(f"Unsafe identifier: {identifier}")
     return f'"{identifier}"'
+
+
+def _derive_primary_state_abbr(geo_name: str | None) -> str | None:
+    """Extract the first state abbreviation from a CBSA display name."""
+    if not geo_name:
+        return None
+    match = PRIMARY_STATE_ABBR_PATTERN.search(str(geo_name))
+    if match is None:
+        return None
+    return match.group(1)
+
+
+def _fill_primary_state_context(
+    df: pd.DataFrame,
+    *,
+    geo_name_col: str,
+    state_name_col: str,
+    state_abbr_col: str | None = None,
+) -> pd.DataFrame:
+    """Backfill a primary state for multi-state CBSAs when dim_geo leaves it null.
+
+    The current geography dimension intentionally leaves some multi-state CBSA
+    state fields null. For the explorer we want a stable, human-readable
+    default, so we use the first state abbreviation in the CBSA name as the
+    primary state.
+    """
+    if df.empty:
+        return df
+
+    filled = df.copy()
+    if state_abbr_col is not None and state_abbr_col in filled.columns:
+        parsed_abbr = filled[geo_name_col].map(_derive_primary_state_abbr)
+        filled[state_abbr_col] = filled[state_abbr_col].fillna(parsed_abbr)
+    else:
+        parsed_abbr = filled[geo_name_col].map(_derive_primary_state_abbr)
+
+    if state_name_col in filled.columns:
+        filled[state_name_col] = filled[state_name_col].fillna(parsed_abbr.map(STATE_ABBR_TO_NAME))
+    return filled
 
 
 def resolve_db_path() -> Path:
@@ -257,7 +350,7 @@ def query_metric(metric_id: str, year: int, state_filter: tuple[str, ...] = ()) 
 
     connection = get_connection()
     try:
-        return connection.execute(
+        metric_df = connection.execute(
             f"""
             WITH metric_base AS (
               SELECT
@@ -304,6 +397,11 @@ def query_metric(metric_id: str, year: int, state_filter: tuple[str, ...] = ()) 
         ).fetchdf()
     finally:
         connection.close()
+    return _fill_primary_state_context(
+        metric_df,
+        geo_name_col="geo_name",
+        state_name_col="state_name",
+    )
 
 
 @st.cache_data(ttl=3600)
@@ -361,6 +459,42 @@ def query_metric_timeseries_batch(metric_id: str, geo_ids: tuple[str, ...]) -> p
         ).fetchdf()
     finally:
         connection.close()
+
+
+@st.cache_data(ttl=3600)
+def query_metric_timeseries_bounds(metric_id: str) -> tuple[float | None, float | None]:
+    """Return global CBSA min/max bounds for a metric across all available years.
+
+    The trend chart uses these bounds so a metro's time series sits in the
+    context of the broader CBSA distribution rather than re-scaling to only the
+    selected places on every interaction.
+    """
+    schema_name, table_name, source_column = _metric_table_ref(metric_id)
+    quoted_column = _quote_identifier(source_column)
+
+    connection = get_connection()
+    try:
+        row = connection.execute(
+            f"""
+            SELECT
+              MIN({quoted_column}) AS metric_min,
+              MAX({quoted_column}) AS metric_max
+            FROM {schema_name}.{table_name}
+            WHERE {_normalize_geo_level_expression('geo_level')} = 'cbsa'
+              AND {quoted_column} IS NOT NULL
+              AND isfinite({quoted_column})
+            """
+        ).fetchone()
+    finally:
+        connection.close()
+
+    if row is None:
+        return (None, None)
+    metric_min, metric_max = row
+    return (
+        float(metric_min) if metric_min is not None else None,
+        float(metric_max) if metric_max is not None else None,
+    )
 
 
 @st.cache_data(ttl=3600)
@@ -508,6 +642,64 @@ def query_similarity_peers(cbsa_code: str, limit: int = 10) -> pd.DataFrame:
 
 
 @st.cache_data(ttl=3600)
+def query_peer_comparison_snapshot(
+    cbsa_code: str,
+    year: int,
+    peer_limit: int = 5,
+) -> pd.DataFrame:
+    """Return a compact selected-CBSA-plus-peers comparison table for the UI.
+
+    This uses the app-serving mart when available because it already contains
+    the key comparison fields we want to show together in one row model.
+    """
+    peers_df = query_similarity_peers(cbsa_code, limit=peer_limit)
+    comparison_ids = tuple([cbsa_code, *peers_df["peer_cbsa_code"].tolist()])
+    placeholders = ", ".join("?" for _ in comparison_ids)
+
+    connection = get_connection()
+    try:
+        comparison_df = connection.execute(
+            f"""
+            SELECT
+              cbsa_code,
+              cbsa_name,
+              state_name_primary,
+              pop_total,
+              median_hh_income,
+              rent_to_income,
+              character_percentile_rank,
+              livability_percentile_rank,
+              opportunity_percentile_rank
+            FROM mart_area_explorer.cbsa_profile_year
+            WHERE year = ?
+              AND cbsa_code IN ({placeholders})
+            """,
+            [year, *comparison_ids],
+        ).fetchdf()
+    finally:
+        connection.close()
+
+    if comparison_df.empty:
+        return comparison_df
+
+    comparison_df["peer_rank"] = comparison_df["cbsa_code"].map(
+        {cbsa_code: 0, **dict(zip(peers_df["peer_cbsa_code"], peers_df["peer_rank"]))}
+    )
+    comparison_df["similarity"] = comparison_df["cbsa_code"].map(
+        {cbsa_code: 1.0, **dict(zip(peers_df["peer_cbsa_code"], peers_df["similarity"]))}
+    )
+    comparison_df["comparison_role"] = comparison_df["cbsa_code"].map(
+        {cbsa_code: "Selected", **{peer_code: "Peer" for peer_code in peers_df["peer_cbsa_code"]}}
+    )
+    comparison_df = _fill_primary_state_context(
+        comparison_df,
+        geo_name_col="cbsa_name",
+        state_name_col="state_name_primary",
+    )
+    return comparison_df.sort_values(["peer_rank", "cbsa_name"]).reset_index(drop=True)
+
+
+@st.cache_data(ttl=3600)
 def query_intelligence_scatter(state_filter: tuple[str, ...] = ()) -> pd.DataFrame:
     """Return the cross-frame scatter surface used by the Intelligence tab."""
     state_filter_clause = ""
@@ -519,7 +711,7 @@ def query_intelligence_scatter(state_filter: tuple[str, ...] = ()) -> pd.DataFra
 
     connection = get_connection()
     try:
-        return connection.execute(
+        intelligence_df = connection.execute(
             f"""
             WITH character AS (
               SELECT cbsa_code, cbsa_name, character_cluster
@@ -585,6 +777,11 @@ def query_intelligence_scatter(state_filter: tuple[str, ...] = ()) -> pd.DataFra
         ).fetchdf()
     finally:
         connection.close()
+    return _fill_primary_state_context(
+        intelligence_df,
+        geo_name_col="cbsa_name",
+        state_name_col="state_name",
+    )
 
 
 @st.cache_data(ttl=3600)
@@ -603,9 +800,7 @@ def query_intelligence_membership_table(state_filter: tuple[str, ...] = ()) -> p
         "combined_cluster",
         "livability_percentile_rank",
         "opportunity_percentile_rank",
-        "top_gmm_cluster",
         "top_gmm_probability",
-        "second_gmm_cluster",
         "second_gmm_probability",
         "cross_frame_divergence_flag",
     ]

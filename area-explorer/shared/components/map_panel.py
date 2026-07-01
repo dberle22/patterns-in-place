@@ -7,6 +7,8 @@ from typing import Any
 import plotly.express as px
 import streamlit as st
 
+from shared.geo_utils import load_county_geojson
+
 
 def render_cbsa_map(
     metric_df,
@@ -45,6 +47,19 @@ def render_cbsa_map(
         opacity=0.75,
         height=height,
         **color_kwargs,
+    )
+    # A light county outline layer helps orient the eye within larger CBSAs
+    # without turning the map into a county-grain explorer.
+    choropleth.update_layout(
+        mapbox_layers=[
+            {
+                "sourcetype": "geojson",
+                "source": load_county_geojson(),
+                "type": "line",
+                "color": "rgba(90, 90, 90, 0.18)",
+                "line": {"width": 0.4},
+            }
+        ]
     )
     choropleth.update_layout(margin=dict(l=0, r=0, t=0, b=0))
     st.plotly_chart(choropleth, use_container_width=True)

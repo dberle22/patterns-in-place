@@ -152,8 +152,10 @@ The scored outputs from each frame phase are promoted to DuckDB `mart_intelligen
 | `mart_intelligence.intelligence_opportunity` | Opportunity | Active | `load_opportunity_scores.R` |
 | `mart_intelligence.intelligence_character` | Character | Active | `load_character_scores.R` |
 | `mart_intelligence.intelligence_cross_frame` | Combined | Active | `load_cross_frame_scores.R` |
+| `mart_intelligence.intelligence_zones` | Zone Methodology | Active | `load_zone_assignments.R` |
+| `mart_intelligence.intelligence_zones_zcta` | Zone Methodology ZCTA Rollup | Active | `load_zone_scores_zcta.R` |
 
-All intelligence tables are static CBSA-grain lookups — one row per CBSA, no year dimension. They contain normalized semantic aliases for cluster label, GMM soft membership probabilities, subject z-scores, frame composite percentile rank, and promoted top-10 peer columns. The Cross-Frame mart also carries overlap/divergence context such as `frame_percentile_gap`, `overlap_profile`, and frame leaders/laggards.
+The Phase 2–5 intelligence tables are static CBSA-grain lookups — one row per CBSA, no year dimension. They contain normalized semantic aliases for cluster label, GMM soft membership probabilities, subject z-scores, frame composite percentile rank, and promoted top-10 peer columns. The Cross-Frame mart also carries overlap/divergence context such as `frame_percentile_gap`, `overlap_profile`, and frame leaders/laggards. `mart_intelligence.intelligence_zones` is the tract-grain Phase 7 output and carries the final `k = 7` zone type label, theme scores, percentile context, opportunity-zone flag, and standardized KPI columns used to interpret each tract assignment. `mart_intelligence.intelligence_zones_zcta` is the downstream ZCTA rollup built from HUD tract-to-ZCTA population weights; it keeps the dominant-vs-mixed assignment plus the full weighted zone-share vector for each ZCTA.
 
 ---
 

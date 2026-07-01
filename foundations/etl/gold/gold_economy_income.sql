@@ -24,8 +24,9 @@ select lower(geo_level) as geo_level,
 	median_hh_income,
 	per_capita_income,
 	pov_rate,
-	LAG(pov_rate, 1) OVER (PARTITION BY lower(geo_level), geo_id, geo_name ORDER BY year) AS pov_rate_lag1,
-	LAG(pov_rate, 5) OVER (PARTITION BY lower(geo_level), geo_id, geo_name ORDER BY year) AS pov_rate_lag5,
+	LAG(pov_rate, 1) OVER (PARTITION BY lower(geo_level), geo_id ORDER BY year) AS pov_rate_lag1,
+	LAG(pov_rate, 3) OVER (PARTITION BY lower(geo_level), geo_id ORDER BY year) AS pov_rate_lag3,
+	LAG(pov_rate, 5) OVER (PARTITION BY lower(geo_level), geo_id ORDER BY year) AS pov_rate_lag5,
 	gini_index,
 	pct_hh_lt25k,
 	pct_hh_25k_50k,
@@ -89,6 +90,13 @@ select base.geo_level,
 			THEN pov_rate - pov_rate_lag1
 		ELSE NULL
 	END AS pov_rate_change_1yr,
+	CASE
+		WHEN pov_rate_lag3 IS NOT NULL
+			AND NOT isnan(pov_rate)
+			AND NOT isnan(pov_rate_lag3)
+			THEN pov_rate - pov_rate_lag3
+		ELSE NULL
+	END AS pov_rate_change_3yr,
 	CASE
 		WHEN pov_rate_lag5 IS NOT NULL
 			AND NOT isnan(pov_rate)

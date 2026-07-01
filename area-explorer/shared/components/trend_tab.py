@@ -12,6 +12,7 @@ def render_trend_tab(
     selected_geo_id: str,
     metric_display_name: str,
     build_trend_frame,
+    y_axis_range: tuple[float | None, float | None] | None = None,
 ) -> tuple[str, ...]:
     """Render the time-series chart and return the selected comparison CBSAs."""
     comparison_geo_ids = st.multiselect(
@@ -33,5 +34,12 @@ def render_trend_tab(
         title=f"{comparison_lookup[selected_geo_id]} — {metric_display_name}",
         height=420,
     )
+    if y_axis_range and y_axis_range[0] is not None and y_axis_range[1] is not None:
+        metric_min, metric_max = y_axis_range
+        if metric_min == metric_max:
+            padding = abs(metric_min) * 0.05 if metric_min != 0 else 1.0
+        else:
+            padding = (metric_max - metric_min) * 0.05
+        trend_plot.update_yaxes(range=[metric_min - padding, metric_max + padding])
     st.plotly_chart(trend_plot, use_container_width=True)
     return tuple(comparison_geo_ids)

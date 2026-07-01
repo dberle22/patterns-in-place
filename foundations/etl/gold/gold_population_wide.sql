@@ -88,6 +88,7 @@ SELECT geo_level,
 	pct_lt_hs_25p + pct_hs_ged_25p as pct_hs_or_less,
 	pct_ba_25p as pct_ba,
 	pct_ba_25p + pct_ma_plus_25p as pct_ba_plus,
+	LAG(pct_ba_25p + pct_ma_plus_25p, 3) OVER (PARTITION BY geo_level, geo_id ORDER BY year) AS pct_ba_plus_lag3,
 	LAG(pct_ba_25p + pct_ma_plus_25p, 5) OVER (PARTITION BY geo_level, geo_id ORDER BY year) AS pct_ba_plus_lag5,
 	pct_ma_plus_25p as pct_grad_plus
 FROM patterns_in_place.silver.education_kpi 
@@ -126,6 +127,13 @@ select p.geo_level,
 	pct_hs_or_less,
 	pct_ba,
 	pct_ba_plus,
+	CASE
+		WHEN pct_ba_plus_lag3 IS NOT NULL
+			AND NOT isnan(pct_ba_plus)
+			AND NOT isnan(pct_ba_plus_lag3)
+			THEN pct_ba_plus - pct_ba_plus_lag3
+		ELSE NULL
+	END AS pct_ba_plus_change_3yr,
 	CASE
 		WHEN pct_ba_plus_lag5 IS NOT NULL
 			AND NOT isnan(pct_ba_plus)

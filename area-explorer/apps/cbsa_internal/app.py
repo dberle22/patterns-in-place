@@ -21,10 +21,13 @@ from shared.catalog import get_hierarchy, get_metric_meta, get_metrics_for_geo_l
 from shared.components.distribution_tab import render_distribution_tab
 from shared.components.intelligence_tab import render_intelligence_tab
 from shared.components.map_panel import render_cbsa_map
-from shared.components.profile_panel import render_profile_panel, render_similarity_peers
+from shared.components.profile_panel import (
+    render_peer_comparison_table,
+    render_profile_panel,
+)
 from shared.components.ranking_table import render_ranking_table
 from shared.components.scatter_tab import render_scatter_tab
-from shared.components.sidebar import render_metric_sidebar
+from shared.components.sidebar import render_metric_sidebar, render_year_selector
 from shared.components.trend_tab import render_trend_tab
 from shared.db import (
     get_state_options,
@@ -34,8 +37,9 @@ from shared.db import (
     query_intelligence_profile,
     query_intelligence_scatter,
     query_metric,
+    query_metric_timeseries_bounds,
     query_metric_timeseries_batch,
-    query_similarity_peers,
+    query_peer_comparison_snapshot,
 )
 from shared.geo_utils import load_cbsa_geojson
 
@@ -99,21 +103,20 @@ def main() -> None:
 
     available_years = query_available_years(selected_metric_id)
     with st.sidebar:
-        selected_year = st.select_slider("Year", options=available_years, value=available_years[0])
+        selected_year = render_year_selector(available_years)
     selected_state_fips = sidebar_state["state_fips"]
     metric_df = query_metric(selected_metric_id, selected_year, selected_state_fips)
     if metric_df.empty:
         st.warning("No rows matched the current filter selection.")
         return
 
-    selected_geo_id = st.selectbox(
-        "Selected CBSA",
-        metric_df["geo_id"].tolist(),
-        format_func=lambda geo_id: metric_df.loc[metric_df["geo_id"] == geo_id, "geo_name"].iloc[0],
-    )
+    selected_geo_id = st.session_state.get("selected_geo_id", metric_df["geo_id"].iloc[0])
+    if selected_geo_id not in set(metric_df["geo_id"]):
+        selected_geo_id = metric_df["geo_id"].iloc[0]
     selected_row = metric_df.loc[metric_df["geo_id"] == selected_geo_id].iloc[0]
     intelligence_profile = query_intelligence_profile(selected_geo_id)
-    similarity_peers = query_similarity_peers(selected_geo_id)
+    peer_comparison_df = query_peer_comparison_snapshot(selected_geo_id, selected_year)
+    trend_y_axis_range = query_metric_timeseries_bounds(selected_metric_id)
 
     with st.sidebar:
         st.caption(
@@ -121,29 +124,65 @@ def main() -> None:
             + ("`mart_intelligence`" if has_intelligence_datamart() else "phase parquet fallback")
         )
 
-    map_col, side_col = st.columns([2.1, 1.1])
-    with map_col:
-        st.subheader("Map")
-        render_cbsa_map(
-            metric_df=metric_df,
-            geojson=load_cbsa_geojson(),
-            color_scale_mode=sidebar_state["color_scale_mode"],
-        )
-
-    with side_col:
-        st.subheader("Ranking")
-        ranking_df = metric_df.copy()
-        ranking_df.insert(0, "rank", range(1, len(ranking_df) + 1))
-        ranking_df["display_value"] = ranking_df["metric_value"].apply(
-            lambda value: format_metric_value(value, metric_meta.get("unit_format"))
-        )
-        render_ranking_table(ranking_df)
-        render_profile_panel(metric_meta, selected_row, intelligence_profile)
-        render_similarity_peers(similarity_peers)
-
-    scatter_tab, trend_tab, distribution_tab, intelligence_tab = st.tabs(
-        ["Scatter", "Trend", "Distribution", "Intelligence"]
+    st.subheader("Map")
+    render_cbsa_map(
+        metric_df=metric_df,
+        geojson=load_cbsa_geojson(),
+        color_scale_mode=sidebar_state["color_scale_mode"],
+        height=660,
     )
+
+    selected_geo_id = st.selectbox(
+        "Selected CBSA",
+        metric_df["geo_id"].tolist(),
+        index=metric_df["geo_id"].tolist().index(selected_geo_id),
+        format_func=lambda geo_id: metric_df.loc[metric_df["geo_id"] == geo_id, "geo_name"].iloc[0],
+    )
+    st.session_state["selected_geo_id"] = selected_geo_id
+    selected_row = metric_df.loc[metric_df["geo_id"] == selected_geo_id].iloc[0]
+    intelligence_profile = query_intelligence_profile(selected_geo_id)
+    peer_comparison_df = query_peer_comparison_snapshot(selected_geo_id, selected_year)
+
+    profile_col, ranking_col = st.columns([1.1, 1.4])
+    ranking_df = metric_df.copy()
+    ranking_df.insert(0, "rank", range(1, len(ranking_df) + 1))
+    ranking_df["display_value"] = ranking_df["metric_value"].apply(
+        lambda value: format_metric_value(value, metric_meta.get("unit_format"))
+    )
+
+    with profile_col:
+        render_profile_panel(metric_meta, selected_row, intelligence_profile)
+
+    with ranking_col:
+        st.subheader("Ranking")
+        render_ranking_table(ranking_df, height=420)
+
+    render_peer_comparison_table(peer_comparison_df)
+
+    st.subheader("Targeted CBSA Deep Dive")
+    trend_tab, distribution_tab = st.tabs(["Trend", "Distribution"])
+
+    with trend_tab:
+        comparison_options = metric_df[["geo_id", "geo_name"]].drop_duplicates().sort_values("geo_name")
+        comparison_lookup = dict(zip(comparison_options["geo_id"], comparison_options["geo_name"]))
+        render_trend_tab(
+            comparison_options=list(comparison_options.itertuples(index=False, name=None)),
+            comparison_lookup=comparison_lookup,
+            selected_geo_id=selected_geo_id,
+            metric_display_name=metric_meta["display_name"],
+            build_trend_frame=lambda geo_ids: query_metric_timeseries_batch(selected_metric_id, tuple(dict.fromkeys(geo_ids))),
+            y_axis_range=trend_y_axis_range,
+        )
+
+    with distribution_tab:
+        render_distribution_tab(
+            metric_df=metric_df,
+            selected_value=float(selected_row["metric_value"]),
+            metric_display_name=metric_meta["display_name"],
+        )
+
+    st.subheader("Broader Market Exploration")
+    scatter_tab, intelligence_tab = st.tabs(["Scatter", "Intelligence"])
 
     with scatter_tab:
         default_x = "median_hh_income" if get_metric_meta("median_hh_income") else selected_metric_id
@@ -161,24 +200,6 @@ def main() -> None:
                 selected_year,
                 selected_state_fips,
             ),
-        )
-
-    with trend_tab:
-        comparison_options = metric_df[["geo_id", "geo_name"]].drop_duplicates().sort_values("geo_name")
-        comparison_lookup = dict(zip(comparison_options["geo_id"], comparison_options["geo_name"]))
-        render_trend_tab(
-            comparison_options=list(comparison_options.itertuples(index=False, name=None)),
-            comparison_lookup=comparison_lookup,
-            selected_geo_id=selected_geo_id,
-            metric_display_name=metric_meta["display_name"],
-            build_trend_frame=lambda geo_ids: query_metric_timeseries_batch(selected_metric_id, tuple(dict.fromkeys(geo_ids))),
-        )
-
-    with distribution_tab:
-        render_distribution_tab(
-            metric_df=metric_df,
-            selected_value=float(selected_row["metric_value"]),
-            metric_display_name=metric_meta["display_name"],
         )
 
     with intelligence_tab:

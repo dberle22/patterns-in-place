@@ -7,6 +7,12 @@ from typing import Any
 import streamlit as st
 
 
+def render_year_selector(available_years: list[int]) -> int:
+    """Render the year selector with chronological left-to-right ordering."""
+    ordered_years = sorted(available_years)
+    return st.select_slider("Year", options=ordered_years, value=ordered_years[-1])
+
+
 def render_metric_sidebar(
     theme_lookup: dict[str, dict[str, Any]],
     state_options: list[tuple[str, str]],

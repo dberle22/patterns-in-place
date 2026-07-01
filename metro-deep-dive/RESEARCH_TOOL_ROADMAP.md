@@ -1,12 +1,14 @@
 # Deep Dive Research Tool — Roadmap & Spec
 
-*Last updated: 2026-06-19. This document scopes the place-first research tool that supports the Metro Deep Dive product. It is a separate product from Area Explorer (which is metric-first) and separate from the published Deep Dive report itself. It is a pre-publication research surface.*
+*Last updated: 2026-06-30. This document scopes the place-first research tool that is the primary internal product of the Metro Deep Dive track. It is a separate product from Area Explorer (which is metric-first). Deep Dive reports are what you write when you find something interesting using this tool.*
 
 ---
 
 ## What this product is
 
-The Deep Dive Research Tool is a **place-first** Streamlit app. You start by selecting a metro (CBSA), and the tool assembles that metro's full profile across all three Intelligence frames, its zone map, its peer comparisons, and its trajectory signals. The goal is to support the analyst in building a Deep Dive report — it is a research and drafting aid, not a published deliverable.
+The Deep Dive Research Tool is a **place-first** Streamlit app. You start by selecting a metro (CBSA), and the tool assembles that metro's full profile across all three Intelligence frames, its zone map, its peer comparisons, and its trajectory signals.
+
+**The Research Tool is the product. The Deep Dive reports are the output.** The tool is not a pre-publication checklist — it's the analytical environment you use to explore metros and develop theses. You write a Deep Dive when you find something worth writing about, not on a fixed cadence.
 
 This is distinct from the two other interactive products:
 
@@ -17,21 +19,19 @@ This is distinct from the two other interactive products:
 | **Deep Dive Research Tool** | **Place → full profile** | **Dan (analytical)** | "Give me everything on this metro" |
 | Deep Dive Report | — | Readers / clients | Published long-form market analysis |
 
-The Research Tool does not replace the Deep Dive Report. It accelerates the production of it.
-
 ---
 
-## Prerequisites before building
+## Prerequisites by build step
 
-This tool depends on the full Intelligence Layer being stable:
+Steps 1–3 are available now. Steps 4–6 follow Phase 7.
 
-- Intelligence Phases 2–5 complete (all three frame models + cross-frame) ✓
-- Intelligence Phase 6 complete (trajectory analysis — needed for the trajectory tab)
-- Intelligence Phase 7 complete (zone methodology — needed for the zone map tab)
-- Intelligence Phase 8 complete (Gold intelligence tables in DuckDB — `gold.intelligence_livability`, `gold.intelligence_opportunity`, `gold.intelligence_character`, `gold.intelligence_cross_frame`, `gold.intelligence_zones`)
-- `phase6_candidate_list.csv` available (for the candidate selection surface)
+- Intelligence Phases 2–5 complete ✓ (all three frame models + cross-frame)
+- Intelligence Phase 6 complete ✓ (trajectory analysis)
+- Intelligence Phase 8 complete ✓ (`mart_intelligence` tables materialized in local DuckDB)
+- `phase6_candidate_list.csv` available ✓ (candidate selection surface)
+- Intelligence Phase 7 in progress — needed for Zone Map tab (Step 5) only
 
-The Research Tool is the **last** product built before the first Deep Dive report is written. It is the bridge between the Intelligence Layer outputs and the published narrative.
+**Build Steps 1–3 now.** Steps 4–6 wait for Phase 7.
 
 ---
 
@@ -228,11 +228,15 @@ Steps 1–3 can be built immediately after Intelligence Phase 8 (catalog finaliz
 
 ## Relationship to the Deep Dive Report
 
-The Research Tool is the analyst's workspace. The Deep Dive Report is the published output. The relationship:
+The Research Tool is the analyst's workspace. The Deep Dive Report is what you publish when you find something worth writing about.
 
-1. Use the Candidate List tab to select the market
-2. Use the Overview, Frame, Trajectory, and Peers tabs to develop the analytical narrative
-3. Use charts from the Research Tool as draft exhibits — export as PNG and adapt for publication
-4. The Zone Map tab produces the primary map exhibit for the Deep Dive report's Zone Analysis section
+**How a report gets written:**
+1. Browse the Candidate List tab — which metros are most analytically interesting by divergence and trajectory?
+2. Select a metro. Work through the Overview, Frame, and Peers tabs to understand what makes it unusual.
+3. Use the Trajectory tab to understand direction — is it improving, diverging, turning?
+4. Use the Zone Map tab (after Phase 7) to see the sub-metro spatial structure — where are the Knowledge Corridors, the distressed tracts, the growth periphery?
+5. When you have a thesis — something that would surprise a reader who thinks they know the city — start writing.
 
-The Research Tool does not generate the report text. That is a writing task, not a software task. The tool exists to make the writing faster and better-grounded.
+The tool exports charts as PNG for publication. The report text is a writing task, not a software task.
+
+**There is no fixed cadence for Deep Dives.** You write one when the tool surfaces something interesting. Jacksonville and Richmond VA are the Phase 7 test markets and the most likely first subjects — but the Candidate List may surface something more compelling.

@@ -1,6 +1,6 @@
 # Zone Methodology Notes
 
-*Last updated: 2026-06-25*
+*Last updated: 2026-07-01*
 
 This document is the canonical methodology reference for Phase 7: the Zone Methodology. It captures the design decisions, data architecture, algorithmic choices, and literature anchors that govern how Patterns in Place classifies sub-metro areas into zone types and corridors.
 
@@ -10,7 +10,7 @@ This document is the canonical methodology reference for Phase 7: the Zone Metho
 
 Phase 7 produces two complementary analytical products from a single tract-level model:
 
-1. **National zone types** — a consistent label set assigned to every tract in the 396-CBSA universe (excluding Puerto Rico). Labels mean the same thing everywhere. A "Knowledge Corridor" tract in Jacksonville is directly comparable to a "Knowledge Corridor" tract in Richmond VA or Chicago. This is the primary output and the foundation for cross-market Deep Dive comparisons.
+1. **National zone types** — a consistent label set assigned to every tract in the current full tract base carried by the Phase 7 Gold build, with CBSA context attached through the tract-to-county-to-CBSA crosswalk. Labels mean the same thing everywhere. A "Knowledge Corridor" tract in Jacksonville is directly comparable to a "Knowledge Corridor" tract in Richmond VA or Chicago. This is the primary output and the foundation for cross-market Deep Dive comparisons.
 
 2. **Per-market corridor detection** — within each Deep Dive market, adjacent or near-adjacent tracts sharing the same zone type are grouped into named corridors. Corridors are a secondary visual layer for Deep Dive maps and narrative. They do not define the zone type; they identify where clusters of same-type tracts are geographically concentrated within a specific market.
 
@@ -24,9 +24,9 @@ A third derivative layer exists for presentation only:
 
 ### Stage 1 — National zone type model (k-means / hierarchical)
 
-**Grain:** One row per census tract. Universe: all tracts in the 396 non-Puerto-Rico CBSAs.
+**Grain:** One row per census tract. Universe: the full current tract base materialized for Phase 7, with CBSA context attached where the tract backbone maps into `silver.xwalk_cbsa_county`.
 
-**Algorithm:** Same hierarchical → k-means → GMM pipeline used in Phases 2–5, applied at tract grain within the full 396-CBSA universe.
+**Algorithm:** Same hierarchical → k-means → GMM pipeline used in Phases 2–5, applied at tract grain across the full current tract base.
 
 - Hierarchical clustering (agglomerative) to discover natural k from the data — dendrogram + silhouette
 - K-means at natural k for hard zone type labels
@@ -78,40 +78,49 @@ Rank is assigned by corridor size (number of tracts), descending. This is a stor
 
 Zone clustering operates on three KPI themes. Unlike the CBSA-level frames (which were split into three independent models), zone clustering uses a combined KPI vector — closer in spirit to Phase 5 than to Phases 2–4. The themes are kept visible in the output for interpretive use, but the clustering input is the full combined vector.
 
+Sprint 1.2 is now locked at a **22-KPI clustering contract**. That contract incorporates the coverage audit, correlation review, within-CBSA variance checks, and the tract-level PCA pass documented in `phase_7_zone_methodology/eda_notes.md`.
+
 ### Theme A — Character (who lives here)
 
-All from ACS via existing Gold tables. Full tract coverage.
+All from ACS via existing Gold tables. Full tract coverage apart from the small denominator-driven `NaN` family already documented in the Phase 7 EDA notes.
 
 | KPI | Table | Notes |
 |---|---|---|
-| `diversity_index` | `population_demographics` | |
 | `pct_hispanic`, `pct_black_nh`, `pct_asian_nh` | `population_demographics` | |
 | `pct_age_over_64` | `population_demographics` | |
 | `pct_ba_plus` | `population_demographics` | |
-| `pct_foreign_born` | `migration_wide` | |
 | `pct_same_house` | `migration_wide` | Residential stability proxy |
 | `owner_occ_rate` | `housing_core_wide` | |
-| `pct_struct_multifam` | `housing_core_wide` | |
 | `pop_weighted_density_sqmi` | `transport_built_form_wide` | |
+
+**Dropped from the default clustering vector after Sprint 1.2 review:**
+
+- `diversity_index` — useful as a descriptive summary, but redundant once the tract race / ethnicity shares are already retained
+- `pct_foreign_born` — weaker within-CBSA signal and largely absorbed into the broader urbanity / composition bundle
+- `pct_struct_multifam` — strongly overlaps with `owner_occ_rate`
 
 ### Theme B — Livability (what it's like to live here)
 
-ACS core has full tract coverage. EJScreen is tract-native in Silver and now surfaces tract rows in Gold. FEMA NRI has tract-native staging and tract rows in Silver / Gold after the tract promotion pass. SLD has lower-level source data in staging, and we now also have a REST-backed staging prototype, but tract promotion is paused because coverage and tract-backbone reconciliation are still too incomplete for production use. CHR health metrics are county-only and excluded.
+ACS core has full tract coverage. EJScreen is tract-native in Silver and now surfaces tract rows in Gold. FEMA NRI has tract-native staging and tract rows in Silver / Gold after the tract promotion pass. SLD now also has tract rows in governed Silver / Gold via the `2021` baseline table, with the remaining tract gap concentrated in Connecticut rather than spread nationally. CHR health metrics are county-only and excluded.
 
 | KPI | Table | Tract available | Notes |
 |---|---|---|---|
 | `pct_rent_burden_30plus` | `housing_core_wide` | ✅ | |
-| `median_gross_rent` | `housing_core_wide` | ✅ | |
-| `median_home_value` | `housing_core_wide` | ✅ | |
-| `pov_rate` | `economics_income_wide` | ✅ | |
 | `vacancy_rate` | `housing_core_wide` | ✅ | |
-| `pct_hh_0_vehicles` | `transport_built_form_wide` | ✅ | |
-| `pct_commute_walk`, `pct_commute_transit` | `transport_built_form_wide` | ✅ | |
-| `pct_no_internet_access` | `housing_core_wide` | ✅ | |
-| `walkability_index`, `jobs_access_45min_transit` | EPA SLD (silver re-surface) | ❌ paused | County / CBSA / state SLD remains modeled, but tract SLD is paused and should stay out of Phase 7 clustering until tract coverage and relationship quality improve materially |
+| `pct_commute_walk` | `transport_built_form_wide` | ✅ | |
+| `walkability_index` | `transport_built_form_sld` | ✅ | One-time `2021` tract baseline. Retained as the cleaner SLD accessibility / built-form representative |
+| `pct_no_internet_access` | `social_infra_wide` | ✅ | |
 | `ejs_pm25` | EJScreen (silver re-surface) | ✅ | Tract-native in Silver and now promoted into `gold.environment_wide` |
 | `fema_risk_score` | FEMA NRI (silver re-surface) | ✅ | Tract staging is now promoted into Silver and surfaced in `gold.environment_wide` |
 | `is_opportunity_zone` | `dim_policy_designations` | ✅ | Binary flag; carried as context, not in clustering KPI vector |
+
+**Dropped from the default clustering vector after Sprint 1.2 review:**
+
+- `median_gross_rent` — highest missingness in the live table and largely redundant with stronger affordability context fields
+- `median_home_value` — interpretable, but overlaps with the broader SES bundle and was cut to keep the tract vector lean
+- `pct_hh_0_vehicles` — heavily absorbed by the same latent structure as density and walkability
+- `pct_commute_transit` — weak within-CBSA signal and strongly overlapping with density / auto-access structure
+- `jobs_access_45min_transit` — tract coverage is now acceptable, but PCA suggests it is mostly duplicative once `walkability_index` and density are already present
 
 *Excluded: CHR health outcomes (`premature_death_rate`, `drug_overdose_death_rate`, etc.) — county-level source only, no tract equivalent.*
 
@@ -121,14 +130,55 @@ ACS provides income and labor at tract grain. LEHD/LODES provides the jobs-side 
 
 | KPI | Table | Tract available | Notes |
 |---|---|---|---|
-| `median_hh_income` | `economics_income_wide` | ✅ | |
-| `pov_rate_change_5yr` | `economics_income_wide` | ✅ | |
+| `pov_rate` | `economics_income_wide` | ✅ | |
+| `pov_rate_change_3yr` | `economics_income_wide` | ✅ | Current fallback momentum window; 5-year version remains a longer-term harmonization target |
 | `pct_unemployment_rate` | `economics_labor_wide` | ✅ | ACS-based |
-| `pct_ba_plus_change_5yr` | `population_demographics` | ✅ | Human capital momentum proxy |
-| `jobs_per_resident` | **LEHD/LODES WAC** | ✅ if ETL added | Jobs center vs. bedroom community |
-| `pct_jobs_high_wage` | **LEHD/LODES WAC** | ✅ if ETL added | Share of jobs in CE03 earnings tier |
-| `pct_jobs_professional_services` | **LEHD/LODES WAC** | ✅ if ETL added | Knowledge economy sector mix |
-| `jobs_inflow_ratio` | **LEHD/LODES OD** | ✅ if ETL added | Commute inflow vs. resident workers |
+| `pct_ba_plus_change_3yr` | `population_demographics` | ✅ | Current fallback human-capital momentum proxy; 5-year version remains a longer-term harmonization target |
+| `jobs_per_resident` | `economics_lodes_wide` | ✅ | Jobs center vs. bedroom community |
+| `pct_jobs_high_wage` | `economics_lodes_wide` | ✅ | Share of jobs in CE03 earnings tier |
+| `pct_jobs_professional_services` | `economics_lodes_wide` | ✅ | Knowledge economy sector mix |
+
+**Dropped from the default clustering vector after Sprint 1.2 review:**
+
+- `median_hh_income` — still valuable for interpretation and scoring context, but PCA showed it was one of the more replaceable fields once `pct_ba_plus` and `pov_rate` were retained
+- `jobs_inflow_ratio` — still out of scope for the initial model pass because WAC is the priority and the current jobs-side vector is already adequate without the OD extension
+
+### Locked 22-KPI clustering vector
+
+The default Phase 7 clustering pass should use the following `22` KPIs.
+
+**Character (`8`)**
+
+- `pct_hispanic`
+- `pct_black_nh`
+- `pct_asian_nh`
+- `pct_age_over_64`
+- `pct_ba_plus`
+- `pct_same_house`
+- `owner_occ_rate`
+- `pop_weighted_density_sqmi`
+
+**Livability (`7`)**
+
+- `pct_rent_burden_30plus`
+- `vacancy_rate`
+- `pct_commute_walk`
+- `walkability_index`
+- `pct_no_internet_access`
+- `ejs_pm25`
+- `fema_risk_score`
+
+**Opportunity (`7`)**
+
+- `pov_rate`
+- `pct_unemployment_rate`
+- `pov_rate_change_3yr`
+- `pct_ba_plus_change_3yr`
+- `jobs_per_resident`
+- `pct_jobs_high_wage`
+- `pct_jobs_professional_services`
+
+This is the lean default contract for clustering. `median_hh_income`, `median_home_value`, `diversity_index`, and `jobs_access_45min_transit` remain useful descriptive context fields and can still be used in sensitivity checks, centroid interpretation, and downstream profiling even though they are no longer in the default clustering vector.
 
 *Excluded: FHFA HPI, ZORI, BPS permits, QCEW, IRS migration — none available at tract grain.*
 
@@ -142,18 +192,18 @@ Two data gaps must be resolved before Phase 7 can run:
 
 LODES WAC (Workplace Area Characteristics) and OD (Origin-Destination) tables are public, tract-level, and cover 2002–2022 for all 50 states. This is a new Silver ingestion + Gold mart. The WAC table is the priority (job counts by sector and earnings tier per tract). The OD table is secondary (commute inflow/outflow).
 
-This is a data engineering prerequisite, not an analytical prerequisite. It can run in parallel with Phase 7 planning. Phase 7 Stage 1 build is blocked until LODES WAC Gold rows exist for the 396-CBSA tract universe.
+This is a data engineering prerequisite, not an analytical prerequisite. It can run in parallel with Phase 7 planning. Phase 7 Stage 1 build is blocked until LODES WAC Gold rows exist for the current tract base carried by the Phase 7 input table.
 
-**2. Tract-level transport / environment promotion (partially resolved; SLD paused)**
+**2. Tract-level transport / environment promotion (resolved for current EDA; SLD remains a baseline layer)**
 
 Phase 7 needs tract-grain livability and environmental context, but the three source families are not all at the same readiness level:
 - `gold_environment_wide.sql` now exposes tract rows for `EJScreen` and `FEMA NRI`
 - `silver.fema_nri` now includes tract rows promoted from `staging.fema_nri_tract`
 - tract `EJScreen` and tract `FEMA NRI` are therefore live in governed Gold and available for Phase 7
-- `silver.epa_sld` and `gold_transport_built_form_sld.sql` remain county / CBSA / state only
-- `staging.epa_sld_rest` now exists as a REST-backed prototype that preserves both `GEOID10` and `GEOID20`, but it has not been promoted into governed Silver / Gold
+- `silver.epa_sld` and `gold_transport_built_form_sld.sql` now include tract rows for the `2021` SLD baseline
+- `staging.epa_sld_rest` still exists as a REST-backed prototype that preserves both `GEOID10` and `GEOID20`, but the current governed tract path is already live through the Census BG relationship bridge
 
-The remaining tract gap is SLD. We now have both the original CSV-backed staging path and a REST-backed staging prototype, but tract SLD is paused for Phase 7 because the tract coverage gap remains too large and too uneven across major states to support clustering defensibly. Until we add a stronger tract relationship bridge or another governed reconciliation method, SLD tract KPIs should stay out of the clustering vector.
+The remaining tract gap for SLD is no longer a broad national tract-backbone failure. Live overlap now shows `83,220 / 84,121` tract-backbone matches and `77,300 / 78,199` matches on the current Phase 7 tract frame, with almost all residual misses concentrated in Connecticut metros. That means tract SLD is now viable for exploratory KPI evaluation, though we should still treat it as a one-time baseline layer and keep the Connecticut edge case visible in coverage review.
 
 ---
 
@@ -180,7 +230,7 @@ To be evaluated against what the data produces — labels are not pre-specified,
 
 Each tract is benchmarked at three levels (mirroring the CBSA benchmark architecture):
 
-1. **National:** percentile rank within all tracts in the 396-CBSA universe
+1. **National:** percentile rank within all tracts in the current tract universe loaded for Phase 7
 2. **CBSA:** percentile rank within the tract's home CBSA — "how does this tract rank within its own metro?"
 3. **Zone type peers:** percentile rank within tracts sharing the same zone type nationally
 

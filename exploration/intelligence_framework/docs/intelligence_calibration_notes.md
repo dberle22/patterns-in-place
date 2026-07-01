@@ -55,14 +55,32 @@ Phase 8 summary of the final published calibration decisions across the Intellig
   - frame percentile carrythrough
   - overlap and divergence fields such as `frame_percentile_gap`, `top_frame`, `bottom_frame`, and `overlap_profile`
 
+## Zone Methodology
+
+- Final phase: Phase 7.
+- Final tract `k`: `7`.
+- Final zone names:
+  - `Entry-Market Neighborhoods`
+  - `Emerging Knowledge Districts`
+  - `Knowledge Corridor`
+  - `Established Residential`
+  - `Mixed-Income Middle Neighborhoods`
+  - `Working Neighborhoods`
+  - `Commercial Core / Jobs Center`
+- Tract surface: `78,199` tracts across `925` CBSAs in the current published run.
+- Rollup rule: ZCTAs inherit the dominant tract zone only when one zone exceeds `50%` of the HUD population-weighted tract mix; otherwise the published label is `Mixed Zone`.
+- Promoted marts:
+  - `mart_intelligence.intelligence_zones`
+  - `mart_intelligence.intelligence_zones_zcta`
+- Interpretation note: per-market DBSCAN corridor detection remains optional Deep Dive workflow rather than a dependency for the canonical tract or ZCTA marts.
+
 ## DataMart contract
 
 - The Intelligence outputs are intentionally promoted into the dedicated `mart_intelligence` schema rather than back into Gold.
 - Gold remains the source KPI layer.
 - The promoted marts are product-facing downstream tables built from the canonical phase outputs and their companion similarity / overlap artifacts.
 
-## Remaining Phase 8 work
+## Remaining DataMart follow-up
 
-- Phase 7 zone outputs are still deferred until the zone methodology work is complete.
-- MotherDuck validation still needs to confirm the `mart_intelligence` tables are queryable by Area Explorer and the Chatbot.
+- MotherDuck validation still needs to confirm the `mart_intelligence` tables, including the new Phase 7 tract and ZCTA marts, are queryable by Area Explorer and the Chatbot.
 - If additional downstream marts are added later, they should follow the same `mart_*` naming pattern rather than being folded back into Gold.

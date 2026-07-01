@@ -1,0 +1,292 @@
+"""Feature flags and constants for the Deep Dive Research Tool."""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+PHASE6_DIR = REPO_ROOT / "exploration" / "intelligence_framework" / "phase_6_trajectory" / "outputs"
+PHASE5_DIR = REPO_ROOT / "exploration" / "intelligence_framework" / "phase_5_cross_frame_integration" / "outputs"
+
+TRAJECTORY_SCORES_PATH = PHASE6_DIR / "trajectory_scores.parquet"
+CANDIDATE_LIST_PATH = PHASE6_DIR / "phase6_candidate_list.csv"
+OPP_TURN_SIGNALS_PATH = PHASE6_DIR / "phase6_opp_turn_signals.csv"
+KPI_TRAJECTORY_LONG_PATH = PHASE6_DIR / "phase6_kpi_trajectory_long.csv"
+OVERLAP_FLAGS_PATH = PHASE5_DIR / "cross_frame_phase5_overlap_flags.csv"
+
+FRAME_COLORS = {
+    "livability": "#2196F3",
+    "opportunity": "#4CAF50",
+    "character": "#FF9800",
+}
+
+SUBJECT_DISPLAY = {
+    # Livability
+    "affordability": "Affordability",
+    "health_and_safety": "Health & Safety",
+    "access_and_infrastructure": "Access & Infrastructure",
+    "physical_environment": "Physical Environment",
+    # Opportunity
+    "resident_opportunity": "Resident Opportunity",
+    "market_opportunity": "Market Opportunity",
+    "business_and_industry_opportunity": "Business & Industry",
+    # Character
+    "demographics": "Demographics",
+    "social_fabric": "Social Fabric",
+}
+
+KPI_LABELS = {
+    # Livability KPIs
+    "value_to_income": "Home Value-to-Income Ratio",
+    "pct_rent_burden_30plus": "Rent Burden 30%+ (Share)",
+    "pov_rate": "Poverty Rate",
+    "permits_per_1000_housing_units": "Permits per 1,000 Housing Units",
+    "permits_share_units_5_plus": "Share Permits in 5+ Unit Buildings",
+    "pct_struct_mobile": "Share Mobile Homes",
+    "pct_struct_small_mf": "Share Small Multifamily",
+    "pct_struct_mid_mf": "Share Mid Multifamily",
+    "premature_death_rate": "Premature Death Rate",
+    "mental_health_provider_ratio": "Mental Health Provider Ratio",
+    "drug_overdose_death_rate": "Drug Overdose Death Rate",
+    "pct_uninsured_adults": "Share Uninsured Adults",
+    "preventable_hospital_stay_rate": "Preventable Hospital Stay Rate",
+    "firearm_fatality_rate": "Firearm Fatality Rate",
+    "motor_vehicle_crash_rate": "Motor Vehicle Crash Rate",
+    "pct_commute_walk": "Share Walk to Work",
+    "pct_commute_wfh": "Share Work from Home",
+    "vacancy_rate": "Vacancy Rate",
+    "pct_hh_0_vehicles": "Share Households No Vehicle",
+    "pct_no_internet_access": "Share No Internet Access",
+    "walkability_index": "Walkability Index",
+    "jobs_access_45min_transit": "Jobs Accessible within 45min Transit",
+    "pct_population_low_income_low_access_1_10": "Low Income / Low Food Access",
+    "pop_weighted_density_sqmi": "Population-Weighted Density (sq mi)",
+    "aqi_unhealthy_days": "AQI Unhealthy Days",
+    "fema_risk_score": "FEMA Risk Score",
+    # Opportunity KPIs
+    "zori_annual_avg_yoy_pct": "Rent Growth (YoY %)",
+    "bfs_business_application_rate_per_1000_establishments": "Business Application Rate",
+    "cbp_estabs_per_1000_residents": "Establishments per 1,000 Residents",
+    "productivity_growth_5yr": "Productivity Growth (5yr)",
+    "pct_ba_plus_change_5yr": "College Attainment Change (5yr)",
+    "industry_concentration_hhi": "Industry Concentration (HHI)",
+    "lq_information": "Location Quotient: Information",
+    "lq_manufacturing": "Location Quotient: Manufacturing",
+    "lq_professional": "Location Quotient: Professional Services",
+    "hpi_5yr_pct": "Home Price Appreciation (5yr %)",
+    "hpi_yoy_pct": "Home Price Appreciation (YoY %)",
+    "irs_net_agi": "Net IRS Migration Income",
+    "irs_net_migration_rate": "Net Migration Rate (IRS)",
+    "permits_per_1000_housing_units": "Permits per 1,000 Housing Units",
+    "pop_growth_5yr": "Population Growth (5yr %)",
+    "income_pc_growth_5yr": "Per Capita Income Growth (5yr %)",
+    "lfpr": "Labor Force Participation Rate",
+    "pct_unemployment_rate": "Unemployment Rate",
+    "pov_rate_change_5yr": "Poverty Rate Change (5yr)",
+    "qcew_private_avg_wkly_wage": "Private Avg Weekly Wage",
+    "economic_connectedness": "Economic Connectedness",
+    "pct_real_gdp_information": "GDP Share: Information Sector",
+    # Character KPIs
+    "pct_age_over_64": "Share Age 65+",
+    "pct_ba_plus": "Share BA+",
+    "pct_foreign_born": "Share Foreign Born",
+    "diversity_index": "Diversity Index",
+    "pct_asian_nh": "Share Asian (Non-Hispanic)",
+    "pct_black_nh": "Share Black (Non-Hispanic)",
+    "pct_hispanic": "Share Hispanic",
+    "pct_struct_multifam": "Share Multifamily Housing",
+    "nonprofits_per_100k": "Nonprofits per 100k",
+    "pct_moved_abroad": "Share Moved from Abroad",
+    "pct_moved_diff_st": "Share Moved from Different State",
+    "social_associations_per_10k": "Social Associations per 10k",
+    "civic_engagement_volunteering_rate": "Civic Volunteering Rate",
+    "civic_organizations_per_1000": "Civic Organizations per 1,000",
+    "friending_bias": "Friending Bias",
+}
+
+TOPIC_DISPLAY = {
+    # Livability
+    "air_pollution": "Air Pollution",
+    "built_form_proxy": "Built Form",
+    "climate_hazard_risk": "Climate Hazard Risk",
+    "commute_and_mode": "Commute & Mode",
+    "digital_access": "Digital Access",
+    "food_access_baseline": "Food Access",
+    "health_behavior_and_access": "Health Behavior & Access",
+    "health_outcomes": "Health Outcomes",
+    "housing_burden": "Housing Burden",
+    "housing_slack": "Housing Slack",
+    "housing_structure_mix": "Housing Structure Mix",
+    "housing_supply": "Housing Supply",
+    "poverty_context": "Poverty Context",
+    "price_pressure": "Price Pressure",
+    "vehicle_access": "Vehicle Access",
+    "violence_and_injury": "Violence & Injury",
+    "walkability_baseline": "Walkability",
+    # Opportunity
+    "business_formation": "Business Formation",
+    "establishment_density": "Establishment Density",
+    "gdp_growth": "GDP Growth",
+    "home_price_appreciation": "Home Price Appreciation",
+    "human_capital_momentum": "Human Capital Momentum",
+    "income_growth": "Income Growth",
+    "industry_concentration": "Industry Concentration",
+    "intergenerational_mobility_proxy": "Intergenerational Mobility",
+    "labor_market_tightness": "Labor Market Tightness",
+    "lq_specialization": "Sector Specialization",
+    "migration_and_wealth_flows": "Migration & Wealth Flows",
+    "permit_activity": "Permit Activity",
+    "population_growth": "Population Growth",
+    "poverty_and_inclusion": "Poverty & Inclusion",
+    "rent_growth": "Rent Growth",
+    "sector_gdp_mix": "Sector GDP Mix",
+    "wage_levels": "Wage Levels",
+    # Character
+    "age_structure": "Age Structure",
+    "built_form": "Built Form",
+    "educational_attainment": "Educational Attainment",
+    "nativity_and_citizenship": "Nativity & Citizenship",
+    "nonprofits_and_civic_orgs": "Nonprofits & Civic Orgs",
+    "population_density": "Population Density",
+    "race_and_ethnicity": "Race & Ethnicity",
+    "residential_stability": "Residential Stability",
+    "social_associations": "Social Associations",
+    "social_capital": "Social Capital",
+}
+
+PATTERN_LABELS = {
+    "is_bounce_back": "Bounce-Back",
+    "is_hidden_livability_winner": "Hidden Livability Winner",
+    "is_diverging_from_themselves": "Diverging From Themselves",
+    "is_fast_demographic_changer": "Fast Demographic Changer",
+    "is_environmental_risk_outlier": "Environmental Risk Outlier",
+}
+
+# Topic → KPI mappings (core model_role KPIs only, from intelligence_catalog.yml)
+# Used to group the KPI detail table under topic headings in each frame tab.
+LIVABILITY_TOPIC_KPIS: dict[str, list[str]] = {
+    "price_pressure": ["value_to_income"],
+    "housing_burden": ["pct_rent_burden_30plus"],
+    "poverty_context": ["pov_rate"],
+    "housing_supply": ["permits_per_1000_housing_units", "permits_share_units_5_plus"],
+    "housing_structure_mix": ["pct_struct_mobile", "pct_struct_small_mf", "pct_struct_mid_mf"],
+    "housing_slack": ["vacancy_rate"],
+    "health_outcomes": ["premature_death_rate"],
+    "health_behavior_and_access": ["mental_health_provider_ratio", "drug_overdose_death_rate", "pct_uninsured_adults", "preventable_hospital_stay_rate"],
+    "violence_and_injury": ["firearm_fatality_rate", "motor_vehicle_crash_rate"],
+    "commute_and_mode": ["pct_commute_walk", "pct_commute_wfh"],
+    "vehicle_access": ["pct_hh_0_vehicles"],
+    "digital_access": ["pct_no_internet_access"],
+    "walkability_baseline": ["walkability_index", "jobs_access_45min_transit"],
+    "built_form_proxy": ["pop_weighted_density_sqmi"],
+    "food_access_baseline": ["pct_population_low_income_low_access_1_10"],
+    "air_pollution": ["aqi_unhealthy_days"],
+    "climate_hazard_risk": ["fema_risk_score"],
+}
+
+OPPORTUNITY_TOPIC_KPIS: dict[str, list[str]] = {
+    "income_growth": ["income_pc_growth_5yr"],
+    "labor_market_tightness": ["pct_unemployment_rate", "lfpr"],
+    "poverty_and_inclusion": ["pov_rate_change_5yr"],
+    "wage_levels": ["qcew_private_avg_wkly_wage"],
+    "home_price_appreciation": ["hpi_5yr_pct", "hpi_yoy_pct"],
+    "rent_growth": ["zori_annual_avg_yoy_pct"],
+    "population_growth": ["pop_growth_5yr"],
+    "migration_and_wealth_flows": ["irs_net_migration_rate", "irs_net_agi"],
+    "permit_activity": ["permits_per_1000_housing_units", "permits_share_units_5_plus"],
+    "gdp_growth": ["productivity_growth_5yr"],
+    "industry_concentration": ["industry_concentration_hhi"],
+    "business_formation": ["bfs_business_application_rate_per_1000_establishments"],
+    "establishment_density": ["cbp_estabs_per_1000_residents"],
+    "human_capital_momentum": ["pct_ba_plus_change_5yr"],
+    "lq_specialization": ["lq_professional", "lq_information", "lq_manufacturing"],
+    "sector_gdp_mix": ["pct_real_gdp_information"],
+    "intergenerational_mobility_proxy": ["economic_connectedness"],
+}
+
+CHARACTER_TOPIC_KPIS: dict[str, list[str]] = {
+    "race_and_ethnicity": ["diversity_index", "pct_black_nh", "pct_asian_nh", "pct_hispanic"],
+    "age_structure": ["pct_age_over_64"],
+    "educational_attainment": ["pct_ba_plus"],
+    "nativity_and_citizenship": ["pct_foreign_born"],
+    "population_density": ["pop_weighted_density_sqmi"],
+    "social_capital": ["friending_bias", "civic_engagement_volunteering_rate", "civic_organizations_per_1000"],
+    "nonprofits_and_civic_orgs": ["nonprofits_per_100k"],
+    "residential_stability": ["irs_net_migration_rate", "pct_moved_diff_st", "pct_moved_abroad"],
+    "social_associations": ["social_associations_per_10k"],
+    "built_form": ["pct_struct_multifam"],
+}
+
+KPI_UNITS: dict[str, str] = {
+    "value_to_income": "ratio",
+    "pct_rent_burden_30plus": "%",
+    "pov_rate": "%",
+    "permits_per_1000_housing_units": "per 1k units",
+    "permits_share_units_5_plus": "%",
+    "pct_struct_mobile": "%",
+    "pct_struct_small_mf": "%",
+    "pct_struct_mid_mf": "%",
+    "premature_death_rate": "per 100k",
+    "mental_health_provider_ratio": "ratio",
+    "drug_overdose_death_rate": "per 100k",
+    "pct_uninsured_adults": "%",
+    "preventable_hospital_stay_rate": "per 100k",
+    "firearm_fatality_rate": "per 100k",
+    "motor_vehicle_crash_rate": "per 100k",
+    "pct_commute_walk": "%",
+    "pct_commute_wfh": "%",
+    "vacancy_rate": "%",
+    "pct_hh_0_vehicles": "%",
+    "pct_no_internet_access": "%",
+    "walkability_index": "index",
+    "jobs_access_45min_transit": "jobs",
+    "pct_population_low_income_low_access_1_10": "%",
+    "pop_weighted_density_sqmi": "per sq mi",
+    "aqi_unhealthy_days": "days/yr",
+    "fema_risk_score": "index",
+    "income_pc_growth_5yr": "%",
+    "pct_unemployment_rate": "%",
+    "lfpr": "%",
+    "pov_rate_change_5yr": "pp",
+    "qcew_private_avg_wkly_wage": "$",
+    "hpi_5yr_pct": "%",
+    "hpi_yoy_pct": "%",
+    "zori_annual_avg_yoy_pct": "%",
+    "pop_growth_5yr": "%",
+    "irs_net_migration_rate": "rate",
+    "irs_net_agi": "$",
+    "productivity_growth_5yr": "%",
+    "industry_concentration_hhi": "HHI",
+    "bfs_business_application_rate_per_1000_establishments": "per 1k",
+    "cbp_estabs_per_1000_residents": "per 1k",
+    "pct_ba_plus_change_5yr": "pp",
+    "lq_professional": "LQ",
+    "lq_information": "LQ",
+    "lq_manufacturing": "LQ",
+    "pct_real_gdp_information": "%",
+    "economic_connectedness": "index",
+    "diversity_index": "index",
+    "pct_black_nh": "%",
+    "pct_asian_nh": "%",
+    "pct_hispanic": "%",
+    "pct_age_over_64": "%",
+    "pct_ba_plus": "%",
+    "pct_foreign_born": "%",
+    "friending_bias": "index",
+    "civic_engagement_volunteering_rate": "%",
+    "civic_organizations_per_1000": "per 1k",
+    "nonprofits_per_100k": "per 100k",
+    "irs_net_migration_rate": "rate",
+    "pct_moved_diff_st": "%",
+    "pct_moved_abroad": "%",
+    "social_associations_per_10k": "per 10k",
+    "pct_struct_multifam": "%",
+}
+
+TRAJECTORY_DIRECTION_COLORS = {
+    "diverging-improving": "#2E7D32",
+    "converging-improving": "#66BB6A",
+    "converging-declining": "#EF9A9A",
+    "diverging-declining": "#C62828",
+}

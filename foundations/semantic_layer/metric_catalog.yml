@@ -3132,7 +3132,7 @@ metrics:
     display_name: EJScreen PM2.5 Concentration
     description: Annual mean PM2.5 concentration from EPA EJScreen 2024.
     source_table: environment_wide
-    source_column: ej_pm25
+    source_column: ejs_pm25
     formula: null
     unit_format: number_1dp
     subject_areas: [environment]
@@ -3147,7 +3147,7 @@ metrics:
     display_name: EJScreen Diesel Particulate Matter
     description: Diesel particulate matter exposure index from EPA EJScreen 2024.
     source_table: environment_wide
-    source_column: ej_diesel_pm
+    source_column: ejs_diesel_pm
     formula: null
     unit_format: index
     subject_areas: [environment]
@@ -3162,7 +3162,7 @@ metrics:
     display_name: EJScreen Ozone Concentration
     description: Ozone seasonal average from EPA EJScreen 2024.
     source_table: environment_wide
-    source_column: ej_ozone
+    source_column: ejs_ozone
     formula: null
     unit_format: index
     subject_areas: [environment]
@@ -3177,7 +3177,7 @@ metrics:
     display_name: EJScreen Traffic Proximity
     description: Traffic proximity and volume index from EPA EJScreen 2024.
     source_table: environment_wide
-    source_column: ej_traffic_proximity
+    source_column: ejs_traffic_proximity
     formula: null
     unit_format: index
     subject_areas: [environment]
@@ -3192,7 +3192,7 @@ metrics:
     display_name: EJScreen Superfund Proximity
     description: Proximity to National Priorities List Superfund sites index from EPA EJScreen 2024.
     source_table: environment_wide
-    source_column: ej_superfund_proximity
+    source_column: ejs_superfund_proximity
     formula: null
     unit_format: index
     subject_areas: [environment]
@@ -3207,7 +3207,7 @@ metrics:
     display_name: EJScreen RMP Proximity
     description: Proximity to Risk Management Plan facilities index from EPA EJScreen 2024.
     source_table: environment_wide
-    source_column: ej_rmp_proximity
+    source_column: ejs_rmp_proximity
     formula: null
     unit_format: index
     subject_areas: [environment]
@@ -3222,7 +3222,7 @@ metrics:
     display_name: EJScreen Wastewater Discharge
     description: Wastewater discharge indicator from EPA EJScreen 2024.
     source_table: environment_wide
-    source_column: ej_wastewater_discharge
+    source_column: ejs_wastewater_discharge
     formula: null
     unit_format: index
     subject_areas: [environment]
@@ -3237,7 +3237,7 @@ metrics:
     display_name: EJScreen Drinking Water Noncompliance
     description: Drinking water noncompliance indicator from EPA EJScreen 2024.
     source_table: environment_wide
-    source_column: ej_drinking_water_noncompliance
+    source_column: ejs_drinking_water_noncompliance
     formula: null
     unit_format: index
     subject_areas: [environment]
@@ -3257,10 +3257,57 @@ metrics:
     unit_format: index
     subject_areas: [environment]
     themes: [livability]
-    valid_geo_levels: [us, region, division, state, cbsa, county]
+    valid_geo_levels: [cbsa, county, tract]
     growth_eligible: false
     growth_windows: []
     caveats: Coverage ~83% of CBSAs; coverage-caution KPI in Climate Hazard Risk topic. 18 hazard types composited.
+    status: active
+
+  # --- economics_lodes_wide: tract-first workplace and resident-worker mismatch ---
+
+  - metric_id: jobs_to_workers_ratio
+    display_name: Jobs-To-Workers Ratio
+    description: Workplace jobs divided by resident workers from the joined LODES WAC and RAC surface.
+    source_table: economics_lodes_wide
+    source_column: jobs_to_workers_ratio
+    formula: null
+    unit_format: ratio
+    subject_areas: [labor_market_structure]
+    themes: [opportunity]
+    valid_geo_levels: [division, state, cbsa, county, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: 2023-only LODES snapshot; WAC coverage is narrower than RAC in a subset of geographies.
+    status: active
+
+  - metric_id: pct_jobs_earnings_high
+    display_name: Share Of Jobs In High Earnings Band
+    description: Share of workplace jobs in the highest LODES earnings band.
+    source_table: economics_lodes_wide
+    source_column: pct_jobs_earnings_high
+    formula: null
+    unit_format: percent
+    subject_areas: [labor_market_structure]
+    themes: [opportunity]
+    valid_geo_levels: [division, state, cbsa, county, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: LODES earnings bands are categorical buckets rather than observed wages.
+    status: active
+
+  - metric_id: pct_jobs_ind_professional_scientific_technical
+    display_name: Share Of Jobs In Professional Services
+    description: Share of workplace jobs in professional, scientific, and technical services.
+    source_table: economics_lodes_wide
+    source_column: pct_jobs_ind_professional_scientific_technical
+    formula: null
+    unit_format: percent
+    subject_areas: [industry_mix]
+    themes: [opportunity]
+    valid_geo_levels: [division, state, cbsa, county, tract]
+    growth_eligible: false
+    growth_windows: []
+    caveats: Workplace-industry mix can diverge sharply from resident-worker mix in job-center tracts.
     status: active
 
   # --- transport_built_form_sld: EPA Smart Location Database ---

@@ -1,0 +1,156 @@
+---
+title: "Phase 7 - Zone Methodology Review"
+subtitle: "Review notebook for the modular Sprint 2 national tract model"
+date: today
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 2
+    code-fold: true
+execute:
+  warning: false
+  message: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE
+)
+
+options(
+  dplyr.summarise.inform = FALSE,
+  knitr.kable.NA = ""
+)
+
+library(here)
+library(dplyr)
+library(readr)
+library(arrow)
+library(ggplot2)
+library(knitr)
+
+output_dir <- here("exploration/intelligence_framework/phase_7_zone_methodology", "outputs")
+
+cluster_calibration <- read_csv(file.path(output_dir, "phase7_cluster_calibration.csv"), show_col_types = FALSE)
+coverage_audit <- read_csv(file.path(output_dir, "phase7_coverage_audit.csv"), show_col_types = FALSE)
+cluster_centroids <- read_csv(file.path(output_dir, "phase7_cluster_centroids.csv"), show_col_types = FALSE)
+representative_tracts <- read_csv(file.path(output_dir, "phase7_representative_tracts.csv"), show_col_types = FALSE)
+light_validation <- read_csv(file.path(output_dir, "phase7_light_validation_spot_checks.csv"), show_col_types = FALSE)
+zone_scores <- read_parquet(file.path(output_dir, "zone_scores.parquet"))
+
+selected_k <- zone_scores |>
+  distinct(selected_k_for_run) |>
+  pull(selected_k_for_run)
+
+model_summary <- tibble(
+  modeling_universe = nrow(zone_scores),
+  cbsa_count = n_distinct(zone_scores$cbsa_code),
+  selected_k_for_run = selected_k,
+  share_in_oz = mean(zone_scores$is_opportunity_zone, na.rm = TRUE)
+)
+```
+
+## Purpose
+
+This notebook is the review layer for Sprint 2, not the build pipeline.
+
+The canonical build now lives in:
+
+- `R/run_phase7_zone_model.R`
+- `R/phase7_*.R`
+
+This notebook reads the saved artifacts in `outputs/` so we can:
+
+- review the current candidate-`k` calibration
+- inspect the provisional centroid structure
+- review representative tracts for naming sanity checks
+- look at light Jacksonville and Richmond spot checks before Sprint 3
+
+The current Sprint 2 run uses sampled hierarchical calibration and skips GMM by default so the tract-scale pass stays practical to rerun.
+
+## Model Snapshot
+
+```{r model-summary}
+model_summary |>
+  mutate(share_in_oz = round(share_in_oz, 3)) |>
+  kable()
+```
+
+## Coverage Audit
+
+```{r coverage-audit}
+coverage_audit |>
+  select(metric_id, theme, completeness_pct, missing_tracts, missing_gt_20_pct) |>
+  mutate(completeness_pct = round(completeness_pct, 3)) |>
+  kable()
+```
+
+## Cluster Count Calibration
+
+```{r cluster-calibration-plot, fig.height=4.5}
+cluster_calibration |>
+  ggplot(aes(x = k, y = kmeans_avg_silhouette)) +
+  geom_line(color = "#355070", linewidth = 0.8) +
+  geom_point(aes(color = k == selected_k), size = 2.8) +
+  scale_color_manual(values = c("FALSE" = "#6c757d", "TRUE" = "#d62828"), guide = "none") +
+  scale_x_continuous(breaks = cluster_calibration$k) +
+  labs(
+    title = "Phase 7 provisional cluster-count calibration",
+    x = "Cluster count (k)",
+    y = "Average k-means silhouette"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+```{r cluster-calibration-table}
+cluster_calibration |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+## Provisional Cluster Profiles
+
+```{r cluster-centroids}
+cluster_centroids |>
+  select(
+    zone_kmeans_cluster,
+    provisional_zone_type,
+    tracts_in_cluster,
+    subject_score_character,
+    subject_score_livability,
+    subject_score_opportunity,
+    zone_type_name_status
+  ) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2))) |>
+  kable()
+```
+
+## Representative Tracts
+
+```{r representative-tracts}
+representative_tracts |>
+  group_by(provisional_zone_type) |>
+  slice_head(n = 5) |>
+  ungroup() |>
+  mutate(distance_to_center = round(distance_to_center, 3)) |>
+  kable()
+```
+
+## Light Market Spot Checks
+
+```{r light-validation}
+light_validation |>
+  mutate(cbsa_zone_share = round(cbsa_zone_share, 3)) |>
+  kable()
+```
+
+## Final Read
+
+- Sprint 2 now has a full modular Phase 7 package rather than a notebook-only workflow.
+- The tract modeling universe is the current governed Gold tract backbone, not the legacy 396-CBSA scope.
+- Candidate-`k` calibration is based on a `5,000`-tract sample because full tract pairwise distance matrices exceed local memory.
+- `k` and cluster names are intentionally still provisional pending output review.
+- GMM is currently disabled by default for tract-scale runs; the hard labels and benchmark outputs are the main Sprint 2 deliverables.
+- Jacksonville and Richmond are included only as light distribution checks in this sprint; full spatial validation stays in Sprint 3.
