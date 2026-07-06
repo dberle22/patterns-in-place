@@ -449,6 +449,25 @@ Track J (Publishing & Distribution)
 
 ---
 
+## Tactical Roadmaps & Planning Docs
+
+*These are the track-level and product-level docs that sit below this roadmap. Each covers tactical task lists, architecture decisions, and build sequences for its area. This roadmap is the summary layer; these are the source of record for detailed work.*
+
+| Document | What it covers |
+|---|---|
+| [`ROADMAP.md`](ROADMAP.md) | Strategy memo — the five product areas, the core flywheel, sequencing summary |
+| [`INTELLIGENCE_LAYER_ROADMAP.md`](INTELLIGENCE_LAYER_ROADMAP.md) | 8-phase roadmap: metric mapping → frame calibration → zone methodology → DataMart promotion |
+| [`area-explorer/AREA_EXPLORER_ROADMAP.md`](area-explorer/AREA_EXPLORER_ROADMAP.md) | Product spec and build phases for all three Streamlit apps + landing page |
+| [`metro-deep-dive/RESEARCH_TOOL_ROADMAP.md`](metro-deep-dive/RESEARCH_TOOL_ROADMAP.md) | Research Tool spec — tab-by-tab build sequence, data sources, relationship to Deep Dive reports |
+| [`foundations/data_dictionary/docs/PLATFORM_COMPLETION_PLAN.md`](foundations/data_dictionary/docs/PLATFORM_COMPLETION_PLAN.md) | Task-level ETL tracker for all Places source tracks (Tracks 1–17+) |
+| [`publisher/MIGRATION.md`](publisher/MIGRATION.md) | Publisher migration plan, path fixes, verification gates, future cleanup |
+| [`publisher/content/publisher_backlog.md`](publisher/content/publisher_backlog.md) | Two-track content strategy, 7-step workflow, Track 1 and Track 2 post backlog |
+| [`stoop/MIGRATION.md`](stoop/MIGRATION.md) | Stoop migration plan, verification gates, long-term Points pipeline roadmap |
+| [`OUTREACH_TRACKER.md`](OUTREACH_TRACKER.md) | Five distribution lanes, per-target leads and timing, sequenced action plan |
+| [`TECH_LANDSCAPE_MAP.md`](TECH_LANDSCAPE_MAP.md) | Community map, contributable OSS projects, positioning by category |
+
+---
+
 ## Appendix: Naming Conventions
 
 For reference when reading track-level roadmap files:

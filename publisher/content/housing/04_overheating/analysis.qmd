@@ -1,0 +1,20 @@
+---
+title: "Overheating Heuristic"
+format: html
+---
+
+```{r setup}
+library(DBI)
+library(duckdb)
+con <- dbConnect(duckdb())
+```
+
+## Quadrant Scatter
+<!-- Price/rent growth vs income growth
+     Sized by population, colored by vacancy trend or census region -->
+
+## Bivariate Choropleth
+<!-- Map version of the quadrant scatter -->
+
+## Listicle: Hottest and Still-a-Deal Markets
+<!-- Ranked list of top/bottom markets based on overheating score -->

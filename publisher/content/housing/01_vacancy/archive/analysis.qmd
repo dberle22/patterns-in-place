@@ -1,0 +1,327 @@
+---
+title: "Vacancy"
+format: html
+---
+
+```{r setup}
+suppressPackageStartupMessages({
+  library(DBI)
+  library(duckdb)
+  library(sf)
+})
+
+# Section notebook setup:
+# - resolve repo-relative paths so the notebook stays portable
+# - connect to the materialized housing DuckDB inside `foundations/etl/data/`
+# - load shared visual-library prep/render helpers from `foundations/`
+doc_dir <- dirname(knitr::current_input(dir = TRUE))
+repo_root <- normalizePath(file.path(doc_dir, "..", "..", "..", ".."))
+foundations_dir <- file.path(repo_root, "foundations")
+sql_dir <- file.path(doc_dir, "sql")
+db_path <- file.path(
+  repo_root,
+  "foundations",
+  "etl",
+  "data",
+  "duckdb",
+  "patterns_in_place.duckdb"
+)
+
+read_sql <- function(path) {
+  paste(readLines(path, warn = FALSE), collapse = "\n")
+}
+
+run_sql <- function(con, filename) {
+  DBI::dbGetQuery(con, read_sql(file.path(sql_dir, filename)))
+}
+
+with_foundations_wd <- function(expr) {
+  old_wd <- getwd()
+  on.exit(setwd(old_wd), add = TRUE)
+  setwd(foundations_dir)
+  force(expr)
+}
+
+with_foundations_wd({
+  source("visual_library/shared/standards.R")
+  source("visual_library/shared/chart_utils.R")
+  source("visual_library/shared/data_contracts.R")
+  source("visual_library/shared/prep/prep_choropleth.R")
+  source("visual_library/shared/render/render_choropleth.R")
+  source("visual_library/shared/prep/prep_boxplot.R")
+  source("visual_library/shared/render/render_boxplot.R")
+  source("visual_library/shared/prep/prep_bar.R")
+  source("visual_library/shared/render/render_bar.R")
+  source("visual_library/shared/prep/prep_line.R")
+  source("visual_library/shared/render/render_line.R")
+})
+
+duckdb_drv <- duckdb::duckdb(dbdir = db_path, read_only = TRUE)
+con <- dbConnect(duckdb_drv)
+try(DBI::dbExecute(con, "LOAD spatial"), silent = TRUE)
+
+load_contiguous_states_context <- function(con) {
+  states_sql <- paste(
+    "SELECT state_abbr, state_name, ST_AsText(geom) AS geom_wkt",
+    "FROM geo.states",
+    "WHERE state_abbr NOT IN ('AK', 'HI', 'PR')"
+  )
+  states_raw <- DBI::dbGetQuery(con, states_sql)
+  sf::st_as_sf(states_raw, wkt = "geom_wkt", crs = 4326)
+}
+
+load_contiguous_us_outline <- function(states_sf) {
+  outline_geom <- sf::st_union(states_sf)
+  sf::st_sf(
+    data.frame(layer = "contiguous_us"),
+    geometry = sf::st_sfc(outline_geom, crs = sf::st_crs(states_sf))
+  )
+}
+
+states_sf <- load_contiguous_states_context(con)
+contiguous_us_outline <- load_contiguous_us_outline(states_sf)
+standard_contiguous_context <- build_map_context_layers(
+  us_outline = contiguous_us_outline,
+  state_outlines = states_sf
+)
+```
+
+## National Vacancy Rates
+
+```{r national-vacancy-map}
+# The opening map stays at the state level so the national pattern reads
+# quickly before we move into metro-level distributions and extremes.
+state_map_raw <- run_sql(con, "state_vacancy_map.sql")
+state_map_df <- prep_choropleth(
+  state_map_raw,
+  config = list(
+    question_id = "vacancy_state_map",
+    time_window = "2024_snapshot",
+    variant = "continuous"
+  )
+)
+
+state_map_plot <- render_choropleth(
+  state_map_df,
+  config = list(
+    variant = "continuous",
+    composition_preset = "national_compact",
+    output_mode = "presentation",
+    title = "State housing vacancy rates in 2024",
+    subtitle = paste(
+      "Contiguous 48 states, 2024 snapshot | Fill = vacancy rate (%)",
+      "| This opening view is meant to show broad regional looseness versus tightness"
+    ),
+    fill_label = "Vacancy rate (%)",
+    legend_title = "Vacancy rate (%)",
+    trim_quantiles = c(0.02, 0.98),
+    show_us_outline = FALSE,
+    show_state_outlines = FALSE,
+    context_layers = standard_contiguous_context,
+    caption_side_note = "The map excludes Alaska, Hawaii, and Puerto Rico so the contiguous-US pattern reads clearly at article scale."
+  )
+)
+
+state_map_plot
+```
+
+## Distributions
+
+```{r cbsa-vacancy-by-region}
+# Major-CBSA region comparison: four groups keeps the first distribution scan
+# compact and easy to explain in the article.
+distribution_raw <- run_sql(con, "cbsa_vacancy_distributions.sql")
+
+vacancy_region_df <- prep_boxplot(
+  distribution_raw,
+  config = list(
+    question_id = "vacancy_boxplot_region",
+    time_window = "2024_snapshot",
+    metric_id = "vacancy_rate",
+    order_groups = "median_desc"
+  )
+)
+
+vacancy_region_plot <- render_boxplot(
+  vacancy_region_df,
+  config = list(
+    output_mode = "presentation",
+    title = "How do major-metro vacancy rates differ by Census region?",
+    subtitle = "Major CBSAs with 2024 population of 100k+, grouped by Census region | Groups ordered by median vacancy rate",
+    group_label = "Census region",
+    value_label = "Vacancy rate",
+    label_style = "percent",
+    label_accuracy = 0.1,
+    show_jitter = TRUE,
+    caption_side_note = "This uses the section's temporary major-CBSA 100k flag so the distribution focuses on larger, more editorially durable metro markets."
+  )
+)
+
+vacancy_region_plot
+```
+
+```{r cbsa-vacancy-by-division}
+# Division adds a denser cut than region, but it is still useful to surface
+# whether the South's looseness is broad-based or concentrated in a few subregions.
+vacancy_division_df <- prep_boxplot(
+  distribution_raw,
+  config = list(
+    question_id = "vacancy_boxplot_division",
+    time_window = "2024_snapshot",
+    metric_id = "vacancy_rate",
+    order_groups = "median_desc"
+  )
+)
+
+vacancy_division_plot <- render_boxplot(
+  vacancy_division_df,
+  config = list(
+    output_mode = "presentation",
+    title = "How do major-metro vacancy rates differ by Census division?",
+    subtitle = "Major CBSAs with 2024 population of 100k+, grouped by Census division | Groups ordered by median vacancy rate",
+    group_label = "Census division",
+    value_label = "Vacancy rate",
+    label_style = "percent",
+    label_accuracy = 0.1,
+    show_jitter = TRUE,
+    flip = TRUE,
+    caption_side_note = "The division cut is the more detailed follow-up view for spotting whether wide regional patterns are driven by specific subregions."
+  )
+)
+
+vacancy_division_plot
+```
+
+## Extremes
+
+```{r cbsa-vacancy-extremes}
+# The extremes query returns both tails so we can render the tightest and
+# loosest major metros with consistent filtering and benchmark treatment.
+extremes_raw <- run_sql(con, "cbsa_vacancy_extremes.sql")
+
+tightest_df <- prep_bar(
+  extremes_raw,
+  config = list(
+    question_id = "vacancy_bar_tightest",
+    time_window = "2024_snapshot",
+    metric_id = "vacancy_rate",
+    sort_desc = FALSE,
+    top_n = 10
+  )
+)
+
+tightest_plot <- render_bar(
+  tightest_df,
+  config = list(
+    output_mode = "presentation",
+    title = "The tightest major metro housing markets in 2024",
+    subtitle = "Bottom 10 vacancy rates among major CBSAs with 2024 population of 100k+",
+    y_label = "Vacancy rate",
+    label_style = "percent",
+    label_accuracy = 0.1,
+    show_benchmark = TRUE,
+    benchmark_label = "US housing-unit-weighted context",
+    caption_side_note = "Lower vacancy suggests tighter housing availability, not necessarily lower housing costs."
+  )
+)
+
+tightest_plot
+```
+
+```{r cbsa-vacancy-loosest}
+loosest_df <- prep_bar(
+  extremes_raw,
+  config = list(
+    question_id = "vacancy_bar_loosest",
+    time_window = "2024_snapshot",
+    metric_id = "vacancy_rate",
+    sort_desc = TRUE,
+    top_n = 10
+  )
+)
+
+loosest_plot <- render_bar(
+  loosest_df,
+  config = list(
+    output_mode = "presentation",
+    title = "The loosest major metro housing markets in 2024",
+    subtitle = "Top 10 vacancy rates among major CBSAs with 2024 population of 100k+",
+    y_label = "Vacancy rate",
+    label_style = "percent",
+    label_accuracy = 0.1,
+    show_benchmark = TRUE,
+    benchmark_label = "US housing-unit-weighted context",
+    caption_side_note = "High vacancy can reflect seasonal housing stock, second-home markets, or weaker local demand, so the tail deserves interpretation rather than a simple good/bad read."
+  )
+)
+
+loosest_plot
+```
+
+## Change Over Time
+
+```{r vacancy-region-trends}
+# The first trend view keeps the comparison readable:
+# - United States headline
+# - major-CBSA weighted average
+# - four housing-unit-weighted region averages
+trend_raw <- run_sql(con, "vacancy_trends.sql")
+
+vacancy_region_trend_df <- prep_line(
+  trend_raw,
+  config = list(
+    question_id = "vacancy_trend_regions",
+    metric_id = "vacancy_rate",
+    variant = "multi",
+    period_min = 2012,
+    period_max = 2024
+  )
+)
+
+vacancy_region_trend_plot <- render_line(
+  vacancy_region_trend_df,
+  config = list(
+    output_mode = "presentation",
+    title = "Vacancy has opened up unevenly across regions",
+    subtitle = "2012-2024 annual series | US headline, major-CBSA weighted average, and housing-unit-weighted region averages",
+    y_label = "Vacancy rate",
+    label_style = "percent",
+    label_accuracy = 0.1,
+    show_points = TRUE,
+    caption_side_note = "Region and CBSA comparison lines are weighted by housing units so large markets carry proportionate influence."
+  )
+)
+
+vacancy_region_trend_plot
+```
+
+```{r vacancy-division-trends}
+# Division is the denser follow-up trend view. We turn points off here so the
+# line field stays legible with the larger series count.
+vacancy_division_trend_df <- prep_line(
+  trend_raw,
+  config = list(
+    question_id = "vacancy_trend_divisions",
+    metric_id = "vacancy_rate",
+    variant = "multi",
+    period_min = 2012,
+    period_max = 2024
+  )
+)
+
+vacancy_division_trend_plot <- render_line(
+  vacancy_division_trend_df,
+  config = list(
+    output_mode = "presentation",
+    title = "Division-level vacancy paths show where looseness really accumulated",
+    subtitle = "2012-2024 annual series | US headline, major-CBSA weighted average, and housing-unit-weighted division averages",
+    y_label = "Vacancy rate",
+    label_style = "percent",
+    label_accuracy = 0.1,
+    show_points = FALSE,
+    caption_side_note = "This second trend view trades simplicity for resolution so we can see whether broad regional patterns are concentrated in a few divisions."
+  )
+)
+
+vacancy_division_trend_plot
+```

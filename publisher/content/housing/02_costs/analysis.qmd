@@ -1,0 +1,24 @@
+---
+title: "Costs"
+format: html
+---
+
+```{r setup}
+library(DBI)
+library(duckdb)
+con <- dbConnect(duckdb())
+```
+
+## Comovement
+<!-- Indexed line charts of home values and rents -->
+
+## Correlation Heatmap
+<!-- Value-growth vs rent-growth correlation heatmap -->
+
+## Vacancy vs Cost Changes
+<!-- Scatter plot: vacancy change vs cost change
+     Quadrants: falling vacancy + rising prices = tight
+                rising vacancy + rising prices = contradiction -->
+
+## Rent-to-Income Choropleth
+<!-- Choropleth of rent-to-income by market/state -->

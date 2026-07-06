@@ -1,0 +1,21 @@
+---
+title: "Synthesis"
+format: html
+---
+
+```{r setup}
+library(DBI)
+library(duckdb)
+con <- dbConnect(duckdb())
+```
+
+## Vacancy Rate Changes vs Costs
+<!-- Relationship between vacancy rate changes and cost changes -->
+
+## Correlation Heatmap
+<!-- Heatmap of all core metrics -->
+
+## Rank Divergence Table
+<!-- Ranking table of key variables per metro
+     Composite divergence score: sum of absolute rank differences
+     Surfaces metros that are outliers across multiple dimensions -->

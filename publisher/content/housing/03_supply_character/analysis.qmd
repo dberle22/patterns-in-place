@@ -1,0 +1,20 @@
+---
+title: "Supply Character"
+format: html
+---
+
+```{r setup}
+library(DBI)
+library(duckdb)
+con <- dbConnect(duckdb())
+```
+
+## Where Is New Building Happening
+<!-- Proportional symbol map: permits per 1,000 housing units by CBSA -->
+
+## What's Being Built
+<!-- Stacked bar: share of multi-family vs single family permits
+     Bar chart of current housing stock -->
+
+## Supply vs Growth
+<!-- Scatter plot: permits vs population growth, quadrant framing -->

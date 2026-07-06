@@ -41,6 +41,24 @@ from patterns_in_place.silver.income_kpi
 -- We will use CAINC1 and ACS for Median Income
 -- We will use CAINC4 to get Wage as a % of Earnings
 
+bea_cainc1_base as (
+select
+	lower(geo_level) as geo_level,
+	case
+		-- BEA state rows use 5-character identifiers like 01000 while the ACS
+		-- warehouse surface uses 2-character state FIPS. Normalize once here so
+		-- every downstream join and window partition uses the same key surface.
+		when lower(geo_level) = 'state' then substr(geo_id, 1, 2)
+		else geo_id
+	end as geo_id,
+	geo_name,
+	period,
+	population,
+	pi_total,
+	pi_per_capita
+from patterns_in_place.silver.bea_regional_cainc1_wide
+),
+
 cainc1 as (
 select cainc1.geo_level,
 	cainc1.geo_id,
@@ -58,11 +76,26 @@ select cainc1.geo_level,
 	LAG(calc_income_pc, 5) OVER (PARTITION BY cainc1.geo_level, cainc1.geo_id, cainc1.geo_name ORDER BY year) AS pi_pc_lag5,
 	LAG(calc_income_pc, 10) OVER (PARTITION BY cainc1.geo_level, cainc1.geo_id, cainc1.geo_name ORDER BY year) AS pi_pc_lag10,
 	pi_per_capita
-from patterns_in_place.silver.bea_regional_cainc1_wide cainc1
+from bea_cainc1_base cainc1
 inner join acs_base base 
 	on cainc1.geo_id = base.geo_id
 	and cainc1.period = base.year
 	and lower(cainc1.geo_level) = lower(base.geo_level)
+),
+
+bea_cainc4_base as (
+select
+	lower(geo_level) as geo_level,
+	case
+		-- Keep the wage-share join on the same normalized state key that CAINC1
+		-- uses above so state rows do not silently fall out of the Gold surface.
+		when lower(geo_level) = 'state' then substr(geo_id, 1, 2)
+		else geo_id
+	end as geo_id,
+	geo_name,
+	period,
+	pi_wages_salary
+from patterns_in_place.silver.bea_regional_cainc4_wide
 ),
 
 cainc4 as (
@@ -71,7 +104,7 @@ select geo_level,
 	geo_name,
 	period,
 	pi_wages_salary
-from patterns_in_place.silver.bea_regional_cainc4_wide
+from bea_cainc4_base
 )
 
 
