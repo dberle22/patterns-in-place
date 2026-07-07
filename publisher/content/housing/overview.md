@@ -253,4 +253,37 @@ The SQL files materialize mart tables into DuckDB. Each `.qmd` connects to DuckD
 
 ## Posting Plan
 
-We will create a posting plan for our content so we can track what is being built, how it's being delivered and the overall status of our series.
+### Strategy
+
+Publishing happens in four phases. Each phase builds on the last and serves a different purpose.
+
+**Phase 1 — Quick Hits** post individual charts with a headline and 2–3 sentences of context. No argument, no methodology. The discipline is one punchy headline that makes the finding obvious and enough framing so the chart isn't misread. These ship to X, Bluesky, and Substack Notes first. They test which visuals land before we invest in writing around them.
+
+**Phase 2 — Data Takes** are ~700 word articles anchored to one section each. One chart, one argument. These go to Medium as the primary narrative home, with the Quarto source on GitHub as the proof layer, and a hero visual + link on LinkedIn and X. The quick hits in Phase 1 inform which sections and visuals deserve the full article treatment.
+
+**Phase 3 — Synthesis** is a single longer piece (~1,500–2,000 words) that ties all four sections together. We build the synthesis visuals first and let the data surface the frame before writing. This is the piece that earns the "series" framing across platforms.
+
+**Phase 4 — Technical Deep Dive** explains the overheating model — the design decisions, the component structure, and the trade-offs. Written for the data practitioner audience. GitHub is the primary home; Medium gets a narrative adaptation.
+
+---
+
+### Piece Tracker
+
+| ID | Phase | Title | Format | Section | Visual(s) | Platform | Status |
+|---|---|---|---|---|---|---|---|
+| h-q01 | 1 — Quick Hit | TBD | Quick Hit | Vacancy | TBD | X / Bluesky / Substack | Not started |
+| h-q02 | 1 — Quick Hit | TBD | Quick Hit | Costs | TBD | X / Bluesky / Substack | Not started |
+| h-q03 | 1 — Quick Hit | TBD | Quick Hit | Supply | TBD | X / Bluesky / Substack | Not started |
+| h-q04 | 1 — Quick Hit | TBD | Quick Hit | Overheating | TBD | X / Bluesky / Substack | Not started |
+| h-a01 | 2 — Data Take | TBD | Data Take (~700 words) | Vacancy | TBD | Medium / GitHub / LinkedIn | Not started |
+| h-a02 | 2 — Data Take | TBD | Data Take (~700 words) | Costs | TBD | Medium / GitHub / LinkedIn | Not started |
+| h-a03 | 2 — Data Take | TBD | Data Take (~700 words) | Supply | TBD | Medium / GitHub / LinkedIn | Not started |
+| h-a04 | 2 — Data Take | TBD | Data Take (~700 words) | Overheating | TBD | Medium / GitHub / LinkedIn | Not started |
+| h-s01 | 3 — Synthesis | TBD | Long-form (~1,500–2,000 words) | Synthesis | TBD | Medium / GitHub / LinkedIn | Not started |
+| h-t01 | 4 — Technical | TBD | Technical Deep Dive (~1,500 words) | Overheating | All overheating visuals | GitHub / Medium | Not started |
+
+---
+
+### Next step
+
+Review the rendered visuals across all four sections and decide which chart becomes each Quick Hit and which becomes the anchor visual for each Data Take. Update the tracker above once those decisions are made.
