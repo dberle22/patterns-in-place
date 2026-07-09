@@ -1,0 +1,25 @@
+---
+title: "S10 — Parcel Watch"
+format: html
+---
+
+# {{market.name}} — Parcel Watch
+
+Section 10 of Act 4: Opportunity Funnel. CONDITIONAL — runs only when parcels_available: true in config.yml.
+
+Deliverables: parcel screen table (5–10 parcels: address/APN, use code, improvement-to-land ratio,
+zone archetype) + corridor-level map with parcels marked.
+
+Fallback: if parcels_available is false, end issue at s09 with a short "further exploration" note.
+
+See `metro_deep_dive_template_guidance.md` §10 for spec.
+
+```{python}
+# TODO: check config.yml parcels_available — skip section if false
+# load parcel data from Regrid or county open data, scoped to top corridor(s)
+# screen: improvement-to-land ratio below corridor median, permissive use codes
+```
+
+```{r}
+# TODO: parcel screen table (gt), corridor map with parcels marked
+```

@@ -1,0 +1,15 @@
+---
+title: "S02 — History Box"
+format: html
+---
+
+# {{market.name}} — History Box
+
+Section 2 of Act 1: Identity. FLEX.
+
+Deliverable: 150–250 word boxed narrative. Does founding logic still appear in present-day data?
+Cut rule: history that explains present data stays; history that does not gets cut.
+
+See `metro_deep_dive_template_guidance.md` §2 for spec.
+
+<!-- Prose only — no pipeline required. Write directly here. -->

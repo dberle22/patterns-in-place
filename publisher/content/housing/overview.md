@@ -255,35 +255,79 @@ The SQL files materialize mart tables into DuckDB. Each `.qmd` connects to DuckD
 
 ### Strategy
 
-Publishing happens in four phases. Each phase builds on the last and serves a different purpose.
+Each section has two layers: an **observation layer** (here's what the data shows) and an **interpretation layer** (here's what it means and what's missing). Publishing follows that structure.
 
-**Phase 1 — Quick Hits** post individual charts with a headline and 2–3 sentences of context. No argument, no methodology. The discipline is one punchy headline that makes the finding obvious and enough framing so the chart isn't misread. These ship to X, Bluesky, and Substack Notes first. They test which visuals land before we invest in writing around them.
+**Phase 1 — Quick Hits** live in the observation layer. One chart, a headline, 2–3 sentences of context. No argument, no methodology — just the finding made legible. These ship to X, Bluesky, and Substack Notes. They test which visuals land before we invest in writing around them.
 
-**Phase 2 — Data Takes** are ~700 word articles anchored to one section each. One chart, one argument. These go to Medium as the primary narrative home, with the Quarto source on GitHub as the proof layer, and a hero visual + link on LinkedIn and X. The quick hits in Phase 1 inform which sections and visuals deserve the full article treatment.
+**Phase 2 — Data Takes** earn the interpretation. ~700 words, one anchor chart, one argument per section. Medium is the primary narrative home; GitHub carries the Quarto source as the proof layer; LinkedIn and X get the hero visual and a link. The quick hits inform which visuals deserve the full article treatment.
 
-**Phase 3 — Synthesis** is a single longer piece (~1,500–2,000 words) that ties all four sections together. We build the synthesis visuals first and let the data surface the frame before writing. This is the piece that earns the "series" framing across platforms.
+**Phase 3 — Synthesis** ties all four sections together in a single longer piece (~1,500–2,000 words). We build the synthesis visuals first and let the data surface the frame before writing.
 
-**Phase 4 — Technical Deep Dive** explains the overheating model — the design decisions, the component structure, and the trade-offs. Written for the data practitioner audience. GitHub is the primary home; Medium gets a narrative adaptation.
+**Phase 4 — Technical Deep Dive** explains the overheating model: the four components, how KPIs were chosen, how scores were assigned, and the design trade-offs. Written for the data practitioner audience. GitHub is the primary home; Medium gets a narrative adaptation.
+
+---
+
+### Section Sequencing Notes
+
+#### Vacancy
+The core argument: lower vacancy means less excess housing, which pushes prices up as population growth and new home seekers compete for a shrinking pool.
+
+Visual sequence:
+1. State map — national snapshot of where vacancy is highest and lowest
+2. Regional trends — how vacancy has changed over time across Census regions and divisions
+3. Division CBSA boxplot — the spread within regions; which divisions are uniformly tight vs. mixed
+4. Top and bottom markets — name the metros at the extremes
+
+What's missing: total housing units and housing units per adult. These are stronger in the synthesis than here — they're most compelling when paired with cost data ("less housing per adult *and* prices rose fastest").
+
+#### Costs
+The core argument: prices are rising because there's less open housing per person and incomes are high enough to support aggressive bidding. Scarce resources + more purchasing power = higher prices.
+
+The interesting sub-finding: vacancy *rate changes* don't appear correlated with price changes. But absolute vacancy rate in 2024 may be. Worth testing before writing — if there's no relationship either way, the honest story becomes "scarcity as measured by vacancy doesn't explain price moves," which is a stronger Data Take than the conventional framing.
+
+Visual sequence:
+1. Correlation matrix — lead with this to establish that vacancy changes are uncorrelated, so the scatter below reads as a deliberate finding, not a dead end
+2. Cost line trends — prices, incomes, population, and total housing units growth together
+3. Rent-to-income and home value-to-income state maps — where housing costs are highest relative to what people earn; consider a bivariate treatment
+4. Vacancy vs housing costs scatter — confirms the missing relationship; the correlation matrix has already earned this
+
+What's missing: the relationship between total housing units per person and prices. If vacancy rate changes don't correlate with price moves, housing units per capita may be the variable that does. Flag for synthesis.
+
+#### Supply Character
+The core argument: where building is happening, what's being built, and whether supply is keeping pace with growth.
+
+Visual sequence:
+1. Permitting intensity map — where new building is concentrated; keep the proportional symbol treatment for now and evaluate at larger render
+2. Permit mix vs current housing stock — show regionally first, then hand-pick metro areas for a second chart; two charts total
+3. Supply vs growth scatter — a clean relationship; metros permitting more relative to population growth vs. those falling behind
+4. Costs into supply — a scatter of permit intensity vs rent-to-income to show whether more building corresponds to lower housing costs; frame as a relationship, not a regression
+
+What's missing: age of housing stock. Not currently in the data model. A potential future addition.
+
+#### Overheating
+Lead with the model explanation before any visuals: the four components (momentum, pressure, strain, tightness), how KPIs were selected, and how component scores were built and combined. This separates the section from a black-box ranking and sets up the Technical Deep Dive later.
+
+Then move into visuals that make the component structure legible — not just "here are the hottest markets" but "here's what's driving each market's score."
 
 ---
 
 ### Piece Tracker
 
-| ID | Phase | Title | Format | Section | Visual(s) | Platform | Status |
-|---|---|---|---|---|---|---|---|
-| h-q01 | 1 — Quick Hit | TBD | Quick Hit | Vacancy | TBD | X / Bluesky / Substack | Not started |
-| h-q02 | 1 — Quick Hit | TBD | Quick Hit | Costs | TBD | X / Bluesky / Substack | Not started |
-| h-q03 | 1 — Quick Hit | TBD | Quick Hit | Supply | TBD | X / Bluesky / Substack | Not started |
-| h-q04 | 1 — Quick Hit | TBD | Quick Hit | Overheating | TBD | X / Bluesky / Substack | Not started |
-| h-a01 | 2 — Data Take | TBD | Data Take (~700 words) | Vacancy | TBD | Medium / GitHub / LinkedIn | Not started |
-| h-a02 | 2 — Data Take | TBD | Data Take (~700 words) | Costs | TBD | Medium / GitHub / LinkedIn | Not started |
-| h-a03 | 2 — Data Take | TBD | Data Take (~700 words) | Supply | TBD | Medium / GitHub / LinkedIn | Not started |
-| h-a04 | 2 — Data Take | TBD | Data Take (~700 words) | Overheating | TBD | Medium / GitHub / LinkedIn | Not started |
-| h-s01 | 3 — Synthesis | TBD | Long-form (~1,500–2,000 words) | Synthesis | TBD | Medium / GitHub / LinkedIn | Not started |
-| h-t01 | 4 — Technical | TBD | Technical Deep Dive (~1,500 words) | Overheating | All overheating visuals | GitHub / Medium | Not started |
+| ID | Phase | Format | Section | Visual(s) | Platform | Status |
+|---|---|---|---|---|---|---|
+| h-q01 | 1 — Quick Hit | Quick Hit | Vacancy | TBD | X / Bluesky / Substack | Not started |
+| h-q02 | 1 — Quick Hit | Quick Hit | Costs | TBD | X / Bluesky / Substack | Not started |
+| h-q03 | 1 — Quick Hit | Quick Hit | Supply | TBD | X / Bluesky / Substack | Not started |
+| h-q04 | 1 — Quick Hit | Quick Hit | Overheating | TBD | X / Bluesky / Substack | Not started |
+| h-a01 | 2 — Data Take | ~700 words | Vacancy | TBD | Medium / GitHub / LinkedIn | Not started |
+| h-a02 | 2 — Data Take | ~700 words | Costs | TBD | Medium / GitHub / LinkedIn | Not started |
+| h-a03 | 2 — Data Take | ~700 words | Supply | TBD | Medium / GitHub / LinkedIn | Not started |
+| h-a04 | 2 — Data Take | ~700 words | Overheating | TBD | Medium / GitHub / LinkedIn | Not started |
+| h-s01 | 3 — Synthesis | ~1,500–2,000 words | Synthesis | TBD | Medium / GitHub / LinkedIn | Not started |
+| h-t01 | 4 — Technical | ~1,500 words | Overheating | All overheating visuals | GitHub / Medium | Not started |
 
 ---
 
-### Next step
+### Next Step
 
-Review the rendered visuals across all four sections and decide which chart becomes each Quick Hit and which becomes the anchor visual for each Data Take. Update the tracker above once those decisions are made.
+Review the rendered visuals across all four sections and map each chart to either a Quick Hit or the anchor visual for its Data Take. Update the tracker above once those decisions are made. Also test whether absolute 2024 vacancy rate correlates with cost changes before drafting the Costs Data Take — the finding shapes the argument.

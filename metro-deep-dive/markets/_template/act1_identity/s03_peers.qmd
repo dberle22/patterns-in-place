@@ -1,0 +1,22 @@
+---
+title: "S03 — Peer Markets"
+format: html
+---
+
+# {{market.name}} — Peer Markets
+
+Section 3 of Act 1: Identity. FLEX.
+
+Deliverable: peer table (top 5, similarity + biggest diff) + one dumbbell chart vs. featured peer
++ forward-analog paragraph if one exists.
+
+See `metro_deep_dive_template_guidance.md` §3 for spec.
+
+```{python}
+# TODO: load config.yml, run distance engine (cosine similarity on z-scored KPI vectors)
+# write to mart_deep_dive.peer_similarity
+```
+
+```{r}
+# TODO: peer table (gt), dumbbell chart vs. featured_peer_cbsa
+```

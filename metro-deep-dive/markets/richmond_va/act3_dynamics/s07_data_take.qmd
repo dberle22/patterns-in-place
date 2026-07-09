@@ -1,0 +1,27 @@
+---
+title: "S07 — Data Take"
+format: html
+---
+
+# {{market.name}} — Data Take
+
+Section 7 of Act 3: Dynamics. FLEX, rotating.
+
+Recurring format hook: "Why is this market weird on X?"
+Automated outlier scan → hand-pick 1–2 surprising flags. Strict budget: one chart, ~100 words, boxed.
+
+Deliverables: 1–2 boxed sidebars.
+
+See `metro_deep_dive_template_guidance.md` §7 for spec.
+
+```{python}
+# TODO: run outlier scan — flag every Gold KPI in national top/bottom decile
+# rank by surprisingness (unexpected given cluster archetype)
+# write to mart_deep_dive.outlier_flags
+```
+
+<!-- Pick 1–2 surprising flags from the scan output. Write the box here. -->
+
+```{r}
+# TODO: one chart per Data Take box
+```

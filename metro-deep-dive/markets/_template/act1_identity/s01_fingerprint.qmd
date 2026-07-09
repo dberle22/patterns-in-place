@@ -1,0 +1,22 @@
+---
+title: "S01 — Market Fingerprint"
+format: html
+---
+
+# {{market.name}} — Market Fingerprint
+
+Section 1 of Act 1: Identity. FIXED SPINE.
+
+Deliverable: radar chart (locked axis order) + verdict line + percentile table.
+
+See `metro_deep_dive_template_guidance.md` §1 for spec.
+
+```{python}
+# TODO: load config.yml, fetch KPI values from Gold, compute national percentiles
+# write to mart_deep_dive.fingerprint_kpis
+```
+
+```{r}
+# TODO: render radar chart (fmsb or ggradar), national median overlay
+# render percentile table (gt)
+```

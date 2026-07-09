@@ -1,0 +1,25 @@
+---
+title: "S08 — Zone Archetypes"
+format: html
+---
+
+# {{market.name}} — Zone Archetypes
+
+Section 8 of Act 4: Opportunity Funnel. FIXED SPINE (composition bar).
+
+Deliverables: archetype choropleth + benchmarked composition bar + one-paragraph composition story.
+
+Zone method set in config.yml (hdbscan / dbscan_calibrated / skater).
+Archetype names are LOCKED across all markets — do not rename per market.
+
+See `metro_deep_dive_template_guidance.md` §8 for spec and zone method decision guidance.
+
+```{python}
+# TODO: load tract-level data, run zone clustering per config.yml zone_method
+# tag each zone by dominant archetype
+# benchmark composition against all markets run to date
+```
+
+```{r}
+# TODO: archetype choropleth, benchmarked composition bar (gt or ggplot)
+```

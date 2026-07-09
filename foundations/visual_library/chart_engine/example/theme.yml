@@ -1,0 +1,9 @@
+palette:
+  primary: "#1a4d7a"
+  benchmark: "#999999"
+fonts:
+  family: "Helvetica"
+  title_size: 18
+chart_defaults:
+  width: 640
+  height: 380

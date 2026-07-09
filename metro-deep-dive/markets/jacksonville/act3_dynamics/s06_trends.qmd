@@ -1,0 +1,27 @@
+---
+title: "S06 — Trend Analysis"
+format: html
+---
+
+# {{market.name}} — Trend Analysis
+
+Section 6 of Act 3: Dynamics. FLEX.
+
+Every trend classified as: Converging / Diverging / Inflecting.
+Narrative lead = strongest inflection.
+
+Deliverables: small-multiples panel (4–6 series, metro vs. national) + inflection narrative lead
++ convergence/divergence classification per series.
+
+See `metro_deep_dive_template_guidance.md` §6 for spec.
+
+```{python}
+# TODO: fetch ACS vintages, Building Permits Survey, FHFA HPI from Gold
+# index to common base year, compute metro vs. national slopes
+# classify each series, detect inflections
+# write to mart_deep_dive.trend_series
+```
+
+```{r}
+# TODO: small-multiples panel, metro line vs. national line, annotate inflection points
+```

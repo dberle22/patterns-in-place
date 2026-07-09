@@ -1,0 +1,24 @@
+---
+title: "S04 — Industry Makeup"
+format: html
+---
+
+# {{market.name}} — Industry Makeup
+
+Section 4 of Act 2: Engine & Fabric. FIXED SPINE (quadrant chart + exposure scorecard).
+Analytical heart of the issue.
+
+Deliverables: LQ quadrant chart + exposure scorecard + summary exposure sentence.
+
+See `metro_deep_dive_template_guidance.md` §4 for spec.
+
+```{python}
+# TODO: load config.yml, compute LQs from QCEW Gold table
+# assign quadrants: rising star / mature strength / emerging bet / declining legacy
+# write to mart_deep_dive.lq_scores
+```
+
+```{r}
+# TODO: LQ quadrant scatter (centerpiece), labeled top industries
+# exposure scorecard table (gt): emp share, AI exposure index, policy flags
+```

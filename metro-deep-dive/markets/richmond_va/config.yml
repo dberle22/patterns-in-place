@@ -1,0 +1,42 @@
+# Market configuration — copy this to markets/<market_name>/config.yml
+# and fill in the values before running any .qmd files.
+
+market:
+  name: "Richmond, VA"                  # e.g. "Richmond, VA"
+  cbsa_geoid: "40060"            # e.g. "40060"
+  state_abbr: "VA"            # primary state, e.g. "VA"
+  census_division: "South Atlantic"       # e.g. "South Atlantic"
+
+# Act 1 — Identity
+act1:
+  # Fingerprint KPI axis order is LOCKED after market #1.
+  # Do not change this list once Richmond ships.
+  # fingerprint_kpis populated after market #1 editorial lock.
+  fingerprint_kpis: []
+
+  # Which peer to feature in the dumbbell chart (s03).
+  # Leave blank to default to top cosine-similarity peer.
+  featured_peer_cbsa: ""
+  forward_analog_cbsa: ""   # optional: "this market five years from now"
+
+# Act 2 — Engine & Fabric
+act2:
+  # Theme selected for the exposure scorecard deep-dive.
+  # Options so far: ai_exposure (first built for market #1)
+  exposure_theme: ""
+
+# Act 3 — Dynamics
+act3:
+  # Which trend series leads the s06 narrative.
+  # Leave blank to let inflection detection pick the strongest.
+  lead_series: ""
+
+# Act 4 — Opportunity Funnel
+act4:
+  # Whether parcel data is available for s10.
+  parcels_available: false
+  parcel_source: ""         # e.g. "Regrid" or "county open data"
+
+  # Zone method — decided after diagnosing JAX clustering failure.
+  # Options: hdbscan, dbscan_calibrated, skater
+  zone_method: ""

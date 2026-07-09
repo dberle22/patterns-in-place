@@ -46,17 +46,17 @@ Main responsibilities:
 
 Important files:
 
-- [chatbot/orchestrator.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/orchestrator.py)
-- [chatbot/intent/parser.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/intent/parser.py)
-- [chatbot/query/catalogs.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query/catalogs.py)
-- [chatbot/query/planner.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query/planner.py)
-- [chatbot/query/generator.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query/generator.py)
-- [chatbot/query/validator.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query/validator.py)
-- [chatbot/query/executor.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query/executor.py)
-- [chatbot/charts/selector.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/charts/selector.py)
-- [chatbot/charts/renderer.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/charts/renderer.py)
-- [chatbot/response/assembler.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/response/assembler.py)
-- [chatbot/scripts/ask.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/scripts/ask.py)
+- [chatbot/orchestrator.py](publisher/chatbot/orchestrator.py)
+- [chatbot/intent/parser.py](publisher/chatbot/intent/parser.py)
+- [chatbot/query/catalogs.py](publisher/chatbot/query/catalogs.py)
+- [chatbot/query/planner.py](publisher/chatbot/query/planner.py)
+- [chatbot/query/generator.py](publisher/chatbot/query/generator.py)
+- [chatbot/query/validator.py](publisher/chatbot/query/validator.py)
+- [chatbot/query/executor.py](publisher/chatbot/query/executor.py)
+- [chatbot/charts/selector.py](publisher/chatbot/charts/selector.py)
+- [chatbot/charts/renderer.py](publisher/chatbot/charts/renderer.py)
+- [chatbot/response/assembler.py](publisher/chatbot/response/assembler.py)
+- [chatbot/scripts/ask.py](publisher/chatbot/scripts/ask.py)
 
 ### `publisher/`
 
@@ -72,13 +72,13 @@ Main responsibilities:
 
 Important files:
 
-- [publisher/run_publisher.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/publisher/run_publisher.py)
-- [publisher/queue_manager.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/publisher/queue_manager.py)
-- [publisher/packager.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/publisher/packager.py)
-- [publisher/summarizer.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/publisher/summarizer.py)
-- [publisher/question_queue.yaml](/Users/danberle/Documents/projects/patterns_in_place/publisher/publisher/question_queue.yaml)
-- [publisher/examples/question_library.yml](/Users/danberle/Documents/projects/patterns_in_place/publisher/publisher/examples/question_library.yml)
-- [publisher/output/](/Users/danberle/Documents/projects/patterns_in_place/publisher/publisher/output)
+- [publisher/run_publisher.py](publisher/publisher/run_publisher.py)
+- [publisher/queue_manager.py](publisher/publisher/queue_manager.py)
+- [publisher/packager.py](publisher/publisher/packager.py)
+- [publisher/summarizer.py](publisher/publisher/summarizer.py)
+- [publisher/question_queue.yaml](publisher/publisher/question_queue.yaml)
+- [publisher/examples/question_library.yml](publisher/publisher/examples/question_library.yml)
+- [publisher/output/](publisher/publisher/output)
 
 ### `frontend/`
 
@@ -92,9 +92,9 @@ Main responsibilities:
 
 Important files:
 
-- [frontend/streamlit_app.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/frontend/streamlit_app.py)
-- [frontend/qa_utils.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/frontend/qa_utils.py)
-- [frontend/qa_review.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/frontend/qa_review.py)
+- [frontend/streamlit_app.py](publisher/frontend/streamlit_app.py)
+- [frontend/qa_utils.py](publisher/frontend/qa_utils.py)
+- [frontend/qa_review.py](publisher/frontend/qa_review.py)
 
 ### `qa/`
 
@@ -108,10 +108,10 @@ Main responsibilities:
 
 Important files:
 
-- [qa/qa_prompt_library.yml](/Users/danberle/Documents/projects/patterns_in_place/publisher/qa/qa_prompt_library.yml)
-- [qa/QA_FRAMEWORK.md](/Users/danberle/Documents/projects/patterns_in_place/publisher/qa/QA_FRAMEWORK.md)
-- [qa/QA_TUNING_LOG.md](/Users/danberle/Documents/projects/patterns_in_place/publisher/qa/QA_TUNING_LOG.md)
-- [qa/testing_strategy.md](/Users/danberle/Documents/projects/patterns_in_place/publisher/qa/testing_strategy.md)
+- [qa/qa_prompt_library.yml](publisher/qa/qa_prompt_library.yml)
+- [qa/QA_FRAMEWORK.md](publisher/qa/QA_FRAMEWORK.md)
+- [qa/QA_TUNING_LOG.md](publisher/qa/QA_TUNING_LOG.md)
+- [qa/testing_strategy.md](publisher/qa/testing_strategy.md)
 
 ### `content/`
 
@@ -129,8 +129,8 @@ Main responsibilities:
 
 Important files:
 
-- [content/README.md](/Users/danberle/Documents/projects/patterns_in_place/publisher/content/README.md)
-- topic folders such as [content/vacancy_rates/](/Users/danberle/Documents/projects/patterns_in_place/publisher/content/vacancy_rates)
+- [content/README.md](publisher/content/README.md)
+- topic folders such as [content/vacancy_rates/](publisher/content/vacancy_rates)
 
 ## How The System Fits Together
 
@@ -158,8 +158,8 @@ This is the automated question-answering flow.
 
 ### Entry points
 
-- CLI: [chatbot/scripts/ask.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/scripts/ask.py)
-- Programmatic pipeline: [chatbot/orchestrator.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/orchestrator.py)
+- CLI: [chatbot/scripts/ask.py](publisher/chatbot/scripts/ask.py)
+- Programmatic pipeline: [chatbot/orchestrator.py](publisher/chatbot/orchestrator.py)
 
 ### Step-by-step
 
@@ -167,7 +167,7 @@ This is the automated question-answering flow.
    Example: "Which states have the highest median household income in 2023?"
 
 2. The parser decides what kind of question it is.
-   File: [chatbot/intent/parser.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/intent/parser.py)
+   File: [chatbot/intent/parser.py](publisher/chatbot/intent/parser.py)
 
    Decisions made:
 
@@ -178,17 +178,17 @@ This is the automated question-answering flow.
    - Does the user need to clarify anything?
 
 3. The parser chooses how to produce the plan.
-   File: [chatbot/intent/parser.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/intent/parser.py)
+   File: [chatbot/intent/parser.py](publisher/chatbot/intent/parser.py)
 
    Order of operations:
 
-   - exact example match against [publisher/examples/question_library.yml](/Users/danberle/Documents/projects/patterns_in_place/publisher/publisher/examples/question_library.yml)
+   - exact example match against [publisher/examples/question_library.yml](publisher/publisher/examples/question_library.yml)
    - heuristic parsing
    - LLM parsing if a provider is available
    - clarification request if required fields are still missing
 
 4. Semantic catalogs are loaded.
-   File: [chatbot/query/catalogs.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query/catalogs.py)
+   File: [chatbot/query/catalogs.py](publisher/chatbot/query/catalogs.py)
 
    Inputs:
 
@@ -200,7 +200,7 @@ This is the automated question-answering flow.
    - approved tables, metrics, joins, templates, and geography definitions
 
 5. The plan is normalized and defaults are filled in.
-   File: [chatbot/query/planner.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query/planner.py)
+   File: [chatbot/query/planner.py](publisher/chatbot/query/planner.py)
 
    Decisions made:
 
@@ -211,7 +211,7 @@ This is the automated question-answering flow.
    - growth defaults
 
 6. SQL is generated from the approved query template.
-   File: [chatbot/query/generator.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query/generator.py)
+   File: [chatbot/query/generator.py](publisher/chatbot/query/generator.py)
 
    Decisions made:
 
@@ -230,7 +230,7 @@ This is the automated question-answering flow.
    - growth
 
 7. SQL is validated.
-   File: [chatbot/query/validator.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query/validator.py)
+   File: [chatbot/query/validator.py](publisher/chatbot/query/validator.py)
 
    Checks include:
 
@@ -241,14 +241,14 @@ This is the automated question-answering flow.
    - valid metrics and geo levels
 
 8. SQL is executed against DuckDB.
-   File: [chatbot/query/executor.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query/executor.py)
+   File: [chatbot/query/executor.py](publisher/chatbot/query/executor.py)
 
    Output:
 
    - pandas DataFrame
 
 9. The result is profiled.
-   File: [chatbot/charts/profiler.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/charts/profiler.py)
+   File: [chatbot/charts/profiler.py](publisher/chatbot/charts/profiler.py)
 
    Decisions made:
 
@@ -258,7 +258,7 @@ This is the automated question-answering flow.
    - whether the shape supports certain chart types
 
 10. A chart type is selected.
-    File: [chatbot/charts/selector.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/charts/selector.py)
+    File: [chatbot/charts/selector.py](publisher/chatbot/charts/selector.py)
 
     Inputs:
 
@@ -271,7 +271,7 @@ This is the automated question-answering flow.
     - selected chart type and fallback logic
 
 11. The chart is rendered.
-    File: [chatbot/charts/renderer.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/charts/renderer.py)
+    File: [chatbot/charts/renderer.py](publisher/chatbot/charts/renderer.py)
 
     Steps:
 
@@ -281,7 +281,7 @@ This is the automated question-answering flow.
     - save a temp PNG
 
 12. The answer text is assembled.
-    File: [chatbot/response/assembler.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/response/assembler.py)
+    File: [chatbot/response/assembler.py](publisher/chatbot/response/assembler.py)
 
     Decisions made:
 
@@ -310,7 +310,7 @@ If the run is saved through `ask.py` or `publisher/run_publisher.py`, the artifa
 - `chart.png`
 - `answer.txt`
 
-These typically live under [publisher/output/](/Users/danberle/Documents/projects/patterns_in_place/publisher/publisher/output).
+These typically live under [publisher/output/](publisher/publisher/output).
 
 ## Product Flow 2: Area Of Analysis For The Content Workflow
 
@@ -318,7 +318,7 @@ This is the manual editorial flow. It does not go through `chatbot/orchestrator.
 
 ### Entry point
 
-- [content/README.md](/Users/danberle/Documents/projects/patterns_in_place/publisher/content/README.md)
+- [content/README.md](publisher/content/README.md)
 
 ### Step-by-step
 
@@ -326,7 +326,7 @@ This is the manual editorial flow. It does not go through `chatbot/orchestrator.
    Example: vacancy rates, affordability, migration.
 
 2. Work inside a topic folder.
-   Example: [content/vacancy_rates/](/Users/danberle/Documents/projects/patterns_in_place/publisher/content/vacancy_rates)
+   Example: [content/vacancy_rates/](publisher/content/vacancy_rates)
 
    Typical control files:
 

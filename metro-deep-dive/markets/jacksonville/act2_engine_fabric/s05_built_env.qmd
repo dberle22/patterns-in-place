@@ -1,0 +1,24 @@
+---
+title: "S05 — Built Environment"
+format: html
+---
+
+# {{market.name}} — Built Environment
+
+Section 5 of Act 2: Engine & Fabric. FLEX.
+
+Deliverables: metro infrastructure + POI map + amenity score by zone + overlap/divergence finding.
+Amenity score feeds into s09 corridors.
+
+See `metro_deep_dive_template_guidance.md` §5 for spec.
+
+```{python}
+# TODO: fetch OSM layers via Overpass (highways, rail, transit, airports, ports)
+# fetch POI layers (parks, groceries, hospitals, cultural venues)
+# compute per-zone amenity access scores
+```
+
+```{r}
+# TODO: infrastructure + POI map
+# amenity-vs-score scatter or bivariate map
+```

@@ -1,0 +1,25 @@
+---
+title: "S09 — Zone Corridors"
+format: html
+---
+
+# {{market.name}} — Zone Corridors
+
+Section 9 of Act 4: Opportunity Funnel. FIXED SPINE (stat block format). The payoff section.
+
+Deliverables: 2–4 named corridors, each with zoomed map crop + standardized stat block:
+  zone count | population | Investment Score range | dominant archetype | trend direction | one-line thesis
+
+Corridor names are editorial assets — name them here.
+
+See `metro_deep_dive_template_guidance.md` §9 for spec.
+
+```{python}
+# TODO: identify contiguous zones clearing Investment Score threshold
+# cross-reference amenity scores from s05
+# name corridors
+```
+
+```{r}
+# TODO: zoomed map crops per corridor, stat block table (gt)
+```
