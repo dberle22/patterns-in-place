@@ -1,0 +1,120 @@
+fonts:
+  family: "Inter"
+  title_size: 18
+
+palette:
+  neutral:
+    text: "#1F2933"
+    text_muted: "#52606D"
+    axis: "#5B6770"
+    grid_major: "#D9E2EC"
+    grid_minor: "#EEF2F6"
+    outline: "#7B8794"
+    border: "#CBD2D9"
+    background: "#F7FAFC"
+    background_white: "#FFFFFF"
+    comparison_fill: "#A7B4C2"
+    missing_fill: "#E6EBF1"
+  highlight:
+    selection: "#2C7FB8"
+    opportunity: "#1D7F5F"
+    strength: "#1B6CA8"
+    risk: "#C44536"
+  diverging:
+    better: "#0C7C78"
+    midpoint: "#F7F7F5"
+    worse: "#D66A4E"
+  quadrant:
+    high_high: "#1D7F5F"
+    high_low: "#2C7FB8"
+    low_low: "#C44536"
+    low_high: "#B07D00"
+  comparison:
+    peers:
+      - "#AEBECD"
+      - "#6E859E"
+      - "#8C9472"
+      - "#9A7F6B"
+    neutral: "#A7B4C2"
+    benchmark: "#52606D"
+  context:
+    road: "#AAB7C4"
+    water: "#DCEAF7"
+    boundary: "#7B8794"
+    internal_boundary: "#CBD2D9"
+    cluster: "#5F6C7B"
+
+modes:
+  notebook:
+    mode: "notebook"
+    base_size: 11.8
+    subtitle_size: 10.4
+    caption_size: 8.3
+    label_size: 3.1
+    show_boxed_map_labels: false
+    annotation_density: "light"
+    benchmark_labels_default: false
+    grid: "minimal"
+    background: "#F7FAFC"
+  presentation:
+    mode: "presentation"
+    base_size: 12.5
+    subtitle_size: 11.2
+    caption_size: 8.9
+    label_size: 3.5
+    show_boxed_map_labels: true
+    annotation_density: "rich"
+    benchmark_labels_default: true
+    grid: "y"
+    background: "#F7FAFC"
+
+chart_defaults:
+  base:
+    width: 640
+    height: 400
+    legend_position: "right"
+    palette: "viridis"
+    binned_palette: "viridis"
+    point_alpha: 0.78
+    line_alpha: 0.9
+    base_color: "#2C7FB8"
+    highlight_color: "#2C7FB8"
+    highlight_meaning: "selection"
+    neutral_color: "#A7B4C2"
+    peer_palette:
+      - "#AEBECD"
+      - "#6E859E"
+      - "#8C9472"
+      - "#9A7F6B"
+    series_palette:
+      - "#AEBECD"
+      - "#6E859E"
+      - "#8C9472"
+      - "#9A7F6B"
+    missing_fill: "#E6EBF1"
+    positive_fill: "#0C7C78"
+    negative_fill: "#D66A4E"
+    diverging_low: "#D66A4E"
+    diverging_mid: "#F7F7F5"
+    diverging_high: "#0C7C78"
+    benchmark_color: "#52606D"
+    benchmark_linetype:
+      - 4
+      - 4
+    benchmark_linewidth: 1
+    benchmark_alpha: 0.9
+    benchmark_label_default: false
+    size_range:
+      - 2
+      - 10
+    subtitle_wrap_width: 120
+    caption_wrap_width: 135
+  bar:
+    height: 380
+    grid: "x"
+    flip: true
+    show_end_labels: true
+  line:
+    height: 380
+    show_points: true
+    show_benchmark_labels: false

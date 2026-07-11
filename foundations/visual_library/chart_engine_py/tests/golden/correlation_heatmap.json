@@ -1,0 +1,157 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v4.17.0.json",
+  "config": {
+    "axis": {
+      "labelFont": "Inter",
+      "titleFont": "Inter"
+    },
+    "title": {
+      "font": "Inter"
+    },
+    "view": {
+      "continuousHeight": 300,
+      "continuousWidth": 400,
+      "stroke": null
+    }
+  },
+  "data": {
+    "name": "data-6edb958ae467278f67cc8e771e90b7ed"
+  },
+  "datasets": {
+    "data-6edb958ae467278f67cc8e771e90b7ed": [
+      {
+        "correlation": 1.0,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "label": "1.00",
+        "metric_id": "Income",
+        "metric_label": "Income",
+        "metric_value": 1.0,
+        "metric_x": "Income",
+        "metric_y": "Income",
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "correlation": 0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "label": "0.50",
+        "metric_id": "Jobs",
+        "metric_label": "Jobs",
+        "metric_value": 0.5,
+        "metric_x": "Jobs",
+        "metric_y": "Income",
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "correlation": 0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "label": "0.50",
+        "metric_id": "Income",
+        "metric_label": "Income",
+        "metric_value": 0.5,
+        "metric_x": "Income",
+        "metric_y": "Jobs",
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "correlation": 1.0,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "label": "1.00",
+        "metric_id": "Jobs",
+        "metric_label": "Jobs",
+        "metric_value": 1.0,
+        "metric_x": "Jobs",
+        "metric_y": "Jobs",
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      }
+    ]
+  },
+  "height": 400,
+  "layer": [
+    {
+      "encoding": {
+        "color": {
+          "field": "correlation",
+          "legend": {
+            "title": "Correlation"
+          },
+          "scale": {
+            "domain": [
+              -1,
+              1
+            ],
+            "scheme": "redblue"
+          },
+          "type": "quantitative"
+        },
+        "tooltip": [
+          {
+            "field": "metric_x",
+            "type": "nominal"
+          },
+          {
+            "field": "metric_y",
+            "type": "nominal"
+          },
+          {
+            "field": "correlation",
+            "format": ".2f",
+            "type": "quantitative"
+          }
+        ],
+        "x": {
+          "field": "metric_x",
+          "title": null,
+          "type": "nominal"
+        },
+        "y": {
+          "field": "metric_y",
+          "title": null,
+          "type": "nominal"
+        }
+      },
+      "mark": "rect"
+    },
+    {
+      "encoding": {
+        "text": {
+          "field": "label",
+          "type": "nominal"
+        },
+        "x": {
+          "field": "metric_x",
+          "type": "nominal"
+        },
+        "y": {
+          "field": "metric_y",
+          "type": "nominal"
+        }
+      },
+      "mark": {
+        "color": "#1F2933",
+        "font": "Inter",
+        "type": "text"
+      }
+    }
+  ],
+  "title": "Correlation Heatmap",
+  "usermeta": {
+    "caption": "Source: ACS | Vintage: 2023"
+  },
+  "width": 640
+}

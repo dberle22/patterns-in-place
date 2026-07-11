@@ -23,7 +23,7 @@ act1:
 act2:
   # Theme selected for the exposure scorecard deep-dive.
   # Options so far: ai_exposure (first built for market #1)
-  exposure_theme: ""
+  exposure_theme: "ai_exposure"
 
 # Act 3 — Dynamics
 act3:

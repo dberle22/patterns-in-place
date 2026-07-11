@@ -1,0 +1,156 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v4.17.0.json",
+  "config": {
+    "axis": {
+      "labelFont": "Inter",
+      "titleFont": "Inter"
+    },
+    "title": {
+      "font": "Inter"
+    },
+    "view": {
+      "continuousHeight": 300,
+      "continuousWidth": 400,
+      "stroke": null
+    }
+  },
+  "data": {
+    "name": "data-febf40dbe1c8cb3b8d75ef89d941bfd6"
+  },
+  "datasets": {
+    "data-febf40dbe1c8cb3b8d75ef89d941bfd6": [
+      {
+        "cell_label": "10.0",
+        "column_label": "Jobs",
+        "fill_value": 0.1,
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 10.0,
+        "missing_flag": false,
+        "normalized_value": 0.1,
+        "row_label": "A",
+        "source": "ACS",
+        "vintage": "2023"
+      },
+      {
+        "cell_label": "20.0",
+        "column_label": "Income",
+        "fill_value": 0.3,
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "metric_id": "m2",
+        "metric_label": "Income",
+        "metric_value": 20.0,
+        "missing_flag": false,
+        "normalized_value": 0.3,
+        "row_label": "A",
+        "source": "ACS",
+        "vintage": "2023"
+      },
+      {
+        "cell_label": "30.0",
+        "column_label": "Jobs",
+        "fill_value": 0.7,
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "B",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 30.0,
+        "missing_flag": false,
+        "normalized_value": 0.7,
+        "row_label": "B",
+        "source": "ACS",
+        "vintage": "2023"
+      },
+      {
+        "cell_label": "40.0",
+        "column_label": "Income",
+        "fill_value": 0.9,
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "B",
+        "metric_id": "m2",
+        "metric_label": "Income",
+        "metric_value": 40.0,
+        "missing_flag": false,
+        "normalized_value": 0.9,
+        "row_label": "B",
+        "source": "ACS",
+        "vintage": "2023"
+      }
+    ]
+  },
+  "height": 400,
+  "layer": [
+    {
+      "encoding": {
+        "color": {
+          "field": "fill_value",
+          "legend": {
+            "title": null
+          },
+          "scale": {
+            "scheme": "blues"
+          },
+          "type": "quantitative"
+        },
+        "tooltip": [
+          {
+            "field": "row_label",
+            "type": "nominal"
+          },
+          {
+            "field": "column_label",
+            "type": "nominal"
+          },
+          {
+            "field": "cell_label",
+            "type": "nominal"
+          }
+        ],
+        "x": {
+          "field": "column_label",
+          "title": null,
+          "type": "nominal"
+        },
+        "y": {
+          "field": "row_label",
+          "title": null,
+          "type": "nominal"
+        }
+      },
+      "mark": "rect"
+    },
+    {
+      "encoding": {
+        "text": {
+          "field": "cell_label",
+          "type": "nominal"
+        },
+        "x": {
+          "field": "column_label",
+          "type": "nominal"
+        },
+        "y": {
+          "field": "row_label",
+          "type": "nominal"
+        }
+      },
+      "mark": {
+        "color": "#1F2933",
+        "font": "Inter",
+        "type": "text"
+      }
+    }
+  ],
+  "title": "Heatmap Table",
+  "usermeta": {
+    "caption": "Source: ACS | Vintage: 2023"
+  },
+  "width": 640
+}

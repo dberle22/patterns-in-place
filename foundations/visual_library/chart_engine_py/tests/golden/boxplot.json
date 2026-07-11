@@ -1,0 +1,177 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v4.17.0.json",
+  "config": {
+    "axis": {
+      "labelFont": "Inter",
+      "titleFont": "Inter"
+    },
+    "title": {
+      "font": "Inter"
+    },
+    "view": {
+      "continuousHeight": 300,
+      "continuousWidth": 400,
+      "stroke": null
+    }
+  },
+  "datasets": {
+    "data-b992bf746d89006fda37a1a9044df6a2": [
+      {
+        "box_group": "East",
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "B",
+        "group": "East",
+        "highlight_flag": true,
+        "label_flag": false,
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 12.0,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      }
+    ],
+    "data-cbeed980b13c0cb7e1d159a2e2430dea": [
+      {
+        "box_group": "East",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "group": "East",
+        "highlight_flag": false,
+        "label_flag": false,
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 10.0,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "box_group": "East",
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "B",
+        "group": "East",
+        "highlight_flag": true,
+        "label_flag": false,
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 12.0,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "box_group": "West",
+        "geo_id": "3",
+        "geo_level": "cbsa",
+        "geo_name": "C",
+        "group": "West",
+        "highlight_flag": false,
+        "label_flag": false,
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 16.0,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "box_group": "West",
+        "geo_id": "4",
+        "geo_level": "cbsa",
+        "geo_name": "D",
+        "group": "West",
+        "highlight_flag": false,
+        "label_flag": false,
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 20.0,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      }
+    ]
+  },
+  "height": 400,
+  "layer": [
+    {
+      "data": {
+        "name": "data-cbeed980b13c0cb7e1d159a2e2430dea"
+      },
+      "encoding": {
+        "tooltip": [
+          {
+            "field": "geo_name",
+            "type": "nominal"
+          },
+          {
+            "field": "box_group",
+            "type": "nominal"
+          },
+          {
+            "field": "metric_value",
+            "format": ",d",
+            "type": "quantitative"
+          }
+        ],
+        "x": {
+          "field": "box_group",
+          "title": null,
+          "type": "nominal"
+        },
+        "y": {
+          "axis": {
+            "format": ",d"
+          },
+          "field": "metric_value",
+          "title": "Jobs",
+          "type": "quantitative"
+        }
+      },
+      "mark": {
+        "color": "#52606D",
+        "size": 28,
+        "type": "boxplot"
+      }
+    },
+    {
+      "data": {
+        "name": "data-b992bf746d89006fda37a1a9044df6a2"
+      },
+      "encoding": {
+        "tooltip": [
+          {
+            "field": "geo_name",
+            "type": "nominal"
+          }
+        ],
+        "x": {
+          "field": "box_group",
+          "type": "nominal"
+        },
+        "y": {
+          "field": "metric_value",
+          "type": "quantitative"
+        }
+      },
+      "mark": {
+        "color": "#2C7FB8",
+        "filled": true,
+        "size": 70,
+        "type": "point"
+      }
+    }
+  ],
+  "title": {
+    "fontSize": 18,
+    "subtitle": "2023",
+    "text": "Boxplot"
+  },
+  "usermeta": {
+    "caption": "Source: ACS | Vintage: 2023"
+  },
+  "width": 640
+}

@@ -1,0 +1,239 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v4.17.0.json",
+  "config": {
+    "axis": {
+      "labelFont": "Inter",
+      "titleFont": "Inter"
+    },
+    "title": {
+      "font": "Inter"
+    },
+    "view": {
+      "continuousHeight": 300,
+      "continuousWidth": 400,
+      "stroke": null
+    }
+  },
+  "datasets": {
+    "data-4cf795fe4446eea0415ddaca99c4689b": [
+      {
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "highlight_flag": false,
+        "line_type": "comparison",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 15.0,
+        "period": "2023",
+        "rank": 3.0,
+        "source": "ACS",
+        "vintage": "2023"
+      },
+      {
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "B",
+        "highlight_flag": false,
+        "line_type": "comparison",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 18.0,
+        "period": "2023",
+        "rank": 2.0,
+        "source": "ACS",
+        "vintage": "2023"
+      },
+      {
+        "geo_id": "3",
+        "geo_level": "cbsa",
+        "geo_name": "C",
+        "highlight_flag": false,
+        "line_type": "comparison",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 25.0,
+        "period": "2023",
+        "rank": 1.0,
+        "source": "ACS",
+        "vintage": "2023"
+      }
+    ],
+    "data-719c06746bd2e6557d70a702ee300d93": [
+      {
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "highlight_flag": false,
+        "line_type": "comparison",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 10.0,
+        "period": "2019",
+        "rank": 3.0,
+        "source": "ACS",
+        "vintage": "2023"
+      },
+      {
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "highlight_flag": false,
+        "line_type": "comparison",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 15.0,
+        "period": "2023",
+        "rank": 3.0,
+        "source": "ACS",
+        "vintage": "2023"
+      },
+      {
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "B",
+        "highlight_flag": false,
+        "line_type": "comparison",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 20.0,
+        "period": "2019",
+        "rank": 2.0,
+        "source": "ACS",
+        "vintage": "2023"
+      },
+      {
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "B",
+        "highlight_flag": false,
+        "line_type": "comparison",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 18.0,
+        "period": "2023",
+        "rank": 2.0,
+        "source": "ACS",
+        "vintage": "2023"
+      },
+      {
+        "geo_id": "3",
+        "geo_level": "cbsa",
+        "geo_name": "C",
+        "highlight_flag": false,
+        "line_type": "comparison",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 30.0,
+        "period": "2019",
+        "rank": 1.0,
+        "source": "ACS",
+        "vintage": "2023"
+      },
+      {
+        "geo_id": "3",
+        "geo_level": "cbsa",
+        "geo_name": "C",
+        "highlight_flag": false,
+        "line_type": "comparison",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 25.0,
+        "period": "2023",
+        "rank": 1.0,
+        "source": "ACS",
+        "vintage": "2023"
+      }
+    ]
+  },
+  "height": 400,
+  "layer": [
+    {
+      "data": {
+        "name": "data-719c06746bd2e6557d70a702ee300d93"
+      },
+      "encoding": {
+        "color": {
+          "field": "line_type",
+          "legend": null,
+          "scale": {
+            "domain": [
+              "comparison",
+              "highlight"
+            ],
+            "range": [
+              "#A7B4C2",
+              "#2C7FB8"
+            ]
+          },
+          "type": "nominal"
+        },
+        "detail": {
+          "field": "geo_id",
+          "type": "nominal"
+        },
+        "tooltip": [
+          {
+            "field": "geo_name",
+            "type": "nominal"
+          },
+          {
+            "field": "period",
+            "type": "nominal"
+          },
+          {
+            "field": "rank",
+            "format": ",d",
+            "type": "quantitative"
+          }
+        ],
+        "x": {
+          "field": "period",
+          "title": null,
+          "type": "nominal"
+        },
+        "y": {
+          "field": "rank",
+          "sort": "descending",
+          "title": "Rank",
+          "type": "quantitative"
+        }
+      },
+      "mark": {
+        "point": true,
+        "type": "line"
+      }
+    },
+    {
+      "data": {
+        "name": "data-4cf795fe4446eea0415ddaca99c4689b"
+      },
+      "encoding": {
+        "text": {
+          "field": "geo_name",
+          "type": "nominal"
+        },
+        "x": {
+          "field": "period",
+          "type": "nominal"
+        },
+        "y": {
+          "field": "rank",
+          "type": "quantitative"
+        }
+      },
+      "mark": {
+        "align": "left",
+        "color": "#1F2933",
+        "dx": 6,
+        "font": "Inter",
+        "type": "text"
+      }
+    }
+  ],
+  "title": "Bump Chart",
+  "usermeta": {
+    "caption": "Source: ACS | Vintage: 2023"
+  },
+  "width": 640
+}

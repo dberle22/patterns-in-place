@@ -1,0 +1,226 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v4.17.0.json",
+  "config": {
+    "axis": {
+      "labelColor": "#5B6770",
+      "labelFont": "Inter",
+      "titleFont": "Inter"
+    },
+    "title": {
+      "color": "#1F2933",
+      "font": "Inter",
+      "subtitleColor": "#52606D"
+    },
+    "view": {
+      "continuousHeight": 300,
+      "continuousWidth": 400,
+      "stroke": null
+    }
+  },
+  "datasets": {
+    "data-1660b6c9e019add50e5251f8a33e23e2": [
+      {
+        "benchmark_flag": false,
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "highlight_flag": true,
+        "line_type": "highlight",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 15.0,
+        "period": "2023",
+        "period_display": "2023",
+        "period_label": "2023",
+        "plot_value": 15.0,
+        "source": "ACS",
+        "vintage": "2023"
+      },
+      {
+        "benchmark_flag": false,
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "B",
+        "highlight_flag": false,
+        "line_type": "comparison",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 13.0,
+        "period": "2023",
+        "period_display": "2023",
+        "period_label": "2023",
+        "plot_value": 13.0,
+        "source": "ACS",
+        "vintage": "2023"
+      }
+    ],
+    "data-636dbb0abe8b08275519e732309ad336": [
+      {
+        "benchmark_flag": false,
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "highlight_flag": true,
+        "line_type": "highlight",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 10.0,
+        "period": "2019",
+        "period_display": "2019",
+        "period_label": "2019",
+        "plot_value": 10.0,
+        "source": "ACS",
+        "vintage": "2023"
+      },
+      {
+        "benchmark_flag": false,
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "highlight_flag": true,
+        "line_type": "highlight",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 15.0,
+        "period": "2023",
+        "period_display": "2023",
+        "period_label": "2023",
+        "plot_value": 15.0,
+        "source": "ACS",
+        "vintage": "2023"
+      },
+      {
+        "benchmark_flag": false,
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "B",
+        "highlight_flag": false,
+        "line_type": "comparison",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 12.0,
+        "period": "2019",
+        "period_display": "2019",
+        "period_label": "2019",
+        "plot_value": 12.0,
+        "source": "ACS",
+        "vintage": "2023"
+      },
+      {
+        "benchmark_flag": false,
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "B",
+        "highlight_flag": false,
+        "line_type": "comparison",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 13.0,
+        "period": "2023",
+        "period_display": "2023",
+        "period_label": "2023",
+        "plot_value": 13.0,
+        "source": "ACS",
+        "vintage": "2023"
+      }
+    ]
+  },
+  "height": 400,
+  "layer": [
+    {
+      "data": {
+        "name": "data-636dbb0abe8b08275519e732309ad336"
+      },
+      "encoding": {
+        "color": {
+          "field": "line_type",
+          "legend": null,
+          "scale": {
+            "domain": [
+              "comparison",
+              "highlight",
+              "benchmark"
+            ],
+            "range": [
+              "#A7B4C2",
+              "#2C7FB8",
+              "#52606D"
+            ]
+          },
+          "type": "nominal"
+        },
+        "detail": {
+          "field": "geo_id",
+          "type": "nominal"
+        },
+        "tooltip": [
+          {
+            "field": "geo_name",
+            "type": "nominal"
+          },
+          {
+            "field": "period_display",
+            "type": "nominal"
+          },
+          {
+            "field": "plot_value",
+            "format": ",d",
+            "type": "quantitative"
+          }
+        ],
+        "x": {
+          "field": "period_display",
+          "sort": [
+            "2019",
+            "2023"
+          ],
+          "title": null,
+          "type": "nominal"
+        },
+        "y": {
+          "field": "plot_value",
+          "title": "Jobs",
+          "type": "quantitative"
+        }
+      },
+      "mark": {
+        "point": true,
+        "type": "line"
+      }
+    },
+    {
+      "data": {
+        "name": "data-1660b6c9e019add50e5251f8a33e23e2"
+      },
+      "encoding": {
+        "text": {
+          "field": "geo_name",
+          "type": "nominal"
+        },
+        "x": {
+          "field": "period_display",
+          "type": "nominal"
+        },
+        "y": {
+          "field": "plot_value",
+          "type": "quantitative"
+        }
+      },
+      "mark": {
+        "align": "left",
+        "color": "#1F2933",
+        "dx": 6,
+        "font": "Inter",
+        "type": "text"
+      }
+    }
+  ],
+  "title": {
+    "fontSize": 18,
+    "text": "Slopegraph"
+  },
+  "usermeta": {
+    "caption": "Source: ACS | Vintage: 2023"
+  },
+  "width": 640
+}

@@ -12,6 +12,7 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 .venv/
+.venv*/
 venv/
 dist/
 build/
@@ -63,6 +64,12 @@ foundations/visual_library/charts/**/sample_output/
 foundations/data_dictionary/artifacts/
 exploration/**/outputs/
 exploration/**/cache/
+
+# ── Chart engine local artifacts ─────────────────────────────────────────────
+foundations/visual_library/chart_engine_py/chart_engine.egg-info/
+foundations/visual_library/chart_engine_py/**/__pycache__/
+foundations/visual_library/chart_engine_py/**/*.pyc
+foundations/visual_library/chart_engine_py/example/output_*.html
 
 # ── OS / editor ──────────────────────────────────────────────────────────────
 .DS_Store

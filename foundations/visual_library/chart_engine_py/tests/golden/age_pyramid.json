@@ -1,0 +1,197 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v4.17.0.json",
+  "config": {
+    "axis": {
+      "labelFont": "Inter",
+      "titleFont": "Inter"
+    },
+    "title": {
+      "font": "Inter"
+    },
+    "view": {
+      "continuousHeight": 300,
+      "continuousWidth": 400,
+      "stroke": null
+    }
+  },
+  "datasets": {
+    "data-9c00aa9dc2b1c1a0b4bf9b34ead12925": [
+      {
+        "x": 0
+      }
+    ],
+    "data-bfc33445710ce404c632ed5347dfae33": [
+      {
+        "age_bin": "0-17",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "highlight_flag": true,
+        "period": "2023",
+        "plot_abs_value": 0.15447154471544716,
+        "plot_value": 0.15447154471544716,
+        "pop_share": 0.15447154471544716,
+        "pop_value": 95,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2023"
+      },
+      {
+        "age_bin": "0-17",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "highlight_flag": true,
+        "period": "2023",
+        "plot_abs_value": 0.16260162601626016,
+        "plot_value": -0.16260162601626016,
+        "pop_share": 0.16260162601626016,
+        "pop_value": 100,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2023"
+      },
+      {
+        "age_bin": "18-34",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "highlight_flag": true,
+        "period": "2023",
+        "plot_abs_value": 0.21138211382113822,
+        "plot_value": 0.21138211382113822,
+        "pop_share": 0.21138211382113822,
+        "pop_value": 130,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2023"
+      },
+      {
+        "age_bin": "18-34",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "highlight_flag": true,
+        "period": "2023",
+        "plot_abs_value": 0.1951219512195122,
+        "plot_value": -0.1951219512195122,
+        "pop_share": 0.1951219512195122,
+        "pop_value": 120,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2023"
+      },
+      {
+        "age_bin": "35-64",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "highlight_flag": true,
+        "period": "2023",
+        "plot_abs_value": 0.14634146341463414,
+        "plot_value": 0.14634146341463414,
+        "pop_share": 0.14634146341463414,
+        "pop_value": 90,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2023"
+      },
+      {
+        "age_bin": "35-64",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "highlight_flag": true,
+        "period": "2023",
+        "plot_abs_value": 0.13008130081300814,
+        "plot_value": -0.13008130081300814,
+        "pop_share": 0.13008130081300814,
+        "pop_value": 80,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2023"
+      }
+    ]
+  },
+  "height": 400,
+  "layer": [
+    {
+      "data": {
+        "name": "data-9c00aa9dc2b1c1a0b4bf9b34ead12925"
+      },
+      "encoding": {
+        "x": {
+          "field": "x",
+          "type": "quantitative"
+        }
+      },
+      "mark": {
+        "color": "#5B6770",
+        "type": "rule"
+      }
+    },
+    {
+      "data": {
+        "name": "data-bfc33445710ce404c632ed5347dfae33"
+      },
+      "encoding": {
+        "color": {
+          "field": "sex",
+          "legend": {
+            "title": null
+          },
+          "scale": {
+            "domain": [
+              "Male",
+              "Female"
+            ],
+            "range": [
+              "#4C78A8",
+              "#2A9D8F"
+            ]
+          },
+          "type": "nominal"
+        },
+        "tooltip": [
+          {
+            "field": "age_bin",
+            "type": "nominal"
+          },
+          {
+            "field": "sex",
+            "type": "nominal"
+          },
+          {
+            "field": "plot_abs_value",
+            "format": ".1%",
+            "type": "quantitative"
+          }
+        ],
+        "x": {
+          "axis": {
+            "format": ".1%"
+          },
+          "field": "plot_value",
+          "title": "Share of total population",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "age_bin",
+          "sort": [
+            "0-17",
+            "18-34",
+            "35-64"
+          ],
+          "title": null,
+          "type": "nominal"
+        }
+      },
+      "mark": "bar"
+    }
+  ],
+  "title": "Age Pyramid",
+  "usermeta": {
+    "caption": "Source: ACS | Vintage: 2023"
+  },
+  "width": 640
+}

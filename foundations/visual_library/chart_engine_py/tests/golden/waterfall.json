@@ -1,0 +1,148 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v4.17.0.json",
+  "config": {
+    "axis": {
+      "labelFont": "Inter",
+      "titleFont": "Inter"
+    },
+    "title": {
+      "font": "Inter"
+    },
+    "view": {
+      "continuousHeight": 300,
+      "continuousWidth": 400,
+      "stroke": null
+    }
+  },
+  "datasets": {
+    "data-06fd9f850666401b4599de5588b60692": [
+      {
+        "y": 0
+      }
+    ],
+    "data-7e257f565d8ea0157465bb0fc838bf71": [
+      {
+        "component_id": "c1",
+        "component_label": "Base",
+        "component_value": 100.0,
+        "cumulative_end": 100.0,
+        "cumulative_start": -100.0,
+        "direction": "positive",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "sort_order": 1,
+        "source": "ACS",
+        "time_window": "2023",
+        "total_label": "Total",
+        "vintage": "2023",
+        "waterfall_position": 1
+      },
+      {
+        "component_id": "c2",
+        "component_label": "Growth",
+        "component_value": 20.0,
+        "cumulative_end": 120.0,
+        "cumulative_start": 80.0,
+        "direction": "positive",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "sort_order": 2,
+        "source": "ACS",
+        "time_window": "2023",
+        "total_label": "Total",
+        "vintage": "2023",
+        "waterfall_position": 2
+      },
+      {
+        "component_id": "c3",
+        "component_label": "Adjustment",
+        "component_value": -10.0,
+        "cumulative_end": 110.0,
+        "cumulative_start": 130.0,
+        "direction": "negative",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "sort_order": 3,
+        "source": "ACS",
+        "time_window": "2023",
+        "total_label": "Total",
+        "vintage": "2023",
+        "waterfall_position": 3
+      }
+    ]
+  },
+  "height": 400,
+  "layer": [
+    {
+      "data": {
+        "name": "data-06fd9f850666401b4599de5588b60692"
+      },
+      "encoding": {
+        "y": {
+          "field": "y",
+          "type": "quantitative"
+        }
+      },
+      "mark": {
+        "color": "#5B6770",
+        "type": "rule"
+      }
+    },
+    {
+      "data": {
+        "name": "data-7e257f565d8ea0157465bb0fc838bf71"
+      },
+      "encoding": {
+        "color": {
+          "field": "direction",
+          "legend": null,
+          "scale": {
+            "domain": [
+              "positive",
+              "negative"
+            ],
+            "range": [
+              "#0C7C78",
+              "#D66A4E"
+            ]
+          },
+          "type": "nominal"
+        },
+        "tooltip": [
+          {
+            "field": "component_label",
+            "type": "nominal"
+          },
+          {
+            "field": "component_value",
+            "format": ",d",
+            "type": "quantitative"
+          }
+        ],
+        "x": {
+          "field": "component_label",
+          "sort": null,
+          "title": null,
+          "type": "nominal"
+        },
+        "y": {
+          "field": "cumulative_end",
+          "title": "Total",
+          "type": "quantitative"
+        },
+        "y2": {
+          "field": "cumulative_start"
+        }
+      },
+      "mark": "bar"
+    }
+  ],
+  "title": "Waterfall Chart",
+  "usermeta": {
+    "caption": "Source: ACS | Vintage: 2023"
+  },
+  "width": 640
+}

@@ -1,0 +1,231 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v4.17.0.json",
+  "config": {
+    "axis": {
+      "gridColor": "#D9E2EC",
+      "labelColor": "#5B6770",
+      "labelFont": "Inter",
+      "titleFont": "Inter"
+    },
+    "legend": {
+      "labelColor": "#52606D",
+      "labelFont": "Inter"
+    },
+    "title": {
+      "color": "#1F2933",
+      "font": "Inter",
+      "subtitleColor": "#52606D"
+    },
+    "view": {
+      "continuousHeight": 300,
+      "continuousWidth": 400,
+      "stroke": null
+    }
+  },
+  "datasets": {
+    "data-62ddd6a00c1525f8f9de10fcee7d101d": [
+      {
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "B",
+        "group": "South",
+        "label_flag": true,
+        "size_value": 200,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023",
+        "x_label": "X metric",
+        "x_value": 12.0,
+        "y_label": "Y metric",
+        "y_value": 22.0
+      }
+    ],
+    "data-674e0ac5cb32a2668bb5c5fe558779ef": [
+      {
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "group": "South",
+        "label_flag": false,
+        "size_value": 100,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023",
+        "x_label": "X metric",
+        "x_value": 10.0,
+        "y_label": "Y metric",
+        "y_value": 20.0
+      },
+      {
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "B",
+        "group": "South",
+        "label_flag": true,
+        "size_value": 200,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023",
+        "x_label": "X metric",
+        "x_value": 12.0,
+        "y_label": "Y metric",
+        "y_value": 22.0
+      },
+      {
+        "geo_id": "3",
+        "geo_level": "cbsa",
+        "geo_name": "C",
+        "group": "West",
+        "label_flag": false,
+        "size_value": 150,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023",
+        "x_label": "X metric",
+        "x_value": 15.0,
+        "y_label": "Y metric",
+        "y_value": 28.0
+      }
+    ]
+  },
+  "height": 400,
+  "layer": [
+    {
+      "data": {
+        "name": "data-674e0ac5cb32a2668bb5c5fe558779ef"
+      },
+      "encoding": {
+        "color": {
+          "field": "group",
+          "legend": {
+            "title": null
+          },
+          "scale": {
+            "domain": [
+              "South",
+              "West"
+            ],
+            "range": [
+              "#AEBECD",
+              "#6E859E"
+            ]
+          },
+          "type": "nominal"
+        },
+        "size": {
+          "field": "size_value",
+          "legend": {
+            "title": null
+          },
+          "type": "quantitative"
+        },
+        "tooltip": [
+          {
+            "field": "geo_name",
+            "title": "Geography",
+            "type": "nominal"
+          },
+          {
+            "field": "x_value",
+            "format": ",d",
+            "title": "X metric",
+            "type": "quantitative"
+          },
+          {
+            "field": "y_value",
+            "format": ",d",
+            "title": "Y metric",
+            "type": "quantitative"
+          }
+        ],
+        "x": {
+          "axis": {
+            "format": ",d"
+          },
+          "field": "x_value",
+          "title": "X metric",
+          "type": "quantitative"
+        },
+        "y": {
+          "axis": {
+            "format": ",d"
+          },
+          "field": "y_value",
+          "title": "Y metric",
+          "type": "quantitative"
+        }
+      },
+      "mark": {
+        "filled": true,
+        "opacity": 0.78,
+        "type": "circle"
+      }
+    },
+    {
+      "data": {
+        "name": "data-674e0ac5cb32a2668bb5c5fe558779ef"
+      },
+      "encoding": {
+        "x": {
+          "field": "x_value",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "y_value",
+          "type": "quantitative"
+        }
+      },
+      "mark": {
+        "color": "#52606D",
+        "opacity": 0.7,
+        "strokeDash": [
+          4,
+          4
+        ],
+        "type": "line"
+      },
+      "transform": [
+        {
+          "on": "x_value",
+          "regression": "y_value"
+        }
+      ]
+    },
+    {
+      "data": {
+        "name": "data-62ddd6a00c1525f8f9de10fcee7d101d"
+      },
+      "encoding": {
+        "text": {
+          "field": "geo_name",
+          "type": "nominal"
+        },
+        "x": {
+          "field": "x_value",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "y_value",
+          "type": "quantitative"
+        }
+      },
+      "mark": {
+        "align": "left",
+        "color": "#1F2933",
+        "dx": 6,
+        "dy": -6,
+        "font": "Inter",
+        "type": "text"
+      }
+    }
+  ],
+  "title": {
+    "fontSize": 18,
+    "subtitle": "2023",
+    "text": "Scatter Plots"
+  },
+  "usermeta": {
+    "caption": "Source: ACS | Vintage: 2023"
+  },
+  "width": 640
+}

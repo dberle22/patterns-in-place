@@ -1,0 +1,171 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v4.17.0.json",
+  "config": {
+    "axis": {
+      "labelFont": "Inter",
+      "titleFont": "Inter"
+    },
+    "title": {
+      "font": "Inter"
+    },
+    "view": {
+      "continuousHeight": 300,
+      "continuousWidth": 400,
+      "stroke": null
+    }
+  },
+  "datasets": {
+    "data-227f84a765c38f6b1c00bb0c8db83127": [
+      {
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "highlight_flag": false,
+        "metric_display_label": "Jobs",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 10.0,
+        "normalized_value": 25.0,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "B",
+        "highlight_flag": false,
+        "metric_display_label": "Jobs",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 20.0,
+        "normalized_value": 75.0,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "highlight_flag": false,
+        "metric_display_label": "Income",
+        "metric_id": "m2",
+        "metric_label": "Income",
+        "metric_value": 30.0,
+        "normalized_value": 40.0,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "B",
+        "highlight_flag": false,
+        "metric_display_label": "Income",
+        "metric_id": "m2",
+        "metric_label": "Income",
+        "metric_value": 40.0,
+        "normalized_value": 90.0,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      }
+    ],
+    "data-ef62f02f9d2b5bf16d3232a8523a743b": [
+      {
+        "metric_display_label": "Jobs",
+        "x_end": 100,
+        "x_start": 0
+      },
+      {
+        "metric_display_label": "Income",
+        "x_end": 100,
+        "x_start": 0
+      }
+    ]
+  },
+  "height": 400,
+  "layer": [
+    {
+      "data": {
+        "name": "data-ef62f02f9d2b5bf16d3232a8523a743b"
+      },
+      "encoding": {
+        "x": {
+          "field": "x_start",
+          "type": "quantitative"
+        },
+        "x2": {
+          "field": "x_end"
+        },
+        "y": {
+          "field": "metric_display_label",
+          "title": null,
+          "type": "nominal"
+        }
+      },
+      "mark": {
+        "color": "#A7B4C2",
+        "strokeWidth": 6,
+        "type": "rule"
+      }
+    },
+    {
+      "data": {
+        "name": "data-227f84a765c38f6b1c00bb0c8db83127"
+      },
+      "encoding": {
+        "color": {
+          "field": "geo_name",
+          "legend": {
+            "title": null
+          },
+          "type": "nominal"
+        },
+        "tooltip": [
+          {
+            "field": "geo_name",
+            "type": "nominal"
+          },
+          {
+            "field": "metric_label",
+            "type": "nominal"
+          },
+          {
+            "field": "normalized_value",
+            "format": ".1f",
+            "type": "quantitative"
+          }
+        ],
+        "x": {
+          "field": "normalized_value",
+          "scale": {
+            "domain": [
+              0,
+              100
+            ]
+          },
+          "title": "Percentile",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "metric_display_label",
+          "title": null,
+          "type": "nominal"
+        }
+      },
+      "mark": {
+        "filled": true,
+        "size": 80,
+        "type": "point"
+      }
+    }
+  ],
+  "title": "Strength Strip / Scorecard Bars",
+  "usermeta": {
+    "caption": "Source: ACS | Vintage: 2023"
+  },
+  "width": 640
+}

@@ -472,7 +472,7 @@ This memo translates `exploration/intelligence_framework/phase_variable_selectio
 - `jobs_access_45min_transit`
 - `pct_population_low_income_low_access_1_10`
 - `pop_weighted_density_sqmi`
-- `unhealthy_days`
+- `aqi_median`
 - `fema_risk_score`
 
 ### Weighting Design
@@ -980,12 +980,12 @@ So the concrete KPI formula is:
 
 **KPI read**
 - Recommended coverage-caution KPI:
-  - `unhealthy_days`
+  - `aqi_median`
 - Strong sensitivity KPIs:
+  - `unhealthy_days`
   - `ejs_diesel_pm`
   - `air_pollution_pm25`
 - Descriptive / redundant KPIs:
-  - `aqi_median`
   - `aqi_p90`
   - `ejs_pm25`
 - KPI to drop first:
@@ -993,6 +993,7 @@ So the concrete KPI formula is:
 
 **Data behind the call**
 - This topic survives because it adds a distinct environmental-exposure read, not because it has perfect coverage.
+- The live AQI table makes `aqi_median` the safer default headline signal because it stays interpretable where populated, while `unhealthy_days` is a much more zero-heavy rare-event count.
 
 **Contrarian take**
 - We may still be underweighting Air Pollution by treating it as a caution topic instead of a default core family.
@@ -1547,11 +1548,11 @@ So the concrete KPI formula is:
 
 **KPI read**
 - Best sensitivity KPIs:
+  - `aqi_median`
   - `unhealthy_days`
   - `ejs_diesel_pm`
   - `air_pollution_pm25`
 - Redundant KPIs:
-  - `aqi_median`
   - `aqi_p90`
   - `ejs_pm25`
 - KPI to drop first:

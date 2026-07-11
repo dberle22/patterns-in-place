@@ -161,6 +161,18 @@ A retroactive sweep across published markets is possible eventually, as a delibe
 
 ---
 
+## Richmond Act 2 Pilot Notes
+
+As of **2026-07-10**, Richmond is the active pilot for `act2_engine_fabric`.
+
+- [x] Richmond is the current market used to lock the first-pass Act 2 section logic.
+- [x] Section 4 can be built immediately from `gold.economics_industry_wide` using the existing broad QCEW sector columns.
+- [x] Richmond's current Gold industry profile already gives the first shape of the story: professional services, transportation/utilities, and construction are stronger leads than information or manufacturing.
+- [x] Section 5 can support a tract-proxy amenity/accessibility build now from `gold.intelligence_zone_inputs`, `gold.transport_built_form_wide`, and `gold.social_infra_wide`.
+- [x] Section 5 cannot yet satisfy the final template deliverable because the shared POI geometry layer is still planned rather than materialized.
+- [ ] Promote the Richmond Section 4 scaffold into a reusable shared engine once the first published chart/table spec is stable.
+- [ ] Choose the shared POI/infrastructure strategy before declaring Section 5 production-ready.
+
 ## Frames vs. Acts: Keep the Levels Distinct
 
 Two organizational systems are now in play. They are not the same list and must not be silently collapsed:
@@ -184,7 +196,7 @@ Adopting the template means Acts win as the delivery structure and Frames become
 
 ## Open Items
 
-- [ ] **Market #1 selection.** Jacksonville (existing ROF work, known data, risk of feeling like old work) vs. a fresh market (Richmond, Louisville, Pittsburgh — more narrative energy, proves the template generalizes). Motivation beats convenience for a solo shop.
+- [ ] **Market #1 publication selection.** Richmond is now the active Act 2 pilot, but the first fully published market decision remains open: Jacksonville (existing ROF work, known data, risk of feeling like old work) vs. a fresh market (Richmond, Louisville, Pittsburgh — more narrative energy, proves the template generalizes). Motivation beats convenience for a solo shop.
 - [ ] **Lock the fingerprint KPIs and radar axis order.** Propagates to every future issue.
 - [ ] **Source any theme engine from the primary index, not from memory.** For AI exposure that means Felten et al. / Webb / Goldman, cited explicitly in the methodology note. Every subsequent market inherits whatever we build.
 - [ ] **Confirm archetype names before publishing.** Renaming later breaks series continuity.

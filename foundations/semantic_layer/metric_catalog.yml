@@ -3092,10 +3092,10 @@ metrics:
     unit_format: index
     subject_areas: [environment]
     themes: [livability]
-    valid_geo_levels: [us, region, division, state, cbsa, county]
+    valid_geo_levels: [cbsa, county]
     growth_eligible: false
     growth_windows: []
-    caveats: Coverage ~86% of CBSAs; descriptive/redundant alongside aqi_unhealthy_days.
+    caveats: Source-faithful EPA AQI slice for county and CBSA only. Live coverage is partial, about 53 to 56 percent of CBSAs and 30 to 32 percent of counties per year, so preserve nulls rather than filling with zero. Safest default AQI KPI because populated rows stay interpretable without the zero-heavy event-count behavior of aqi_unhealthy_days.
     status: active
 
   - metric_id: aqi_p90
@@ -3107,10 +3107,10 @@ metrics:
     unit_format: index
     subject_areas: [environment]
     themes: [livability]
-    valid_geo_levels: [us, region, division, state, cbsa, county]
+    valid_geo_levels: [cbsa, county]
     growth_eligible: false
     growth_windows: []
-    caveats: Coverage ~86% of CBSAs; tail-risk signal for air quality.
+    caveats: Source-faithful EPA AQI slice for county and CBSA only with the same partial coverage as aqi_median. Useful as a secondary tail-risk companion metric, but less stable and less intuitive than aqi_median for default headline use. Preserve nulls rather than filling with zero.
     status: active
 
   - metric_id: aqi_unhealthy_days
@@ -3122,10 +3122,10 @@ metrics:
     unit_format: integer
     subject_areas: [environment]
     themes: [livability]
-    valid_geo_levels: [us, region, division, state, cbsa, county]
+    valid_geo_levels: [cbsa, county]
     growth_eligible: false
     growth_windows: []
-    caveats: Coverage ~86% of CBSAs; coverage-caution KPI in Physical Environment subject.
+    caveats: Source-faithful EPA AQI slice for county and CBSA only with partial coverage, about 53 to 56 percent of CBSAs and 30 to 32 percent of counties per year. Real zeros are very common, so treat this as a rare-event count rather than a default headline AQI KPI. Preserve nulls rather than filling with zero.
     status: active
 
   - metric_id: ej_pm25

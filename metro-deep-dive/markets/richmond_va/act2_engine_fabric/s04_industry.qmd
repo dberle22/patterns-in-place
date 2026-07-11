@@ -13,12 +13,42 @@ Deliverables: LQ quadrant chart + exposure scorecard + summary exposure sentence
 See `metro_deep_dive_template_guidance.md` §4 for spec.
 
 ```{python}
-# TODO: load config.yml, compute LQs from QCEW Gold table
-# assign quadrants: rising star / mature strength / emerging bet / declining legacy
-# write to mart_deep_dive.lq_scores
+# First-pass Richmond build notes:
+# - Use `gold.economics_industry_wide` at the CBSA grain and take the latest year.
+# - Use the existing 12 broad QCEW private-employment sectors already materialized in Gold.
+# - Keep the template's specialization threshold at `LQ > 1.25`.
+# - Use year-over-year QCEW employment growth as the initial y-axis for the quadrant chart.
+# - Assume Richmond's exposure theme is `ai_exposure`, but do not fabricate the actual
+#   exposure values until we land a source-backed NAICS-to-index crosswalk.
+#
+# The point of this chunk is to turn the wide Gold row into an inspectable working table
+# for Richmond, not to prematurely abstract market-specific decisions away.
 ```
 
 ```{r}
-# TODO: LQ quadrant scatter (centerpiece), labeled top industries
-# exposure scorecard table (gt): emp share, AI exposure index, policy flags
+# Render spec for the first Richmond pass:
+# - Quadrant scatter centered on `LQ = 1.25` and `YoY employment growth = 0`.
+# - Label sectors that clear the specialization threshold or matter by employment share.
+# - Use the visual library's scatter and table conventions rather than inventing a one-off style.
+# - Keep an empty `ai_exposure_score` column in the scorecard shell until the shared crosswalk exists.
 ```
+
+## Ad Hoc Section Logic
+
+- Source table: `gold.economics_industry_wide`
+- Richmond pilot year: latest available Gold year, currently 2024
+- X-axis: sector location quotient
+- Y-axis: year-over-year QCEW private employment growth by sector
+- Quadrants:
+  - `rising_star`: `LQ > 1.25` and growth above zero
+  - `mature_strength`: `LQ > 1.25` and growth at or below zero
+  - `emerging_bet`: `LQ <= 1.25` and growth above zero
+  - `declining_legacy`: `LQ <= 1.25` and growth at or below zero
+
+## What Richmond Already Suggests
+
+From the live Gold row we inspected before editing:
+
+- Richmond's clearest current specialization-led story is not tech. Professional services, transportation/utilities, and construction are stronger initial leads.
+- Information and manufacturing sit below the specialization threshold, which helps narrow what not to overstate in the first verdict.
+- The scorecard structure is ready now even though the reusable AI-exposure mapping is not.

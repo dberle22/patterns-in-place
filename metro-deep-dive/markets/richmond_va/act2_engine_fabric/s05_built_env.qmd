@@ -13,12 +13,48 @@ Amenity score feeds into s09 corridors.
 See `metro_deep_dive_template_guidance.md` §5 for spec.
 
 ```{python}
-# TODO: fetch OSM layers via Overpass (highways, rail, transit, airports, ports)
-# fetch POI layers (parks, groceries, hospitals, cultural venues)
-# compute per-zone amenity access scores
+# First-pass Richmond build notes:
+# - We do not yet have a shared POI geometry table in Gold; `points_catalog.yml` still
+#   marks those assets as planned rather than landed.
+# - We do have tract-level accessibility and built-form proxies in
+#   `gold.intelligence_zone_inputs`, plus metro context in
+#   `gold.transport_built_form_wide` and `gold.social_infra_wide`.
+# - This means Richmond can support a useful proxy-first Section 5 now, but not the
+#   template's final map-driven amenities section yet.
+# - Carry forward a tract-level amenity/accessibility proxy score now, then roll it up
+#   once zone methodology is settled in Act 4.
 ```
 
 ```{r}
-# TODO: infrastructure + POI map
-# amenity-vs-score scatter or bivariate map
+# Render spec for the first Richmond pass:
+# - Do not fake-finish an infrastructure + POI map before the shared geometry pipeline exists.
+# - Use this section to document the tract-level proxy bundle and the intended eventual visuals:
+#   1. infrastructure/context map once geometry is wired
+#   2. amenity-vs-score scatter or bivariate choropleth once zone scoring exists
 ```
+
+## Ad Hoc Section Logic
+
+- Source tables:
+  - `gold.intelligence_zone_inputs`
+  - `gold.transport_built_form_wide`
+  - `gold.social_infra_wide`
+- Initial tract proxy bundle:
+  - `walkability_index`
+  - `jobs_access_45min_transit`
+  - `pct_commute_transit`
+  - `pct_commute_walk`
+- First-pass metric: within-Richmond z-score average of the four tract proxy fields above
+- Carry-forward artifact: tract-level amenity/accessibility proxy ready for later zone rollup
+
+## What Richmond Can Already Support
+
+- A directional separation between higher-access and lower-access tracts using Gold-only proxies
+- A metro context read on transit use, walk commuting, zero-car households, and broadband access
+- A provisional amenity/accessibility input for later corridor work
+
+## What Still Needs Shared Upstream Work
+
+- POI pipeline for groceries, parks, hospitals, and cultural venues
+- Geometry strategy for the metro infrastructure/context map
+- Zone rollup once the Act 4 method is chosen
