@@ -418,7 +418,7 @@ def get_kpi_zscore_params() -> dict[str, dict[str, float]]:
 
 # Mapping from trajectory metric_id → (gold_schema_table, gold_column)
 # Verified against information_schema. KPIs without a multi-year gold source are omitted
-# (aqi_unhealthy_days has no matching col; jobs_access_45min_transit is single-year SLD only).
+# (jobs_access_45min_transit is single-year SLD only).
 _KPI_GOLD_SOURCE: dict[str, tuple[str, str]] = {
     # Affordability
     "value_to_income":              ("affordability_wide",       "value_to_income"),
@@ -449,7 +449,7 @@ _KPI_GOLD_SOURCE: dict[str, tuple[str, str]] = {
     "pct_no_internet_access":       ("social_infra_wide",        "pct_no_internet_access"),
     # Environment
     "fema_risk_score":              ("environment_wide",         "fema_risk_score"),
-    "aqi_unhealthy_days":           ("environment_wide",         "max_aqi"),  # closest proxy; aqi_unhealthy_days not in gold
+    "aqi_median":                   ("environment_wide",         "aqi_median"),
     # Labor / income
     "pct_unemployment_rate":        ("economics_labor_wide",     "pct_unemployment_rate"),
     "lfpr":                         ("economics_labor_wide",     "lfpr"),

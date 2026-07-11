@@ -64,7 +64,7 @@ phase6_trajectory_config <- function() {
     "livability", "jobs_access_45min_transit", "jobs_access_45min_transit", "static_only", "context_only", "exclude_single_vintage",
     "livability", "pct_population_low_income_low_access_1_10", "pct_population_low_income_low_access_1_10", "static_only", "context_only", "exclude_single_vintage",
     "livability", "pop_weighted_density_sqmi", "pop_weighted_density_sqmi", "5yr", "trajectory", "standard",
-    "livability", "aqi_unhealthy_days", "unhealthy_days", "5yr", "trajectory", "standard",
+    "livability", "aqi_median", "aqi_median", "5yr", "trajectory", "standard",
     "livability", "fema_risk_score", "fema_risk_score", "5yr", "trajectory", "standard",
     "opportunity", "income_pc_growth_5yr", "income_pc_growth_5yr", "5yr", "trajectory", "standard",
     "opportunity", "pct_unemployment_rate", "pct_unemployment_rate", "1yr_and_5yr", "trajectory", "standard",

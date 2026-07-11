@@ -33,7 +33,7 @@ def render_livability(cbsa_code: str, cbsa_name: str, p: dict) -> None:
         "vacancy_rate", "pct_hh_0_vehicles", "pct_no_internet_access",
         "walkability_index", "jobs_access_45min_transit",
         "pct_population_low_income_low_access_1_10",
-        "pop_weighted_density_sqmi", "aqi_unhealthy_days", "fema_risk_score",
+        "pop_weighted_density_sqmi", "aqi_median", "fema_risk_score",
     ]
 
     kpis = {}

@@ -247,18 +247,153 @@ build_phase5_final_model_bundle <- function(input_bundle, redundancy_bundle, mod
       .groups = "drop"
     )
 
-  cluster_name_map <- cluster_centroids |>
+  cluster_name_reference <- cluster_centroids |>
     dplyr::left_join(cluster_labels, by = "cross_frame_kmeans_cluster") |>
     dplyr::mutate(
-      cross_frame_cluster_name = dplyr::case_when(
-        cross_frame_kmeans_cluster == 1 ~ "High-Amenity Knowledge Civics",
-        cross_frame_kmeans_cluster == 2 ~ "Entrepreneurial Strain Markets",
-        cross_frame_kmeans_cluster == 3 ~ "Aging Amenity Expansion Markets",
-        cross_frame_kmeans_cluster == 4 ~ "Stable Affordable Heartland Markets",
-        cross_frame_kmeans_cluster == 5 ~ "Inland Strain Corridors",
-        cross_frame_kmeans_cluster == 6 ~ "Sun Belt Opportunity Engines",
-        TRUE ~ paste0("Combined Type ", cross_frame_kmeans_cluster)
+      frame_percentile_sum =
+        character_percentile + livability_percentile + opportunity_percentile
+    )
+
+  if (config$final_k == 7L) {
+    global_gateway_cluster <- cluster_name_reference |>
+      dplyr::slice_max(character_percentile, n = 1, with_ties = FALSE) |>
+      dplyr::pull(cross_frame_kmeans_cluster)
+
+    remaining_clusters <- cluster_name_reference |>
+      dplyr::filter(cross_frame_kmeans_cluster != global_gateway_cluster)
+
+    entrepreneurial_strain_cluster <- remaining_clusters |>
+      dplyr::slice_min(frame_percentile_sum, n = 1, with_ties = FALSE) |>
+      dplyr::pull(cross_frame_kmeans_cluster)
+
+    remaining_clusters <- remaining_clusters |>
+      dplyr::filter(cross_frame_kmeans_cluster != entrepreneurial_strain_cluster)
+
+    high_amenity_cluster <- remaining_clusters |>
+      dplyr::slice_max(livability_percentile, n = 1, with_ties = FALSE) |>
+      dplyr::pull(cross_frame_kmeans_cluster)
+
+    remaining_clusters <- remaining_clusters |>
+      dplyr::filter(cross_frame_kmeans_cluster != high_amenity_cluster)
+
+    stable_heartland_cluster <- remaining_clusters |>
+      dplyr::filter(opportunity_percentile < 50) |>
+      dplyr::slice_max(livability_percentile, n = 1, with_ties = FALSE) |>
+      dplyr::pull(cross_frame_kmeans_cluster)
+
+    remaining_clusters <- remaining_clusters |>
+      dplyr::filter(cross_frame_kmeans_cluster != stable_heartland_cluster)
+
+    sun_belt_cluster <- remaining_clusters |>
+      dplyr::slice_max(opportunity_percentile, n = 1, with_ties = FALSE) |>
+      dplyr::pull(cross_frame_kmeans_cluster)
+
+    remaining_clusters <- remaining_clusters |>
+      dplyr::filter(cross_frame_kmeans_cluster != sun_belt_cluster)
+
+    aging_amenity_cluster <- remaining_clusters |>
+      dplyr::slice_max(opportunity_percentile, n = 1, with_ties = FALSE) |>
+      dplyr::pull(cross_frame_kmeans_cluster)
+
+    inland_strain_cluster <- remaining_clusters |>
+      dplyr::filter(cross_frame_kmeans_cluster != aging_amenity_cluster) |>
+      dplyr::pull(cross_frame_kmeans_cluster)
+
+    cluster_name_map <- tibble::tibble(
+      cross_frame_kmeans_cluster = c(
+        entrepreneurial_strain_cluster,
+        high_amenity_cluster,
+        stable_heartland_cluster,
+        inland_strain_cluster,
+        global_gateway_cluster,
+        aging_amenity_cluster,
+        sun_belt_cluster
       ),
+      cross_frame_cluster_name = c(
+        "Entrepreneurial Strain Markets",
+        "High-Amenity Knowledge Civics",
+        "Stable Affordable Heartland Markets",
+        "Inland Strain Corridors",
+        "Global Knowledge Gateways",
+        "Aging Amenity Expansion Markets",
+        "Sun Belt Opportunity Engines"
+      )
+    )
+  } else if (config$final_k == 6L) {
+    high_amenity_cluster <- cluster_name_reference |>
+      dplyr::slice_max(character_percentile, n = 1, with_ties = FALSE) |>
+      dplyr::pull(cross_frame_kmeans_cluster)
+
+    remaining_clusters <- cluster_name_reference |>
+      dplyr::filter(cross_frame_kmeans_cluster != high_amenity_cluster)
+
+    entrepreneurial_strain_cluster <- remaining_clusters |>
+      dplyr::slice_min(frame_percentile_sum, n = 1, with_ties = FALSE) |>
+      dplyr::pull(cross_frame_kmeans_cluster)
+
+    remaining_clusters <- remaining_clusters |>
+      dplyr::filter(cross_frame_kmeans_cluster != entrepreneurial_strain_cluster)
+
+    stable_heartland_cluster <- remaining_clusters |>
+      dplyr::filter(opportunity_percentile < 50) |>
+      dplyr::slice_max(livability_percentile, n = 1, with_ties = FALSE) |>
+      dplyr::pull(cross_frame_kmeans_cluster)
+
+    remaining_clusters <- remaining_clusters |>
+      dplyr::filter(cross_frame_kmeans_cluster != stable_heartland_cluster)
+
+    sun_belt_cluster <- remaining_clusters |>
+      dplyr::slice_max(opportunity_percentile, n = 1, with_ties = FALSE) |>
+      dplyr::pull(cross_frame_kmeans_cluster)
+
+    remaining_clusters <- remaining_clusters |>
+      dplyr::filter(cross_frame_kmeans_cluster != sun_belt_cluster)
+
+    aging_amenity_cluster <- remaining_clusters |>
+      dplyr::slice_max(frame_percentile_sum, n = 1, with_ties = FALSE) |>
+      dplyr::pull(cross_frame_kmeans_cluster)
+
+    inland_strain_cluster <- remaining_clusters |>
+      dplyr::filter(cross_frame_kmeans_cluster != aging_amenity_cluster) |>
+      dplyr::pull(cross_frame_kmeans_cluster)
+
+    cluster_name_map <- tibble::tibble(
+      cross_frame_kmeans_cluster = c(
+        high_amenity_cluster,
+        entrepreneurial_strain_cluster,
+        aging_amenity_cluster,
+        stable_heartland_cluster,
+        inland_strain_cluster,
+        sun_belt_cluster
+      ),
+      cross_frame_cluster_name = c(
+        "High-Amenity Knowledge Civics",
+        "Entrepreneurial Strain Markets",
+        "Aging Amenity Expansion Markets",
+        "Stable Affordable Heartland Markets",
+        "Inland Strain Corridors",
+        "Sun Belt Opportunity Engines"
+      )
+    )
+  } else {
+    cluster_name_map <- cluster_name_reference |>
+      dplyr::transmute(
+        cross_frame_kmeans_cluster,
+        cross_frame_cluster_name = paste0("Combined Type ", cross_frame_kmeans_cluster)
+      )
+  }
+
+  cluster_name_map <- cluster_name_reference |>
+    dplyr::select(
+      cross_frame_kmeans_cluster,
+      cross_frame_cluster_label,
+      frame_order,
+      character_percentile,
+      livability_percentile,
+      opportunity_percentile
+    ) |>
+    dplyr::left_join(cluster_name_map, by = "cross_frame_kmeans_cluster") |>
+    dplyr::mutate(
       cluster_interpretation = paste0(
         "Cross-frame profile ordered as ",
         frame_order,

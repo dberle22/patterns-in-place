@@ -1,0 +1,280 @@
+---
+title: "Phase 5 - AQI Median Review"
+subtitle: "Baseline vs revised cross-frame comparison after the Livability AQI swap"
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 2
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+library(here)
+library(dplyr)
+library(readr)
+library(arrow)
+library(ggplot2)
+library(tidyr)
+library(stringr)
+library(scales)
+library(knitr)
+
+baseline_output_dir <- here(
+  "exploration",
+  "intelligence_framework",
+  "phase_5_cross_frame_integration",
+  "outputs"
+)
+
+revised_output_dir <- here(
+  "exploration",
+  "intelligence_framework",
+  "phase_5_cross_frame_integration",
+  "outputs_aqi_median_review"
+)
+
+read_phase5_bundle <- function(output_dir, scenario_label) {
+  list(
+    scenario_label = scenario_label,
+    pca_variance = readr::read_csv(file.path(output_dir, "cross_frame_phase5_pca_variance.csv"), show_col_types = FALSE),
+    kpi_decisions = readr::read_csv(file.path(output_dir, "cross_frame_phase5_kpi_decisions.csv"), show_col_types = FALSE),
+    candidate_metric_sets = readr::read_csv(file.path(output_dir, "cross_frame_phase5_candidate_metric_sets.csv"), show_col_types = FALSE),
+    calibration = readr::read_csv(file.path(output_dir, "cross_frame_phase5_cluster_count_calibration_comparison.csv"), show_col_types = FALSE),
+    cluster_centroids = readr::read_csv(file.path(output_dir, "cross_frame_phase5_cluster_centroids.csv"), show_col_types = FALSE),
+    cluster_representatives = readr::read_csv(file.path(output_dir, "cross_frame_phase5_cluster_representatives.csv"), show_col_types = FALSE),
+    candidate_list = readr::read_csv(file.path(output_dir, "cross_frame_phase5_candidate_list.csv"), show_col_types = FALSE),
+    overlap_summary = readr::read_csv(file.path(output_dir, "cross_frame_phase5_overlap_summary.csv"), show_col_types = FALSE),
+    scores = arrow::read_parquet(file.path(output_dir, "cross_frame_scores.parquet"))
+  )
+}
+
+baseline <- read_phase5_bundle(baseline_output_dir, "baseline_aqi_unhealthy_days")
+revised <- read_phase5_bundle(revised_output_dir, "review_aqi_median")
+
+metric_presence <- bind_rows(
+  baseline$kpi_decisions |> mutate(scenario = "Baseline"),
+  revised$kpi_decisions |> mutate(scenario = "Revised")
+) |>
+  filter(metric_id %in% c("aqi_unhealthy_days", "aqi_median")) |>
+  select(
+    scenario,
+    frame_id,
+    feature_id,
+    metric_id,
+    communality_retained_pcs,
+    max_abs_loading_retained_pcs,
+    recommendation_stage,
+    recommended_for_clustering
+  )
+
+selected_metric_summary <- bind_rows(
+  baseline$candidate_metric_sets |> mutate(scenario = "Baseline"),
+  revised$candidate_metric_sets |> mutate(scenario = "Revised")
+) |>
+  group_by(scenario, metric_set) |>
+  summarise(
+    selected_metrics = sum(keep_for_candidate),
+    .groups = "drop"
+  )
+
+selected_metric_membership <- bind_rows(
+  baseline$candidate_metric_sets |> mutate(scenario = "Baseline"),
+  revised$candidate_metric_sets |> mutate(scenario = "Revised")
+) |>
+  filter(metric_set == "moderate_35_kpi_set", keep_for_candidate) |>
+  select(scenario, feature_id, metric_id, frame_id)
+
+selected_metric_compare <- full_join(
+  selected_metric_membership |> filter(scenario == "Baseline") |> rename(baseline_metric_id = metric_id, baseline_frame_id = frame_id),
+  selected_metric_membership |> filter(scenario == "Revised") |> rename(revised_metric_id = metric_id, revised_frame_id = frame_id),
+  by = "feature_id"
+) |>
+  mutate(
+    status = case_when(
+      !is.na(baseline_metric_id) & !is.na(revised_metric_id) ~ "kept_in_both",
+      !is.na(baseline_metric_id) & is.na(revised_metric_id) ~ "baseline_only",
+      is.na(baseline_metric_id) & !is.na(revised_metric_id) ~ "revised_only"
+    )
+  ) |>
+  arrange(status, feature_id)
+
+calibration_compare <- bind_rows(
+  baseline$calibration |> mutate(scenario = "Baseline"),
+  revised$calibration |> mutate(scenario = "Revised")
+) |>
+  filter(metric_set == "moderate_35_kpi_set")
+
+summary_compare <- tibble::tribble(
+  ~scenario, ~selected_metric_count, ~best_k, ~best_kmeans_silhouette, ~k6_kmeans_silhouette,
+  "Baseline",
+  baseline$candidate_metric_sets |> filter(metric_set == "moderate_35_kpi_set", keep_for_candidate) |> nrow(),
+  baseline$calibration |> filter(metric_set == "moderate_35_kpi_set") |> slice_max(order_by = kmeans_avg_silhouette, n = 1, with_ties = FALSE) |> pull(k),
+  baseline$calibration |> filter(metric_set == "moderate_35_kpi_set") |> summarise(best = max(kmeans_avg_silhouette)) |> pull(best),
+  baseline$calibration |> filter(metric_set == "moderate_35_kpi_set", k == 6) |> pull(kmeans_avg_silhouette),
+  "Revised",
+  revised$candidate_metric_sets |> filter(metric_set == "moderate_35_kpi_set", keep_for_candidate) |> nrow(),
+  revised$calibration |> filter(metric_set == "moderate_35_kpi_set") |> slice_max(order_by = kmeans_avg_silhouette, n = 1, with_ties = FALSE) |> pull(k),
+  revised$calibration |> filter(metric_set == "moderate_35_kpi_set") |> summarise(best = max(kmeans_avg_silhouette)) |> pull(best),
+  revised$calibration |> filter(metric_set == "moderate_35_kpi_set", k == 6) |> pull(kmeans_avg_silhouette)
+)
+
+cluster_shift_compare <- baseline$scores |>
+  select(
+    cbsa_code,
+    cbsa_name,
+    baseline_cluster_name = cross_frame_cluster_name,
+    baseline_percentile = cross_frame_percentile
+  ) |>
+  left_join(
+    revised$scores |>
+      select(
+        cbsa_code,
+        revised_cluster_name = cross_frame_cluster_name,
+        revised_percentile = cross_frame_percentile
+      ),
+    by = "cbsa_code"
+  ) |>
+  mutate(
+    percentile_shift = revised_percentile - baseline_percentile,
+    cluster_name_changed = baseline_cluster_name != revised_cluster_name
+  ) |>
+  arrange(desc(abs(percentile_shift)))
+```
+
+## Snapshot
+
+```{r}
+summary_compare |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+## AQI Metric In The Reduced Model
+
+```{r}
+metric_presence |>
+  mutate(
+    communality_retained_pcs = round(communality_retained_pcs, 3),
+    max_abs_loading_retained_pcs = round(max_abs_loading_retained_pcs, 3)
+  ) |>
+  kable()
+```
+
+## Selected KPI Count
+
+```{r}
+selected_metric_summary |>
+  kable()
+```
+
+## Moderate 35-KPI Membership Changes
+
+```{r}
+selected_metric_compare |>
+  count(status) |>
+  kable()
+```
+
+```{r}
+selected_metric_compare |>
+  filter(status != "kept_in_both") |>
+  select(feature_id, baseline_metric_id, revised_metric_id, status) |>
+  kable()
+```
+
+## PCA Comparison
+
+```{r}
+bind_rows(
+  baseline$pca_variance |> mutate(scenario = "Baseline"),
+  revised$pca_variance |> mutate(scenario = "Revised")
+) |>
+  slice_head(n = 20) |>
+  ggplot(aes(x = principal_component, y = cumulative_variance, color = scenario, group = scenario)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  labs(
+    title = "Cumulative PCA variance",
+    x = NULL,
+    y = "Cumulative variance",
+    color = "Scenario"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+## Moderate 35-KPI Cluster Calibration
+
+```{r}
+calibration_compare |>
+  ggplot(aes(x = k, y = kmeans_avg_silhouette, color = scenario)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  scale_x_continuous(breaks = sort(unique(calibration_compare$k))) +
+  labs(
+    title = "K-means silhouette for the selected 35-KPI set",
+    x = "Cluster count (k)",
+    y = "Average silhouette",
+    color = "Scenario"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+```{r}
+calibration_compare |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+## Cross-Frame Cluster Centroids
+
+```{r}
+bind_rows(
+  baseline$cluster_centroids |> mutate(scenario = "Baseline"),
+  revised$cluster_centroids |> mutate(scenario = "Revised")
+) |>
+  mutate(across(where(is.numeric), \(x) round(x, 1))) |>
+  kable()
+```
+
+## Biggest Cross-Frame Percentile Shifts
+
+```{r}
+cluster_shift_compare |>
+  slice_head(n = 25) |>
+  mutate(
+    baseline_percentile = round(baseline_percentile, 1),
+    revised_percentile = round(revised_percentile, 1),
+    percentile_shift = round(percentile_shift, 1)
+  ) |>
+  kable()
+```
+
+## Representative Metros In Revised Run
+
+```{r}
+revised$cluster_representatives |>
+  group_by(cross_frame_cluster_name) |>
+  slice_head(n = 5) |>
+  ungroup() |>
+  select(cross_frame_cluster_name, cbsa_name, cross_frame_percentile, distance_to_center) |>
+  mutate(
+    cross_frame_percentile = round(cross_frame_percentile, 1),
+    distance_to_center = round(distance_to_center, 2)
+  ) |>
+  kable()
+```
+
+## Candidate Markets
+
+```{r}
+revised$candidate_list |>
+  slice_head(n = 25) |>
+  select(divergence_candidate_rank, cbsa_name, cross_frame_cluster_name, cross_frame_percentile, character_percentile, livability_percentile, opportunity_percentile, divergence_candidate_score) |>
+  mutate(across(where(is.numeric), \(x) round(x, 1))) |>
+  kable()
+```

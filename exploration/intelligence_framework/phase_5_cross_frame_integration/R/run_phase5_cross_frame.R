@@ -143,8 +143,7 @@ write_phase5_outputs <- function(input_bundle, redundancy_bundle, modeling_bundl
   )
 }
 
-run_phase5_cross_frame <- function() {
-  config <- phase5_cross_frame_config()
+run_phase5_cross_frame <- function(config = phase5_cross_frame_config()) {
   con <- db_connect()
   on.exit(DBI::dbDisconnect(con, shutdown = TRUE), add = TRUE)
 

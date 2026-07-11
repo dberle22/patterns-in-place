@@ -1,16 +1,41 @@
-phase5_cross_frame_config <- function() {
+phase5_cross_frame_config <- function(
+  output_dir_name = "outputs",
+  livability_score_path = NULL,
+  livability_decision_path = NULL
+) {
   phase_dir <- here::here(
     "exploration",
     "intelligence_framework",
     "phase_5_cross_frame_integration"
   )
 
-  output_dir <- file.path(phase_dir, "outputs")
+  if (is.null(livability_score_path)) {
+    livability_score_path <- here::here(
+      "exploration",
+      "intelligence_framework",
+      "phase_3_livability_calibration",
+      "outputs",
+      "livability_scores.parquet"
+    )
+  }
+
+  if (is.null(livability_decision_path)) {
+    livability_decision_path <- here::here(
+      "exploration",
+      "intelligence_framework",
+      "phase_3_livability_calibration",
+      "outputs",
+      "livability_phase3_clustering_metric_decisions.csv"
+    )
+  }
+
+  output_dir <- file.path(phase_dir, output_dir_name)
   dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
   list(
     phase_dir = phase_dir,
     output_dir = output_dir,
+    output_dir_name = output_dir_name,
     target_year = 2024L,
     min_pop = 100000L,
     reference_spine_size = 396L,
@@ -33,20 +58,8 @@ phase5_cross_frame_config <- function() {
       ),
       3L,
       "livability",
-      here::here(
-        "exploration",
-        "intelligence_framework",
-        "phase_3_livability_calibration",
-        "outputs",
-        "livability_scores.parquet"
-      ),
-      here::here(
-        "exploration",
-        "intelligence_framework",
-        "phase_3_livability_calibration",
-        "outputs",
-        "livability_phase3_clustering_metric_decisions.csv"
-      ),
+      livability_score_path,
+      livability_decision_path,
       2L,
       "opportunity",
       here::here(
@@ -75,6 +88,6 @@ phase5_cross_frame_config <- function() {
     candidate_k = 3:10,
     selected_metric_set = "moderate_35_kpi_set",
     selected_metric_count = 35L,
-    final_k = 6L
+    final_k = 7L
   )
 }

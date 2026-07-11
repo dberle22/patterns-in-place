@@ -61,7 +61,7 @@ phase6_build_patterns_bundle <- function(config, core_bundle, opportunity_turn_s
   environmental_metrics <- core_bundle$kpi_trajectory_long |>
     dplyr::filter(
       frame_id == "livability",
-      metric_id %in% c("aqi_unhealthy_days", "fema_risk_score"),
+      metric_id %in% c("aqi_median", "fema_risk_score"),
       window_years == 5
     ) |>
     dplyr::mutate(
@@ -101,7 +101,7 @@ phase6_build_patterns_bundle <- function(config, core_bundle, opportunity_turn_s
         character_strength_pct >= 0.9,
       is_environmental_risk_outlier =
         livability_direction == "diverging-declining" &
-        worsening_rank_pct_aqi_unhealthy_days >= 0.9 &
+        worsening_rank_pct_aqi_median >= 0.9 &
         worsening_rank_pct_fema_risk_score >= 0.9
     ) |>
     dplyr::mutate(

@@ -3,7 +3,7 @@
 *Decision record. How we build the Deep Dive series: the template is the starting point, markets adjust it from there. Companion to `metro_deep_dive_template_guidance.md` (the format spec) and `INTELLIGENCE_LAYER_ROADMAP.md` (the scoring layer).*
 
 **Status:** Decided
-**Last updated:** 2026-07-09
+**Last updated:** 2026-07-11
 
 ---
 
@@ -13,7 +13,9 @@
 
 **`metro_deep_dive_template_guidance.md` is the base for every market.** Its four-Act structure and its Fixed Spine are adopted as-is. Each market inherits the spine unchanged and adapts only the flex slots.
 
-**Per-market adjustment is bounded, not open-ended.** As we work each Act for a given market we evaluate which metrics are most interesting there — but that evaluation only ever changes *flex* content. The spine does not move market to market. This is the difference between a comparable series and a pile of one-off city reports.
+**The Acts are delivery structure; the intelligence frames are analytical lenses.** Character, Livability, and Opportunity organize the radar KPIs and inform which questions to prioritize in each Act — they are not section headers or a separate table of contents. The story follows the data. Act 2 does not "do Livability"; it answers what drives this place, with Livability KPIs among the inputs.
+
+**Per-market adjustment is bounded, not open-ended.** As we work each Act for a given market we evaluate which angles are most interesting there — but that evaluation only ever changes *flex* content. The spine does not move market to market. This is the difference between a comparable series and a pile of one-off city reports.
 
 **Reuse over rebuild.** The platform already contains most of what an issue needs — visual library, semantic layer, Gold tables, frame scores, ROF zone methodology, Stoop POI pipeline, publisher. Issue 1 is composition work. Build new only where nothing fits, and when you do, build it upstream as a reusable engine.
 
@@ -39,10 +41,10 @@ Every Act has two kinds of work. Do the locks deliberately. If market #1 is allo
 
 | Act | Lock once (propagates forever) | Discover per market |
 |---|---|---|
-| **1 — Identity** | Radar KPI selection + axis order | History box angle; which peer to feature; forward-analog |
-| **2 — Engine & Fabric** | LQ quadrant chart; exposure scorecard *structure* | Which specializations to narrate; which exposure theme to deep dive; commute geography treatment |
-| **3 — Dynamics** | Converging / diverging / inflecting framing | Which series lead; the Data Take pick |
-| **4 — Opportunity Funnel** | Archetype names; Investment Score threshold; zone method | Which corridors get named |
+| **1 — Identity** | Radar KPI selection + axis order; top-line stat box fields; Intelligence Cluster label | History box angle; which peer to feature; forward-analog; which KPIs within each frame slot tell the most interesting story |
+| **2 — Engine & Fabric** | LQ quadrant chart; exposure scorecard *structure*; stat box for cultural fabric | Which specializations to narrate; which exposure theme to deep dive; commute geography treatment; cultural and social institutions angle |
+| **3 — Dynamics** | Converging / diverging / inflecting framing | Which series lead; the Data Take pick; how much regional context to include |
+| **4 — Opportunity Funnel** | Archetype names; Investment Score threshold; zone method; corridor stat block format | Which corridors get named; whether Parcel Watch runs |
 
 All per-market analytical freedom lives in the right column. Market #1 is therefore partly a consolidation exercise: it forces the thematic work to firm up into reusable engines.
 
@@ -175,12 +177,14 @@ As of **2026-07-10**, Richmond is the active pilot for `act2_engine_fabric`.
 
 ## Frames vs. Acts: Keep the Levels Distinct
 
-Two organizational systems are now in play. They are not the same list and must not be silently collapsed:
+Two organizational systems are in play. They are not the same list and must not be silently collapsed:
 
-- **Frames** (Character / Livability / Opportunity) = **how we compute.** The Intelligence Layer, the scoring models, the analytical inputs.
-- **Acts** (Identity / Engine & Fabric / Dynamics / Opportunity Funnel) = **how we publish.** The delivery structure of an issue.
+- **Frames** (Character / Livability / Opportunity) = **how we compute.** The Intelligence Layer, the scoring models, the analytical inputs. Each frame has its own KPI set, clustering, and outputs.
+- **Acts** (Identity / Engine & Fabric / Dynamics / Opportunity Funnel) = **how we publish.** The delivery structure of an issue, organized by the question being answered.
 
-Adopting the template means Acts win as the delivery structure and Frames become analytical inputs feeding into sections. This is a deliberate evolution — Acts read better for a general audience — not a renaming.
+Acts win as the delivery structure. Frames become analytical inputs — they organize the radar clusters in Section 1 and inform which lenses to apply within each Act, but they are not section headers and do not constrain the narrative angle. This is deliberate: Acts read better for a general audience and keep the story in front of the methodology.
+
+The Intelligence Framing Cluster (the cross-frame Phase 5 label) surfaces once in Section 1 as a top-line stat. It anchors the market in the full scoring system without turning every section into a frame-score report.
 
 ---
 
@@ -196,8 +200,9 @@ Adopting the template means Acts win as the delivery structure and Frames become
 
 ## Open Items
 
-- [ ] **Market #1 publication selection.** Richmond is now the active Act 2 pilot, but the first fully published market decision remains open: Jacksonville (existing ROF work, known data, risk of feeling like old work) vs. a fresh market (Richmond, Louisville, Pittsburgh — more narrative energy, proves the template generalizes). Motivation beats convenience for a solo shop.
-- [ ] **Lock the fingerprint KPIs and radar axis order.** Propagates to every future issue.
+- [ ] **Market #1 publication selection.** Richmond is the active Act 2 pilot, but the first fully published market decision remains open: Jacksonville (existing ROF work, known data, risk of feeling like old work) vs. a fresh market (Richmond, Louisville, Pittsburgh — more narrative energy, proves the template generalizes). Motivation beats convenience for a solo shop.
+- [ ] **Lock the fingerprint KPIs and radar axis order.** Select 2 to 3 KPIs from each of Character, Livability, and Opportunity. The axis slots are fixed across all issues; which specific KPI fills each slot is per-market but chosen from within that frame's set. Decide on issue 1.
+- [ ] **Lock the top-line stat box fields.** Population, income per capita, GDP, life expectancy, region, Intelligence Framing Cluster are proposed. Confirm the list and source for each before issue 1 publishes.
 - [ ] **Source any theme engine from the primary index, not from memory.** For AI exposure that means Felten et al. / Webb / Goldman, cited explicitly in the methodology note. Every subsequent market inherits whatever we build.
 - [ ] **Confirm archetype names before publishing.** Renaming later breaks series continuity.
 - [ ] **Define the Investment Score threshold** for corridor qualification; document it.

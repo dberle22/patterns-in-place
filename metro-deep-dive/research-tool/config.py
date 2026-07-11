@@ -62,7 +62,7 @@ KPI_LABELS = {
     "jobs_access_45min_transit": "Jobs Accessible within 45min Transit",
     "pct_population_low_income_low_access_1_10": "Low Income / Low Food Access",
     "pop_weighted_density_sqmi": "Population-Weighted Density (sq mi)",
-    "aqi_unhealthy_days": "AQI Unhealthy Days",
+    "aqi_median": "Median AQI",
     "fema_risk_score": "FEMA Risk Score",
     # Opportunity KPIs
     "zori_annual_avg_yoy_pct": "Rent Growth (YoY %)",
@@ -181,7 +181,7 @@ LIVABILITY_TOPIC_KPIS: dict[str, list[str]] = {
     "walkability_baseline": ["walkability_index", "jobs_access_45min_transit"],
     "built_form_proxy": ["pop_weighted_density_sqmi"],
     "food_access_baseline": ["pct_population_low_income_low_access_1_10"],
-    "air_pollution": ["aqi_unhealthy_days"],
+    "air_pollution": ["aqi_median"],
     "climate_hazard_risk": ["fema_risk_score"],
 }
 
@@ -243,7 +243,7 @@ KPI_UNITS: dict[str, str] = {
     "jobs_access_45min_transit": "jobs",
     "pct_population_low_income_low_access_1_10": "%",
     "pop_weighted_density_sqmi": "per sq mi",
-    "aqi_unhealthy_days": "days/yr",
+    "aqi_median": "AQI",
     "fema_risk_score": "index",
     "income_pc_growth_5yr": "%",
     "pct_unemployment_rate": "%",

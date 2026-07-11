@@ -1210,6 +1210,7 @@ tables:
     notes:
       - Phase 5 is complete and the `mart_intelligence` table is the promoted query surface.
       - Promoted to the `mart_intelligence` schema via foundations/loaders/load_cross_frame_scores.R in Phase 8.
+      - Current published combined model keeps the reduced `35`-KPI bundle and uses `k = 7`, including the `Global Knowledge Gateways` label.
       - Peer columns (`top10_peer_1_cbsa_code` … `top10_peer_10_cbsa_code`, names, and similarities) are promoted from the published similarity CSV.
       - Overlap fields from `cross_frame_phase5_overlap_flags.csv` are carried through for divergence and alignment queries.
     status: active

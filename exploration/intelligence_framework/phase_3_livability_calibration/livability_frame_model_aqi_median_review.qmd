@@ -1,0 +1,328 @@
+---
+title: "Phase 3 - AQI Median Review"
+subtitle: "Baseline vs revised Livability comparison for the AQI KPI swap"
+date: today
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 2
+    code-fold: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE
+)
+
+options(
+  dplyr.summarise.inform = FALSE,
+  knitr.kable.NA = ""
+)
+
+library(here)
+library(dplyr)
+library(readr)
+library(arrow)
+library(ggplot2)
+library(scales)
+library(knitr)
+library(tidyr)
+library(stringr)
+
+baseline_output_dir <- here(
+  "exploration",
+  "intelligence_framework",
+  "phase_3_livability_calibration",
+  "outputs"
+)
+
+revised_output_dir <- here(
+  "exploration",
+  "intelligence_framework",
+  "phase_3_livability_calibration",
+  "outputs_aqi_median_review"
+)
+
+read_environment_axis <- function(output_dir) {
+  axis_df <- readr::read_csv(
+    file.path(output_dir, "livability_phase3_environment_axis_scatter.csv"),
+    show_col_types = FALSE
+  )
+
+  if (!"aqi_metric_id" %in% names(axis_df)) {
+    axis_df <- axis_df |>
+      mutate(
+        aqi_metric_id = "aqi_unhealthy_days",
+        aqi_value = aqi_unhealthy_days
+      )
+  }
+
+  axis_df |>
+    mutate(
+      aqi_label = case_when(
+        aqi_metric_id == "aqi_median" ~ "AQI median",
+        aqi_metric_id == "aqi_unhealthy_days" ~ "AQI unhealthy days",
+        TRUE ~ aqi_metric_id
+      )
+    )
+}
+
+read_phase3_bundle <- function(output_dir, scenario_label) {
+  cluster_calibration <- readr::read_csv(
+    file.path(output_dir, "livability_phase3_cluster_count_calibration.csv"),
+    show_col_types = FALSE
+  )
+  cluster_sizes <- readr::read_csv(
+    file.path(output_dir, "livability_phase3_cluster_count_sizes.csv"),
+    show_col_types = FALSE
+  )
+  cluster_centroids <- readr::read_csv(
+    file.path(output_dir, "livability_phase3_cluster_centroids.csv"),
+    show_col_types = FALSE
+  )
+  cluster_representatives <- readr::read_csv(
+    file.path(output_dir, "livability_phase3_cluster_representatives.csv"),
+    show_col_types = FALSE
+  )
+  metric_completeness <- readr::read_csv(
+    file.path(output_dir, "livability_phase3_metric_completeness.csv"),
+    show_col_types = FALSE
+  )
+  pca_variance <- readr::read_csv(
+    file.path(output_dir, "livability_phase3_pca_variance.csv"),
+    show_col_types = FALSE
+  )
+  pca_loadings <- readr::read_csv(
+    file.path(output_dir, "livability_phase3_pca_loadings.csv"),
+    show_col_types = FALSE
+  )
+  livability_scores <- arrow::read_parquet(file.path(output_dir, "livability_scores.parquet"))
+  environment_axis <- read_environment_axis(output_dir)
+
+  list(
+    scenario_label = scenario_label,
+    cluster_calibration = cluster_calibration,
+    cluster_sizes = cluster_sizes,
+    cluster_centroids = cluster_centroids,
+    cluster_representatives = cluster_representatives,
+    metric_completeness = metric_completeness,
+    pca_variance = pca_variance,
+    pca_loadings = pca_loadings,
+    livability_scores = livability_scores,
+    environment_axis = environment_axis
+  )
+}
+
+baseline <- read_phase3_bundle(baseline_output_dir, "baseline_aqi_unhealthy_days")
+revised <- read_phase3_bundle(revised_output_dir, "review_aqi_median")
+
+comparison_summary <- tibble::tribble(
+  ~scenario, ~aqi_metric, ~rows, ~best_k_by_silhouette, ~silhouette_at_k6, ~aqi_fema_correlation,
+  "Baseline", "aqi_unhealthy_days",
+  nrow(baseline$livability_scores),
+  baseline$cluster_calibration$k[which.max(baseline$cluster_calibration$avg_silhouette)],
+  baseline$cluster_calibration |> filter(k == 6) |> pull(avg_silhouette),
+  cor(baseline$environment_axis$aqi_value, baseline$environment_axis$fema_risk_score),
+  "Revised", "aqi_median",
+  nrow(revised$livability_scores),
+  revised$cluster_calibration$k[which.max(revised$cluster_calibration$avg_silhouette)],
+  revised$cluster_calibration |> filter(k == 6) |> pull(avg_silhouette),
+  cor(revised$environment_axis$aqi_value, revised$environment_axis$fema_risk_score)
+)
+
+aqi_completeness_compare <- bind_rows(
+  baseline$metric_completeness |> mutate(scenario = "Baseline"),
+  revised$metric_completeness |> mutate(scenario = "Revised")
+) |>
+  filter(str_detect(metric_id, "^aqi_")) |>
+  select(
+    scenario,
+    metric_id,
+    non_null_cbsas,
+    missing_cbsas,
+    completeness_pct,
+    median_value
+  )
+
+pca_variance_compare <- bind_rows(
+  baseline$pca_variance |> mutate(scenario = "Baseline"),
+  revised$pca_variance |> mutate(scenario = "Revised")
+) |>
+  filter(principal_component %in% paste0("PC", 1:8))
+
+cluster_calibration_compare <- bind_rows(
+  baseline$cluster_calibration |> mutate(scenario = "Baseline"),
+  revised$cluster_calibration |> mutate(scenario = "Revised")
+)
+
+k6_cluster_size_compare <- bind_rows(
+  baseline$cluster_sizes |> mutate(scenario = "Baseline"),
+  revised$cluster_sizes |> mutate(scenario = "Revised")
+) |>
+  filter(k == 6) |>
+  arrange(scenario, cluster)
+
+percentile_shift_compare <- baseline$livability_scores |>
+  select(
+    cbsa_code,
+    cbsa_name,
+    baseline_percentile = livability_percentile,
+    baseline_cluster_name = livability_cluster_name
+  ) |>
+  left_join(
+    revised$livability_scores |>
+      select(
+        cbsa_code,
+        revised_percentile = livability_percentile,
+        revised_cluster_name = livability_cluster_name
+      ),
+    by = "cbsa_code"
+  ) |>
+  mutate(
+    percentile_shift = revised_percentile - baseline_percentile,
+    cluster_name_changed = baseline_cluster_name != revised_cluster_name
+  ) |>
+  arrange(desc(abs(percentile_shift)))
+```
+
+## Purpose
+
+This review notebook compares the current published Phase 3 Livability outputs against the side-by-side `aqi_median` revision run.
+
+It is meant to answer four questions before we move on to Phase 5:
+
+- does the AQI swap materially change coverage or imputation behavior
+- does the PCA story change in a meaningful way
+- is `k = 6` still defensible
+- do the revised clusters still look close enough to the published names to reuse them
+
+## Snapshot
+
+```{r snapshot}
+comparison_summary |>
+  mutate(
+    across(where(is.numeric), \(x) round(x, 3))
+  ) |>
+  kable()
+```
+
+## AQI Completeness
+
+```{r aqi-completeness}
+aqi_completeness_compare |>
+  mutate(
+    completeness_pct = percent(completeness_pct, accuracy = 0.1),
+    median_value = round(median_value, 2)
+  ) |>
+  kable()
+```
+
+## PCA Variance Comparison
+
+```{r pca-variance-plot, fig.height=4.5}
+pca_variance_compare |>
+  ggplot(aes(x = principal_component, y = cumulative_variance, color = scenario, group = scenario)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  labs(
+    title = "Cumulative PCA variance by scenario",
+    x = "Principal component",
+    y = "Cumulative variance explained",
+    color = "Scenario"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+```{r pca-variance-table}
+pca_variance_compare |>
+  select(scenario, principal_component, variance_explained, cumulative_variance) |>
+  mutate(
+    variance_explained = round(variance_explained, 3),
+    cumulative_variance = round(cumulative_variance, 3)
+  ) |>
+  kable()
+```
+
+## Cluster Calibration Comparison
+
+```{r cluster-calibration-plot, fig.height=4.5}
+cluster_calibration_compare |>
+  ggplot(aes(x = k, y = avg_silhouette, color = scenario)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  scale_x_continuous(breaks = sort(unique(cluster_calibration_compare$k))) +
+  labs(
+    title = "Average silhouette by cluster count",
+    x = "Cluster count (k)",
+    y = "Average silhouette",
+    color = "Scenario"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+```{r cluster-calibration-table}
+cluster_calibration_compare |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable()
+```
+
+## Published `k = 6` Cluster Sizes
+
+```{r cluster-size-compare}
+k6_cluster_size_compare |>
+  rename(livability_kmeans_cluster = cluster, metros_in_cluster = cluster_size) |>
+  kable()
+```
+
+## Biggest Percentile Shifts
+
+```{r percentile-shifts}
+percentile_shift_compare |>
+  slice_head(n = 20) |>
+  mutate(
+    baseline_percentile = round(baseline_percentile, 1),
+    revised_percentile = round(revised_percentile, 1),
+    percentile_shift = round(percentile_shift, 1)
+  ) |>
+  kable()
+```
+
+## Revised Representative Metros
+
+```{r revised-representatives}
+revised$cluster_representatives |>
+  group_by(livability_cluster_name) |>
+  slice_head(n = 6) |>
+  ungroup() |>
+  mutate(livability_percentile = round(livability_percentile, 1)) |>
+  kable()
+```
+
+## AQI Vs. FEMA Comparison
+
+```{r environment-axis-plot, fig.height=5}
+bind_rows(
+  baseline$environment_axis |> mutate(scenario = "Baseline"),
+  revised$environment_axis |> mutate(scenario = "Revised")
+) |>
+  ggplot(aes(x = aqi_value, y = fema_risk_score, color = livability_cluster_name)) +
+  geom_point(alpha = 0.7, size = 1.8) +
+  facet_wrap(~scenario, scales = "free_x") +
+  labs(
+    title = "AQI and FEMA relationship under the baseline and revised KPI choice",
+    x = "AQI value",
+    y = "FEMA risk score",
+    color = "Cluster"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+## Review Questions
+
+- Does the revised run still make `k = 6` look like the best practical choice, even if another `k` edges it out numerically?
+- Are the biggest percentile movers concentrated in a few AQI-sensitive metros, or does the whole map drift?
+- Do the revised cluster profiles still match the current published labels closely enough to keep them?
+- Is the revised AQI behavior easier to explain than the baseline rare-event count in the environmental hypothesis views?

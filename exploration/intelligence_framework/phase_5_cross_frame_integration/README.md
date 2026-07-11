@@ -12,15 +12,16 @@ The current calibrated Phase 5 working defaults are:
 
 - `396`-CBSA universe
 - `35` cross-frame clustering KPIs
-- `k = 6` for the first full combined-model pass
+- `k = 7` for the current published combined-model pass
 
 The current published working cluster names are:
 
-- `High-Amenity Knowledge Civics`
 - `Entrepreneurial Strain Markets`
-- `Aging Amenity Expansion Markets`
+- `High-Amenity Knowledge Civics`
 - `Stable Affordable Heartland Markets`
 - `Inland Strain Corridors`
+- `Global Knowledge Gateways`
+- `Aging Amenity Expansion Markets`
 - `Sun Belt Opportunity Engines`
 
 ## Input Bundle
@@ -141,30 +142,30 @@ Interpretation:
 
 Key results:
 
-- best hierarchical silhouette: `k = 8` at `0.0756`
-- best k-means silhouette: `k = 6` at `0.0947`
-- cluster sizes remain healthy through `k = 8`
-- no sub-10 clusters appear until `k = 9`
+- baseline comparison favored `k = 6`, but the revised AQI-median rerun reopened the cluster-count decision
+- in the revised AQI-median pass, `k = 4` was the cleanest numeric solution while `k = 7` retained more interpretable nuance than `k = 4`
+- the selected `k = 7` run introduces one `9`-metro elite cluster rather than a singleton
+- cluster sizes remain otherwise healthy across the selected seven-cluster configuration
 
 Interpretation:
 
-- the moderate set behaves much more like a credible national typology
-- `k = 5`, `k = 6`, and `k = 7` are all defensible
-- `k = 6` gives the strongest k-means separation without the fragmentation that starts later
+- the moderate set still behaves like a credible national typology after the AQI swap
+- `k = 4`, `k = 6`, and `k = 7` were all defensible in the revised run
+- `k = 7` was selected because it recovers a meaningful elite knowledge / gateway cluster that `k = 4` compresses away while avoiding the singleton pathologies seen elsewhere in the framework
 
 ## Final Working Decision
 
 The current Phase 5 default is:
 
 - use the `35`-KPI moderate cross-frame clustering set
-- use `k = 6` for the first full combined-model pass
+- use `k = 7` for the current published combined-model pass
 
 Why this was chosen:
 
-- it is still substantially simpler than the full `63`-KPI bundle
-- it avoids the tiny-cluster behavior that showed up repeatedly in the `18`-KPI path
-- it keeps better balance across all three frames
-- it produced the strongest k-means silhouette within the better-behaved candidate set
+- it keeps the revised `35`-KPI bundle intact after the Livability AQI swap to `aqi_median`
+- it preserves more nuance than the cleaner `k = 4` alternative
+- it introduces one small but interpretable `Global Knowledge Gateways` cluster rather than a singleton
+- it remains statistically defensible on k-means separation while yielding a more explainable national story than the flatter solutions
 
 This is the historical decision baseline for the rest of the Phase 5 build. If we revise the KPI count or final `k` later, that change should be documented here rather than silently replacing this rationale.
 
@@ -201,23 +202,25 @@ So the candidate list is best treated as one review surface, not as the final ma
 
 ## Cluster Profiles
 
-- `High-Amenity Knowledge Civics`
-  Character leads strongly, with high walkability, smaller multifamily form, global mobility signals, and lower safety / uninsured strain than average.
 - `Entrepreneurial Strain Markets`
   Low-performing overall but with a relative Opportunity edge driven by business formation, alongside much weaker Livability and labor-market fundamentals.
-- `Aging Amenity Expansion Markets`
-  Older, migration-sensitive amenity markets with growth and permit activity, but softer labor-force and short-run pricing signals.
+- `High-Amenity Knowledge Civics`
+  High-character, high-livability metros with strong walkability, smaller multifamily form, and broad knowledge-civics strength outside the top global gateway tier.
 - `Stable Affordable Heartland Markets`
   Livability-leading interior markets with lower burden and steadier affordability, but less migration, diversity, and business dynamism.
 - `Inland Strain Corridors`
-  The most stressed combined profile, with very weak resident and opportunity fundamentals and stronger environmental / uninsured strain.
+  Low-livability, lower-character strain markets where safety, uninsured, and other resident-pressure signals stay elevated.
+- `Global Knowledge Gateways`
+  Elite national gateway metros with extreme knowledge-economy, migration, and information-sector signals plus very high cross-frame standing.
+- `Aging Amenity Expansion Markets`
+  Older, migration-sensitive amenity markets with vacancy, permit, and retirement-growth signatures but weaker near-term labor-market texture.
 - `Sun Belt Opportunity Engines`
-  Opportunity-first growth markets with strong labor-force and business-base signals, stronger permit activity, and more modest Character rootedness.
+  Opportunity-led growth markets with strong labor-force and business-base signals, permit activity, and broad expansion-market energy outside the global gateway tier.
 
 ## Current Structure
 
 - `R/phase5_config.R`
-  Defines the Phase 5 paths, reduction thresholds, and current defaults including the selected `35`-KPI set and `k = 6`.
+  Defines the Phase 5 paths, reduction thresholds, and current defaults including the selected `35`-KPI set and `k = 7`.
 - `R/phase5_helpers.R`
   Shared helpers for z-scoring and candidate-set selection.
 - `R/phase5_input_audit.R`
