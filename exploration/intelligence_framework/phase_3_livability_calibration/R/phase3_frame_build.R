@@ -1,5 +1,7 @@
-build_phase3_livability_frame <- function(con) {
-  livability_df <- DBI::dbGetQuery(con, "
+build_phase3_livability_frame <- function(con, config) {
+  livability_df <- DBI::dbGetQuery(
+    con,
+    glue::glue("
 with spine as (
     select
         geo_id,
@@ -111,7 +113,7 @@ environment_latest as (
         select
             geo_id,
             year as environment_year,
-            unhealthy_days as aqi_unhealthy_days,
+            {config$aqi_source_column} as {config$aqi_metric_id},
             fema_risk_score,
             row_number() over (partition by geo_id order by year desc) as rn
         from gold.environment_wide
@@ -184,7 +186,7 @@ select
     sld.jobs_access_45min_transit,
     food.pct_population_low_income_low_access_1_10,
     transport.pop_weighted_density_sqmi,
-    environment.aqi_unhealthy_days,
+    environment.{config$aqi_metric_id},
     environment.fema_risk_score
 from spine
 left join affordability_latest affordability on spine.geo_id = affordability.geo_id
@@ -198,6 +200,7 @@ left join sld_latest sld on spine.geo_id = sld.geo_id
 left join food_latest food on spine.geo_id = food.geo_id
 order by spine.pop_total desc
 ")
+  )
 
   stopifnot(nrow(livability_df) == 396)
   livability_df

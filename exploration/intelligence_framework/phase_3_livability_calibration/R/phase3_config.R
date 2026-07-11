@@ -1,9 +1,31 @@
-phase3_livability_config <- function() {
+phase3_livability_config <- function(
+  aqi_metric_id = "aqi_median",
+  aqi_source_column = NULL,
+  output_dir_name = "outputs"
+) {
+  if (is.null(aqi_source_column)) {
+    aqi_source_column <- dplyr::case_when(
+      aqi_metric_id == "aqi_unhealthy_days" ~ "unhealthy_days",
+      aqi_metric_id == "aqi_median" ~ "aqi_median",
+      TRUE ~ NA_character_
+    )
+  }
+
+  if (is.na(aqi_source_column)) {
+    stop(
+      sprintf(
+        "Unsupported AQI metric_id for Phase 3 config: %s",
+        aqi_metric_id
+      ),
+      call. = FALSE
+    )
+  }
+
   output_dir <- here::here(
     "exploration",
     "intelligence_framework",
     "phase_3_livability_calibration",
-    "outputs"
+    output_dir_name
   )
 
   dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
@@ -34,7 +56,7 @@ phase3_livability_config <- function() {
     "jobs_access_45min_transit", "supplemental_or_caution", "jobs_access_45min_transit",
     "pct_population_low_income_low_access_1_10", "supplemental_or_caution", "pct_population_low_income_low_access_1_10",
     "pop_weighted_density_sqmi", "supplemental_or_caution", "pop_weighted_density_sqmi",
-    "aqi_unhealthy_days", "supplemental_or_caution", "unhealthy_days",
+    aqi_metric_id, "supplemental_or_caution", aqi_source_column,
     "fema_risk_score", "supplemental_or_caution", "fema_risk_score"
   )
 
@@ -64,7 +86,7 @@ phase3_livability_config <- function() {
     "jobs_access_45min_transit", TRUE, "retain for clustering and scoring",
     "pct_population_low_income_low_access_1_10", TRUE, "retain for clustering and scoring",
     "pop_weighted_density_sqmi", TRUE, "retain for clustering and scoring",
-    "aqi_unhealthy_days", TRUE, "retain for clustering and scoring",
+    aqi_metric_id, TRUE, "retain for clustering and scoring",
     "fema_risk_score", TRUE, "retain for clustering and scoring"
   )
 
@@ -90,6 +112,9 @@ phase3_livability_config <- function() {
 
   list(
     output_dir = output_dir,
+    output_dir_name = output_dir_name,
+    aqi_metric_id = aqi_metric_id,
+    aqi_source_column = aqi_source_column,
     expected_kpis = expected_kpis,
     clustering_metric_decisions = clustering_metric_decisions,
     cluster_name_map = cluster_name_map,

@@ -55,13 +55,12 @@ write_phase3_outputs <- function(bundle, config) {
   readr::write_csv(bundle$hypotheses$environment_axis_outliers, file.path(config$output_dir, "livability_phase3_environment_axis_outliers.csv"))
 }
 
-run_phase3_livability <- function() {
-  config <- phase3_livability_config()
+run_phase3_livability <- function(config = phase3_livability_config()) {
   con <- db_connect()
   on.exit(DBI::dbDisconnect(con, shutdown = TRUE), add = TRUE)
 
   catalog <- build_phase3_catalog_bundle(config)
-  livability_frame <- build_phase3_livability_frame(con)
+  livability_frame <- build_phase3_livability_frame(con, config)
   imputation <- build_phase3_imputation_bundle(livability_frame, catalog$catalog_check, config)
   redundancy <- build_phase3_redundancy_bundle(imputation$livability_model_df, config)
   model <- build_phase3_model_bundle(
@@ -70,7 +69,7 @@ run_phase3_livability <- function() {
     catalog_check = catalog$catalog_check,
     config = config
   )
-  hypotheses <- build_phase3_hypothesis_bundle(model$livability_scores)
+  hypotheses <- build_phase3_hypothesis_bundle(model$livability_scores, config)
 
   bundle <- list(
     config = config,

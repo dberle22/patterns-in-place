@@ -1,4 +1,4 @@
-build_phase3_hypothesis_bundle <- function(livability_scores) {
+build_phase3_hypothesis_bundle <- function(livability_scores, config) {
   health_affordability_test <- livability_scores |>
     dplyr::transmute(
       cbsa_code,
@@ -37,16 +37,17 @@ build_phase3_hypothesis_bundle <- function(livability_scores) {
       cbsa_code,
       cbsa_name,
       livability_cluster_name,
-      aqi_unhealthy_days = imputed_aqi_unhealthy_days,
+      aqi_metric_id = config$aqi_metric_id,
+      aqi_value = .data[[paste0("imputed_", config$aqi_metric_id)]],
       fema_risk_score = imputed_fema_risk_score,
-      scored_aqi = scored_aqi_unhealthy_days,
+      scored_aqi = .data[[paste0("scored_", config$aqi_metric_id)]],
       scored_fema = scored_fema_risk_score,
-      environment_gap = scored_fema_risk_score - scored_aqi_unhealthy_days
+      environment_gap = scored_fema_risk_score - .data[[paste0("scored_", config$aqi_metric_id)]]
     )
 
   environment_axis_summary <- tibble::tibble(
     raw_correlation = cor(
-      environment_axis_test$aqi_unhealthy_days,
+      environment_axis_test$aqi_value,
       environment_axis_test$fema_risk_score
     ),
     scoring_correlation = cor(

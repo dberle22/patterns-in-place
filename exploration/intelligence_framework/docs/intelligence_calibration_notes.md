@@ -30,6 +30,7 @@ Phase 8 summary of the final published calibration decisions across the Intellig
 - Final phase: Phase 3.
 - Final `k`: `6`.
 - Final KPI set: full `26`-KPI Livability bundle retained for the published clustering pass after PCA and correlation review.
+- AQI decision: `aqi_median` replaces `aqi_unhealthy_days` as the default published AQI clustering KPI because it remains more interpretable than the zero-heavy rare-event unhealthy-day count where populated.
 - Imputation note: median imputation was applied to six KPIs in the final published run.
 - Coverage note: the Connecticut crosswalk rebuild and the `gold.environment_wide` geography fix are reflected in the current outputs.
 - Promoted mart: `mart_intelligence.intelligence_livability`.
@@ -46,14 +47,22 @@ Phase 8 summary of the final published calibration decisions across the Intellig
 ## Cross-Frame
 
 - Final phase: Phase 5.
-- Final `k`: `6`.
-- Final KPI set: published reduced `35`-KPI combined bundle.
+- Final `k`: `7`.
+- Final KPI set: published reduced `35`-KPI combined bundle, refreshed after the Livability AQI swap to `aqi_median`.
 - Purpose: the Cross-Frame model is a combined similarity and alignment surface, not a replacement for the three base frame interpretations.
 - Promoted mart: `mart_intelligence.intelligence_cross_frame`.
 - Additional promoted context:
   - top-10 overall peers
   - frame percentile carrythrough
   - overlap and divergence fields such as `frame_percentile_gap`, `top_frame`, `bottom_frame`, and `overlap_profile`
+- Published combined cluster names:
+  - `Entrepreneurial Strain Markets`
+  - `High-Amenity Knowledge Civics`
+  - `Stable Affordable Heartland Markets`
+  - `Inland Strain Corridors`
+  - `Global Knowledge Gateways`
+  - `Aging Amenity Expansion Markets`
+  - `Sun Belt Opportunity Engines`
 
 ## Zone Methodology
 

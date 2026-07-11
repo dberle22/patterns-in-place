@@ -35,11 +35,11 @@ environmental_near_misses <- trajectory_scores |>
     cbsa_name,
     census_division,
     livability_direction,
-    worsening_rank_pct_aqi_unhealthy_days,
+    worsening_rank_pct_aqi_median,
     worsening_rank_pct_fema_risk_score,
     candidate_rank
   ) |>
-  arrange(desc(worsening_rank_pct_aqi_unhealthy_days + worsening_rank_pct_fema_risk_score), cbsa_name)
+  arrange(desc(worsening_rank_pct_aqi_median + worsening_rank_pct_fema_risk_score), cbsa_name)
 ```
 
 ## Current Pattern Count
@@ -65,7 +65,7 @@ environmental_near_misses |>
 ggplot(
   trajectory_scores,
   aes(
-    x = worsening_rank_pct_aqi_unhealthy_days,
+    x = worsening_rank_pct_aqi_median,
     y = worsening_rank_pct_fema_risk_score,
     color = is_environmental_risk_outlier
   )
@@ -75,7 +75,7 @@ ggplot(
   geom_point(alpha = 0.7, size = 2) +
   labs(
     title = "Current default requires both environmental worsening ranks to hit the top decile",
-    x = "AQI worsening percentile",
+    x = "AQI median worsening percentile",
     y = "FEMA risk worsening percentile",
     color = "Pattern match"
   ) +

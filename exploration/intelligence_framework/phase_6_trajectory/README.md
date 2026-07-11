@@ -269,11 +269,11 @@ Interpretation:
 Definition:
 
 - Livability direction is `diverging-declining`
-- worsening in both `aqi_unhealthy_days` and `fema_risk_score` is in the national top decile
+- worsening in both `aqi_median` and `fema_risk_score` is in the national top decile
 
 Interpretation:
 
-- places with unusually bad environmental movement on both air-quality and hazard-risk dimensions
+- places with unusually bad environmental movement on both median air-quality and hazard-risk dimensions
 
 ## Default Thresholds
 

@@ -103,7 +103,7 @@ def render_trajectory(cbsa_code: str, cbsa_name: str) -> None:
 
     # Environmental risk detail if flagged
     if t.get("is_environmental_risk_outlier"):
-        aqi_rank = t.get("worsening_rank_pct_aqi_unhealthy_days")
+        aqi_rank = t.get("worsening_rank_pct_aqi_median")
         fema_rank = t.get("worsening_rank_pct_fema_risk_score")
         st.caption(
             f"AQI worsening: {pct_rank(aqi_rank * 100) if aqi_rank else '—'} percentile | "

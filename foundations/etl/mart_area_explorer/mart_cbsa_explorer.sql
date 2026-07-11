@@ -100,7 +100,7 @@ environment as (
     select
         geo_id as cbsa_code,
         year,
-        unhealthy_days as aqi_unhealthy_days,
+        aqi_median,
         fema_risk_score
     from gold.environment_wide
     where lower(geo_level) = 'cbsa'
@@ -259,7 +259,7 @@ select
     t.pct_commute_transit,
     t.pct_hh_0_vehicles,
     si.pct_no_internet_access,
-    e.aqi_unhealthy_days,
+    e.aqi_median,
     e.fema_risk_score,
     i.median_hh_income,
     i.pov_rate,
@@ -521,8 +521,8 @@ with metric_rows as (
     union all
 
     select cbsa_code, cbsa_name, year, state_fips_primary, state_name_primary, division_id, division_name, region_id, region_name,
-        'livability', 'physical_environment', 'air_pollution', 'aqi_unhealthy_days', 'Unhealthy AQI Days',
-        'environment_wide', 'unhealthy_days', 'integer', aqi_unhealthy_days
+        'livability', 'physical_environment', 'air_pollution', 'aqi_median', 'Median AQI',
+        'environment_wide', 'aqi_median', 'number_1dp', aqi_median
     from mart_area_explorer.cbsa_profile_year
 
     union all

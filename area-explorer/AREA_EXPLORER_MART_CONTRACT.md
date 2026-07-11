@@ -94,7 +94,7 @@ These are the v1 leaf metrics we want directly available on the profile-year row
 | `livability` | `access_and_infrastructure` | `commute_and_mode` | `pct_commute_transit` | `gold.transport_built_form_wide` | `pct_commute_transit` |
 | `livability` | `access_and_infrastructure` | `vehicle_access` | `pct_hh_0_vehicles` | `gold.transport_built_form_wide` | `pct_hh_0_vehicles` |
 | `livability` | `access_and_infrastructure` | `digital_access` | `pct_no_internet_access` | `gold.social_infra_wide` | `pct_no_internet_access` |
-| `livability` | `physical_environment` | `air_pollution` | `aqi_unhealthy_days` | `gold.environment_wide` | `unhealthy_days` |
+| `livability` | `physical_environment` | `air_pollution` | `aqi_median` | `gold.environment_wide` | `aqi_median` |
 | `livability` | `physical_environment` | `climate_hazard_risk` | `fema_risk_score` | `gold.environment_wide` | `fema_risk_score` |
 | `opportunity` | `resident_opportunity` | `wage_levels` | `median_hh_income` | `gold.economics_income_wide` | `median_hh_income` |
 | `opportunity` | `resident_opportunity` | `poverty_and_inclusion` | `pov_rate` | `gold.economics_income_wide` | `pov_rate` |
@@ -207,7 +207,7 @@ The cross-frame datamart now exposes a wide top-10 peer bundle. V1 should carry 
 
 The v1 SQL lives at:
 
-[foundations/etl/mart_area_explorer/mart_cbsa_explorer.sql](/Users/danberle/Documents/projects/patterns_in_place/foundations/etl/mart_area_explorer/mart_cbsa_explorer.sql:1)
+[foundations/etl/mart_area_explorer/mart_cbsa_explorer.sql](../foundations/etl/mart_area_explorer/mart_cbsa_explorer.sql)
 
 That script creates:
 
