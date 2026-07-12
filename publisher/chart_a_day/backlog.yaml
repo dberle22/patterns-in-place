@@ -1,0 +1,415 @@
+# Chart Engine question backlog.
+# Canonical copy for the Chart Engine queue lives here.
+# Legacy references under publisher/publisher/ are retired and should point here.
+#
+# Schema:
+#   id              — sequential, never reused
+#   question        — plain-language question as written to the agent
+#   template_id     — controls chart type selection via chart_rules.yml
+#                     ranking | trend | compare_selected | distribution | benchmark |
+#                     growth | correlation | composition | map | demographic | rank_change
+#   geo_level       — cbsa | state | national | county
+#   status          — ready | ran | reviewed | posted
+#   platform        — both | x | bluesky | substack
+#   produce_alternatives — if true, also render fallback chart type as chart_alt.png
+#   notes           — agent hints: filters, named geographies, benchmark source,
+#                     chart variant override, data caveats
+#   scheduled       — ISO date or null
+#   ran_at          — ISO datetime set by queue_manager on status → ran
+#   posted_at       — ISO datetime set by queue_manager on status → posted
+
+# ── ORIGINAL BACKLOG (q001–q015) ──────────────────────────────────────────────
+
+- id: q001
+  question: Which metros have the highest rent-to-income ratios in 2023?
+  template_id: ranking
+  geo_level: cbsa
+  status: ran
+  platform: both
+  produce_alternatives: false
+  notes: Lead with affordability angle. Compare Sun Belt vs coastal.
+  scheduled: null
+  ran_at: '2026-05-13 12:22:56'
+  posted_at: null
+
+- id: q002
+  question: Which states have the highest median household income in 2023?
+  template_id: ranking
+  geo_level: state
+  status: ran
+  platform: both
+  produce_alternatives: false
+  notes: Good for high engagement. Note top 5 and any surprises.
+  scheduled: null
+  ran_at: '2026-06-06 11:07:34'
+  posted_at: null
+
+- id: q003
+  question: Which metros have the highest share of cost-burdened renters in 2023?
+  template_id: ranking
+  geo_level: cbsa
+  status: ready
+  platform: both
+  produce_alternatives: false
+  notes: Pair with rent-to-income post for a series. Filter to CBSAs with pop > 250k.
+    CE-2 first-run question — if Gold data missing fall back to q006.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q004
+  question: How has median gross rent changed in the 10 largest metros since 2018?
+  template_id: trend
+  geo_level: cbsa
+  status: ready
+  platform: both
+  produce_alternatives: true
+  notes: Use compare_selected approach — pick top 10 metros by population. Set
+    produce_alternatives=true to compare line_chart vs slopegraph for two-point
+    framing.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q005
+  question: How has median household income trended in Sun Belt metros since 2015?
+  template_id: trend
+  geo_level: cbsa
+  status: ready
+  platform: substack
+  produce_alternatives: true
+  notes: Pick 6–8 Sun Belt CBSAs. Good chart for a slope graph. Set
+    produce_alternatives=true to compare line vs slopegraph.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q006
+  question: How has the vacancy rate trended nationally since 2015?
+  template_id: trend
+  geo_level: national
+  status: ready
+  platform: both
+  produce_alternatives: false
+  notes: Simple single-line trend. Strong setup for housing shortage narrative.
+    CE-2 fallback question if q003 data is missing from Gold tables.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q007
+  question: Compare median gross rent in Austin, Nashville, Denver, and Charlotte
+    in 2023.
+  template_id: compare_selected
+  geo_level: cbsa
+  status: ready
+  platform: both
+  produce_alternatives: false
+  notes: Sun Belt peer comparison. All four are high-migration destinations.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q008
+  question: Compare population growth over the last 5 years in the 5 fastest-growing
+    metros.
+  template_id: compare_selected
+  geo_level: cbsa
+  status: ready
+  platform: both
+  produce_alternatives: false
+  notes: Needs top-5 by pop_growth_5yr first, then compare trend lines.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q009
+  question: How is rent-to-income distributed across US metros in 2023?
+  template_id: distribution
+  geo_level: cbsa
+  status: ready
+  platform: substack
+  produce_alternatives: true
+  notes: Histogram or boxplot. Good for showing the spread of the affordability
+    crisis. Set produce_alternatives=true to compare boxplot vs heatmap_table.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q010
+  question: How is median age distributed across US metros in 2023?
+  template_id: distribution
+  geo_level: cbsa
+  status: ready
+  platform: substack
+  produce_alternatives: false
+  notes: Interesting demo angle — aging vs. young metros.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q011
+  question: How does Miami's share of cost-burdened renters compare to the national
+    average in 2023?
+  template_id: benchmark
+  geo_level: cbsa
+  status: ready
+  platform: x
+  produce_alternatives: false
+  notes: Simple benchmark post. Miami is a reliable engagement driver.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q012
+  question: How does Phoenix's median gross rent compare to the Western US average
+    in 2023?
+  template_id: benchmark
+  geo_level: cbsa
+  status: ready
+  platform: both
+  produce_alternatives: false
+  notes: Phoenix has gotten expensive fast — good benchmark story.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q013
+  question: Which metros have had the fastest 5-year population growth since 2018?
+  template_id: growth
+  geo_level: cbsa
+  status: ready
+  platform: both
+  produce_alternatives: false
+  notes: Classic migration story. Filter to CBSAs with pop > 250k to avoid
+    small-metro noise.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q014
+  question: Which metros have seen the fastest per capita income growth over the last
+    5 years?
+  template_id: growth
+  geo_level: cbsa
+  status: ready
+  platform: both
+  produce_alternatives: false
+  notes: Income growth story. Cross-reference with housing cost growth for a
+    follow-up angle.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q015
+  question: Which metros are the most racially and ethnically diverse in 2023?
+  template_id: ranking
+  geo_level: cbsa
+  status: ready
+  platform: substack
+  produce_alternatives: false
+  notes: Use diversity_index metric. Filter to CBSAs with pop > 500k.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+# ── CHART TYPE COVERAGE EXPANSION (q016–q028) ─────────────────────────────────
+# These questions complete chart_engine_py Phase 5 by exercising the 11 chart
+# types not covered by q001–q015. One question per chart type. Running all 28
+# questions closes Phase 5 for all 16 chart types.
+
+- id: q016
+  question: How does rent-to-income ratio correlate with 5-year population growth
+    across major metros?
+  template_id: correlation
+  geo_level: cbsa
+  status: ready
+  platform: both
+  produce_alternatives: true
+  notes: Filter to CBSAs with pop > 500k. X axis = pop_growth_5yr, Y axis =
+    rent_to_income_ratio. Good for showing Sun Belt paradox — high growth AND high
+    rent burden. Set produce_alternatives=true to compare scatter vs hexbin.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q017
+  question: How did the rent-to-income ratio change between 2018 and 2023 in the
+    15 largest metros?
+  template_id: rank_change
+  geo_level: cbsa
+  status: ready
+  platform: both
+  produce_alternatives: false
+  notes: Two-point comparison (2018 vs 2023) — use slopegraph not bump_chart
+    (only two time points; slopegraph_requires_two_time_points constraint applies).
+    Filter to top 15 CBSAs by population. Highlight any metros that improved (rare).
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q018
+  question: How have the vacancy rate rankings among major metros shifted since 2015?
+  template_id: rank_change
+  geo_level: cbsa
+  status: ready
+  platform: substack
+  produce_alternatives: false
+  notes: Rank over time (2015–2023) — use bump_chart (multiple time points).
+    Filter to top 20 CBSAs by population. Y axis = rank inverted so rank 1 is at
+    top. One entity per line.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q019
+  question: How do rent burden, vacancy rate, and population growth compare across
+    Sun Belt metros in 2023?
+  template_id: composition
+  geo_level: cbsa
+  status: ready
+  platform: substack
+  produce_alternatives: false
+  notes: Multi-metric heatmap table. Rows = Austin, Dallas, Phoenix, Nashville,
+    Charlotte, Atlanta, Tampa, Orlando. Columns = rent_to_income_ratio,
+    vacancy_rate, pop_growth_5yr. Normalize each column independently for color
+    scale. Use heatmap_table not waterfall.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q020
+  question: What share of US metros fall into each vacancy rate tier — very tight,
+    tight, balanced, loose?
+  template_id: composition
+  geo_level: cbsa
+  status: ready
+  platform: both
+  produce_alternatives: false
+  notes: |
+    Waterfall or stacked bar showing count by tier. Define tiers in SQL:
+    very tight < 4%, tight 4–7%, balanced 7–10%, loose > 10%. Filter to CBSAs
+    with pop > 250k. Use waterfall chart type.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q021
+  question: How does Austin rank across housing stress indicators compared to
+    national benchmarks in 2023?
+  template_id: composition
+  geo_level: cbsa
+  status: ready
+  platform: x
+  produce_alternatives: false
+  notes: Strength strip scorecard for a single metro (Austin). Metrics =
+    rent_to_income_ratio, vacancy_rate, pop_growth_5yr, cost_burden_share. Each
+    bar shows Austin vs US median. Good single-city X post. Use strength_strip
+    chart type.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q022
+  question: How correlated are rent burden, vacancy rate, income growth, and
+    population growth across US metros?
+  template_id: correlation
+  geo_level: cbsa
+  status: ready
+  platform: substack
+  produce_alternatives: false
+  notes: Correlation heatmap (not scatter — multiple metrics, not a two-variable
+    plot). All CBSAs with pop > 250k. Output is a correlation matrix. Use
+    correlation_heatmap chart type explicitly — the template resolves to scatter
+    by default but notes override applies here.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q023
+  question: How does the age distribution in Miami compare to the US overall in 2023?
+  template_id: demographic
+  geo_level: cbsa
+  status: ready
+  platform: both
+  produce_alternatives: false
+  notes: Age pyramid for Miami CBSA vs US. Requires age bins and sex breakdown
+    from population_demographics. Two-panel or overlaid comparison. Check that
+    age_bin and sex columns exist before building ChartRequest.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q024
+  question: Which states have the highest share of cost-burdened renters in 2023?
+  template_id: map
+  geo_level: state
+  status: ready
+  platform: both
+  produce_alternatives: false
+  notes: State-level choropleth. Metric = cost_burden_share. Sequential color
+    scale. Good for immediate visual impact on X — map posts perform well. Use
+    choropleth chart type.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q025
+  question: Where is Phoenix in the national vacancy landscape?
+  template_id: map
+  geo_level: cbsa
+  status: ready
+  platform: x
+  produce_alternatives: false
+  notes: Highlight + context map. Phoenix = highlighted entity (highlight_flag=1),
+    all other CBSAs = context (grey). Color context by vacancy rate tier. Shows
+    spatial clustering of tight markets. Use highlight_context_map chart type.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q026
+  question: Where is population growth concentrated across US metros?
+  template_id: map
+  geo_level: cbsa
+  status: ready
+  platform: both
+  produce_alternatives: false
+  notes: Proportional symbol map. Symbol size = pop_growth_5yr. Filter to CBSAs
+    with pop > 100k. Good for showing the Sun Belt concentration visually. Use
+    proportional_symbol_map chart type.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q027
+  question: Which states combine high rent burden with low vacancy — the worst
+    housing stress combinations?
+  template_id: map
+  geo_level: state
+  status: ready
+  platform: substack
+  produce_alternatives: false
+  notes: Bivariate choropleth. X axis = rent_to_income_ratio (binned into 3
+    classes), Y axis = vacancy_rate inverted (lower vacancy = worse, binned into
+    3 classes). 3x3 bivariate color matrix. Best for Substack where the legend
+    has room. Use bivariate_choropleth chart type.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q028
+  question: How does median age cluster against rent burden across all US metros?
+  template_id: correlation
+  geo_level: cbsa
+  status: ready
+  platform: substack
+  produce_alternatives: false
+  notes: |
+    Use hexbin not scatter — there are 300+ CBSAs and a scatter would be
+    too dense to read (hexbin constraint: N > 200 prefers hexbin). X = median_age,
+    Y = rent_to_income_ratio. Color = point density. Interesting aging vs.
+    affordability story. Override chart type to hexbin explicitly in notes.
+  scheduled: null
+  ran_at: null
+  posted_at: null

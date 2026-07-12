@@ -12,10 +12,10 @@ See `<monorepo-root>/AGENTS.md` for the shared behavioral guidelines.
 | Task | Command |
 |---|---|
 | Run a question through the chatbot | `PYTHONPATH=. python chatbot/scripts/ask.py "<question>"` |
-| Run the publisher queue | `PYTHONPATH=. python publisher/run_publisher.py --next` |
+| Run the Chart-A-Day queue | `PYTHONPATH=. python chart_a_day/runner/run_next.py --next` |
 | Boot the frontend | `PYTHONPATH=. streamlit run frontend/streamlit_app.py` |
 
 - `chatbot/` contains orchestration, parsing, SQL generation, validation, execution, and chart rendering.
-- `publisher/` contains the queue, packager, summarizer, examples, skills, and output artifacts.
+- `chart_a_day/` contains the Chart-A-Day backlog, runner scaffold, skill prompts, and output artifacts.
 - `content/` is a manual topic workspace; do not route it through the chatbot pipeline by default.
 - `foundations/semantic_layer/` and `foundations/visual_library/` are the canonical shared assets.

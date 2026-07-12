@@ -1,0 +1,275 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/normalized.json",
+  "config": {
+    "axis": {
+      "gridColor": "#D9E2EC",
+      "labelColor": "#5B6770",
+      "labelFont": "Inter",
+      "tickColor": "#CBD2D9",
+      "titleColor": "#52606D",
+      "titleFont": "Inter"
+    },
+    "title": {
+      "color": "#1F2933",
+      "font": "Inter",
+      "subtitleColor": "#52606D",
+      "subtitleFont": "Inter"
+    },
+    "view": {
+      "stroke": null
+    }
+  },
+  "datasets": {
+    "dataset_1": [
+      {
+        "label": "Benchmark: 5040.0%",
+        "value": 50.4
+      }
+    ],
+    "dataset_2": [
+      {
+        "benchmark_value": 50.4,
+        "display_order": 1,
+        "entity": "Miami-Fort Lauderdale-West Palm Beach, FL",
+        "entity_axis_label": "Miami-Fort Lauderdale-West\u2026",
+        "entity_label": "Miami-Fort Lauderdale-West Palm Beach, FL",
+        "fill_color": "#2C7FB8",
+        "geo_id": "33100",
+        "geo_level": "cbsa",
+        "group": "Top CBSAs by renter cost burden",
+        "highlight_flag": true,
+        "metric_id": "rent_burden",
+        "metric_label": "Share of renter households spending 30%+ of income on rent",
+        "note": "Population filter: 250k+ | US benchmark shown for reference",
+        "rank": 1,
+        "source": "ACS",
+        "subtitle": "2023 level | Top CBSAs by renter cost burden",
+        "time_window": "2023 level",
+        "value": 63.1,
+        "value_label": "6310.0%",
+        "vintage": "2023"
+      },
+      {
+        "benchmark_value": 50.4,
+        "display_order": 2,
+        "entity": "New York-Newark-Jersey City, NY-NJ-PA",
+        "entity_axis_label": "New York-Newark-Jersey City\u2026",
+        "entity_label": "New York-Newark-Jersey City, NY-NJ-PA",
+        "fill_color": "#A7B4C2",
+        "geo_id": "35620",
+        "geo_level": "cbsa",
+        "group": "Top CBSAs by renter cost burden",
+        "highlight_flag": false,
+        "metric_id": "rent_burden",
+        "metric_label": "Share of renter households spending 30%+ of income on rent",
+        "note": "Population filter: 250k+ | US benchmark shown for reference",
+        "rank": 2,
+        "source": "ACS",
+        "subtitle": "2023 level | Top CBSAs by renter cost burden",
+        "time_window": "2023 level",
+        "value": 57.4,
+        "value_label": "5740.0%",
+        "vintage": "2023"
+      },
+      {
+        "benchmark_value": 50.4,
+        "display_order": 3,
+        "entity": "Chicago-Naperville-Elgin, IL-IN-WI",
+        "entity_axis_label": "Chicago-Naperville-Elgin, I\u2026",
+        "entity_label": "Chicago-Naperville-Elgin, IL-IN-WI",
+        "fill_color": "#A7B4C2",
+        "geo_id": "16980",
+        "geo_level": "cbsa",
+        "group": "Top CBSAs by renter cost burden",
+        "highlight_flag": false,
+        "metric_id": "rent_burden",
+        "metric_label": "Share of renter households spending 30%+ of income on rent",
+        "note": "Population filter: 250k+ | US benchmark shown for reference",
+        "rank": 3,
+        "source": "ACS",
+        "subtitle": "2023 level | Top CBSAs by renter cost burden",
+        "time_window": "2023 level",
+        "value": 49.8,
+        "value_label": "4980.0%",
+        "vintage": "2023"
+      }
+    ]
+  },
+  "height": 380,
+  "layer": [
+    {
+      "data": {
+        "name": "dataset_2"
+      },
+      "encoding": {
+        "color": {
+          "field": "fill_color",
+          "legend": null,
+          "scale": null,
+          "type": "nominal"
+        },
+        "tooltip": [
+          {
+            "field": "entity",
+            "title": "Entity",
+            "type": "nominal"
+          },
+          {
+            "field": "value",
+            "format": ".1%",
+            "title": "Value",
+            "type": "quantitative"
+          },
+          {
+            "field": "rank",
+            "title": "Rank",
+            "type": "quantitative"
+          }
+        ],
+        "x": {
+          "axis": {
+            "format": ".1%",
+            "gridColor": "#D9E2EC",
+            "labelColor": "#5B6770",
+            "labelFont": "Inter",
+            "tickColor": "#CBD2D9",
+            "titleColor": "#52606D",
+            "titleFont": "Inter"
+          },
+          "field": "value",
+          "scale": {
+            "domain": [
+              0.0,
+              64.962
+            ],
+            "nice": true,
+            "zero": true
+          },
+          "title": "Share of renter households spending 30%+ of income on rent",
+          "type": "quantitative"
+        },
+        "y": {
+          "axis": {
+            "domain": false,
+            "labelColor": "#1F2933",
+            "labelFont": "Inter",
+            "labelFontSize": 12,
+            "labelLimit": 220,
+            "ticks": false,
+            "title": null
+          },
+          "field": "entity_axis_label",
+          "sort": {
+            "field": "display_order",
+            "order": "ascending"
+          },
+          "type": "nominal"
+        }
+      },
+      "mark": "bar"
+    },
+    {
+      "data": {
+        "name": "dataset_1"
+      },
+      "encoding": {
+        "x": {
+          "field": "value",
+          "type": "quantitative"
+        }
+      },
+      "mark": {
+        "color": "#52606D",
+        "strokeDash": [
+          4,
+          4
+        ],
+        "strokeWidth": 1,
+        "type": "rule"
+      }
+    },
+    {
+      "data": {
+        "name": "dataset_1"
+      },
+      "encoding": {
+        "text": {
+          "field": "label",
+          "type": "nominal"
+        },
+        "x": {
+          "field": "value",
+          "type": "quantitative"
+        },
+        "y": {
+          "value": 0
+        }
+      },
+      "mark": {
+        "align": "left",
+        "baseline": "top",
+        "color": "#52606D",
+        "dx": 6,
+        "dy": 4,
+        "font": "Inter",
+        "fontSize": 9,
+        "fontStyle": "italic",
+        "type": "text"
+      }
+    },
+    {
+      "data": {
+        "name": "dataset_2"
+      },
+      "encoding": {
+        "text": {
+          "field": "value_label",
+          "type": "nominal"
+        },
+        "x": {
+          "field": "value",
+          "type": "quantitative"
+        },
+        "y": {
+          "axis": {
+            "domain": false,
+            "labelColor": "#1F2933",
+            "labelFont": "Inter",
+            "labelFontSize": 12,
+            "labelLimit": 220,
+            "ticks": false,
+            "title": null
+          },
+          "field": "entity_axis_label",
+          "sort": {
+            "field": "display_order",
+            "order": "ascending"
+          },
+          "type": "nominal"
+        }
+      },
+      "mark": {
+        "align": "left",
+        "baseline": "middle",
+        "color": "#1F2933",
+        "dx": 6,
+        "font": "Inter",
+        "fontSize": 12,
+        "type": "text"
+      }
+    }
+  ],
+  "title": {
+    "fontSize": 18,
+    "subtitle": [
+      "2023 level | Top CBSAs by renter cost burden",
+      "",
+      "Source: ACS | Vintage: 2023 | Note: Population filter: 250k+ | US benchmark shown for reference"
+    ],
+    "text": "Share of renter households spending 30%+ of income on rent"
+  },
+  "usermeta": {
+    "caption": "Source: ACS | Vintage: 2023 | Note: Population filter: 250k+ | US benchmark shown for reference"
+  },
+  "width": 640
+}

@@ -107,6 +107,16 @@
 
 **Goal:** port the remaining chart types into Python using the new standards layer.
 
+**Parity rollout model (updated)**
+- We are no longer treating parity closure as strictly one chart per turn.
+- Shared infrastructure lands first when the same gap repeats across chart types.
+- Chart-family follow-up comes second:
+  - ranking/comparison
+  - trend/comparison
+  - matrix/distribution
+  - demographic/map
+- Chart a Day becomes the refinement and QA layer after the shared code paths exist.
+
 **Shared infrastructure**
 - [ ] Create final Python renderer folder structure: `prep/`, `charts/`, `geo/`
 - [ ] Add shared Altair helper module
@@ -181,8 +191,8 @@
 - [x] `test_skill.py`
 
 **Chart coverage tasks**
-- [ ] `bar_chart` golden test
-- [ ] `line_chart` golden test
+- [x] `bar_chart` golden test
+- [x] `line_chart` golden test
 - [x] `scatter` golden test
 - [x] `slopegraph` golden test
 - [x] `boxplot` golden test
@@ -207,30 +217,93 @@
 
 ### Phase 5 — Manual Publisher Content Runs
 
-**Goal:** prove the Python package works against real content before wiring it into consuming apps.
+**Goal:** prove the Python package works against real content before wiring it into consuming apps, using the current R visual library output as the parity reference on every manual run.
+
+**Parity audit prerequisite**
+- [x] Run the broad Python-vs-R parity audit described in `PARITY_AUDIT_FRAMEWORK.md`
+- [x] Create `parity_audit/PARITY_REGISTER.md`
+- [x] Create `parity_audit/EXECUTION_ORDER.md`
+- [x] Create one per-chart audit file for all 16 chart types
+- [ ] Review the audit findings before treating CE runs as parity validation instead of discovery
+
+**Post-audit implementation progress**
+- [x] Close the shared spec-body generation gap in `scripts/generate_chart_specs.py`
+- [x] Align the packaged Python theme font default with the R standard
+- [x] Add `line_chart` golden regression coverage and close the highest-risk `line_chart` prep/render parity tranche
+- [x] Close the `age_pyramid` benchmark/facet parity tranche
+- [x] Extend visible Altair caption handling across the regression-backed analytical charts touched in this pass
+- [x] Expand `bar_chart` beyond ranked-only rendering with diverging and stacked composition support
+- [x] Close the `scatter` single-geo-level prep guardrail and add opt-in reference-line/quadrant/highlight controls
+- [x] Add shared prep helper infrastructure for repeated field-selection and type-guard patterns
+- [x] Add shared Altair render helper infrastructure for repeated variant and reference-line behavior
+- [x] Close the `slopegraph` parity tranche with request-driven prep config, variant handling, curated entity selection, and richer subtitle/label behavior
+- [x] Advance the ranking/comparison family across `bump_chart` and `strength_strip` with shared comparison metadata, selection, and benchmark semantics
+- [x] Advance the matrix/distribution family across `boxplot`, `heatmap_table`, `waterfall`, and `correlation_heatmap` with shared matrix ordering, benchmark/facet composition, and richer regression coverage
+- [x] Advance the map family across `choropleth`, `highlight_context_map`, `proportional_symbol_map`, and `bivariate_choropleth` with shared map variants, facet semantics, and stronger geo test coverage
+- [x] Close the `hexbin` specialized tail with weight validation, request-driven filtering, faceted comparison rendering, and stronger geo coverage
 
 **Handoff sprint**
 - [x] Publisher handoff sprint has been defined in `publisher/docs/chart_engine_py_handoff_sprint.md`
+- [x] Chart Engine CE-0 queue scaffold exists under `publisher/chart_a_day/`
+- [x] Chart Engine CE-1 manual skill prompts exist under `publisher/chart_a_day/skills/`
+
+**Manual run tracker**
+- [ ] `q001` — `bar_chart` parity run (`ranking`)
+- [ ] `q002` — `bar_chart` parity run (`ranking`)
+- [ ] `q003` — `bar_chart` parity run (`ranking`)
+- [ ] `q004` — `line_chart` parity run (`trend`)
+- [ ] `q005` — `line_chart` parity run (`trend`)
+- [ ] `q006` — `line_chart` parity run (`trend`)
+- [ ] `q007` — `bar_chart` parity run (`compare_selected`)
+- [ ] `q008` — `line_chart` parity run (`compare_selected`)
+- [ ] `q009` — `boxplot` parity run (`distribution`)
+- [ ] `q010` — `boxplot` parity run (`distribution`)
+- [ ] `q011` — `bar_chart` parity run (`benchmark`)
+- [ ] `q012` — `bar_chart` parity run (`benchmark`)
+- [ ] `q013` — `bar_chart` parity run (`growth`)
+- [ ] `q014` — `bar_chart` parity run (`growth`)
+- [ ] `q015` — `bar_chart` parity run (`ranking`)
+- [ ] `q016` — `scatter` parity run (`correlation`)
+- [ ] `q017` — `slopegraph` parity run (`rank_change`)
+- [ ] `q018` — `bump_chart` parity run (`rank_change`)
+- [ ] `q019` — `heatmap_table` parity run (`composition`)
+- [ ] `q020` — `waterfall` parity run (`composition`)
+- [ ] `q021` — `strength_strip` parity run (`benchmark` / `composition`)
+- [ ] `q022` — `correlation_heatmap` parity run (`correlation`)
+- [ ] `q023` — `age_pyramid` parity run (`demographic`)
+- [ ] `q024` — `choropleth` parity run (`map`)
+- [ ] `q025` — `highlight_context_map` parity run (`map`)
+- [ ] `q026` — `proportional_symbol_map` parity run (`map`)
+- [ ] `q027` — `bivariate_choropleth` parity run (`map`)
+- [ ] `q028` — `hexbin` parity run (`correlation`)
+
+Legacy `status: ran` entries in `backlog.yaml` do not automatically count as complete here. Check an item off only when the dual-render workflow has produced both the R reference artifact and the Python parity artifact, and the parity review has been logged.
 
 **Vacancy rate content run tasks**
 - [ ] Install `chart_engine_py` in editable mode
-- [ ] Run `metro_rankings`
-- [ ] Run `national_trend`
-- [ ] Run `regional_trends`
+- [ ] Run `metro_rankings` through both stacks and save `chart_r.*` plus `chart_py.*`
+- [ ] Run `national_trend` through both stacks and save `chart_r.*` plus `chart_py.*`
+- [ ] Run `regional_trends` through both stacks and save `chart_r.*` plus `chart_py.*`
 - [ ] Save output artifacts for review
-- [ ] Record issues and fixes needed
+- [ ] Record issues and fixes needed, classifying each Python gap by `spec`, `prep`, `render`, `theme`, or export
 
 **Second-content validation**
 - [ ] Pick one housing content question that exercises a different chart type
 - [ ] Build the `ChartRequest` by hand
-- [ ] Render and save the chart
-- [ ] Review against `question.md` and `findings.md`
+- [ ] Render and save both the R reference chart and the Python parity chart
+- [ ] Review against `question.md`, `findings.md`, and the R reference output
 
 **Verification**
-- [ ] Charts match the visual hypothesis in the content docs
-- [ ] Benchmarks appear where expected
-- [ ] Axis labels, captions, and formatting are acceptable
-- [ ] Someone reading the findings would recognize the chart as the same story
+- [ ] Python charts match the visual hypothesis in the content docs
+- [ ] Python charts match the current R reference closely enough to be considered parity candidates
+- [ ] Benchmarks appear where expected in both outputs
+- [ ] Axis labels, captions, and formatting are acceptable in the Python output
+- [ ] Someone reading the findings would recognize the Python chart as the same story as the R chart
+
+**Notes**
+- CE-0 and CE-1 are complete in `publisher/`: the backlog, queue scaffold, and manual prompt skills are in place, and the first real Phase 5 proof point is now the CE-2 manual run for `q003` (fallback `q006` if the Gold data is missing).
+- The shared semantic chart rules remain chatbot-compatible for now, so the manual Chart Engine prompt normalizes legacy `bar` / `line` rule outputs to `bar_chart` / `line_chart` only when calling the Python package. Full catalog normalization waits for Phase 6 / CH-1 when the chatbot swaps off the R renderer.
+- Phase 5 now uses a dual-render workflow: every manual content run should emit an R reference chart and a Python parity candidate from the same result set, with the differences logged explicitly. The question is not just "does Python render?" but "does Python match the current visual contract closely enough to replace R for this chart/question pair?"
 
 ---
 
@@ -316,9 +389,9 @@
 
 ## Immediate Next Tasks
 
-- [ ] Finish Phase 1 verification by running a real editable install with dependencies available
-- [ ] Port `slopegraph` as the next Phase 3 chart on top of the new standards layer
-- [ ] Add the first chart-output regression tests before porting too many more charts
+- [ ] Start the Chart a Day parity QA loop with `q001` to `q015`
+- [ ] Continue the Chart a Day parity QA loop across `q016` to `q028`, including the new `hexbin` path
+- [ ] Log analytical or visual drift discovered in QA as refinement work instead of reopening the structural parity tranche
 
 ---
 

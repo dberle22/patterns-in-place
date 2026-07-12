@@ -1,5 +1,5 @@
 {
-  "$schema": "https://vega.github.io/schema/vega-lite/v4.17.0.json",
+  "$schema": "https://vega.github.io/schema/vega-lite/normalized.json",
   "config": {
     "axis": {
       "labelFont": "Inter",
@@ -9,149 +9,1009 @@
       "font": "Inter"
     },
     "view": {
-      "continuousHeight": 300,
-      "continuousWidth": 400,
       "stroke": null
     }
   },
-  "data": {
-    "name": "data-6edb958ae467278f67cc8e771e90b7ed"
-  },
   "datasets": {
-    "data-6edb958ae467278f67cc8e771e90b7ed": [
+    "dataset_1": [
       {
+        "abs_correlation": 1.0,
         "correlation": 1.0,
+        "correlation_display": 1.0,
         "geo_id": "correlation_matrix",
         "geo_level": "cbsa",
         "geo_name": "Correlation matrix",
+        "group": "Target",
         "label": "1.00",
+        "label_color": "#FFFFFF",
+        "method": "spearman",
         "metric_id": "Income",
         "metric_label": "Income",
         "metric_value": 1.0,
         "metric_x": "Income",
         "metric_y": "Income",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
         "source": "ACS",
         "time_window": "2023",
         "vintage": "2023"
       },
       {
+        "abs_correlation": 0.5,
         "correlation": 0.5,
+        "correlation_display": 0.5,
         "geo_id": "correlation_matrix",
         "geo_level": "cbsa",
         "geo_name": "Correlation matrix",
+        "group": "Target",
         "label": "0.50",
+        "label_color": "#1F2933",
+        "method": "spearman",
         "metric_id": "Jobs",
         "metric_label": "Jobs",
         "metric_value": 0.5,
         "metric_x": "Jobs",
         "metric_y": "Income",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
         "source": "ACS",
         "time_window": "2023",
         "vintage": "2023"
       },
       {
-        "correlation": 0.5,
+        "abs_correlation": 0.5,
+        "correlation": -0.5,
+        "correlation_display": -0.5,
         "geo_id": "correlation_matrix",
         "geo_level": "cbsa",
         "geo_name": "Correlation matrix",
+        "group": "Target",
+        "label": "-0.50",
+        "label_color": "#1F2933",
+        "method": "spearman",
+        "metric_id": "Rent",
+        "metric_label": "Rent",
+        "metric_value": -0.5,
+        "metric_x": "Rent",
+        "metric_y": "Income",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 0.5,
+        "correlation": 0.5,
+        "correlation_display": 0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Target",
         "label": "0.50",
+        "label_color": "#1F2933",
+        "method": "spearman",
         "metric_id": "Income",
         "metric_label": "Income",
         "metric_value": 0.5,
         "metric_x": "Income",
         "metric_y": "Jobs",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
         "source": "ACS",
         "time_window": "2023",
         "vintage": "2023"
       },
       {
+        "abs_correlation": 1.0,
         "correlation": 1.0,
+        "correlation_display": 1.0,
         "geo_id": "correlation_matrix",
         "geo_level": "cbsa",
         "geo_name": "Correlation matrix",
+        "group": "Target",
         "label": "1.00",
+        "label_color": "#FFFFFF",
+        "method": "spearman",
         "metric_id": "Jobs",
         "metric_label": "Jobs",
         "metric_value": 1.0,
         "metric_x": "Jobs",
         "metric_y": "Jobs",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 1.0,
+        "correlation": -1.0,
+        "correlation_display": -1.0,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Target",
+        "label": "-1.00",
+        "label_color": "#FFFFFF",
+        "method": "spearman",
+        "metric_id": "Rent",
+        "metric_label": "Rent",
+        "metric_value": -1.0,
+        "metric_x": "Rent",
+        "metric_y": "Jobs",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 0.5,
+        "correlation": -0.5,
+        "correlation_display": -0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Target",
+        "label": "-0.50",
+        "label_color": "#1F2933",
+        "method": "spearman",
+        "metric_id": "Income",
+        "metric_label": "Income",
+        "metric_value": -0.5,
+        "metric_x": "Income",
+        "metric_y": "Rent",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 1.0,
+        "correlation": -1.0,
+        "correlation_display": -1.0,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Target",
+        "label": "-1.00",
+        "label_color": "#FFFFFF",
+        "method": "spearman",
+        "metric_id": "Jobs",
+        "metric_label": "Jobs",
+        "metric_value": -1.0,
+        "metric_x": "Jobs",
+        "metric_y": "Rent",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 1.0,
+        "correlation": 1.0,
+        "correlation_display": 1.0,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Target",
+        "label": "1.00",
+        "label_color": "#FFFFFF",
+        "method": "spearman",
+        "metric_id": "Rent",
+        "metric_label": "Rent",
+        "metric_value": 1.0,
+        "metric_x": "Rent",
+        "metric_y": "Rent",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      }
+    ],
+    "dataset_2": [
+      {
+        "abs_correlation": 1.0,
+        "correlation": 1.0,
+        "correlation_display": 1.0,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Benchmark",
+        "label": "1.00",
+        "label_color": "#FFFFFF",
+        "method": "spearman",
+        "metric_id": "Income",
+        "metric_label": "Income",
+        "metric_value": 1.0,
+        "metric_x": "Income",
+        "metric_y": "Income",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 0.5,
+        "correlation": 0.5,
+        "correlation_display": 0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Benchmark",
+        "label": "0.50",
+        "label_color": "#1F2933",
+        "method": "spearman",
+        "metric_id": "Jobs",
+        "metric_label": "Jobs",
+        "metric_value": 0.5,
+        "metric_x": "Jobs",
+        "metric_y": "Income",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 0.5,
+        "correlation": 0.5,
+        "correlation_display": 0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Benchmark",
+        "label": "0.50",
+        "label_color": "#1F2933",
+        "method": "spearman",
+        "metric_id": "Rent",
+        "metric_label": "Rent",
+        "metric_value": 0.5,
+        "metric_x": "Rent",
+        "metric_y": "Income",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 0.5,
+        "correlation": 0.5,
+        "correlation_display": 0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Benchmark",
+        "label": "0.50",
+        "label_color": "#1F2933",
+        "method": "spearman",
+        "metric_id": "Income",
+        "metric_label": "Income",
+        "metric_value": 0.5,
+        "metric_x": "Income",
+        "metric_y": "Jobs",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 1.0,
+        "correlation": 1.0,
+        "correlation_display": 1.0,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Benchmark",
+        "label": "1.00",
+        "label_color": "#FFFFFF",
+        "method": "spearman",
+        "metric_id": "Jobs",
+        "metric_label": "Jobs",
+        "metric_value": 1.0,
+        "metric_x": "Jobs",
+        "metric_y": "Jobs",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 0.5,
+        "correlation": -0.5,
+        "correlation_display": -0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Benchmark",
+        "label": "-0.50",
+        "label_color": "#1F2933",
+        "method": "spearman",
+        "metric_id": "Rent",
+        "metric_label": "Rent",
+        "metric_value": -0.5,
+        "metric_x": "Rent",
+        "metric_y": "Jobs",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 0.5,
+        "correlation": 0.5,
+        "correlation_display": 0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Benchmark",
+        "label": "0.50",
+        "label_color": "#1F2933",
+        "method": "spearman",
+        "metric_id": "Income",
+        "metric_label": "Income",
+        "metric_value": 0.5,
+        "metric_x": "Income",
+        "metric_y": "Rent",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 0.5,
+        "correlation": -0.5,
+        "correlation_display": -0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Benchmark",
+        "label": "-0.50",
+        "label_color": "#1F2933",
+        "method": "spearman",
+        "metric_id": "Jobs",
+        "metric_label": "Jobs",
+        "metric_value": -0.5,
+        "metric_x": "Jobs",
+        "metric_y": "Rent",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 1.0,
+        "correlation": 1.0,
+        "correlation_display": 1.0,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Benchmark",
+        "label": "1.00",
+        "label_color": "#FFFFFF",
+        "method": "spearman",
+        "metric_id": "Rent",
+        "metric_label": "Rent",
+        "metric_value": 1.0,
+        "metric_x": "Rent",
+        "metric_y": "Rent",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      }
+    ],
+    "dataset_3": [
+      {
+        "abs_correlation": 1.0,
+        "correlation": 1.0,
+        "correlation_display": 1.0,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Target",
+        "label": "1.00",
+        "method": "spearman",
+        "metric_id": "Income",
+        "metric_label": "Income",
+        "metric_value": 1.0,
+        "metric_x": "Income",
+        "metric_y": "Income",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 0.5,
+        "correlation": 0.5,
+        "correlation_display": 0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Target",
+        "label": "0.50",
+        "method": "spearman",
+        "metric_id": "Jobs",
+        "metric_label": "Jobs",
+        "metric_value": 0.5,
+        "metric_x": "Jobs",
+        "metric_y": "Income",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 0.5,
+        "correlation": -0.5,
+        "correlation_display": -0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Target",
+        "label": "-0.50",
+        "method": "spearman",
+        "metric_id": "Rent",
+        "metric_label": "Rent",
+        "metric_value": -0.5,
+        "metric_x": "Rent",
+        "metric_y": "Income",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 0.5,
+        "correlation": 0.5,
+        "correlation_display": 0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Target",
+        "label": "0.50",
+        "method": "spearman",
+        "metric_id": "Income",
+        "metric_label": "Income",
+        "metric_value": 0.5,
+        "metric_x": "Income",
+        "metric_y": "Jobs",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 1.0,
+        "correlation": 1.0,
+        "correlation_display": 1.0,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Target",
+        "label": "1.00",
+        "method": "spearman",
+        "metric_id": "Jobs",
+        "metric_label": "Jobs",
+        "metric_value": 1.0,
+        "metric_x": "Jobs",
+        "metric_y": "Jobs",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 1.0,
+        "correlation": -1.0,
+        "correlation_display": -1.0,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Target",
+        "label": "-1.00",
+        "method": "spearman",
+        "metric_id": "Rent",
+        "metric_label": "Rent",
+        "metric_value": -1.0,
+        "metric_x": "Rent",
+        "metric_y": "Jobs",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 0.5,
+        "correlation": -0.5,
+        "correlation_display": -0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Target",
+        "label": "-0.50",
+        "method": "spearman",
+        "metric_id": "Income",
+        "metric_label": "Income",
+        "metric_value": -0.5,
+        "metric_x": "Income",
+        "metric_y": "Rent",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 1.0,
+        "correlation": -1.0,
+        "correlation_display": -1.0,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Target",
+        "label": "-1.00",
+        "method": "spearman",
+        "metric_id": "Jobs",
+        "metric_label": "Jobs",
+        "metric_value": -1.0,
+        "metric_x": "Jobs",
+        "metric_y": "Rent",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 1.0,
+        "correlation": 1.0,
+        "correlation_display": 1.0,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Target",
+        "label": "1.00",
+        "method": "spearman",
+        "metric_id": "Rent",
+        "metric_label": "Rent",
+        "metric_value": 1.0,
+        "metric_x": "Rent",
+        "metric_y": "Rent",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      }
+    ],
+    "dataset_4": [
+      {
+        "abs_correlation": 1.0,
+        "correlation": 1.0,
+        "correlation_display": 1.0,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Benchmark",
+        "label": "1.00",
+        "method": "spearman",
+        "metric_id": "Income",
+        "metric_label": "Income",
+        "metric_value": 1.0,
+        "metric_x": "Income",
+        "metric_y": "Income",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 0.5,
+        "correlation": 0.5,
+        "correlation_display": 0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Benchmark",
+        "label": "0.50",
+        "method": "spearman",
+        "metric_id": "Jobs",
+        "metric_label": "Jobs",
+        "metric_value": 0.5,
+        "metric_x": "Jobs",
+        "metric_y": "Income",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 0.5,
+        "correlation": 0.5,
+        "correlation_display": 0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Benchmark",
+        "label": "0.50",
+        "method": "spearman",
+        "metric_id": "Rent",
+        "metric_label": "Rent",
+        "metric_value": 0.5,
+        "metric_x": "Rent",
+        "metric_y": "Income",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 0.5,
+        "correlation": 0.5,
+        "correlation_display": 0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Benchmark",
+        "label": "0.50",
+        "method": "spearman",
+        "metric_id": "Income",
+        "metric_label": "Income",
+        "metric_value": 0.5,
+        "metric_x": "Income",
+        "metric_y": "Jobs",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 1.0,
+        "correlation": 1.0,
+        "correlation_display": 1.0,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Benchmark",
+        "label": "1.00",
+        "method": "spearman",
+        "metric_id": "Jobs",
+        "metric_label": "Jobs",
+        "metric_value": 1.0,
+        "metric_x": "Jobs",
+        "metric_y": "Jobs",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 0.5,
+        "correlation": -0.5,
+        "correlation_display": -0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Benchmark",
+        "label": "-0.50",
+        "method": "spearman",
+        "metric_id": "Rent",
+        "metric_label": "Rent",
+        "metric_value": -0.5,
+        "metric_x": "Rent",
+        "metric_y": "Jobs",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 0.5,
+        "correlation": 0.5,
+        "correlation_display": 0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Benchmark",
+        "label": "0.50",
+        "method": "spearman",
+        "metric_id": "Income",
+        "metric_label": "Income",
+        "metric_value": 0.5,
+        "metric_x": "Income",
+        "metric_y": "Rent",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 0.5,
+        "correlation": -0.5,
+        "correlation_display": -0.5,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Benchmark",
+        "label": "-0.50",
+        "method": "spearman",
+        "metric_id": "Jobs",
+        "metric_label": "Jobs",
+        "metric_value": -0.5,
+        "metric_x": "Jobs",
+        "metric_y": "Rent",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "abs_correlation": 1.0,
+        "correlation": 1.0,
+        "correlation_display": 1.0,
+        "geo_id": "correlation_matrix",
+        "geo_level": "cbsa",
+        "geo_name": "Correlation matrix",
+        "group": "Benchmark",
+        "label": "1.00",
+        "method": "spearman",
+        "metric_id": "Rent",
+        "metric_label": "Rent",
+        "metric_value": 1.0,
+        "metric_x": "Rent",
+        "metric_y": "Rent",
+        "missingness_policy": "pairwise.complete.obs",
+        "order_method": "clustered",
+        "question_id": null,
         "source": "ACS",
         "time_window": "2023",
         "vintage": "2023"
       }
     ]
   },
-  "height": 400,
-  "layer": [
-    {
-      "encoding": {
-        "color": {
-          "field": "correlation",
-          "legend": {
-            "title": "Correlation"
-          },
-          "scale": {
-            "domain": [
-              -1,
-              1
-            ],
-            "scheme": "redblue"
-          },
-          "type": "quantitative"
-        },
-        "tooltip": [
-          {
-            "field": "metric_x",
-            "type": "nominal"
-          },
-          {
-            "field": "metric_y",
-            "type": "nominal"
-          },
-          {
-            "field": "correlation",
-            "format": ".2f",
-            "type": "quantitative"
-          }
-        ],
-        "x": {
-          "field": "metric_x",
-          "title": null,
-          "type": "nominal"
-        },
-        "y": {
-          "field": "metric_y",
-          "title": null,
-          "type": "nominal"
-        }
-      },
-      "mark": "rect"
-    },
-    {
-      "encoding": {
-        "text": {
-          "field": "label",
-          "type": "nominal"
-        },
-        "x": {
-          "field": "metric_x",
-          "type": "nominal"
-        },
-        "y": {
-          "field": "metric_y",
-          "type": "nominal"
-        }
-      },
-      "mark": {
-        "color": "#1F2933",
-        "font": "Inter",
-        "type": "text"
-      }
-    }
-  ],
-  "title": "Correlation Heatmap",
+  "title": {
+    "fontSize": 18,
+    "subtitle": [
+      "Spearman correlation | Missingness: pairwise.complete.obs | Order: clustered",
+      "",
+      "Source: ACS | Vintage: 2023"
+    ],
+    "text": "Correlation Heatmap"
+  },
   "usermeta": {
     "caption": "Source: ACS | Vintage: 2023"
   },
-  "width": 640
+  "vconcat": [
+    {
+      "height": 400,
+      "layer": [
+        {
+          "data": {
+            "name": "dataset_3"
+          },
+          "encoding": {
+            "color": {
+              "field": "correlation_display",
+              "legend": {
+                "title": "Correlation"
+              },
+              "scale": {
+                "domain": [
+                  -1,
+                  1
+                ],
+                "scheme": "redblue"
+              },
+              "type": "quantitative"
+            },
+            "tooltip": [
+              {
+                "field": "metric_x",
+                "type": "nominal"
+              },
+              {
+                "field": "metric_y",
+                "type": "nominal"
+              },
+              {
+                "field": "correlation",
+                "format": ".2f",
+                "type": "quantitative"
+              }
+            ],
+            "x": {
+              "field": "metric_x",
+              "sort": null,
+              "title": null,
+              "type": "nominal"
+            },
+            "y": {
+              "field": "metric_y",
+              "sort": null,
+              "title": null,
+              "type": "nominal"
+            }
+          },
+          "mark": "rect"
+        },
+        {
+          "data": {
+            "name": "dataset_1"
+          },
+          "encoding": {
+            "color": {
+              "field": "label_color",
+              "scale": null,
+              "type": "nominal"
+            },
+            "text": {
+              "field": "label",
+              "type": "nominal"
+            },
+            "x": {
+              "field": "metric_x",
+              "type": "nominal"
+            },
+            "y": {
+              "field": "metric_y",
+              "type": "nominal"
+            }
+          },
+          "mark": {
+            "font": "Inter",
+            "type": "text"
+          }
+        }
+      ],
+      "title": "Target",
+      "width": 640
+    },
+    {
+      "height": 400,
+      "layer": [
+        {
+          "data": {
+            "name": "dataset_4"
+          },
+          "encoding": {
+            "color": {
+              "field": "correlation_display",
+              "legend": {
+                "title": "Correlation"
+              },
+              "scale": {
+                "domain": [
+                  -1,
+                  1
+                ],
+                "scheme": "redblue"
+              },
+              "type": "quantitative"
+            },
+            "tooltip": [
+              {
+                "field": "metric_x",
+                "type": "nominal"
+              },
+              {
+                "field": "metric_y",
+                "type": "nominal"
+              },
+              {
+                "field": "correlation",
+                "format": ".2f",
+                "type": "quantitative"
+              }
+            ],
+            "x": {
+              "field": "metric_x",
+              "sort": null,
+              "title": null,
+              "type": "nominal"
+            },
+            "y": {
+              "field": "metric_y",
+              "sort": null,
+              "title": null,
+              "type": "nominal"
+            }
+          },
+          "mark": "rect"
+        },
+        {
+          "data": {
+            "name": "dataset_2"
+          },
+          "encoding": {
+            "color": {
+              "field": "label_color",
+              "scale": null,
+              "type": "nominal"
+            },
+            "text": {
+              "field": "label",
+              "type": "nominal"
+            },
+            "x": {
+              "field": "metric_x",
+              "type": "nominal"
+            },
+            "y": {
+              "field": "metric_y",
+              "type": "nominal"
+            }
+          },
+          "mark": {
+            "font": "Inter",
+            "type": "text"
+          }
+        }
+      ],
+      "title": "Benchmark",
+      "width": 640
+    }
+  ]
 }

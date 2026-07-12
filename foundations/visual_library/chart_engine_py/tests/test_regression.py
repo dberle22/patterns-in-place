@@ -25,10 +25,12 @@ from chart_engine.request import ChartRequest, NumberFormat
 from chart_engine.theme import Theme
 from tests.fixtures import (
     age_pyramid_fixture,
+    bar_fixture,
     boxplot_fixture,
     bump_chart_fixture,
     correlation_heatmap_fixture,
     heatmap_table_fixture,
+    line_fixture,
     scatter_fixture,
     slopegraph_fixture,
     strength_strip_fixture,
@@ -111,6 +113,24 @@ class RegressionTests(unittest.TestCase):
     def test_scatter_chart_matches_golden(self) -> None:
         chart_dict = self._render_chart("scatter", scatter_fixture())
         self._assert_matches_golden("scatter", chart_dict)
+
+    def test_bar_chart_matches_golden(self) -> None:
+        request = ChartRequest(
+            data=bar_fixture(),
+            chart_type="bar_chart",
+            theme=self.theme,
+            column_mapping={
+                "geo_name": "entity",
+                "metric_value": "value",
+            },
+            number_format=NumberFormat(unit="percent", decimals=1),
+        )
+        chart_dict = render(request).chart.to_dict()
+        self._assert_matches_golden("bar_chart", chart_dict)
+
+    def test_line_chart_matches_golden(self) -> None:
+        chart_dict = self._render_chart("line_chart", line_fixture())
+        self._assert_matches_golden("line_chart", chart_dict)
 
     def test_slopegraph_matches_golden(self) -> None:
         chart_dict = self._render_chart("slopegraph", slopegraph_fixture())

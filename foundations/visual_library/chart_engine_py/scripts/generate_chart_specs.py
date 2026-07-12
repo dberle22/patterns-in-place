@@ -44,7 +44,19 @@ CHART_DEFINITIONS = [
         "altair",
         default_benchmark="national_median",
         required_fields_override=("period", "value", "series"),
-        optional_fields_override=("subtitle",),
+        optional_fields_override=(
+            "subtitle",
+            "metric_label",
+            "geo_name",
+            "time_window",
+            "group",
+            "highlight_flag",
+            "benchmark_value",
+            "index_base_period",
+            "note",
+            "source",
+            "vintage",
+        ),
     ),
     ChartDefinition("scatter", "scatter", "altair"),
     ChartDefinition("slopegraph", "slopegraph", "altair"),
@@ -85,6 +97,7 @@ def _extract_field_block(text: str, heading: str) -> list[str]:
 
 def _load_source_spec(defn: ChartDefinition) -> tuple[list[str], list[str], str]:
     spec_path = CHARTS_ROOT / defn.source_dir / f"{defn.source_dir}_spec.md"
+    question_coverage_path = CHARTS_ROOT / defn.source_dir / "question_coverage.md"
     raw = spec_path.read_text()
     required_fields = _extract_field_block(raw, "Required fields")
     optional_fields = _extract_field_block(raw, "Optional fields")
@@ -95,15 +108,22 @@ def _load_source_spec(defn: ChartDefinition) -> tuple[list[str], list[str], str]
     if defn.optional_fields_override is not None:
         optional_fields = list(defn.optional_fields_override)
 
-    # Keep the generated body intentionally short. The full narrative stays in
-    # the human-authored source doc; the package artifact only needs runtime
-    # context and a traceable link back to the source.
     title = raw.splitlines()[0].lstrip("#").strip()
+    spec_body = "\n".join(raw.splitlines()[1:]).strip()
+    question_coverage = question_coverage_path.read_text().strip() if question_coverage_path.exists() else ""
     docs = (
         f"# {title}\n\n"
         f"Generated from `visual_library/charts/{defn.source_dir}/{defn.source_dir}_spec.md`.\n\n"
-        f"Backend: `{defn.backend}`. Required fields: `{', '.join(required_fields)}`."
+        f"Backend: `{defn.backend}`. Required fields: `{', '.join(required_fields)}`.\n\n"
+        f"## Source Spec\n\n"
+        f"{spec_body}\n"
     )
+    if question_coverage:
+        docs += (
+            f"\n## Question Coverage\n\n"
+            f"Generated from `visual_library/charts/{defn.source_dir}/question_coverage.md`.\n\n"
+            f"{question_coverage}\n"
+        )
     return required_fields, optional_fields, docs
 
 

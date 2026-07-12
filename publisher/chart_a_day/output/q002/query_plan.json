@@ -1,0 +1,11 @@
+{
+  "question_type": "ranking",
+  "subject_area": "income",
+  "metric_id": "median_hh_income",
+  "source_table": "economics_income_wide",
+  "geo_level": "state",
+  "year": 2023,
+  "sort_direction": "desc",
+  "limit": 10,
+  "template_id": "ranking"
+}

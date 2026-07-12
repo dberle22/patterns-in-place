@@ -11,8 +11,9 @@ from __future__ import annotations
 import altair as alt
 import pandas as pd
 
-from ..captions import build_caption, wrap_text
+from ..captions import build_altair_title_params, build_data_caption
 from ..request import ChartRequest
+from ..render_helpers import identity_reference_line, median_quadrant_layers, resolve_variant
 from ..specs import ChartSpec
 
 
@@ -36,13 +37,21 @@ def render_scatter(df: pd.DataFrame, spec: ChartSpec, request: ChartRequest) -> 
     y_title = df["y_label"].iloc[0] if "y_label" in df.columns and len(df) else None
     d3_format = theme.d3_format(request.number_format)
 
-    title_params = {"text": title, "fontSize": theme.title_size()}
-    if subtitle:
-        title_params["subtitle"] = wrap_text(subtitle, int(cfg.get("subtitle_wrap_width", 120)))
+    caption = build_data_caption(df)
+    title_params = build_altair_title_params(
+        title,
+        subtitle=subtitle,
+        caption=caption,
+        title_size=theme.title_size(),
+        subtitle_wrap_width=int(cfg.get("subtitle_wrap_width", 120)),
+    )
 
     has_group = "group" in df.columns and df["group"].notna().any()
     has_size = _has_finite_size(df)
     has_labels = "label_flag" in df.columns and df["label_flag"].any()
+    highlight_mode = resolve_variant(request, keys=("highlight_mode",), default="labels" if has_labels else "none") or "none"
+    add_reference_line = bool(request.field_values.get("add_reference_line", False))
+    add_quadrants = bool(request.field_values.get("add_quadrants", False))
 
     tooltip = [
         alt.Tooltip("geo_name:N", title="Geography"),
@@ -62,7 +71,41 @@ def render_scatter(df: pd.DataFrame, spec: ChartSpec, request: ChartRequest) -> 
     }
     points = base.mark_circle(**point_kwargs)
 
-    if has_group:
+    if highlight_mode == "color":
+        color_flag = _highlight_color_flag(df)
+        points = points.encode(
+            color=alt.Color(
+                "color_flag:N",
+                scale=alt.Scale(
+                    domain=["base", "highlight"],
+                    range=[
+                        theme.color("comparison.neutral", cfg.get("base_color", "#A7B4C2")),
+                        theme.color("highlight.selection", "#2C7FB8"),
+                    ],
+                ),
+                legend=None,
+            )
+        )
+        df = color_flag
+        base = alt.Chart(df).encode(
+            x=alt.X("x_value:Q", title=x_title, axis=alt.Axis(format=d3_format)),
+            y=alt.Y("y_value:Q", title=y_title, axis=alt.Axis(format=d3_format)),
+            tooltip=tooltip,
+        )
+        points = base.mark_circle(**point_kwargs).encode(
+            color=alt.Color(
+                "color_flag:N",
+                scale=alt.Scale(
+                    domain=["base", "highlight"],
+                    range=[
+                        theme.color("comparison.neutral", cfg.get("base_color", "#A7B4C2")),
+                        theme.color("highlight.selection", "#2C7FB8"),
+                    ],
+                ),
+                legend=None,
+            )
+        )
+    elif has_group:
         groups = [str(value) for value in pd.unique(df["group"].dropna())]
         peer_palette = cfg.get("peer_palette", []) or [
             theme.color("comparison.peers.0", "#AEBECD"),
@@ -105,6 +148,12 @@ def render_scatter(df: pd.DataFrame, spec: ChartSpec, request: ChartRequest) -> 
         )
         layers.append(regression)
 
+    if add_reference_line:
+        layers.append(identity_reference_line(df, theme))
+
+    if add_quadrants and len(df):
+        layers.extend(median_quadrant_layers(df, theme))
+
     for ann in request.annotations:
         if ann.kind == "vline" and ann.x is not None:
             layers.append(
@@ -119,7 +168,7 @@ def render_scatter(df: pd.DataFrame, spec: ChartSpec, request: ChartRequest) -> 
                 .encode(y="y_value:Q")
             )
 
-    if has_labels:
+    if highlight_mode == "labels" and has_labels:
         labels = (
             alt.Chart(df[df["label_flag"]].copy())
             .mark_text(
@@ -136,11 +185,6 @@ def render_scatter(df: pd.DataFrame, spec: ChartSpec, request: ChartRequest) -> 
             )
         )
         layers.append(labels)
-
-    caption = build_caption(
-        source=df["source"].iloc[0] if "source" in df.columns and len(df) else None,
-        vintage=df["vintage"].iloc[0] if "vintage" in df.columns and len(df) else None,
-    )
 
     chart = (
         alt.layer(*layers)
@@ -167,8 +211,15 @@ def render_scatter(df: pd.DataFrame, spec: ChartSpec, request: ChartRequest) -> 
         .configure_view(stroke=None)
     )
 
-    # Altair does not expose plot captions in the same first-class way as
-    # ggplot2, so we keep the caption available on the returned chart object
-    # for downstream persistence/review workflows.
     chart.usermeta = {"caption": caption} if caption else {}
     return chart
+def _highlight_color_flag(df: pd.DataFrame) -> pd.DataFrame:
+    out = df.copy()
+    if "highlight_flag" in out.columns:
+        highlight_mask = out["highlight_flag"].fillna(False).astype(bool)
+    elif "label_flag" in out.columns:
+        highlight_mask = out["label_flag"].fillna(False).astype(bool)
+    else:
+        highlight_mask = pd.Series(False, index=out.index)
+    out["color_flag"] = highlight_mask.map({True: "highlight", False: "base"})
+    return out

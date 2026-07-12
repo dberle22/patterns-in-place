@@ -1,171 +1,540 @@
 {
-  "$schema": "https://vega.github.io/schema/vega-lite/v4.17.0.json",
+  "$schema": "https://vega.github.io/schema/vega-lite/normalized.json",
   "config": {
     "axis": {
+      "gridColor": "#D9E2EC",
+      "labelColor": "#5B6770",
       "labelFont": "Inter",
       "titleFont": "Inter"
     },
     "title": {
-      "font": "Inter"
+      "color": "#1F2933",
+      "font": "Inter",
+      "subtitleColor": "#52606D"
     },
     "view": {
-      "continuousHeight": 300,
-      "continuousWidth": 400,
       "stroke": null
     }
   },
   "datasets": {
-    "data-227f84a765c38f6b1c00bb0c8db83127": [
+    "dataset_1": [
       {
+        "benchmark_delta": -16.666666666666657,
+        "benchmark_flag": true,
+        "benchmark_label": "Benchmark",
+        "benchmark_normalized_value": 66.66666666666666,
+        "benchmark_value": 15.0,
+        "direction": "higher_is_better",
         "geo_id": "1",
         "geo_level": "cbsa",
-        "geo_name": "A",
-        "highlight_flag": false,
-        "metric_display_label": "Jobs",
+        "geo_name": "Target",
+        "highlight_flag": true,
+        "metric_display_label": "Economy: Jobs",
+        "metric_group": "Economy",
         "metric_id": "m1",
         "metric_label": "Jobs",
+        "metric_order": 1,
         "metric_value": 10.0,
-        "normalized_value": 25.0,
+        "missing_flag": false,
+        "normalized_value": 50.0,
+        "point_group": "highlight",
         "source": "ACS",
-        "time_window": "2023",
+        "time_window": "level",
         "vintage": "2023"
       },
       {
+        "benchmark_delta": 33.33333333333334,
+        "benchmark_flag": true,
+        "benchmark_label": "Benchmark",
+        "benchmark_normalized_value": 66.66666666666666,
+        "benchmark_value": 15.0,
+        "direction": "higher_is_better",
         "geo_id": "2",
         "geo_level": "cbsa",
-        "geo_name": "B",
+        "geo_name": "Peer",
         "highlight_flag": false,
-        "metric_display_label": "Jobs",
+        "metric_display_label": "Economy: Jobs",
+        "metric_group": "Economy",
         "metric_id": "m1",
         "metric_label": "Jobs",
+        "metric_order": 1,
         "metric_value": 20.0,
-        "normalized_value": 75.0,
+        "missing_flag": false,
+        "normalized_value": 100.0,
+        "point_group": "comparison",
         "source": "ACS",
-        "time_window": "2023",
+        "time_window": "level",
         "vintage": "2023"
       },
       {
+        "benchmark_delta": -16.666666666666657,
+        "benchmark_flag": true,
+        "benchmark_label": "Benchmark",
+        "benchmark_normalized_value": 66.66666666666666,
+        "benchmark_value": 35.0,
+        "direction": "higher_is_better",
         "geo_id": "1",
         "geo_level": "cbsa",
-        "geo_name": "A",
-        "highlight_flag": false,
-        "metric_display_label": "Income",
+        "geo_name": "Target",
+        "highlight_flag": true,
+        "metric_display_label": "Prosperity: Income",
+        "metric_group": "Prosperity",
         "metric_id": "m2",
         "metric_label": "Income",
+        "metric_order": 2,
         "metric_value": 30.0,
-        "normalized_value": 40.0,
+        "missing_flag": false,
+        "normalized_value": 50.0,
+        "point_group": "highlight",
         "source": "ACS",
-        "time_window": "2023",
+        "time_window": "level",
         "vintage": "2023"
       },
       {
+        "benchmark_delta": 33.33333333333334,
+        "benchmark_flag": true,
+        "benchmark_label": "Benchmark",
+        "benchmark_normalized_value": 66.66666666666666,
+        "benchmark_value": 35.0,
+        "direction": "higher_is_better",
         "geo_id": "2",
         "geo_level": "cbsa",
-        "geo_name": "B",
+        "geo_name": "Peer",
         "highlight_flag": false,
-        "metric_display_label": "Income",
+        "metric_display_label": "Prosperity: Income",
+        "metric_group": "Prosperity",
         "metric_id": "m2",
         "metric_label": "Income",
+        "metric_order": 2,
         "metric_value": 40.0,
-        "normalized_value": 90.0,
+        "missing_flag": false,
+        "normalized_value": 100.0,
+        "point_group": "comparison",
         "source": "ACS",
-        "time_window": "2023",
+        "time_window": "level",
         "vintage": "2023"
       }
     ],
-    "data-ef62f02f9d2b5bf16d3232a8523a743b": [
+    "dataset_2": [
       {
-        "metric_display_label": "Jobs",
-        "x_end": 100,
-        "x_start": 0
+        "benchmark_delta": -16.666666666666657,
+        "benchmark_flag": true,
+        "benchmark_label": "Benchmark",
+        "benchmark_normalized_value": 66.66666666666666,
+        "benchmark_value": 4.0,
+        "direction": "higher_is_better",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Target",
+        "highlight_flag": true,
+        "metric_display_label": "Economy: Jobs",
+        "metric_group": "Economy",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_order": 1,
+        "metric_value": 2.0,
+        "missing_flag": false,
+        "normalized_value": 50.0,
+        "point_group": "highlight",
+        "source": "ACS",
+        "time_window": "growth",
+        "vintage": "2023"
       },
       {
-        "metric_display_label": "Income",
-        "x_end": 100,
-        "x_start": 0
+        "benchmark_delta": 33.33333333333334,
+        "benchmark_flag": true,
+        "benchmark_label": "Benchmark",
+        "benchmark_normalized_value": 66.66666666666666,
+        "benchmark_value": 4.0,
+        "direction": "higher_is_better",
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "Peer",
+        "highlight_flag": false,
+        "metric_display_label": "Economy: Jobs",
+        "metric_group": "Economy",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_order": 1,
+        "metric_value": 5.0,
+        "missing_flag": false,
+        "normalized_value": 100.0,
+        "point_group": "comparison",
+        "source": "ACS",
+        "time_window": "growth",
+        "vintage": "2023"
+      },
+      {
+        "benchmark_delta": -16.666666666666657,
+        "benchmark_flag": true,
+        "benchmark_label": "Benchmark",
+        "benchmark_normalized_value": 66.66666666666666,
+        "benchmark_value": 0.0,
+        "direction": "higher_is_better",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Target",
+        "highlight_flag": true,
+        "metric_display_label": "Prosperity: Income",
+        "metric_group": "Prosperity",
+        "metric_id": "m2",
+        "metric_label": "Income",
+        "metric_order": 2,
+        "metric_value": -1.0,
+        "missing_flag": false,
+        "normalized_value": 50.0,
+        "point_group": "highlight",
+        "source": "ACS",
+        "time_window": "growth",
+        "vintage": "2023"
+      },
+      {
+        "benchmark_delta": 33.33333333333334,
+        "benchmark_flag": true,
+        "benchmark_label": "Benchmark",
+        "benchmark_normalized_value": 66.66666666666666,
+        "benchmark_value": 0.0,
+        "direction": "higher_is_better",
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "Peer",
+        "highlight_flag": false,
+        "metric_display_label": "Prosperity: Income",
+        "metric_group": "Prosperity",
+        "metric_id": "m2",
+        "metric_label": "Income",
+        "metric_order": 2,
+        "metric_value": 3.0,
+        "missing_flag": false,
+        "normalized_value": 100.0,
+        "point_group": "comparison",
+        "source": "ACS",
+        "time_window": "growth",
+        "vintage": "2023"
+      }
+    ],
+    "dataset_3": [
+      {
+        "benchmark_label": "Benchmark",
+        "benchmark_normalized_value": 66.66666666666666,
+        "metric_display_label": "Economy: Jobs",
+        "x_end": 100.0,
+        "x_start": 0.0
+      },
+      {
+        "benchmark_label": "Benchmark",
+        "benchmark_normalized_value": 66.66666666666666,
+        "metric_display_label": "Prosperity: Income",
+        "x_end": 100.0,
+        "x_start": 0.0
       }
     ]
   },
-  "height": 400,
-  "layer": [
+  "title": {
+    "fontSize": 18,
+    "subtitle": [
+      "Compared windows: growth, level | Category-grouped KPI profile | Benchmark markers show normalized comparison reference",
+      "",
+      "Source: ACS | Vintage: 2023"
+    ],
+    "text": "Strength Strip"
+  },
+  "vconcat": [
     {
-      "data": {
-        "name": "data-ef62f02f9d2b5bf16d3232a8523a743b"
-      },
-      "encoding": {
-        "x": {
-          "field": "x_start",
-          "type": "quantitative"
+      "height": 400,
+      "layer": [
+        {
+          "data": {
+            "name": "dataset_3"
+          },
+          "encoding": {
+            "x": {
+              "field": "x_start",
+              "type": "quantitative"
+            },
+            "x2": {
+              "field": "x_end"
+            },
+            "y": {
+              "field": "metric_display_label",
+              "sort": [
+                "Economy: Jobs",
+                "Prosperity: Income"
+              ],
+              "title": null,
+              "type": "nominal"
+            }
+          },
+          "mark": {
+            "color": "#A7B4C2",
+            "opacity": 0.45,
+            "strokeWidth": 6,
+            "type": "rule"
+          }
         },
-        "x2": {
-          "field": "x_end"
+        {
+          "data": {
+            "name": "dataset_2"
+          },
+          "encoding": {
+            "color": {
+              "field": "geo_name",
+              "legend": {
+                "title": null
+              },
+              "scale": {
+                "domain": [
+                  "Target",
+                  "Peer"
+                ],
+                "range": [
+                  "#2C7FB8",
+                  "#AEBECD"
+                ]
+              },
+              "type": "nominal"
+            },
+            "tooltip": [
+              {
+                "field": "geo_name",
+                "title": "Geography",
+                "type": "nominal"
+              },
+              {
+                "field": "metric_label",
+                "title": "Metric",
+                "type": "nominal"
+              },
+              {
+                "field": "normalized_value",
+                "format": ".1f",
+                "title": "Percentile",
+                "type": "quantitative"
+              },
+              {
+                "field": "benchmark_delta",
+                "format": ".1f",
+                "title": "Benchmark delta",
+                "type": "quantitative"
+              }
+            ],
+            "x": {
+              "field": "normalized_value",
+              "scale": {
+                "domain": [
+                  0,
+                  100
+                ]
+              },
+              "title": "Percentile within comparison universe",
+              "type": "quantitative"
+            },
+            "y": {
+              "field": "metric_display_label",
+              "sort": [
+                "Economy: Jobs",
+                "Prosperity: Income"
+              ],
+              "title": null,
+              "type": "nominal"
+            }
+          },
+          "mark": {
+            "filled": true,
+            "size": 90,
+            "type": "point"
+          }
         },
-        "y": {
-          "field": "metric_display_label",
-          "title": null,
-          "type": "nominal"
+        {
+          "data": {
+            "name": "dataset_3"
+          },
+          "encoding": {
+            "tooltip": [
+              {
+                "field": "benchmark_label",
+                "title": "Benchmark",
+                "type": "nominal"
+              },
+              {
+                "field": "benchmark_normalized_value",
+                "format": ".1f",
+                "title": "Benchmark percentile",
+                "type": "quantitative"
+              }
+            ],
+            "x": {
+              "field": "benchmark_normalized_value",
+              "type": "quantitative"
+            },
+            "y": {
+              "field": "metric_display_label",
+              "sort": [
+                "Economy: Jobs",
+                "Prosperity: Income"
+              ],
+              "title": null,
+              "type": "nominal"
+            }
+          },
+          "mark": {
+            "color": "#52606D",
+            "size": 18,
+            "thickness": 2,
+            "type": "tick"
+          }
         }
-      },
-      "mark": {
-        "color": "#A7B4C2",
-        "strokeWidth": 6,
-        "type": "rule"
-      }
+      ],
+      "title": "growth",
+      "width": 640
     },
     {
-      "data": {
-        "name": "data-227f84a765c38f6b1c00bb0c8db83127"
-      },
-      "encoding": {
-        "color": {
-          "field": "geo_name",
-          "legend": {
-            "title": null
+      "height": 400,
+      "layer": [
+        {
+          "data": {
+            "name": "dataset_3"
           },
-          "type": "nominal"
-        },
-        "tooltip": [
-          {
-            "field": "geo_name",
-            "type": "nominal"
+          "encoding": {
+            "x": {
+              "field": "x_start",
+              "type": "quantitative"
+            },
+            "x2": {
+              "field": "x_end"
+            },
+            "y": {
+              "field": "metric_display_label",
+              "sort": [
+                "Economy: Jobs",
+                "Prosperity: Income"
+              ],
+              "title": null,
+              "type": "nominal"
+            }
           },
-          {
-            "field": "metric_label",
-            "type": "nominal"
-          },
-          {
-            "field": "normalized_value",
-            "format": ".1f",
-            "type": "quantitative"
+          "mark": {
+            "color": "#A7B4C2",
+            "opacity": 0.45,
+            "strokeWidth": 6,
+            "type": "rule"
           }
-        ],
-        "x": {
-          "field": "normalized_value",
-          "scale": {
-            "domain": [
-              0,
-              100
-            ]
-          },
-          "title": "Percentile",
-          "type": "quantitative"
         },
-        "y": {
-          "field": "metric_display_label",
-          "title": null,
-          "type": "nominal"
+        {
+          "data": {
+            "name": "dataset_1"
+          },
+          "encoding": {
+            "color": {
+              "field": "geo_name",
+              "legend": {
+                "title": null
+              },
+              "scale": {
+                "domain": [
+                  "Target",
+                  "Peer"
+                ],
+                "range": [
+                  "#2C7FB8",
+                  "#AEBECD"
+                ]
+              },
+              "type": "nominal"
+            },
+            "tooltip": [
+              {
+                "field": "geo_name",
+                "title": "Geography",
+                "type": "nominal"
+              },
+              {
+                "field": "metric_label",
+                "title": "Metric",
+                "type": "nominal"
+              },
+              {
+                "field": "normalized_value",
+                "format": ".1f",
+                "title": "Percentile",
+                "type": "quantitative"
+              },
+              {
+                "field": "benchmark_delta",
+                "format": ".1f",
+                "title": "Benchmark delta",
+                "type": "quantitative"
+              }
+            ],
+            "x": {
+              "field": "normalized_value",
+              "scale": {
+                "domain": [
+                  0,
+                  100
+                ]
+              },
+              "title": "Percentile within comparison universe",
+              "type": "quantitative"
+            },
+            "y": {
+              "field": "metric_display_label",
+              "sort": [
+                "Economy: Jobs",
+                "Prosperity: Income"
+              ],
+              "title": null,
+              "type": "nominal"
+            }
+          },
+          "mark": {
+            "filled": true,
+            "size": 90,
+            "type": "point"
+          }
+        },
+        {
+          "data": {
+            "name": "dataset_3"
+          },
+          "encoding": {
+            "tooltip": [
+              {
+                "field": "benchmark_label",
+                "title": "Benchmark",
+                "type": "nominal"
+              },
+              {
+                "field": "benchmark_normalized_value",
+                "format": ".1f",
+                "title": "Benchmark percentile",
+                "type": "quantitative"
+              }
+            ],
+            "x": {
+              "field": "benchmark_normalized_value",
+              "type": "quantitative"
+            },
+            "y": {
+              "field": "metric_display_label",
+              "sort": [
+                "Economy: Jobs",
+                "Prosperity: Income"
+              ],
+              "title": null,
+              "type": "nominal"
+            }
+          },
+          "mark": {
+            "color": "#52606D",
+            "size": 18,
+            "thickness": 2,
+            "type": "tick"
+          }
         }
-      },
-      "mark": {
-        "filled": true,
-        "size": 80,
-        "type": "point"
-      }
+      ],
+      "title": "level",
+      "width": 640
     }
-  ],
-  "title": "Strength Strip / Scorecard Bars",
-  "usermeta": {
-    "caption": "Source: ACS | Vintage: 2023"
-  },
-  "width": 640
+  ]
 }

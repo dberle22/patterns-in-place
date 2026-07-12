@@ -10,6 +10,8 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import Any
 
+import math
+
 from ..captions import build_caption, wrap_text
 
 
@@ -63,6 +65,27 @@ def create_figure(request: Any, chart_type: str) -> tuple[Any, Any]:
     fig.patch.set_facecolor(request.theme.color("background.canvas", "#F7F9FB"))
     ax.set_facecolor(request.theme.color("background.panel", "#FFFFFF"))
     return fig, ax
+
+
+def create_subplots(request: Any, chart_type: str, panel_count: int, *, columns: int = 2) -> tuple[Any, list[Any]]:
+    plt, _, _, _, _, _ = require_matplotlib()
+    dpi = 96
+    base_width = request.dimensions.width if request.dimensions and request.dimensions.width else request.theme.width(chart_type)
+    base_height = request.dimensions.height if request.dimensions and request.dimensions.height else request.theme.height(chart_type)
+    columns = max(1, min(columns, panel_count))
+    rows = int(math.ceil(panel_count / columns))
+    fig, axes = plt.subplots(
+        rows,
+        columns,
+        figsize=((base_width * columns) / dpi, (base_height * rows) / dpi),
+        dpi=dpi,
+        squeeze=False,
+    )
+    fig.patch.set_facecolor(request.theme.color("background.canvas", "#F7F9FB"))
+    axes_list = axes.flatten().tolist()
+    for ax in axes_list:
+        ax.set_facecolor(request.theme.color("background.panel", "#FFFFFF"))
+    return fig, axes_list
 
 
 def apply_titles(fig: Any, ax: Any, request: Any, chart_type: str, default_title: str, default_subtitle: str | None = None) -> None:

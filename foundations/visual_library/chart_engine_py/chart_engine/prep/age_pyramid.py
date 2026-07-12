@@ -26,9 +26,17 @@ def prep_age_pyramid(df: pd.DataFrame, spec: ChartSpec) -> pd.DataFrame:
         out["pop_share"] = out["pop_value"] / totals.where(totals != 0)
 
     out["sex"] = out["sex"].replace({"M": "Male", "F": "Female"})
+    if "benchmark_label" not in out.columns:
+        out["benchmark_label"] = pd.NA
+    if "facet_label" not in out.columns:
+        out["facet_label"] = out["geo_name"].astype(str)
     out["plot_value"] = out.apply(lambda row: -row["pop_share"] if str(row["sex"]).lower() == "male" else row["pop_share"], axis=1)
     out["plot_abs_value"] = out["pop_share"].abs()
-    out["highlight_flag"] = out["highlight_flag"].fillna(True).astype(bool) if "highlight_flag" in out.columns else True
+    if "highlight_flag" in out.columns:
+        out["highlight_flag"] = out["highlight_flag"].fillna(False).astype(bool)
+    else:
+        out["highlight_flag"] = out["benchmark_label"].isna()
+    out["comparison_role"] = out["highlight_flag"].map({True: "Selected geography", False: "Benchmark"})
     ordered_bins = sorted(out["age_bin"].astype(str).unique(), key=_age_sort_key)
     out["age_bin"] = pd.Categorical(out["age_bin"].astype(str), categories=ordered_bins, ordered=True)
-    return out.sort_values(["age_bin", "sex"]).copy()
+    return out.sort_values(["facet_label", "period", "age_bin", "sex"]).copy()

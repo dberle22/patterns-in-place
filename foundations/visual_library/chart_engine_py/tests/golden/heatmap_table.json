@@ -1,5 +1,5 @@
 {
-  "$schema": "https://vega.github.io/schema/vega-lite/v4.17.0.json",
+  "$schema": "https://vega.github.io/schema/vega-lite/normalized.json",
   "config": {
     "axis": {
       "labelFont": "Inter",
@@ -9,78 +9,409 @@
       "font": "Inter"
     },
     "view": {
-      "continuousHeight": 300,
-      "continuousWidth": 400,
       "stroke": null
     }
   },
-  "data": {
-    "name": "data-febf40dbe1c8cb3b8d75ef89d941bfd6"
-  },
   "datasets": {
-    "data-febf40dbe1c8cb3b8d75ef89d941bfd6": [
+    "dataset_1": [
       {
         "cell_label": "10.0",
+        "column_id": "m1",
         "column_label": "Jobs",
-        "fill_value": 0.1,
+        "direction": "higher_is_better",
+        "fill_value": 50.0,
         "geo_id": "1",
         "geo_level": "cbsa",
-        "geo_name": "A",
+        "geo_name": "Target",
+        "heatmap_variant": "geo_metric",
+        "highlight_flag": true,
+        "metric_group": "",
         "metric_id": "m1",
         "metric_label": "Jobs",
+        "metric_order": 1,
         "metric_value": 10.0,
         "missing_flag": false,
-        "normalized_value": 0.1,
-        "row_label": "A",
+        "normalized_value": 50.0,
+        "period": "",
+        "row_id": "1",
+        "row_label": "Target",
+        "row_order": 2,
         "source": "ACS",
+        "time_window": "2023",
         "vintage": "2023"
       },
       {
         "cell_label": "20.0",
+        "column_id": "m2",
         "column_label": "Income",
-        "fill_value": 0.3,
+        "direction": "higher_is_better",
+        "fill_value": 50.0,
         "geo_id": "1",
         "geo_level": "cbsa",
-        "geo_name": "A",
+        "geo_name": "Target",
+        "heatmap_variant": "geo_metric",
+        "highlight_flag": true,
+        "metric_group": "",
         "metric_id": "m2",
         "metric_label": "Income",
+        "metric_order": 2,
         "metric_value": 20.0,
         "missing_flag": false,
-        "normalized_value": 0.3,
-        "row_label": "A",
+        "normalized_value": 50.0,
+        "period": "",
+        "row_id": "1",
+        "row_label": "Target",
+        "row_order": 2,
         "source": "ACS",
+        "time_window": "2023",
         "vintage": "2023"
       },
       {
         "cell_label": "30.0",
-        "column_label": "Jobs",
-        "fill_value": 0.7,
-        "geo_id": "2",
+        "column_id": "m3",
+        "column_label": "Rent",
+        "direction": "lower_is_better",
+        "fill_value": 50.0,
+        "geo_id": "1",
         "geo_level": "cbsa",
-        "geo_name": "B",
-        "metric_id": "m1",
-        "metric_label": "Jobs",
+        "geo_name": "Target",
+        "heatmap_variant": "geo_metric",
+        "highlight_flag": true,
+        "metric_group": "",
+        "metric_id": "m3",
+        "metric_label": "Rent",
+        "metric_order": 3,
         "metric_value": 30.0,
         "missing_flag": false,
-        "normalized_value": 0.7,
-        "row_label": "B",
+        "normalized_value": 50.0,
+        "period": "",
+        "row_id": "1",
+        "row_label": "Target",
+        "row_order": 2,
         "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "cell_label": "30.0",
+        "column_id": "m1",
+        "column_label": "Jobs",
+        "direction": "higher_is_better",
+        "fill_value": 100.0,
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "Peer",
+        "heatmap_variant": "geo_metric",
+        "highlight_flag": false,
+        "metric_group": "",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_order": 1,
+        "metric_value": 30.0,
+        "missing_flag": false,
+        "normalized_value": 100.0,
+        "period": "",
+        "row_id": "2",
+        "row_label": "Peer",
+        "row_order": 1,
+        "source": "ACS",
+        "time_window": "2023",
         "vintage": "2023"
       },
       {
         "cell_label": "40.0",
+        "column_id": "m2",
         "column_label": "Income",
-        "fill_value": 0.9,
+        "direction": "higher_is_better",
+        "fill_value": 100.0,
         "geo_id": "2",
         "geo_level": "cbsa",
-        "geo_name": "B",
+        "geo_name": "Peer",
+        "heatmap_variant": "geo_metric",
+        "highlight_flag": false,
+        "metric_group": "",
         "metric_id": "m2",
         "metric_label": "Income",
+        "metric_order": 2,
         "metric_value": 40.0,
         "missing_flag": false,
-        "normalized_value": 0.9,
-        "row_label": "B",
+        "normalized_value": 100.0,
+        "period": "",
+        "row_id": "2",
+        "row_label": "Peer",
+        "row_order": 1,
         "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "cell_label": "25.0",
+        "column_id": "m3",
+        "column_label": "Rent",
+        "direction": "lower_is_better",
+        "fill_value": 100.0,
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "Peer",
+        "heatmap_variant": "geo_metric",
+        "highlight_flag": false,
+        "metric_group": "",
+        "metric_id": "m3",
+        "metric_label": "Rent",
+        "metric_order": 3,
+        "metric_value": 25.0,
+        "missing_flag": false,
+        "normalized_value": 100.0,
+        "period": "",
+        "row_id": "2",
+        "row_label": "Peer",
+        "row_order": 1,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      }
+    ],
+    "dataset_2": [
+      {
+        "cell_label": "10.0",
+        "column_id": "m1",
+        "column_label": "Jobs",
+        "direction": "higher_is_better",
+        "fill_value": 50.0,
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Target",
+        "heatmap_variant": "geo_metric",
+        "highlight_flag": true,
+        "metric_group": "",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_order": 1,
+        "metric_value": 10.0,
+        "missing_flag": false,
+        "normalized_value": 50.0,
+        "period": "",
+        "row_id": "1",
+        "row_label": "Target",
+        "row_order": 2,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "cell_label": "20.0",
+        "column_id": "m2",
+        "column_label": "Income",
+        "direction": "higher_is_better",
+        "fill_value": 50.0,
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Target",
+        "heatmap_variant": "geo_metric",
+        "highlight_flag": true,
+        "metric_group": "",
+        "metric_id": "m2",
+        "metric_label": "Income",
+        "metric_order": 2,
+        "metric_value": 20.0,
+        "missing_flag": false,
+        "normalized_value": 50.0,
+        "period": "",
+        "row_id": "1",
+        "row_label": "Target",
+        "row_order": 2,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "cell_label": "30.0",
+        "column_id": "m3",
+        "column_label": "Rent",
+        "direction": "lower_is_better",
+        "fill_value": 50.0,
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Target",
+        "heatmap_variant": "geo_metric",
+        "highlight_flag": true,
+        "metric_group": "",
+        "metric_id": "m3",
+        "metric_label": "Rent",
+        "metric_order": 3,
+        "metric_value": 30.0,
+        "missing_flag": false,
+        "normalized_value": 50.0,
+        "period": "",
+        "row_id": "1",
+        "row_label": "Target",
+        "row_order": 2,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      }
+    ],
+    "dataset_3": [
+      {
+        "cell_label": "10.0",
+        "column_id": "m1",
+        "column_label": "Jobs",
+        "direction": "higher_is_better",
+        "fill_value": 50.0,
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Target",
+        "heatmap_variant": "geo_metric",
+        "highlight_flag": true,
+        "label_color": "#1F2933",
+        "metric_group": "",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_order": 1,
+        "metric_value": 10.0,
+        "missing_flag": false,
+        "normalized_value": 50.0,
+        "period": "",
+        "row_id": "1",
+        "row_label": "Target",
+        "row_order": 2,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "cell_label": "20.0",
+        "column_id": "m2",
+        "column_label": "Income",
+        "direction": "higher_is_better",
+        "fill_value": 50.0,
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Target",
+        "heatmap_variant": "geo_metric",
+        "highlight_flag": true,
+        "label_color": "#1F2933",
+        "metric_group": "",
+        "metric_id": "m2",
+        "metric_label": "Income",
+        "metric_order": 2,
+        "metric_value": 20.0,
+        "missing_flag": false,
+        "normalized_value": 50.0,
+        "period": "",
+        "row_id": "1",
+        "row_label": "Target",
+        "row_order": 2,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "cell_label": "30.0",
+        "column_id": "m3",
+        "column_label": "Rent",
+        "direction": "lower_is_better",
+        "fill_value": 50.0,
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Target",
+        "heatmap_variant": "geo_metric",
+        "highlight_flag": true,
+        "label_color": "#1F2933",
+        "metric_group": "",
+        "metric_id": "m3",
+        "metric_label": "Rent",
+        "metric_order": 3,
+        "metric_value": 30.0,
+        "missing_flag": false,
+        "normalized_value": 50.0,
+        "period": "",
+        "row_id": "1",
+        "row_label": "Target",
+        "row_order": 2,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "cell_label": "30.0",
+        "column_id": "m1",
+        "column_label": "Jobs",
+        "direction": "higher_is_better",
+        "fill_value": 100.0,
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "Peer",
+        "heatmap_variant": "geo_metric",
+        "highlight_flag": false,
+        "label_color": "#FFFFFF",
+        "metric_group": "",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_order": 1,
+        "metric_value": 30.0,
+        "missing_flag": false,
+        "normalized_value": 100.0,
+        "period": "",
+        "row_id": "2",
+        "row_label": "Peer",
+        "row_order": 1,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "cell_label": "40.0",
+        "column_id": "m2",
+        "column_label": "Income",
+        "direction": "higher_is_better",
+        "fill_value": 100.0,
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "Peer",
+        "heatmap_variant": "geo_metric",
+        "highlight_flag": false,
+        "label_color": "#FFFFFF",
+        "metric_group": "",
+        "metric_id": "m2",
+        "metric_label": "Income",
+        "metric_order": 2,
+        "metric_value": 40.0,
+        "missing_flag": false,
+        "normalized_value": 100.0,
+        "period": "",
+        "row_id": "2",
+        "row_label": "Peer",
+        "row_order": 1,
+        "source": "ACS",
+        "time_window": "2023",
+        "vintage": "2023"
+      },
+      {
+        "cell_label": "25.0",
+        "column_id": "m3",
+        "column_label": "Rent",
+        "direction": "lower_is_better",
+        "fill_value": 100.0,
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "Peer",
+        "heatmap_variant": "geo_metric",
+        "highlight_flag": false,
+        "label_color": "#FFFFFF",
+        "metric_group": "",
+        "metric_id": "m3",
+        "metric_label": "Rent",
+        "metric_order": 3,
+        "metric_value": 25.0,
+        "missing_flag": false,
+        "normalized_value": 100.0,
+        "period": "",
+        "row_id": "2",
+        "row_label": "Peer",
+        "row_order": 1,
+        "source": "ACS",
+        "time_window": "2023",
         "vintage": "2023"
       }
     ]
@@ -88,14 +419,21 @@
   "height": 400,
   "layer": [
     {
+      "data": {
+        "name": "dataset_1"
+      },
       "encoding": {
         "color": {
           "field": "fill_value",
           "legend": {
-            "title": null
+            "title": "Better percentile"
           },
           "scale": {
-            "scheme": "blues"
+            "domain": [
+              0,
+              100
+            ],
+            "scheme": "redyellowgreen"
           },
           "type": "quantitative"
         },
@@ -111,6 +449,11 @@
           {
             "field": "cell_label",
             "type": "nominal"
+          },
+          {
+            "field": "fill_value",
+            "format": ".1f",
+            "type": "quantitative"
           }
         ],
         "x": {
@@ -127,7 +470,36 @@
       "mark": "rect"
     },
     {
+      "data": {
+        "name": "dataset_2"
+      },
       "encoding": {
+        "x": {
+          "field": "column_label",
+          "type": "nominal"
+        },
+        "y": {
+          "field": "row_label",
+          "type": "nominal"
+        }
+      },
+      "mark": {
+        "fillOpacity": 0,
+        "stroke": "#2C7FB8",
+        "strokeWidth": 2,
+        "type": "rect"
+      }
+    },
+    {
+      "data": {
+        "name": "dataset_3"
+      },
+      "encoding": {
+        "color": {
+          "field": "label_color",
+          "scale": null,
+          "type": "nominal"
+        },
         "text": {
           "field": "cell_label",
           "type": "nominal"
@@ -142,13 +514,20 @@
         }
       },
       "mark": {
-        "color": "#1F2933",
         "font": "Inter",
         "type": "text"
       }
     }
   ],
-  "title": "Heatmap Table",
+  "title": {
+    "fontSize": 18,
+    "subtitle": [
+      "Matrix: geo x metric | Time window: 2023 | Fill shows polarity-aligned percentile",
+      "",
+      "Source: ACS | Vintage: 2023"
+    ],
+    "text": "Heatmap Table"
+  },
   "usermeta": {
     "caption": "Source: ACS | Vintage: 2023"
   },
