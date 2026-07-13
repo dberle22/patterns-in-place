@@ -16,10 +16,12 @@ def _boxplot_subtitle(df: pd.DataFrame, request: ChartRequest) -> str | None:
     cfg = df.attrs.get("chart_config", {})
     parts: list[str] = []
     if "time_window" in df.columns and len(df):
-        parts.append(f"Time window: {df['time_window'].iloc[0]}")
-    parts.append(f"Grouped by {cfg.get('group_label', cfg.get('group_field', 'group'))}")
-    if str(cfg.get("order_groups", "median_desc")).lower() in {"median_desc", "median_asc"}:
-        parts.append("Groups ordered by median")
+        parts.append(f"{df['time_window'].iloc[0]} snapshot")
+    group_count = int(df["box_group"].nunique()) if "box_group" in df.columns else 0
+    if group_count > 1:
+        parts.append(f"Grouped by {cfg.get('group_label', cfg.get('group_field', 'group'))}")
+        if str(cfg.get("order_groups", "median_desc")).lower() in {"median_desc", "median_asc"}:
+            parts.append("Groups ordered by median")
     if cfg.get("winsorize_display") and cfg.get("trim_quantiles"):
         parts.append("Displayed values are winsorized for readability")
     return " | ".join(parts) if parts else None
@@ -28,15 +30,22 @@ def _boxplot_subtitle(df: pd.DataFrame, request: ChartRequest) -> str | None:
 def _build_boxplot_panel(df: pd.DataFrame, spec: ChartSpec, request: ChartRequest) -> alt.Chart:
     theme = request.theme
     cfg = df.attrs.get("chart_config", {})
-    flip = bool(cfg.get("flip") or request.field_values.get("flip") or request.field_values.get("horizontal"))
+    group_count = int(df["box_group"].nunique()) if "box_group" in df.columns else 0
+    explicit_flip = cfg.get("flip")
+    if explicit_flip is None and not request.field_values.get("flip") and not request.field_values.get("horizontal"):
+        explicit_flip = group_count <= 1
+    flip = bool(explicit_flip or request.field_values.get("flip") or request.field_values.get("horizontal"))
     metric_title = df["metric_label"].iloc[0] if "metric_label" in df.columns and len(df) else None
     value_axis = alt.Axis(format=theme.d3_format(request.number_format))
     category_sort = list(df["box_group"].cat.categories) if hasattr(df["box_group"], "cat") else None
 
-    x_encoding = alt.X("box_group:N", title=None, sort=category_sort)
+    x_encoding = alt.X("box_group:N", title=None, sort=category_sort, axis=alt.Axis(labelAngle=0))
     y_encoding = alt.Y("plot_value:Q", title=metric_title, axis=value_axis)
     if flip:
-        x_encoding, y_encoding = alt.X("plot_value:Q", title=metric_title, axis=value_axis), alt.Y("box_group:N", title=None, sort=category_sort)
+        x_encoding, y_encoding = (
+            alt.X("plot_value:Q", title=metric_title, axis=value_axis),
+            alt.Y("box_group:N", title=None, sort=category_sort, axis=alt.Axis(labelLimit=220)),
+        )
 
     base = alt.Chart(df)
     boxes = base.mark_boxplot(
@@ -107,10 +116,13 @@ def _build_boxplot_panel(df: pd.DataFrame, spec: ChartSpec, request: ChartReques
     if benchmark_value is not None and not flip:
         layers.extend(horizontal_benchmark_layers(theme, cfg, benchmark_value, benchmark_label))
 
-    return alt.layer(*layers, data=df).properties(
-        width=theme.width("boxplot"),
-        height=theme.height("boxplot"),
-    )
+    width = theme.width("boxplot")
+    height = theme.height("boxplot")
+    if flip and group_count <= 1:
+        width = max(width, 720)
+        height = min(height, 220)
+
+    return alt.layer(*layers, data=df).properties(width=width, height=height)
 
 
 def render_boxplot(df: pd.DataFrame, spec: ChartSpec, request: ChartRequest) -> alt.Chart:
@@ -138,8 +150,20 @@ def render_boxplot(df: pd.DataFrame, spec: ChartSpec, request: ChartRequest) -> 
     else:
         out = _build_boxplot_panel(df, spec, request).properties(title=alt.TitleParams(**title_params))
 
-    out = out.configure_axis(labelFont=theme.font_family(), titleFont=theme.font_family()).configure_title(
-        font=theme.font_family()
-    ).configure_view(stroke=None)
+    out = (
+        out.configure_axis(
+            labelFont=theme.font_family(),
+            titleFont=theme.font_family(),
+            labelColor=theme.color("neutral.axis", "#5B6770"),
+            gridColor=theme.color("neutral.grid_major", "#D9E2EC"),
+        )
+        .configure_title(
+            font=theme.font_family(),
+            color=theme.color("neutral.text", "#1F2933"),
+            subtitleColor=theme.color("neutral.text_muted", "#52606D"),
+            subtitleFont=theme.font_family(),
+        )
+        .configure_view(stroke=None)
+    )
     out.usermeta = {"caption": caption} if caption else {}
     return out

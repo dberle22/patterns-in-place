@@ -69,12 +69,17 @@ def render_heatmap_table(df: pd.DataFrame, spec: ChartSpec, request: ChartReques
             lambda value: "#FFFFFF" if pd.notna(value) and (value >= 78 or value <= 18) else theme.color("neutral.text", "#1F2933")
         )
         label_df.loc[label_df["missing_flag"].fillna(False).astype(bool), "cell_label"] = missing_label
+        label_palette = list(dict.fromkeys(label_df["label_color"].dropna().astype(str).tolist()))
         layers.append(
             alt.Chart(label_df).mark_text(font=theme.font_family()).encode(
                 x="column_label:N",
                 y="row_label:N",
                 text="cell_label:N",
-                color=alt.Color("label_color:N", scale=None),
+                color=alt.Color(
+                    "label_color:N",
+                    legend=None,
+                    scale=alt.Scale(domain=label_palette, range=label_palette),
+                ),
             )
         )
 

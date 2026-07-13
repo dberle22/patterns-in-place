@@ -25,6 +25,7 @@ def render_line_chart(df: pd.DataFrame, spec: ChartSpec, request: ChartRequest) 
     height = dims.height if dims and dims.height else theme.height(request.chart_type)
 
     series_order = list(dict.fromkeys(plot_df["series"]))
+    legend = alt.Legend(title=None, orient="bottom", columns=min(len(series_order), 3)) if len(series_order) > 1 else None
     color_scale = alt.Scale(
         domain=series_order,
         range=_resolve_series_colors(plot_df, series_order, theme, cfg),
@@ -44,8 +45,13 @@ def render_line_chart(df: pd.DataFrame, spec: ChartSpec, request: ChartRequest) 
         .mark_line(point=bool(cfg.get("show_points", True)))
         .encode(
             x=alt.X("period:O", title=None),
-            y=alt.Y("plot_value:Q", title=_y_axis_title(plot_df), axis=alt.Axis(format=theme.d3_format(request.number_format))),
-            color=alt.Color("series:N", scale=color_scale, legend=alt.Legend(title=None)),
+            y=alt.Y(
+                "plot_value:Q",
+                title=_y_axis_title(plot_df),
+                axis=alt.Axis(format=theme.d3_format(request.number_format)),
+                scale=_resolve_y_scale(plot_df),
+            ),
+            color=alt.Color("series:N", scale=color_scale, legend=legend),
             tooltip=[
                 alt.Tooltip("series:N", title="Series"),
                 alt.Tooltip("period:O", title="Period"),
@@ -128,7 +134,7 @@ def _default_subtitle(df: pd.DataFrame) -> str | None:
     parts: list[str] = []
     periods = pd.to_numeric(df["period"], errors="coerce").dropna() if "period" in df.columns else pd.Series(dtype=float)
     if not periods.empty:
-        parts.append(f"Period: {int(periods.min())}-{int(periods.max())}")
+        parts.append(f"{int(periods.min())}-{int(periods.max())}")
 
     variant = str(df["variant"].dropna().iloc[0]) if "variant" in df.columns and df["variant"].dropna().any() else None
     if variant == "indexed":
@@ -145,6 +151,30 @@ def _default_subtitle(df: pd.DataFrame) -> str | None:
         if len(groups) == 1:
             parts.append(f"Scope: {groups[0]}")
     return " | ".join(parts) if parts else None
+
+
+def _resolve_y_scale(df: pd.DataFrame) -> alt.Scale | None:
+    values = pd.to_numeric(df["plot_value"], errors="coerce").dropna() if "plot_value" in df.columns else pd.Series(dtype=float)
+    if values.empty:
+        return None
+
+    series_count = len(df["series"].astype(str).unique()) if "series" in df.columns else 1
+    variant = str(df["variant"].dropna().iloc[0]) if "variant" in df.columns and df["variant"].dropna().any() else ""
+    if series_count <= 1 and variant != "indexed":
+        return None
+
+    lower = float(values.min())
+    upper = float(values.max())
+    if lower == upper:
+        pad = max(abs(lower) * 0.02, 1.0)
+    else:
+        pad = max((upper - lower) * 0.12, 0.6 if variant == "indexed" else 0.0)
+    domain_min = lower - pad
+    domain_max = upper + pad
+    if variant == "indexed":
+        domain_min = min(domain_min, lower - 0.6)
+        domain_max = max(domain_max, upper + 0.6)
+    return alt.Scale(domain=[domain_min, domain_max], nice=False)
 
 
 def _resolve_series_colors(df: pd.DataFrame, series_order: list[str], theme, cfg: dict) -> list[str]:

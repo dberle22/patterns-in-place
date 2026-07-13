@@ -42,6 +42,9 @@ Inputs:
 3. Include provenance columns when they help downstream charting or review: `metric_label`, `benchmark_value`, `note`, `period`, `rank`, `series`, `highlight_flag`.
 4. Name columns intentionally so the chart step can map them to canonical chart fields without guesswork.
 5. If the needed metric or table is missing from the semantic layer, stop and say what is missing instead of guessing.
+6. When the run will be reviewed against the R reference stack, prefer carrying `source` and `vintage` unless the question truly has no meaningful values for them.
+7. If the metric is a percent or share, make the storage semantics obvious: either return fractions consistently or return percentage-point values with a label or note that makes that choice explicit.
+8. If `publisher/chart_a_day/output/{{q_id}}/` already exists, do not trust inherited `result.sql` or `result.csv` automatically. Regenerate the SQL from the current backlog question and sanity-check that the metric, geography grain, and filters still match the question text.
 
 # Template Guidance
 
@@ -58,6 +61,24 @@ Inputs:
 - `rank_change`: return the ranked entities across comparable time points.
 
 For `geo_level: national`, expect a single aggregate row or a national time series rather than a ranked geography list. The SQL shape should change with the question.
+
+# Result Contract Expectations
+
+The SQL output is not just for Python. During Phase 5, the same result set is also used to render the R reference chart when possible.
+
+- Include `metric_label` and `time_window` when they clarify the chart title, subtitle, or review notes.
+- Include `source` and `vintage` for parity-review runs unless the source is obvious and unused by both renderers.
+- If the chart implies a benchmark, return a `benchmark_value` column rather than forcing the chart step to recompute it ad hoc.
+- If the question is ranked, return an explicit rank column whenever that makes the bar ordering easier to audit.
+- For percent or share metrics, add a note or label that makes clear whether the numeric values are fractions or percentage points.
+- For geo questions, keep the join-ready geography identifier and include any geometry payloads the render steps will need.
+- For Python geo parity runs, it is acceptable and often preferable to export both:
+  - an R-friendly geometry field such as `geom_wkt`
+  - a Python-friendly serialized geometry field such as `geometry_json`
+
+# DuckDB / Spatial Note
+
+If the SQL uses geometry serialization functions such as `st_asgeojson()` or `st_astext()`, note that the execution step must load the DuckDB `spatial` extension before running the query.
 
 # Worked Example
 
@@ -76,10 +97,13 @@ What makes it good:
 # Execution Steps
 
 1. Read the relevant metric and table definitions from the semantic layer.
-2. Write SQL to `publisher/chart_a_day/output/{{q_id}}/result.sql`.
-3. Execute the query against DuckDB in read-only mode.
-4. Save the result to `publisher/chart_a_day/output/{{q_id}}/result.csv`.
-5. Print the row count and the output column names as a sanity check.
+2. If older artifacts already exist in `publisher/chart_a_day/output/{{q_id}}/`, treat them as reference material only until you confirm they still answer the same question.
+3. Write SQL to `publisher/chart_a_day/output/{{q_id}}/result.sql`.
+4. Execute the query against DuckDB in read-only mode.
+5. Save the result to `publisher/chart_a_day/output/{{q_id}}/result.csv`.
+6. Print the row count and the output column names as a sanity check.
+7. If geometry serialization is part of the query, call out the `LOAD spatial` requirement in the execution snippet or run notes.
+8. If the metric is a percent/share, print a short note stating whether the output values are fractions or percentage points.
 
 # Done When
 

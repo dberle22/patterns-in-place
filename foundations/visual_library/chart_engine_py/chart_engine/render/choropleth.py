@@ -7,14 +7,17 @@ import pandas as pd
 from ..geo import geometry_to_polygons
 from ..request import ChartRequest
 from ..specs import ChartSpec
-from .mpl_helpers import add_caption, apply_titles, create_figure, create_subplots, finalize_map_axes, get_colormap, require_matplotlib
+from .mpl_helpers import add_caption, apply_titles, create_figure, create_subplots, finalize_map_axes, get_colormap, require_matplotlib, resolve_font_family, set_map_limits
 
 
 def _choropleth_panel(ax: Any, df: pd.DataFrame, request: ChartRequest, *, variant: str, label: str | None = None):
     _, _, colors, patches, PatchCollection, _ = require_matplotlib()
+    font_family = resolve_font_family(request.theme.font_family())
     polygons: list[Any] = []
     fills: list[Any] = []
     outlines: list[str] = []
+    x_values: list[float] = []
+    y_values: list[float] = []
     for _, row in df.iterrows():
         for ring in geometry_to_polygons(row["geometry"]):
             polygons.append(patches.Polygon(ring, closed=True))
@@ -24,11 +27,13 @@ def _choropleth_panel(ax: Any, df: pd.DataFrame, request: ChartRequest, *, varia
                 if bool(row.get("highlight_flag", False))
                 else request.theme.color("neutral.axis", "#D9E2EC")
             )
+            x_values.extend(point[0] for point in ring)
+            y_values.extend(point[1] for point in ring)
 
     collection = PatchCollection(polygons, linewidths=1.0)
     if variant == "binned":
         categories = sorted({str(value) for value in fills if pd.notna(value)})
-        cmap = get_colormap("viridis")
+        cmap = get_colormap("Blues")
         color_lookup = {category: cmap(index / max(1, len(categories) - 1)) for index, category in enumerate(categories)}
         collection.set_facecolor([color_lookup.get(str(value), request.theme.color("neutral.grid", "#D9E2EC")) for value in fills])
     elif pd.Series(fills).notna().any():
@@ -48,6 +53,10 @@ def _choropleth_panel(ax: Any, df: pd.DataFrame, request: ChartRequest, *, varia
     collection.set_edgecolor(outlines)
     ax.add_collection(collection)
     ax.autoscale_view()
+    bounds = None
+    if x_values and y_values:
+        bounds = (min(x_values), min(y_values), max(x_values), max(y_values))
+    set_map_limits(ax, bounds)
     finalize_map_axes(ax)
     if label:
         ax.text(
@@ -58,7 +67,7 @@ def _choropleth_panel(ax: Any, df: pd.DataFrame, request: ChartRequest, *, varia
             ha="left",
             va="top",
             fontsize=request.theme.font_size("subtitle_size", 10),
-            family=request.theme.font_family(),
+            family=font_family,
             color=request.theme.color("neutral.text", "#1F2933"),
         )
     return collection, fills
@@ -103,13 +112,19 @@ def render_choropleth(df: pd.DataFrame, spec: ChartSpec, request: ChartRequest):
     if variant == "binned":
         legend_labels = sorted(df["bin"].dropna().astype(str).unique().tolist())
         handles = [
-            patches.Patch(facecolor=get_colormap("viridis")(index / max(1, len(legend_labels) - 1)), edgecolor="white", label=label)
+            patches.Patch(facecolor=get_colormap("Blues")(index / max(1, len(legend_labels) - 1)), edgecolor="white", label=label)
             for index, label in enumerate(legend_labels)
         ]
-        axes[0].legend(handles=handles, loc="lower right", frameon=False, title="Bin")
+        fig.legend(handles=handles, loc="center left", bbox_to_anchor=(0.82, 0.36), frameon=False, title="Bin")
     elif colorbar_source is not None and pd.Series(df["fill_value"] if "fill_value" in df.columns else df["metric_value"]).notna().any():
-        fig.colorbar(colorbar_source, ax=[ax for ax in axes if ax.get_visible()], shrink=0.72, label=df["metric_label"].iloc[0] if "metric_label" in df.columns else "")
+        fig.colorbar(
+            colorbar_source,
+            ax=[ax for ax in axes if ax.get_visible()],
+            shrink=0.72,
+            pad=0.02,
+            label=df["metric_label"].iloc[0] if "metric_label" in df.columns else "",
+        )
 
     add_caption(fig, df, request)
-    fig.tight_layout(rect=(0, 0.05, 1, 0.92))
+    fig.subplots_adjust(left=0.05, right=0.80, top=0.82, bottom=0.12, wspace=0.08, hspace=0.18)
     return fig

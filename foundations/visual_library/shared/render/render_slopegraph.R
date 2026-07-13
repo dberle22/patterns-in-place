@@ -220,9 +220,13 @@ render_slopegraph <- function(data, config = list(), theme = NULL) {
       label_style = cfg$label_style,
       accuracy = cfg$label_accuracy
     )
+    delta_label_style <- cfg$delta_label_style
+    if (is.null(delta_label_style) || !nzchar(as.character(delta_label_style))) {
+      delta_label_style <- cfg$label_style
+    }
     label_data$delta_label <- slopegraph_value_labeler(
       label_data$delta_value,
-      label_style = cfg$delta_label_style %||% cfg$label_style,
+      label_style = delta_label_style,
       accuracy = cfg$delta_label_accuracy %||% cfg$label_accuracy
     )
     label_data$label_name <- shorten_label(label_data$geo_name, cfg$label_max_chars)

@@ -132,6 +132,12 @@ class RegressionTests(unittest.TestCase):
         chart_dict = self._render_chart("line_chart", line_fixture())
         self._assert_matches_golden("line_chart", chart_dict)
 
+    def test_line_chart_suppresses_single_series_legend(self) -> None:
+        data = line_fixture().loc[lambda frame: frame["series"] == "Wilmington"].copy()
+        chart_dict = self._render_chart("line_chart", data)
+        color_encoding = chart_dict["layer"][0]["encoding"]["color"]
+        self.assertIsNone(color_encoding.get("legend"))
+
     def test_slopegraph_matches_golden(self) -> None:
         chart_dict = self._render_chart("slopegraph", slopegraph_fixture())
         self._assert_matches_golden("slopegraph", chart_dict)
@@ -139,6 +145,14 @@ class RegressionTests(unittest.TestCase):
     def test_boxplot_matches_golden(self) -> None:
         chart_dict = self._render_chart("boxplot", boxplot_fixture())
         self._assert_matches_golden("boxplot", chart_dict)
+
+    def test_boxplot_defaults_single_group_to_horizontal(self) -> None:
+        data = boxplot_fixture().copy()
+        data["group"] = "All major CBSAs"
+        chart_dict = self._render_chart("boxplot", data)
+        box_encoding = chart_dict["layer"][0]["encoding"]
+        self.assertEqual(box_encoding["x"]["field"], "plot_value")
+        self.assertEqual(box_encoding["y"]["field"], "box_group")
 
     def test_heatmap_table_matches_golden(self) -> None:
         chart_dict = self._render_chart("heatmap_table", heatmap_table_fixture())

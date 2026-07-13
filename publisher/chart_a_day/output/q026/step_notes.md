@@ -1,0 +1,7 @@
+# Step Notes for q026
+
+- [2026-07-12 22:20:00] Built the q026 metro map from `gold.population_demographics`, joining `gold.dim_geo` for region labels and `geo.cbsas` for geometry. The final universe includes 2023 CBSAs above 100,000 population, with bubble size representing 2018-2023 population growth.
+- [2026-07-12 22:20:00] This run hit two real workflow issues. First, the Python-side DuckDB session needed the `spatial` extension installed and loaded before the geometry serialization functions would work. Second, the shared Python proportional-symbol renderer failed when a color-group category was missing from its hard-coded palette map; updating the renderer to cycle colors across all observed groups fixed that shared bug.
+- [2026-07-12 22:20:00] I also tightened the question-specific output after the first pass by reducing labels to the top six growth metros and removing value text from the Python labels, which made the bubble field more readable.
+- [2026-07-12 22:20:00] Both renders show the same broad concentration pattern: fast-growing metros cluster heavily in the West and South, with St. George, Bozeman, Provo-Orem-Lehi, Coeur d'Alene, Greeley, and Daphne-Fairhope-Foley among the most prominent bubbles.
+- [2026-07-12 22:20:00] Side-by-side verdict for q026: `match_with_minor_drift`. The shared renderer is now more robust, but Python still needs a later polish pass on legend placement and bubble-label composition before this chart family feels truly parity-complete.

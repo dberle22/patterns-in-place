@@ -53,7 +53,7 @@ def _build_strength_panel(plot_df: pd.DataFrame, theme, *, show_panel_title: boo
         opacity=0.45,
     ).encode(
         x="x_start:Q",
-        x2="x_end:Q",
+        x2=alt.X2("x_end:Q"),
         y=alt.Y("metric_display_label:N", sort=row_order, title=None),
     )
 
@@ -75,9 +75,12 @@ def _build_strength_panel(plot_df: pd.DataFrame, theme, *, show_panel_title: boo
 
     layers: list[alt.Chart] = [strips]
     if plot_df["geo_name"].nunique() == 1:
-        bars = alt.Chart(plot_df[plot_df["normalized_value"].notna()]).mark_rule(strokeWidth=5, opacity=0.95).encode(
-            x=alt.value(0),
-            x2="normalized_value:Q",
+        bar_df = plot_df[plot_df["normalized_value"].notna()].copy()
+        bar_df["strip_start"] = 0.0
+        bar_df["strip_end"] = bar_df["normalized_value"]
+        bars = alt.Chart(bar_df).mark_rule(strokeWidth=5, opacity=0.95).encode(
+            x=alt.X("strip_start:Q"),
+            x2=alt.X2("strip_end:Q"),
             y=alt.Y("metric_display_label:N", sort=row_order, title=None),
             color=alt.Color(point_color_field + ":N", scale=point_scale, legend=None),
         )

@@ -39,12 +39,17 @@ def _correlation_panel(df: pd.DataFrame, request: ChartRequest) -> alt.Chart:
     if show_labels:
         label_df = df.loc[df["correlation_display"].notna()].copy() if "correlation_display" in df.columns else df.copy()
         label_df["label_color"] = label_df["correlation"].abs().apply(lambda value: "#FFFFFF" if value >= 0.55 else theme.color("neutral.text", "#1F2933"))
+        label_palette = label_df["label_color"].dropna().astype(str).unique().tolist()
         layers.append(
             alt.Chart(label_df).mark_text(font=theme.font_family()).encode(
                 x="metric_x:N",
                 y="metric_y:N",
                 text="label:N",
-                color=alt.Color("label_color:N", scale=None),
+                color=alt.Color(
+                    "label_color:N",
+                    legend=None,
+                    scale=alt.Scale(domain=label_palette, range=label_palette),
+                ),
             )
         )
     return alt.layer(*layers).properties(

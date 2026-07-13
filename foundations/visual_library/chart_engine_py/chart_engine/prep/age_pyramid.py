@@ -15,6 +15,9 @@ def _age_sort_key(label: str) -> int:
 def prep_age_pyramid(df: pd.DataFrame, spec: ChartSpec) -> pd.DataFrame:
     out = df.rename(columns=spec.column_mapping).copy()
     keep = [c for c in spec.required_fields + spec.optional_fields if c in out.columns]
+    # Preserve facet labels when callers want an overlaid benchmark instead of
+    # the default one-panel-per-geo fallback.
+    keep += [c for c in ("facet_label",) if c in out.columns and c not in keep]
     out = out[keep].copy()
 
     out["pop_value"] = pd.to_numeric(out["pop_value"], errors="coerce").fillna(0)

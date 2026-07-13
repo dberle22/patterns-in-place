@@ -31,14 +31,16 @@ def render_proportional_symbol_map(df: pd.DataFrame, spec: ChartSpec, request: C
         sizes = scale_sizes(panel_df["size_value"])
         if color_mode == "color_group" and "color_group" in panel_df.columns:
             groups = panel_df["color_group"].fillna("Unknown").astype(str)
+            color_cycle = [
+                request.theme.color("highlight.selection", "#2C7FB8"),
+                request.theme.color("diverging.better", "#0C7C78"),
+                request.theme.color("comparison.benchmark", "#52606D"),
+                request.theme.color("diverging.worse", "#D66A4E"),
+            ]
+            unique_groups = groups.unique().tolist()
             palette = {
-                group: get_color
-                for group, get_color in zip(groups.unique().tolist(), [
-                    request.theme.color("highlight.selection", "#2C7FB8"),
-                    request.theme.color("diverging.better", "#0C7C78"),
-                    request.theme.color("comparison.benchmark", "#52606D"),
-                    request.theme.color("diverging.worse", "#D66A4E"),
-                ])
+                group: color_cycle[index % len(color_cycle)]
+                for index, group in enumerate(unique_groups)
             }
             facecolors = [palette[group] for group in groups]
         else:

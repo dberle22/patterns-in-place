@@ -189,6 +189,8 @@
         "color": {
           "field": "series",
           "legend": {
+            "columns": 2,
+            "orient": "bottom",
             "title": null
           },
           "scale": {
@@ -231,6 +233,13 @@
             "format": ",d"
           },
           "field": "plot_value",
+          "scale": {
+            "domain": [
+              98.67999999999999,
+              112.32000000000002
+            ],
+            "nice": false
+          },
           "title": "Per-capita income index (2019 = 100)",
           "type": "quantitative"
         }
@@ -268,7 +277,7 @@
   "title": {
     "fontSize": 18,
     "subtitle": [
-      "Period: 2019-2022 | Indexed to 2019 = 100 | Scope: South Atlantic",
+      "2019-2022 | Indexed to 2019 = 100 | Scope: South Atlantic",
       "",
       "Source: BEA | Vintage: 2024 | Note: Indexed to 2019 to compare pace of change rather than absolute level."
     ],

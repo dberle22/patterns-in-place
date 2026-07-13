@@ -10,6 +10,7 @@ inputs:
   - chart_path
   - platform
 outputs:
+  - post.md
   - post_x.md
   - post_bluesky.md
 ---
@@ -28,10 +29,12 @@ Inputs:
 
 Prompt:
 
-The underlying question was `{{question}}`. The key finding is `{{findings_summary}}`. The chart at `{{chart_path}}` is the asset. Write two versions for each platform:
+The underlying question was `{{question}}`. The key finding is `{{findings_summary}}`. The chart at `{{chart_path}}` is the asset. Write one canonical social draft first:
 
 - a standalone post
 - a thread opener that hooks the finding and signals more below
+
+Only create platform-specific variants if they are materially different from the canonical draft because of character limits, link behavior, or a clear platform strategy difference.
 
 # Writing Rules
 
@@ -42,29 +45,21 @@ The underlying question was `{{question}}`. The key finding is `{{findings_summa
 - Put a specific number in the first line when possible.
 - End with a question, implication, or invitation to reply when it feels natural.
 - Avoid hashtag spam; use at most two hashtags.
+- Keep the standalone version comfortably under the hard cap so a later manual edit does not break the character limit.
+- If the chart finding already has one clear lead number, do not dilute the hook by stuffing too many secondary stats into the first sentence.
 
 # Platform Notes
 
 - X hard limit: 280 characters. Aim for about 240 before links or manual edits.
 - Bluesky hard limit: 300 characters.
 - Bluesky links render as cards, so keep the copy clean rather than repeating a raw URL.
-- Keep both versions punchy enough for data-account posting, not newsletter prose.
+- Keep the copy punchy enough for data-account posting, not newsletter prose.
 
 # Output Format
 
-Write both files to `publisher/chart_a_day/output/{{q_id}}/`.
+Write the canonical file to `publisher/chart_a_day/output/{{q_id}}/`.
 
-`post_x.md` structure:
-
-```md
-## Standalone
-...
-
-## Thread opener
-...
-```
-
-`post_bluesky.md` structure:
+Default `post.md` structure:
 
 ```md
 ## Standalone
@@ -73,10 +68,14 @@ Write both files to `publisher/chart_a_day/output/{{q_id}}/`.
 ## Thread opener
 ...
 ```
+
+If the X copy needs to diverge, also write `post_x.md` with the same structure.
+
+If the Bluesky copy needs to diverge, also write `post_bluesky.md` with the same structure.
 
 # Done When
 
-- Both files exist.
-- The X standalone and thread opener each fit within the limit.
-- The Bluesky versions fit within the limit.
+- `post.md` exists.
+- The canonical standalone and thread opener fit within both limits when the same copy is being reused.
+- If a platform-specific file exists, it has a concrete reason to differ from `post.md`.
 - The copy is specific to the finding instead of sounding like a generic chart caption.

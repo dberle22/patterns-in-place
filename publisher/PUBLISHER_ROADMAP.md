@@ -2,7 +2,7 @@
 
 *Last updated: 2026-07-11. This roadmap is referenced from `PLATFORM_ROADMAP.md` → Track G and Track H. It covers three distinct products that share the same foundations layer (DuckDB warehouse, `chart_engine_py`, semantic layer, Gold tables) but have different execution models, outputs, and distribution channels.*
 
-*Revision notes: Added CE task breakdowns (2026-07-11). Added chart type coverage analysis, q016–q028 backlog expansion, decision gate log, backlog format spec, and chart-selection design (2026-07-11).*
+*Revision notes: Added CE task breakdowns (2026-07-11). Added chart type coverage analysis, q016–q028 backlog expansion, decision gate log, backlog format spec, and chart-selection design (2026-07-11). Added Python rendering architecture direction after the Phase 5 manual-run review (2026-07-12).*
 
 ---
 
@@ -26,12 +26,14 @@ Read this section before starting any milestone work. It records decisions alrea
 5. **`content/` → `data_stories/` is a folder rename only.** The artifact contract and 9-step workflow are unchanged.
 6. **Skills in CE-1 are human-invokable prompts, not SDK calls.** For CE-1 and CE-2, each skill file is a markdown prompt you paste into Claude. `mode: prompt` in front matter. CE-4 converts them to SDK calls; do not wire the SDK before CE-2's manual run is complete and the prompts are proven.
 7. **The first CE-2 question is q003 (cost-burdened renters, `ranking`, `cbsa`).** If q003's data is missing from the Gold tables, fall back to q006 (national vacancy trend — a single-row aggregate, simplest possible SQL). Decide before starting CE-2, not mid-run.
-8. **`backlog.yaml` carries a `produce_alternatives` boolean per entry.** When `true`, `chart_request.md` builds a second `ChartRequest` using the first fallback from `chart_rules.yml` and saves `chart_alt.png` alongside `chart.png`. The primary artifact is always `chart.png`. Default is `false`. Set to `true` on the first few `trend` and `distribution` questions to collect format comparison data for CE-8.
+8. **`backlog.yaml` carries a `produce_alternatives` boolean per entry.** When `true`, `chart_request.md` builds a second `ChartRequest` using the first fallback from `chart_rules.yml` and saves `chart_alt.png` alongside `chart_py.png`. During Phase 5, the explicit Python parity artifact is `chart_py.png`; if a convenience `chart.png` is kept for review tooling, it is a copy of the approved Python candidate. Default is `false`. Set to `true` on the first few `trend` and `distribution` questions to collect format comparison data for CE-8.
 9. **Chart type selection follows `chart_rules.yml`, not ad hoc agent judgment.** The agent reads `template_id + result shape → approved_chart_types` from `foundations/semantic_layer/chart_rules.yml`, applies selection constraints, and uses the first approved type. The `backlog.yaml` `notes` field can override with an explicit chart type directive (e.g., "use slopegraph not line"). The agent does not guess.
 10. **`backlog.yaml` `template_id` set is extended to cover all 16 chart types.** Original six (`ranking`, `trend`, `compare_selected`, `distribution`, `benchmark`, `growth`) only mapped to 5 chart types. Five new template IDs added: `correlation`, `composition`, `map`, `demographic`, `rank_change`. These are registered in `chart_rules.yml` in CE-1. See chart type coverage table below.
 11. **CE-8 format decision uses a pre-defined threshold.** If one format has ≥25% higher average engagement across ≥10 posts, it wins. If neither clears the bar, default to standalone (simpler to produce). Write the threshold before looking at data (CE-8.1) — do not set it after seeing the numbers.
 12. **Automated posting starts with Bluesky only (CE-9).** Bluesky API is free. X API v2 Basic costs ~$100/month. Evaluate X only after 30+ posts live and the pipeline is proven. Document the evaluation at `chart_a_day/runner/X_API_EVAL.md` before adding X posting code.
 13. **During CE-1 and CE-2, `chart_rules.yml` stays chatbot-compatible.** The shared catalog still uses legacy `bar` / `line` names for the R-backed chatbot path. Manual Chart Engine prompts normalize those to `bar_chart` / `line_chart` only when calling `chart_engine_py`. Do not rewrite the shared catalog names until CH-1 swaps the chatbot renderer.
+14. **Chart A Day does not need to wait for Python publishing parity.** If the R render is clearly stronger, it is acceptable to use the R visual for near-term Chart A Day production while Python keeps improving in parallel.
+15. **Long-term Python rendering converges on `matplotlib`.** The current mixed Python backend is acceptable during the transition, but the target architecture is a shared matplotlib-based design system with reusable classes/helpers for composition, colors, fonts, legends, labels, and map framing.
 
 ### Milestone-specific pointers
 
@@ -53,6 +55,9 @@ Read this section before starting any milestone work. It records decisions alrea
 - For every CE manual run, render the same result through both stacks: `chart_r.png` is the reference implementation from the existing R visual library, and `chart_py.png` is the Python parity candidate from `chart_engine_py`.
 - The parity question is explicit on every run: does the Python output match the analytical intent and the current R visual contract closely enough to replace it?
 - Default question: q003. Fallback if Gold data missing: q006.
+- The Phase 5 review now tells us two things at once:
+  - R can remain the practical Chart A Day renderer for now when it is materially stronger.
+  - Python still matters because the chatbot path benefits from a native Python renderer and shared runtime control.
 
 ### Backlog entry format
 
@@ -120,36 +125,72 @@ Running q016–q028 through the pipeline closes `chart_engine_py` Phase 5 for al
 - After that audit exists, CE runs shift from "find what is broken" to "validate that the audited gaps are actually closed on real questions."
 
 **Phase 5 manual-run tracker:**
-- [ ] `q001` — `bar_chart` parity run (`ranking`)
-- [ ] `q002` — `bar_chart` parity run (`ranking`)
-- [ ] `q003` — `bar_chart` parity run (`ranking`)
-- [ ] `q004` — `line_chart` parity run (`trend`)
-- [ ] `q005` — `line_chart` parity run (`trend`)
-- [ ] `q006` — `line_chart` parity run (`trend`)
-- [ ] `q007` — `bar_chart` parity run (`compare_selected`)
-- [ ] `q008` — `line_chart` parity run (`compare_selected`)
-- [ ] `q009` — `boxplot` parity run (`distribution`)
-- [ ] `q010` — `boxplot` parity run (`distribution`)
-- [ ] `q011` — `bar_chart` parity run (`benchmark`)
-- [ ] `q012` — `bar_chart` parity run (`benchmark`)
-- [ ] `q013` — `bar_chart` parity run (`growth`)
-- [ ] `q014` — `bar_chart` parity run (`growth`)
-- [ ] `q015` — `bar_chart` parity run (`ranking`)
-- [ ] `q016` — `scatter` parity run (`correlation`)
-- [ ] `q017` — `slopegraph` parity run (`rank_change`)
-- [ ] `q018` — `bump_chart` parity run (`rank_change`)
-- [ ] `q019` — `heatmap_table` parity run (`composition`)
-- [ ] `q020` — `waterfall` parity run (`composition`)
-- [ ] `q021` — `strength_strip` parity run (`benchmark` / `composition`)
-- [ ] `q022` — `correlation_heatmap` parity run (`correlation`)
-- [ ] `q023` — `age_pyramid` parity run (`demographic`)
-- [ ] `q024` — `choropleth` parity run (`map`)
-- [ ] `q025` — `highlight_context_map` parity run (`map`)
-- [ ] `q026` — `proportional_symbol_map` parity run (`map`)
-- [ ] `q027` — `bivariate_choropleth` parity run (`map`)
-- [ ] `q028` — `hexbin` parity run (`correlation`)
+- [x] `q001` — `bar_chart` parity run (`ranking`)
+- [x] `q002` — `bar_chart` parity run (`ranking`)
+- [x] `q003` — `bar_chart` parity run (`ranking`)
+- [x] `q004` — `line_chart` parity run (`trend`)
+- [x] `q005` — `line_chart` parity run (`trend`)
+- [x] `q006` — `line_chart` parity run (`trend`)
+- [x] `q007` — `bar_chart` parity run (`compare_selected`)
+- [x] `q008` — `line_chart` parity run (`compare_selected`)
+- [x] `q009` — `boxplot` parity run (`distribution`)
+- [x] `q010` — `boxplot` parity run (`distribution`)
+- [x] `q011` — `bar_chart` parity run (`benchmark`)
+- [x] `q012` — `bar_chart` parity run (`benchmark`)
+- [x] `q013` — `bar_chart` parity run (`growth`)
+- [x] `q014` — `bar_chart` parity run (`growth`)
+- [x] `q015` — `bar_chart` parity run (`ranking`)
+- [x] `q016` — `scatter` parity run (`correlation`)
+- [x] `q017` — `slopegraph` parity run (`rank_change`)
+- [x] `q018` — `bump_chart` parity run (`rank_change`)
+- [x] `q019` — `heatmap_table` parity run (`composition`)
+- [x] `q020` — `waterfall` parity run (`composition`)
+- [x] `q021` — `strength_strip` parity run (`benchmark` / `composition`)
+- [x] `q022` — `correlation_heatmap` parity run (`correlation`)
+- [x] `q023` — `age_pyramid` parity run (`demographic`)
+- [x] `q024` — `choropleth` parity run (`map`)
+- [x] `q025` — `highlight_context_map` parity run (`map`)
+- [x] `q026` — `proportional_symbol_map` parity run (`map`)
+- [x] `q027` — `bivariate_choropleth` parity run (`map`)
+- [x] `q028` — `hexbin` parity run (`correlation`)
 
 Treat this checklist as stricter than the backlog status alone. A question only counts here once the CE dual-render workflow has produced `chart_r.*`, `chart_py.*`, and a written parity verdict in `step_notes.md`.
+
+**Initial manual tranche:**
+- Start with `q003` (`ranking`) as the first ranked bar-chart proof point.
+- If `q003` is blocked on Gold coverage, run `q006` (`trend`) immediately as the fallback line-chart proof point.
+- In the same initial tranche, run `q024` (`map`) to force one early geo/manual parity check before the workflow hardens around Altair-first charts.
+- After those three runs, tighten prompts and workflow notes before scaling through the remaining backlog.
+- The long-run goal remains unchanged: work through all questions in the tracker, not just the first tranche.
+
+**Manual run artifact contract:**
+- Every Phase 5 / CE manual run writes artifacts to `publisher/chart_a_day/output/{q_id}/`.
+- Required files for a parity-complete run:
+  - `question.md`
+  - `result.sql`
+  - `result.csv`
+  - `chart_py.png`
+  - `chart_r.png`
+  - `post.md`
+  - `step_notes.md`
+- Optional files:
+  - `chart_alt.png` when `produce_alternatives: true`
+  - helper scripts or temporary notebooks used to generate the R reference, if they are useful for reproducibility
+- `chart.png` is not the parity source-of-truth filename during Phase 5. If a convenience `chart.png` is kept for downstream review tools, it should be a copy of the approved Python candidate after `chart_py.png` exists.
+
+**Manual run log:**
+- Canonical log path: `publisher/chart_a_day/MANUAL_RUN_LOG.md`
+- Each run appends one dated section with:
+  - `q_id`
+  - run date
+  - question type / chart type
+  - whether the run covered `python`, `r`, or both
+  - artifact status (`complete`, `partial`, `blocked`)
+  - parity verdict (`match`, `match_with_minor_drift`, `blocked`, `not_reviewed`)
+  - gap class for every issue: `spec`, `prep`, `render`, `theme`, `export`, `sql`, `agent_prompt`, or `review_process`
+  - the concrete fix or instruction change required
+  - whether the fix belongs in `chart_engine_py`, `chart_a_day` skills, backlog notes, or reviewer guidance
+- `step_notes.md` remains the per-question scratchpad. `MANUAL_RUN_LOG.md` is the cross-run learning record we use to improve prompts and workflow instructions.
 
 ### How the agent decides chart type
 
@@ -181,6 +222,22 @@ Set this on questions where the approved and fallback types tell meaningfully di
 - Missing catalogs to wire: `theme_catalog.yml`, `intelligence_catalog.yml`, `question_catalog.yml` — all live in `foundations/semantic_layer/`
 - Follow the existing loading pattern in `catalogs.py` for the three catalogs already wired
 
+### Python Renderer Direction
+
+The current manual-run review changed the architecture emphasis:
+
+- For **Chart A Day**, keep using the stronger R renderer for near-term production artifacts when Python is visibly weaker.
+- For the **chatbot**, keep native Python rendering as the strategic target because it simplifies packaging, deployment, and runtime behavior.
+- For **Python renderer development**, do not keep solving polish one chart at a time forever. Build reusable visual classes/helpers that own:
+  - composition presets
+  - semantic color tokens
+  - font and caption hierarchy
+  - legend placement
+  - annotation / label behavior
+  - map framing and context layers
+- Treat the current Altair analytical renderers as acceptable transition infrastructure, not necessarily as the final steady state.
+- The long-term target is a Python renderer that is fully `matplotlib`-based for final presentation quality.
+
 **DS-0 (folder rename):**
 - `git mv publisher/content publisher/data_stories`
 - Also update references in: `publisher/README.md`, `publisher/CLAUDE.md`, `PLATFORM_ROADMAP.md` → Track G section
@@ -188,7 +245,7 @@ Set this on questions where the approved and fallback types tell meaningfully di
 ### Environment
 
 - `FOUNDATIONS_PATH` must be set to `<monorepo-root>/foundations/` before running anything in the publisher
-- Python environment: `.venv312`
+- Python environment: `.venv312` with the editable `chart_engine_py` install plus `publisher/requirements.txt`
 - DuckDB: `foundations/etl/data/duckdb/patterns_in_place.duckdb` (read-only for all publisher work)
 
 ---
@@ -233,8 +290,8 @@ publisher/
 │   ├── backlog.yaml                ← question backlog with status tracking
 │   ├── skills/
 │   │   ├── sql_agent.md            ← skill: question + schema → SQL → result.csv
-│   │   ├── chart_request.md        ← skill: result.csv → ChartRequest → chart.png
-│   │   └── social_copy.md          ← skill: chart + finding → X post + Bluesky post
+│   │   ├── chart_request.md        ← skill: result.csv → ChartRequest → chart_py.png
+│   │   └── social_copy.md          ← skill: chart + finding → canonical social draft, plus optional platform variants
 │   ├── runner/
 │   │   ├── run_next.py             ← CLI: read next ready question, run skill chain
 │   │   └── queue_manager.py        ← status machine: ready → ran → reviewed → posted
@@ -243,13 +300,15 @@ publisher/
 │           ├── question.md
 │           ├── result.sql
 │           ├── result.csv
-│           ├── chart.png
-│           ├── post_x.md
-│           └── post_bluesky.md
+│           ├── chart_py.png
+│           ├── chart_r.png
+│           ├── post.md
+│           ├── post_x.md           ← optional, only when X needs different copy
+│           └── post_bluesky.md     ← optional, only when Bluesky needs different copy
 │
 ├── shared/                         ← shared by chart_a_day/ and chatbot/
 │   ├── db.py                       ← DuckDB connection helper
-│   └── chart_bridge.py             ← result.csv + config → chart_engine_py → chart.png
+│   └── chart_bridge.py             ← result.csv + config → chart_engine_py → chart_py.png
 │
 ├── chatbot/                        ← NL→SQL product; stays largely as-is
 │   ├── orchestrator.py
@@ -313,7 +372,7 @@ publisher/
 
 ## Track CE — Chart Engine
 
-**What it is:** A lightweight agent-driven pipeline for chart-a-day social posting. A question backlog (`backlog.yaml`) feeds an agent that writes SQL, executes it, passes the result through `chart_engine_py`, and generates two versions of social copy (standalone post and thread). Human reviews and posts manually. Long-term target: fully autonomous posting once the concept is proven and X API cost is justified.
+**What it is:** A lightweight agent-driven pipeline for chart-a-day social posting. A question backlog (`backlog.yaml`) feeds an agent that writes SQL, executes it, passes the result through `chart_engine_py`, and generates a canonical social draft (standalone post plus thread opener), with platform-specific variants only when they meaningfully differ. Human reviews and posts manually. Long-term target: fully autonomous posting once the concept is proven and X API cost is justified.
 
 **Key design decision:** This pipeline bypasses the chatbot's NL→SQL intent parser entirely. Questions are pre-defined; the agent writes SQL directly against the Gold schema. This is an agentic coding task, not a natural language understanding task — simpler, more reliable, and decoupled from the chatbot's complexity.
 
@@ -376,19 +435,19 @@ publisher/
 - [x] **CE-1.0.2** Verify the extended `chart_rules.yml` is valid YAML: `python -c "import yaml; yaml.safe_load(open('foundations/semantic_layer/chart_rules.yml').read()); print('ok')"`
 
 **CE-1.2 — `chart_request.md`**
-- [x] **CE-1.2.1** Write YAML front matter: `mode: prompt`, inputs: `[question, template_id, produce_alternatives, result_csv_path, q_id]`, outputs: `[chart.png]` (and optionally `chart_alt.png`)
-- [x] **CE-1.2.2** Write a prompt section explaining `ChartRequest`: "Import `chart_engine` from the editable install at `foundations/visual_library/chart_engine_py/`. Load `result.csv` as a DataFrame. Build a `ChartRequest` with `chart_type` resolved from `chart_rules.yml` using the decision chain: read `template_id` → look up `approved_chart_types[0]` → check selection constraints against result shape → apply any `notes` override → pass resolved type to the manual Python render path used before `chart_bridge.py` exists. Set `Theme.default()`. Set `OutputConfig(save=True, path='chart_a_day/output/{q_id}/chart.png')`."
+- [x] **CE-1.2.1** Write YAML front matter: `mode: prompt`, inputs: `[question, template_id, produce_alternatives, result_csv_path, q_id]`, outputs: `[chart_py.png]` (and optionally `chart_alt.png`)
+- [x] **CE-1.2.2** Write a prompt section explaining `ChartRequest`: "Import `chart_engine` from the editable install at `foundations/visual_library/chart_engine_py/`. Load `result.csv` as a DataFrame. Build a `ChartRequest` with `chart_type` resolved from `chart_rules.yml` using the decision chain: read `template_id` → look up `approved_chart_types[0]` → check selection constraints against result shape → apply any `notes` override → pass resolved type to the manual Python render path used before `chart_bridge.py` exists. Set `Theme.default()`. Set `OutputConfig(save=True, path='chart_a_day/output/{q_id}/chart_py.png')`."
 - [x] **CE-1.2.3** Add the full template-to-chart-type resolution table (all 11 template IDs) — do not hardcode chart types in the skill; always derive from `chart_rules.yml`. The table in this skill is for human reference only.
 - [x] **CE-1.2.4** Add `column_mapping` guidance: explain that `chart_engine_py` expects canonical field names (`entity`, `value`, `period`, etc.) and the agent must map CSV column names to those names using `column_mapping` on the request
 - [x] **CE-1.2.5** Add a worked example using `publisher/content/vacancy_rates/metro_rankings/chart_config.json` and the corresponding `result.csv` — show what the `ChartRequest` Python code looks like for a ranked bar chart with a benchmark line
-- [x] **CE-1.2.6** Add output instructions: call `render(request)`; if `ChartResult.warnings` is non-empty, print them; confirm `chart.png` was written to `output/{q_id}/`. If `produce_alternatives` is `true`, build a second `ChartRequest` using `fallback_chart_types[0]` from `chart_rules.yml` and save to `chart_a_day/output/{q_id}/chart_alt.png`; print which fallback type was used.
+- [x] **CE-1.2.6** Add output instructions: call `render(request)`; if `ChartResult.warnings` is non-empty, print them; confirm `chart_py.png` was written to `output/{q_id}/`. If `produce_alternatives` is `true`, build a second `ChartRequest` using `fallback_chart_types[0]` from `chart_rules.yml` and save to `chart_a_day/output/{q_id}/chart_alt.png`; print which fallback type was used.
 
 **CE-1.3 — `social_copy.md`**
-- [x] **CE-1.3.1** Write YAML front matter: inputs: `[question, findings_summary, chart_path, platform]`, outputs: `[post_x.md, post_bluesky.md]`
-- [x] **CE-1.3.2** Write a prompt section: "You are writing social copy for a data chart. The underlying question was: `{{question}}`. The key finding is: `{{findings_summary}}`. The chart is attached. Write two versions: a standalone post (fits in one post, ~240 chars for X) and a thread opener (hooks the finding, signals more below)."
+- [x] **CE-1.3.1** Write YAML front matter: inputs: `[question, findings_summary, chart_path, platform]`, outputs: `[post.md]` plus optional `[post_x.md, post_bluesky.md]` when the copy needs to diverge by platform
+- [x] **CE-1.3.2** Write a prompt section: "You are writing social copy for a data chart. The underlying question was: `{{question}}`. The key finding is: `{{findings_summary}}`. The chart is attached. Write one canonical draft first: a standalone post (fits in one post, ~240 chars for X) and a thread opener (hooks the finding, signals more below). Only split into platform files when there is a concrete reason."
 - [x] **CE-1.3.3** Add platform-specific formatting notes: X posts have a 280-char hard limit; Bluesky supports 300 chars and renders links as cards; both should avoid hashtag spam (max 2); data accounts get better engagement with a specific number in the first line
 - [x] **CE-1.3.4** Add a tone guide: plain language, no academic hedging, no "interesting to note"; lead with the finding, not the methodology; end with a question or invitation to reply
-- [x] **CE-1.3.5** Add output instructions: write `post_x.md` and `post_bluesky.md` to `chart_a_day/output/{q_id}/`; each file has a `## Standalone` and `## Thread opener` section
+- [x] **CE-1.3.5** Add output instructions: write `post.md` to `chart_a_day/output/{q_id}/`; only add `post_x.md` or `post_bluesky.md` if a platform-specific variant is actually needed. Each file uses `## Standalone` and `## Thread opener` sections
 
 **Verification:** All three skill files exist at `chart_a_day/skills/`. Each has valid YAML front matter parseable by `python -c "import yaml; yaml.safe_load(open('...').read().split('---')[1])"`.
 
@@ -400,20 +459,22 @@ publisher/
 
 **What "manual" means here:** You open Claude, invoke each skill file in sequence, paste in the inputs, review the output, save artifacts by hand. The runner doesn't exist yet — you're proving the skills work before building the plumbing.
 
-- [ ] **CE-2.1** Verify `chart_engine_py` is installed in `.venv312`: `source .venv312/bin/activate && python -c "from chart_engine import render; print('ok')"` — if not, run `pip install -e foundations/visual_library/chart_engine_py`
-- [ ] **CE-2.2** Verify DuckDB connection works: `python -c "import duckdb; con = duckdb.connect('foundations/etl/data/duckdb/patterns_in_place.duckdb', read_only=True); print(con.execute('SHOW TABLES').fetchall())"` — confirm Gold tables are present
-- [ ] **CE-2.3** Create `chart_a_day/output/q003/` directory
-- [ ] **CE-2.4** Run `sql_agent.md` for q003: open Claude, invoke the skill with `question="Which metros have the highest share of cost-burdened renters in 2023?"`, `template_id=ranking`, `geo_level=cbsa`; save output to `chart_a_day/output/q003/result.sql` and `result.csv`
-- [ ] **CE-2.5** Inspect `result.csv` before proceeding: confirm column names, row count (expect ~20–50 CBSAs), value range (share should be 0–100 or 0–1); note any surprises in a `step_notes.md`
-- [ ] **CE-2.6** Render the R reference chart for q003 from the same `result.csv`; save it as `chart_r.png` in `chart_a_day/output/q003/`
-- [ ] **CE-2.7** Run `chart_request.md` for q003: invoke the skill with the result CSV; produce the Python parity candidate as `chart_py.png` in `chart_a_day/output/q003/`
-- [ ] **CE-2.8** Visually review `chart_r.png` and `chart_py.png` side by side: does the Python output match the question, ranking order, labels, benchmark, and overall readability of the R output closely enough? Write findings in `step_notes.md` and classify each gap as `acceptable`, `minor`, or `blocking`
-- [ ] **CE-2.9** Run `social_copy.md` for q003: invoke the skill with the question, a one-sentence finding from the chart, and the approved chart image; save `post_x.md` and `post_bluesky.md`
-- [ ] **CE-2.10** Write `chart_a_day/output/q003/question.md` — one line: the question text, the q_id, the template, the geo level
-- [ ] **CE-2.11** Update `backlog.yaml`: set `q003.status = ran`, set `q003.ran_at` to today's date only if the parity review is not blocked
-- [ ] **CE-2.12** Write a post-run summary in `step_notes.md`: what worked, what broke, what needed manual correction, what the skill prompts got wrong, what took longer than expected, and whether the gap lives in Python `spec`, `prep`, `render`, `theme`, or export
+- [x] **CE-2.1** Verify `chart_engine_py` is installed in `.venv312`: `source .venv312/bin/activate && python -c "from chart_engine import render; print('ok')"` — if not, run `pip install -e foundations/visual_library/chart_engine_py`
+- [x] **CE-2.2** Verify DuckDB connection works: `python -c "import duckdb; con = duckdb.connect('foundations/etl/data/duckdb/patterns_in_place.duckdb', read_only=True); print(con.execute('SHOW TABLES').fetchall())"` — confirm Gold tables are present
+- [x] **CE-2.3** Create `chart_a_day/output/q003/` directory
+- [x] **CE-2.3a** Create or update `chart_a_day/MANUAL_RUN_LOG.md` with a new section for `q003`
+- [x] **CE-2.4** Run `sql_agent.md` for q003: open Claude, invoke the skill with `question="Which metros have the highest share of cost-burdened renters in 2023?"`, `template_id=ranking`, `geo_level=cbsa`; save output to `chart_a_day/output/q003/result.sql` and `result.csv`
+- [x] **CE-2.5** Inspect `result.csv` before proceeding: confirm column names, row count (expect ~20–50 CBSAs), value range (share should be 0–100 or 0–1); note any surprises in a `step_notes.md`
+- [x] **CE-2.6** Render the R reference chart for q003 from the same `result.csv`; save it as `chart_r.png` in `chart_a_day/output/q003/`
+- [x] **CE-2.7** Run `chart_request.md` for q003: invoke the skill with the result CSV; produce the Python parity candidate as `chart_py.png` in `chart_a_day/output/q003/`
+- [x] **CE-2.8** Visually review `chart_r.png` and `chart_py.png` side by side: does the Python output match the question, ranking order, labels, benchmark, and overall readability of the R output closely enough? Write findings in `step_notes.md` and classify each gap as `acceptable`, `minor`, or `blocking`
+- [x] **CE-2.9** Run `social_copy.md` for q003: invoke the skill with the question, a one-sentence finding from the chart, and the approved chart image; save `post.md` and only create platform-specific files if they materially differ
+- [x] **CE-2.10** Write `chart_a_day/output/q003/question.md` — one line: the question text, the q_id, the template, the geo level
+- [x] **CE-2.11** Update `backlog.yaml`: set `q003.status = ran`, set `q003.ran_at` to today's date only if the parity review is not blocked
+- [x] **CE-2.12** Write a post-run summary in `step_notes.md`: what worked, what broke, what needed manual correction, what the skill prompts got wrong, what took longer than expected, and whether the gap lives in Python `spec`, `prep`, `render`, `theme`, `export`, `sql`, `agent_prompt`, or `review_process`
+- [x] **CE-2.13** Append the structured verdict to `chart_a_day/MANUAL_RUN_LOG.md`: artifact completeness, parity verdict, issue classes, and the exact prompt or code changes required before the next run
 
-**Verification:** `chart_a_day/output/q003/` contains: `question.md`, `result.sql`, `result.csv`, `chart_r.png`, `chart_py.png`, `post_x.md`, `post_bluesky.md`, `step_notes.md`. `step_notes.md` records the R-vs-Python parity verdict. `backlog.yaml` shows `q003` as `ran` only if the parity review is not blocked.
+**Verification:** `chart_a_day/output/q003/` contains: `question.md`, `result.sql`, `result.csv`, `chart_r.png`, `chart_py.png`, `post.md`, `step_notes.md`, plus platform-specific social files only if needed. `step_notes.md` records the R-vs-Python parity verdict. `chart_a_day/MANUAL_RUN_LOG.md` contains the cross-run summary entry. `backlog.yaml` shows `q003` as `ran` only if the parity review is not blocked.
 
 ---
 
@@ -424,11 +485,12 @@ publisher/
 **Audit note:** `publisher/shared/` does not yet exist. `publisher/chatbot/charts/renderer.py` currently shells out to R — that is what `chart_bridge.py` replaces in CH-1. Build the bridge here based on what CE-2 confirmed works; CH-1 just swaps the renderer to use it.
 
 **CE-3.1 — Fix skill gaps from CE-2**
-- [ ] **CE-3.1.1** Review `q003/step_notes.md` and list every gap: SQL errors, wrong column names, chart type mismatches, missing benchmarks, copy tone issues, and any Python-vs-R parity differences
-- [ ] **CE-3.1.2** Edit `sql_agent.md` to fix SQL issues: if the agent needed manual column name corrections, add those column names explicitly; if it queried the wrong table, add the correct table name to the prompt
-- [ ] **CE-3.1.3** Edit `chart_request.md` to fix chart issues: if `column_mapping` was wrong, fix the example; if a benchmark was missing, add instructions for when to add `BenchmarkConfig`; if parity was blocked, note whether the fix belongs in Python `spec`, `prep`, `render`, or `theme`
-- [ ] **CE-3.1.4** Edit `social_copy.md` to fix copy issues: if tone was off, sharpen the tone guide; if the character count was exceeded, add a hard-limit reminder
-- [ ] **CE-3.1.5** Run a second question (pick `q006` — national vacancy trend, template `trend`, geo `national`) as a spot check that the skill fixes hold for a different template type; save artifacts to `chart_a_day/output/q006/`
+- [x] **CE-3.1.1** Review `q003/step_notes.md` and list every gap: SQL errors, wrong column names, chart type mismatches, missing benchmarks, copy tone issues, and any Python-vs-R parity differences
+- [x] **CE-3.1.2** Edit `sql_agent.md` to fix SQL issues: if the agent needed manual column name corrections, add those column names explicitly; if it queried the wrong table, add the correct table name to the prompt
+- [x] **CE-3.1.3** Edit `chart_request.md` to fix chart issues: if `column_mapping` was wrong, fix the example; if a benchmark was missing, add instructions for when to add `BenchmarkConfig`; if parity was blocked, note whether the fix belongs in Python `spec`, `prep`, `render`, or `theme`
+- [x] **CE-3.1.4** Edit `social_copy.md` to fix copy issues: if tone was off, sharpen the tone guide; if the character count was exceeded, add a hard-limit reminder
+- [x] **CE-3.1.5** Run a second question (pick `q006` — national vacancy trend, template `trend`, geo `national`) as a spot check that the skill fixes hold for a different template type; save artifacts to `chart_a_day/output/q006/`
+- [x] **CE-3.1.6** Add a second structured entry to `chart_a_day/MANUAL_RUN_LOG.md` for `q006`, then compare the `q003` and `q006` failures to identify reusable prompt fixes versus chart-specific code fixes
 
 **CE-3.2 — Build `shared/chart_bridge.py`**
 - [ ] **CE-3.2.1** Create `publisher/shared/` directory with an empty `__init__.py`
@@ -450,15 +512,17 @@ publisher/
 
 - [ ] **CE-4.1** Add `run_skill_chain(entry: QueueEntry) -> Path` to `run_next.py`: orchestrates the three steps; creates `output/{q_id}/` if it doesn't exist; returns the output directory path
 - [ ] **CE-4.2** Implement `run_sql_step(entry, output_dir)` in `run_next.py`: reads `backlog.yaml` entry fields, invokes `sql_agent.md` skill via the Claude SDK, saves `result.sql` and `result.csv`; raises on empty result set
-- [ ] **CE-4.3** Implement `run_chart_step(entry, output_dir)` in `run_next.py`: reads `result.csv`, calls `shared.chart_bridge.render_chart()` with the appropriate chart type (derive from `template_id` using the same mapping as in `chart_request.md`), saves `chart.png`
-- [ ] **CE-4.4** Implement `run_social_step(entry, output_dir)` in `run_next.py`: reads `result.csv` + `chart.png`, invokes `social_copy.md` skill via the Claude SDK, saves `post_x.md` and `post_bluesky.md`
+- [ ] **CE-4.3** Implement `run_chart_step(entry, output_dir)` in `run_next.py`: reads `result.csv`, calls `shared.chart_bridge.render_chart()` with the appropriate chart type (derive from `template_id` using the same mapping as in `chart_request.md`), and saves the Python candidate as `chart_py.png`
+- [ ] **CE-4.4** Implement `run_social_step(entry, output_dir)` in `run_next.py`: reads `result.csv` + `chart_py.png`, invokes `social_copy.md` skill via the Claude SDK, saves `post.md`, and only writes `post_x.md` / `post_bluesky.md` if the skill decides the copy should diverge by platform
 - [ ] **CE-4.5** Write `question.md` at the end of `run_skill_chain()`: one-liner with question text, q_id, template, geo level, run timestamp
-- [ ] **CE-4.6** After successful run, call `queue_manager.update_status(entry.id, "ran")` — this stamps `ran_at`
-- [ ] **CE-4.7** Add artifact completeness check at the end of `run_skill_chain()`: verify all six files exist (`question.md`, `result.sql`, `result.csv`, `chart.png`, `post_x.md`, `post_bluesky.md`); print which are missing if any
-- [ ] **CE-4.8** Add `--dry-run` flag to `run_next.py`: prints which question would run and what steps would execute, but does not invoke Claude or write any files
-- [ ] **CE-4.9** Test the runner end-to-end on `q004` (median gross rent trend): `python chart_a_day/runner/run_next.py --next`; confirm all six artifact files are written and `backlog.yaml` shows `q004` as `ran`
+- [ ] **CE-4.6** Append a runner-generated partial entry to `chart_a_day/MANUAL_RUN_LOG.md` marking the Python portion `complete` and the R/parity portion `not_reviewed`
+- [ ] **CE-4.7** After successful Python-side run, call `queue_manager.update_status(entry.id, "ran")` — this stamps `ran_at`; do not treat that status alone as parity completion
+- [ ] **CE-4.8** Add artifact completeness check at the end of `run_skill_chain()`: verify the Python-side required files exist (`question.md`, `result.sql`, `result.csv`, `chart_py.png`, `post.md`); treat `post_x.md` and `post_bluesky.md` as optional platform-specific overlays; print which required files are missing if any
+- [ ] **CE-4.9** Add `--dry-run` flag to `run_next.py`: prints which question would run and what steps would execute, but does not invoke Claude or write any files
+- [ ] **CE-4.10** Add a follow-up reviewer step outside the runner: render `chart_r.png`, compare against `chart_py.png`, and update the existing `MANUAL_RUN_LOG.md` entry with the parity verdict before checking off the corresponding Phase 5 tracker item
+- [ ] **CE-4.11** Test the runner end-to-end on `q004` (median gross rent trend): `python chart_a_day/runner/run_next.py --next`; confirm the Python-side artifact files are written and `backlog.yaml` shows `q004` as `ran`
 
-**Verification:** `python run_next.py --status` shows correct counts. `python run_next.py --dry-run` prints the next ready question without side effects. `python run_next.py --next` on a clean `ready` entry produces all six artifact files and updates the backlog.
+**Verification:** `python run_next.py --status` shows correct counts. `python run_next.py --dry-run` prints the next ready question without side effects. `python run_next.py --next` on a clean `ready` entry produces the Python-side artifact set and updates the backlog. The corresponding Phase 5 checklist item is only checked off after `chart_r.png` and the final `MANUAL_RUN_LOG.md` parity verdict are added manually.
 
 ---
 
@@ -467,13 +531,14 @@ publisher/
 **Goal:** Run five questions through the full `run_next.py` pipeline, review every artifact set, and produce five pairs of social copy ready to post. The emphasis is on quality review and iteration, not speed. By the end, you have five charts and ten post drafts (X + Bluesky for each) and a clear read on what the social copy still gets wrong.
 
 - [ ] **CE-5.1** Run `run_next.py --next` for q004, q005, q007, q008, q013 — five questions across `trend`, `compare_selected`, and `growth` templates (mix of chart types)
-- [ ] **CE-5.2** For each run: open the output folder; read `question.md`; review `chart_r.png` and `chart_py.png` side by side; read `post_x.md` and `post_bluesky.md`; write a one-paragraph verdict in `step_notes.md` — is Python at parity, needs copy edit only, needs chart rework, or blocked?
+- [ ] **CE-5.2** For each run: open the output folder; read `question.md`; review `chart_r.png` and `chart_py.png` side by side; read `post.md` plus any platform-specific variants that exist; write a one-paragraph verdict in `step_notes.md` and a structured verdict in `MANUAL_RUN_LOG.md` — is Python at parity, needs copy edit only, needs chart rework, or blocked?
 - [ ] **CE-5.3** Fix any charts that failed or rendered poorly: note the specific `column_mapping`, `chart_type`, or Python parity gap that caused the issue; fix it in `chart_request.md` or `chart_engine_py` so the next run doesn't repeat it
 - [ ] **CE-5.4** Edit social copy to post-ready quality for the best three of the five: keep edits minimal — fix factual errors, tighten the hook, cut to character limit
 - [ ] **CE-5.5** Update `backlog.yaml`: any question whose copy is post-ready gets status `reviewed`; blocked questions get a `notes` update explaining the issue
 - [ ] **CE-5.6** Write a brief skill iteration log at `chart_a_day/skills/ITERATION_LOG.md`: one section per skill, what changed after CE-5 runs and why
+- [x] **CE-5.7** Summarize the first tranche (`q003`, `q006`, `q024`) at the top of `MANUAL_RUN_LOG.md`: recurring failure modes, instruction changes adopted, and what is now stable enough to scale across the rest of the backlog
 
-**Verification:** Five output folders exist in `chart_a_day/output/`. At least three questions are at `reviewed` status in `backlog.yaml`. `ITERATION_LOG.md` exists with at least one entry per skill.
+**Verification:** Five output folders exist in `chart_a_day/output/`. At least three questions are at `reviewed` status in `backlog.yaml`. `ITERATION_LOG.md` exists with at least one entry per skill. `MANUAL_RUN_LOG.md` shows both per-run verdicts and a tranche-level summary.
 
 ---
 
@@ -485,8 +550,8 @@ publisher/
 
 - [ ] **CE-6.1** Add a `Chart Engine` tab to `streamlit_app.py` using `st.tabs()`
 - [ ] **CE-6.2** In the tab: load `backlog.yaml` via `QueueManager`; display a `st.selectbox` of questions filtered to `ran` or `reviewed` status, showing `q_id + question text`
-- [ ] **CE-6.3** On question select: show `st.image` of `chart_a_day/output/{q_id}/chart.png`; show `st.text_area` for `post_x.md` content (editable); show `st.text_area` for `post_bluesky.md` content (editable)
-- [ ] **CE-6.4** Add Save button: on click, write the edited text back to `post_x.md` and `post_bluesky.md` (overwrite)
+- [ ] **CE-6.3** On question select: show `st.image` of `chart_a_day/output/{q_id}/chart_py.png` by default, with a side-by-side option for `chart_r.png` when it exists; show `st.text_area` for `post.md` content (editable); if `post_x.md` or `post_bluesky.md` exist, expose them as optional override fields
+- [ ] **CE-6.4** Add Save button: on click, write the edited text back to `post.md` and any platform-specific override files that were edited
 - [ ] **CE-6.5** Add Approve button: calls `queue_manager.update_status(q_id, "reviewed")`; on success shows `st.success`
 - [ ] **CE-6.6** Add Reject/Reset button: calls `queue_manager.update_status(q_id, "ready")`; clears the output folder (ask for confirmation first via `st.warning` + second click)
 - [ ] **CE-6.7** Add a status summary sidebar in the tab: `st.metric` widgets showing counts by status (ready / ran / reviewed / posted)
@@ -515,7 +580,7 @@ publisher/
 
 **Goal:** Analyze engagement data from 10+ posts across both formats; establish a default. This is a data task, not a build task — the deliverable is a decision recorded in the roadmap, not code.
 
-- [ ] **CE-8.1** Ensure all `post_x.md` and `post_bluesky.md` files are tagged with format type (standalone vs thread opener) — add a `format:` field to the social copy front matter if needed
+- [ ] **CE-8.1** Ensure all canonical social drafts are tagged with format type (standalone vs thread opener), and only tag platform-specific files when they actually exist
 - [ ] **CE-8.2** Filter `engagement_log.yaml` to 10+ posted entries; compute average likes + replies by format type and platform
 - [ ] **CE-8.3** Write a one-page decision doc at `chart_a_day/FORMAT_DECISION.md`: the data, the conclusion, the default format going forward, and any exceptions (e.g. "threads for methodology-heavy charts")
 - [ ] **CE-8.4** Update `social_copy.md` skill to default to the winning format; remove the "both formats" instruction
@@ -530,7 +595,7 @@ publisher/
 
 - [ ] **CE-9.1** Set up Bluesky API credentials: create an app password in Bluesky settings; store as environment variable `BLUESKY_APP_PASSWORD` and `BLUESKY_HANDLE`
 - [ ] **CE-9.2** Install `atproto` Python client: `pip install atproto`; add to `requirements.txt`
-- [ ] **CE-9.3** Create `chart_a_day/runner/post_bluesky.py`: `def post(q_id: str, copy_path: Path, image_path: Path) -> str` — authenticates, uploads image blob, creates post with text from the standalone section of `post_bluesky.md`; returns the post URL
+- [ ] **CE-9.3** Create `chart_a_day/runner/post_bluesky.py`: `def post(q_id: str, copy_path: Path, image_path: Path) -> str` — authenticates, uploads image blob, creates post with text from the standalone section of `post_bluesky.md` when it exists, otherwise from `post.md`; returns the post URL
 - [ ] **CE-9.4** Add `--post` flag to `run_next.py`: `python run_next.py --post --id q003 --platform bluesky` — calls `post_bluesky.post()`, logs engagement entry with the returned URL, updates status to `posted`
 - [ ] **CE-9.5** Run a test post on a private/test Bluesky account before the real account; confirm image attaches correctly and character limit is not exceeded
 - [ ] **CE-9.6** Evaluate X API: at this point, check the current X API v2 pricing for posting (it has changed multiple times); document the monthly cost for 30 posts/month at `chart_a_day/runner/X_API_EVAL.md`; decide whether to proceed

@@ -2,11 +2,16 @@
   "$schema": "https://vega.github.io/schema/vega-lite/normalized.json",
   "config": {
     "axis": {
+      "gridColor": "#D9E2EC",
+      "labelColor": "#5B6770",
       "labelFont": "Inter",
       "titleFont": "Inter"
     },
     "title": {
-      "font": "Inter"
+      "color": "#1F2933",
+      "font": "Inter",
+      "subtitleColor": "#52606D",
+      "subtitleFont": "Inter"
     },
     "view": {
       "stroke": null
@@ -169,6 +174,9 @@
       },
       "encoding": {
         "x": {
+          "axis": {
+            "labelAngle": 0
+          },
           "field": "box_group",
           "sort": [
             "West",
@@ -284,7 +292,7 @@
   "title": {
     "fontSize": 18,
     "subtitle": [
-      "Time window: 2023 | Grouped by group | Groups ordered by median",
+      "2023 snapshot | Grouped by group | Groups ordered by median",
       "",
       "Source: ACS | Vintage: 2023"
     ],

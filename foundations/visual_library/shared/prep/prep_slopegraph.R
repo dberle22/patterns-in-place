@@ -99,6 +99,21 @@ prep_slopegraph <- function(data, config = list()) {
   endpoint <- endpoint[, c("geo_id", "start_value", "end_value", "delta_value", "pct_change", "complete_endpoint_flag"), drop = FALSE]
 
   out <- merge(out, endpoint, by = "geo_id", all.x = TRUE, sort = FALSE)
+  # Some upstream workflows already carry a delta_value field. Normalize back
+  # to the canonical name after merging computed endpoints so renderers can
+  # rely on a single column contract.
+  if ("delta_value.y" %in% names(out)) {
+    out$delta_value <- out$delta_value.y
+    out$delta_value.y <- NULL
+  } else if ("delta_value" %in% names(out)) {
+    out$delta_value <- out$delta_value
+  }
+  if ("delta_value.x" %in% names(out)) {
+    if (!("delta_value" %in% names(out))) {
+      out$delta_value <- out$delta_value.x
+    }
+    out$delta_value.x <- NULL
+  }
   if (isTRUE(cfg$drop_incomplete)) {
     out <- out[out$complete_endpoint_flag %in% TRUE, , drop = FALSE]
   }

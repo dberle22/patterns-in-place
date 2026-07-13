@@ -55,6 +55,17 @@ class GeoRenderTests(unittest.TestCase):
         self.assertEqual(figure.__class__.__name__, "Figure")
         self.assertGreaterEqual(len(figure.axes), 3)
 
+    def test_choropleth_uses_dark_high_sequential_scale(self) -> None:
+        request = ChartRequest(
+            data=choropleth_fixture(),
+            chart_type="choropleth",
+            theme=self.theme,
+            number_format=NumberFormat(unit="count", decimals=0),
+        )
+        figure = render(request).chart
+        collection = figure.axes[0].collections[0]
+        self.assertEqual(collection.cmap.name.lower(), "blues")
+
     def test_hexbin_renders_matplotlib_figure(self) -> None:
         request = ChartRequest(
             data=hexbin_fixture(),
@@ -78,9 +89,21 @@ class GeoRenderTests(unittest.TestCase):
         )
         figure = render(request).chart
         self.assertEqual(figure.__class__.__name__, "Figure")
-        legend = figure.axes[0].get_legend()
-        self.assertIsNotNone(legend)
-        self.assertIn("Highlight", [text.get_text() for text in legend.get_texts()])
+        self.assertGreaterEqual(len(figure.legends), 1)
+        self.assertIn("Map role", [legend.get_title().get_text() for legend in figure.legends if legend.get_title()])
+
+    def test_highlight_context_map_binned_variant_uses_separate_legends(self) -> None:
+        request = ChartRequest(
+            data=highlight_context_map_fixture(),
+            chart_type="highlight_context_map",
+            theme=self.theme,
+            number_format=NumberFormat(unit="count", decimals=0),
+            field_values={"variant": "binned"},
+        )
+        figure = render(request).chart
+        legend_titles = [legend.get_title().get_text() for legend in figure.legends if legend.get_title()]
+        self.assertIn("Jobs", legend_titles)
+        self.assertIn("Map role", legend_titles)
 
     def test_proportional_symbol_map_renders_matplotlib_figure(self) -> None:
         request = ChartRequest(

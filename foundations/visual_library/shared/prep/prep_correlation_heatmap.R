@@ -61,7 +61,7 @@ prep_correlation_heatmap <- function(data, config = list()) {
     }
 
     wide <- stats::reshape(
-      subset_df[, c("geo_id", "metric_label", "metric_value")],
+      as.data.frame(subset_df[, c("geo_id", "metric_label", "metric_value")]),
       idvar = "geo_id",
       timevar = "metric_label",
       direction = "wide"
