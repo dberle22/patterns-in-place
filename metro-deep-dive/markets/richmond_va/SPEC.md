@@ -5,6 +5,14 @@
 **Status:** Planning — ad hoc first pass, codify after
 **Last updated:** 2026-07-12
 
+### Resolved decisions
+
+| Decision | Resolution |
+|---|---|
+| AI exposure source | Felten et al. Data Appendix B (NAICS-4-digit AIIE scores) — same source as the publisher AI series. GS scores are SOC major groups only, not joinable to NAICS without approximation. |
+| LODES commute data | Ingest OD files when we reach S04a regional role. WAC/RAC already ingested at tract grain; OD is the next step for flow maps. |
+| Map rendering | Static maps for now. Tool (R or Python) decided per section; no lock required. |
+
 This document is the working spec for the Richmond issue. It is not a final plan — it's a starting point for the ad hoc build. Sections get updated as we learn what the data actually shows. Decisions made here that prove durable get promoted to the template; decisions that were Richmond-specific stay here.
 
 ---
@@ -34,19 +42,30 @@ Sections are organized by Act, matching the delivery structure. Within each sect
 - Compact percentile table: KPI | raw value | national percentile | rank
 
 **KPI selection (to decide before building):**
-Axis order is locked after market #1 — this is the editorial decision that propagates to every future issue. Draft selection below; needs deliberate sign-off.
+Axis order is locked after market #1 — this is the editorial decision that propagates to every future issue. Draft selection below; needs deliberate sign-off before the radar renders.
 
-| Frame | Candidate KPIs | Notes |
+| Frame | KPI | Rationale |
 |---|---|---|
-| Character (2–3) | `diversity_index`, `pct_ba_plus`, `pop_weighted_density_sqmi` | Education + density likely most structurally revealing for RVA |
-| Livability (2–3) | `life_expectancy`, `median_gross_rent`, `walkability_index` | Affordability + health headline the livability story |
-| Opportunity (2–3) | `real_gdp_growth_5yr`, `income_pc_growth_5yr`, `hpi_5yr_pct` | Growth trajectory over stock levels |
+| Character | `pct_ba_plus` | Educational attainment — clean, comparable, structurally revealing |
+| Character | `median_age` | Age structure — single number, intuitive for lay readers |
+| Character | `pop_growth_5yr` | Population trajectory as a character signal |
+| Livability | `life_expectancy` | Single best health outcome summary |
+| Livability | `rent_to_income` | Affordability burden — more comparable across metros than raw gross rent |
+| Livability | `walkability_index` | Built environment proxy |
+| Opportunity | `income_pc_growth_5yr` | Growth trajectory over income stock |
+| Opportunity | `hpi_5yr_pct` | Market momentum |
+| Opportunity | `real_gdp_growth_5yr` | Economic output growth |
 
-All of these are in Gold and already used in frame calibration. No new data sourcing needed.
+9 KPIs is workable but slightly crowded for a radar. Consider trimming `median_age` or `pop_growth_5yr` after seeing the shape — both carry similar signals. `diversity_index` dropped: single-number compression of a multi-axis distribution, hard to explain and hard to compare.
+
+**Top-line stat boxes** (fixed across every issue — not on the radar):
+`pop_total`, `calc_income_pc`, `real_gdp_total`, `life_expectancy`, region, Intelligence Framing Cluster label. Median gross rent goes here, not the radar.
+
+All KPIs are in Gold and used in frame calibration. No new data sourcing needed.
 
 **Data sources:**
 - `gold.character_wide`, `gold.livability_wide`, `gold.opportunity_wide` — frame KPI values at CBSA grain
-- `exploration/intelligence_framework/outputs/*.parquet` — frame scores, cluster labels, Intelligence Framing Cluster label
+- `exploration/intelligence_framework/phase_5_cross_frame_integration/outputs/cross_frame_scores.parquet` — frame percentile ranks and Intelligence Framing Cluster label
 
 **Build needed:**
 - [ ] Pull Richmond row + national distribution for the 6–8 candidate KPIs
@@ -82,13 +101,13 @@ All of these are in Gold and already used in frame calibration. No new data sour
 - One dumbbell chart vs. the single most instructive peer
 - Forward-analog paragraph if one credibly exists
 
-**Method:** Cosine similarity on z-scored Gold KPI vectors. Already implemented in the intelligence framework for frame similarity — the distance engine just needs to be pointed at the full KPI vector rather than frame scores.
+**Method:** Cosine similarity scores are already computed in the intelligence framework phase 5 outputs — query the cross-frame parquet rather than rerunning the similarity engine. Confirm whether the stored scores are frame-level (three separate similarity vectors) or a combined cross-frame vector; if frame-level, a short weighted aggregation step produces the single ranking. Run a second pass on 5yr growth rate slopes to surface trajectory peers separately from structural peers.
 
-**Richmond hypothesis:** Likely peers will be mid-size South Atlantic metros with strong government/professional service bases — Raleigh (aspirational divergence on tech), Louisville, Greensboro, perhaps Baltimore suburbs. Worth testing level similarity vs. trend slope similarity separately; they may surface different comps.
+**Richmond hypothesis:** Likely structural peers are mid-size South Atlantic metros with government/professional service bases — Raleigh (aspirational divergence on tech), Louisville, Greensboro, perhaps Richmond-adjacent metros like Charlottesville or Fredericksburg. Trajectory peers may differ.
 
 **Data sources:**
-- `exploration/intelligence_framework/outputs/*.parquet` — frame scores and cluster labels for all CBSAs
-- Gold wide tables for full KPI vector if we want broader feature set than frame scores
+- `exploration/intelligence_framework/phase_5_cross_frame_integration/outputs/cross_frame_scores.parquet` — cross-frame similarity scores, already computed
+- `exploration/intelligence_framework/phase_5_cross_frame_integration/outputs/cross_frame_phase5_combined_input_matrix.parquet` — full KPI input matrix if we need to rerun on a different feature set
 
 **Build needed:**
 - [ ] Run cosine similarity on z-scored KPI vectors for Richmond vs. all ~400 CBSAs
@@ -125,26 +144,24 @@ All of these are in Gold and already used in frame calibration. No new data sour
 
 **Regional role:** Richmond sits between Northern Virginia (high-wage tech attractor) and the Hampton Roads military complex. It likely functions as a sub-regional services hub and receives some workforce from the Richmond–Petersburg periphery while losing residents to the NoVA corridor. The inflow/outflow ratio from LEHD LODES is the one-number test.
 
+**What's already in Gold:**
+`gold.economics_industry_wide` already has LQs computed (`lq_professional`, `lq_construction`, etc.) from QCEW private employment vs. national shares, plus BEA real GDP by sector (`real_gdp_professional`, `real_gdp_information`, etc.) and BEA earnings by sector. The LQ quadrant chart is mostly a query — no new computation needed. YoY growth requires comparing two years of the same table.
+
 **Data sources:**
-- `gold.economics_industry_wide` — broad QCEW sector columns at CBSA grain, latest year (2024)
-- LEHD LODES or ACS commuting flows — for inflow/outflow ratio
-- IRS migration flows or ACS — net migration by origin state
+- `gold.economics_industry_wide` — LQs, QCEW employment, BEA sector GDP, all at CBSA grain. Latest year 2024 for QCEW; BEA GDP lags by ~1 year.
+- `staging.lehd_lodes_wac` + `staging.lehd_lodes_rac` — already ingested at tract grain. WAC = jobs at workplace tract; RAC = jobs at residence tract. CBSA-level inflow/outflow ratio derivable from these without OD. OD ingestion is the next step for a true flow map (marked as separate build item).
+- IRS migration flows — in Gold via `gold.social_fabric_wide` (`irs_net_migration`, `irs_net_agi`) for net flows; state-of-origin detail requires the IRS SOI migration tables directly.
 
-**Exposure scorecard column (AI — source decision required):**
-The scorecard template already has an empty `ai_exposure_score` column. We need to pick a source before this cell can be filled:
-- **Felten et al. (2023)** — occupation-level AI exposure scores, crosswalk via SOC → NAICS
-- **Webb (2019)** — task-level automation risk by occupation
-- **Goldman Sachs (2023)** — sector-level exposure, less granular but faster to implement
-
-Recommendation: start with Goldman Sachs sector-level scores for the first pass (fastest path to a complete scorecard), then build the Felten SOC→NAICS crosswalk as the shared engine once S04a is otherwise done.
+**Exposure scorecard:** Use Felten Data Appendix B (NAICS-4-digit AIIE scores) — resolved. The scorecard column in S04a gets the sector-level AIIE weighted by Richmond's QCEW employment share. S04b builds the full occupation-level crosswalk on top.
 
 **Build needed:**
-- [ ] Pull Richmond CBSA row from `gold.economics_industry_wide`
-- [ ] Compute LQ and YoY growth for each broad sector; assign quadrant labels
-- [ ] Render LQ quadrant scatter using chart engine scatter prep
-- [ ] Pull LEHD LODES or ACS commute flows; compute inflow/outflow ratio
-- [ ] Pick AI exposure source and populate scorecard column (Goldman fast-path, Felten engine later)
+- [ ] Query `gold.economics_industry_wide` for Richmond: LQs + YoY growth (latest two years); assign quadrant labels
+- [ ] Render LQ quadrant scatter
+- [ ] Derive inflow/outflow ratio from WAC vs. RAC at Richmond CBSA level from staging tables
+- [ ] Download Felten Data Appendix B; join to QCEW sector employment shares; compute sector-level AIIE for Richmond
+- [ ] Build exposure scorecard table: sector | emp share | AIIE score | policy flags
 - [ ] Write regional role summary sentence
+- [ ] *(Separate build)* Ingest LODES OD files for Virginia; derive tract-to-tract flow map
 
 ---
 
@@ -161,19 +178,25 @@ Recommendation: start with Goldman Sachs sector-level scores for the first pass 
 
 **This is the theme engine.** Once built for Richmond, this engine (NAICS→SOC→Felten crosswalk + sector GDP weight) is reusable for every subsequent market. It also yields a standalone national thematic piece: AI exposure mapped across all 400 CBSAs.
 
+**What's already in Gold:**
+`gold.economics_occupation_wide` has OEWS 2025 data rolled into 4 buckets (management_professional, service, production_transportation, other) with STEM flag, employment counts, wages, and LQs — already at CBSA grain. The bucket grain is too coarse for Felten SOC-level joining, so this section uses `silver.bls_oews` directly for the detailed SOC employment mix within Richmond.
+
 **Data sources:**
-- `gold.economics_industry_wide` — QCEW sector employment + GDP share at CBSA grain
-- ACS occupation × industry cross-tabulation (via Census API or pre-pulled Gold table if available)
-- Felten et al. (2023) AI exposure scores by SOC occupation code
-- BLS OES (Occupational Employment Statistics) — occupation mix within NAICS sector for Richmond CBSA
+- `silver.bls_oews` — detailed SOC-level occupation employment for Richmond CBSA (2025 vintage). This is the input for the Felten AIOE crosswalk.
+- Felten et al. Data Appendix A — AIOE scores by 6-digit SOC (occupation-level). Download from `github.com/AIOE-Data/AIOE`.
+- Felten et al. Data Appendix B — AIIE scores by 4-digit NAICS (already used in S04a). Needed here to cross-check sector vs. occupation exposure.
+- `gold.economics_industry_wide` — BEA sector GDP shares for bubble sizing.
+
+**Note on ACS occupation × industry:** ACS does carry an industry × occupation cross-tab (B24010 series) but it's at broad SOC and broad NAICS groups, not fine-grained enough for this analysis. Use OEWS (`silver.bls_oews`) instead — it has detailed SOC at CBSA grain and is the same source the AI Exposure Brief specifies for Article 2.
 
 **Build needed:**
-- [ ] Check whether Gold has ACS occupation × industry data at CBSA grain
-- [ ] Download Felten et al. exposure scores (publicly available)
-- [ ] Build SOC→NAICS crosswalk using BLS OES NAICS-SOC employment weights
-- [ ] Compute weighted average AI exposure score per sector for Richmond
-- [ ] Render exposure scatter (bubble chart: x=exposure, y=emp share, size=GDP contribution)
-- [ ] Write occupation breakdown narrative for top 2–3 exposed sectors
+- [ ] Pull Richmond CBSA rows from `silver.bls_oews`; keep detailed SOC (o_group = 'detailed')
+- [ ] Download Felten Data Appendix A (AIOE by SOC); join to OEWS on 6-digit SOC code
+- [ ] Compute employment-weighted AIOE per broad sector for Richmond
+- [ ] Render bubble scatter: x = AIOE, y = employment share, size = BEA sector GDP contribution
+- [ ] Identify top 2–3 occupation groups driving exposure within highest-exposure sectors
+- [ ] Write synthesis paragraph
+- [ ] *(Stretch)* Run same crosswalk for all 400 CBSAs → national AI exposure map (yields standalone thematic article)
 
 **Stretch:** Run the same crosswalk for all 400 CBSAs → national thematic map. This is the "build once, ship three ways" payoff but is not required for the Richmond issue to ship.
 
@@ -189,17 +212,19 @@ Recommendation: start with Goldman Sachs sector-level scores for the first pass 
 - Housing stock + vacancy spatial layer: where is the housing concentrated, where is it vacant?
 - Cultural fabric narrative: 2–3 paragraphs on what makes Richmond itself (arts, food, VCU/UR anchor, James River)
 
-**Two-pass approach (because the POI geometry pipeline isn't landed yet):**
+**Two-pass approach:**
 
 *Pass 1 (now — Gold data only):*
 - Compute tract-level proxy score from Gold: z-score average of `walkability_index`, `jobs_access_45min_transit`, `pct_commute_transit`, `pct_commute_walk`
 - Pull housing stock mix (`pct_struct_multifam`, `pct_struct_small_mf`, etc.) and vacancy rate at tract grain from `gold.intelligence_zone_inputs`
 - Identify high-access vs. low-access tracts directionally; note where vacancy clusters relative to access
+- Static choropleth rendered in Python (geopandas + matplotlib) or R (sf + ggplot2)
 
-*Pass 2 (when geometry pipeline lands):*
-- Overlay OSM/Overpass roads, transit lines, airports
+*Pass 2 (OSM layer — build when we reach this section):*
+- Road network + transit lines via `osmnx` (Python) or `osmdata` (R) — both produce static map output
 - POI layers: parks, groceries, hospitals, cultural venues
-- Replace proxy score with distance-to-POI-based amenity score
+- Replace proxy score with distance-based amenity score once POI geometry is in hand
+- Static export via matplotlib/geopandas or tmap/ggplot2; decision deferred until we start this section
 
 **Richmond spatial hypotheses:**
 - Fan District / Scott's Addition / Manchester are the arts/food anchors; likely high walkability, lower vacancy
@@ -256,11 +281,14 @@ Sector GDP composition change over time is best shown as a **bump chart** (rank 
 
 Recommendation: build the bump chart first (already in the visual library as `bump_chart.py`). If the data shows interesting tier-crossing behavior, add the parcat panel as a companion. Building parcat from scratch is new chart engine work; only worth it if the story demands it.
 
+**What's already in Gold:**
+BEA sector GDP time series is already in `gold.economics_industry_wide` (`real_gdp_professional`, `real_gdp_information`, etc.) going back multiple years — the sector composition bump chart pulls directly from this table, no new ingestion needed. HPI, ZORI, and income growth are in `gold.opportunity_wide` or `gold.housing_market_wide`.
+
 **Data sources:**
-- `gold.opportunity_wide` — HPI, ZORI, income growth time series
-- Building Permits Survey — via Census API or pre-pulled
-- `gold.economics_industry_wide` — QCEW series
-- BEA regional GDP — sector GDP time series (may need separate pull if not in Gold)
+- `gold.economics_industry_wide` — BEA sector GDP time series for composition change; QCEW employment series for unemployment trajectory
+- `gold.housing_market_wide` — FHFA HPI, ZORI rent growth, permit data
+- `gold.opportunity_wide` — income per capita time series
+- Building Permits Survey — check `gold.housing_market_wide` first; pull from Census API if not available as a time series
 
 **Build needed:**
 - [ ] Pull time series for the 4–6 candidate series; index to common base year (2010 or 2015)
@@ -352,13 +380,15 @@ These need answers before the corresponding section can ship. Items marked **blo
 
 | Decision | Blocks | Status |
 |---|---|---|
-| Lock fingerprint KPI selection and axis order | S01 radar | Open — draft above, needs sign-off |
-| Pick AI exposure source (Goldman fast-path vs. Felten engine) | S04a scorecard, S04b | Open |
-| Confirm BEA sector GDP series availability in Gold | S06 bump chart | Needs data check |
-| Confirm ACS occupation × industry data at CBSA grain in Gold | S04b | Needs data check |
-| HDBSCAN parameters for Richmond (min_cluster_size, min_samples) | S08 | Open until we run it |
+| Lock fingerprint KPI selection and axis order | S01 radar | **Draft locked above** — 9 KPIs across 3 frames. Sign-off needed before rendering. |
+| AI exposure source | S04a scorecard, S04b | **Resolved: Felten et al.** Appendix B for industry (S04a), Appendix A for occupation (S04b). |
+| LODES OD ingestion | S04a flow map, S05 commute shed | **Resolved: ingest OD when we reach that section.** WAC/RAC ratio is the first-pass regional role number. |
+| Map rendering tool and format | S05, S08 | **Resolved: static maps.** Tool (Python/R) decided per section when we build it. |
+| BEA sector GDP time series in Gold | S06 bump chart | **Confirmed: already in `gold.economics_industry_wide`**. No new ingestion. |
+| ACS occupation × industry at CBSA grain | S04b | **Resolved: use `silver.bls_oews` instead.** ACS cross-tab is too coarse; OEWS has detailed SOC at CBSA grain. |
+| HDBSCAN parameters for Richmond | S08 | Open — decide after running it |
 | Lock archetype names | S08 publish | Open — don't decide until output is in hand |
-| S09/S10 scope: ship with or without corridors? | Act 4 | Recommendation: S08 only for issue 1 |
+| S09/S10 scope | Act 4 | Recommendation: S08 only for issue 1 |
 
 ---
 
@@ -374,4 +404,4 @@ Not committed, not scoped — ideas worth keeping visible in case the data motiv
 
 **Vacant land / underutilized parcels (preview).** Even if S10 doesn't ship for market #1, a brief qualitative note on where surface parking and vacant lots concentrate in Richmond (Scott's Addition pre-redevelopment, Southside corridors) would prime readers for the corridor thesis without requiring the full parcel screen methodology.
 
-**Commute shed visualization.** LEHD LODES origin-destination data can be mapped as a flow map from Richmond's top employer tracts to their surrounding origin tracts. Shows the labor market geography in a way that makes the bedroom-community-vs-attractor question visual rather than just numerical.
+**Commute shed visualization.** LEHD LODES OD files (confirmed for ingestion when we reach S04a) can produce a flow map from Richmond's top employer tracts to their surrounding origin tracts. Shows the bedroom-community-vs-attractor question visually rather than as a single ratio. Render as a static flow map with line weight proportional to worker volume.

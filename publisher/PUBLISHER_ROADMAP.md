@@ -1,8 +1,8 @@
 # Publisher — Product Roadmap
 
-*Last updated: 2026-07-11. This roadmap is referenced from `PLATFORM_ROADMAP.md` → Track G and Track H. It covers three distinct products that share the same foundations layer (DuckDB warehouse, `chart_engine_py`, semantic layer, Gold tables) but have different execution models, outputs, and distribution channels.*
+*Last updated: 2026-07-13. This roadmap is referenced from `PLATFORM_ROADMAP.md` → Track G and Track H. It covers three distinct products that share the same foundations layer (DuckDB warehouse, `chart_engine_py`, semantic layer, Gold tables) but have different execution models, outputs, and distribution channels.*
 
-*Revision notes: Added CE task breakdowns (2026-07-11). Added chart type coverage analysis, q016–q028 backlog expansion, decision gate log, backlog format spec, and chart-selection design (2026-07-11). Added Python rendering architecture direction after the Phase 5 manual-run review (2026-07-12).*
+*Revision notes: Added CE task breakdowns (2026-07-11). Added chart type coverage analysis, q016–q028 backlog expansion, decision gate log, backlog format spec, and chart-selection design (2026-07-11). Added Python rendering architecture direction after the Phase 5 manual-run review (2026-07-12). Added repo-local backlog-replenishment Skill for generating new Chart A Day questions after the initial 28-question queue was exhausted (2026-07-13).*
 
 ---
 
@@ -16,6 +16,7 @@ Read this section before starting any milestone work. It records decisions alrea
 - [`publisher/README.md`](README.md) — current folder orientation; note it predates this roadmap and will be updated as milestones complete
 - [`foundations/visual_library/chart_engine_py/PLAN.md`](../foundations/visual_library/chart_engine_py/PLAN.md) — Phases 1–4 complete; Phases 5–6 are what CE-2 and CE-3 accomplish as a byproduct of Chart Engine manual runs
 - [`AGENTS.md`](../AGENTS.md) — shared behavioral guidelines for all agents in this monorepo; read before writing any code
+- `.codex/skills/chart-question-generator/` — repo-local Codex Skill for generating fresh backlog ideas or formatting rough ideas into valid `chart_a_day/backlog.yaml` entries
 
 ### Decisions already made — do not re-litigate
 
@@ -537,6 +538,7 @@ publisher/
 - [ ] **CE-5.5** Update `backlog.yaml`: any question whose copy is post-ready gets status `reviewed`; blocked questions get a `notes` update explaining the issue
 - [ ] **CE-5.6** Write a brief skill iteration log at `chart_a_day/skills/ITERATION_LOG.md`: one section per skill, what changed after CE-5 runs and why
 - [x] **CE-5.7** Summarize the first tranche (`q003`, `q006`, `q024`) at the top of `MANUAL_RUN_LOG.md`: recurring failure modes, instruction changes adopted, and what is now stable enough to scale across the rest of the backlog
+- [x] **CE-5.8** Create a repo-local backlog-replenishment Skill at `.codex/skills/chart-question-generator/` so exhausted queues can be refilled with backlog-ready YAML entries instead of ad hoc notes; document the skill in `chart_a_day/README.md` and the roadmap orientation section
 
 **Verification:** Five output folders exist in `chart_a_day/output/`. At least three questions are at `reviewed` status in `backlog.yaml`. `ITERATION_LOG.md` exists with at least one entry per skill. `MANUAL_RUN_LOG.md` shows both per-run verdicts and a tranche-level summary.
 

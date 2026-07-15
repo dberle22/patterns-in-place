@@ -413,3 +413,153 @@
   scheduled: null
   ran_at: '2026-07-12 22:20:00'
   posted_at: null
+
+# ── QUEUE REPLENISHMENT (q029–q038) ───────────────────────────────────────────
+# Added after the initial 28-question parity queue was exhausted. These entries
+# are intended as the next Chart A Day backlog tranche, with a deliberate mix of
+# templates so the queue does not revert to only ranking-style prompts.
+
+- id: q029
+  question: Which major metros have seen the fastest rent growth since 2019?
+  template_id: growth
+  geo_level: cbsa
+  status: ready
+  platform: both
+  produce_alternatives: false
+  notes: Filter to CBSAs with pop > 250k. Use inflation-adjusted rent growth if
+    that metric is already available; otherwise call out the nominal-growth caveat
+    in the copy.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q030
+  question: How does Texas compare to the national average on permits per housing
+    unit in 2023?
+  template_id: benchmark
+  geo_level: state
+  status: ready
+  platform: both
+  produce_alternatives: false
+  notes: Simple state benchmark post. Metric = permits per housing unit. Include
+    the US benchmark explicitly in the result so the benchmark annotation is
+    labeled downstream.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q031
+  question: How has renter cost burden changed since 2015 in Florida, Texas, Arizona,
+    and North Carolina?
+  template_id: trend
+  geo_level: state
+  status: ready
+  platform: both
+  produce_alternatives: false
+  notes: Four-state affordability trend. Keep the same state set across the whole
+    series. Use a line chart unless the result collapses to only two time points,
+    in which case use the slopegraph fallback.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q032
+  question: Compare vacancy rates in New York, Miami, Phoenix, and Austin in 2023.
+  template_id: compare_selected
+  geo_level: cbsa
+  status: ready
+  platform: x
+  produce_alternatives: false
+  notes: Four-metro point-in-time comparison with clear housing-market contrast.
+    Use full CBSA names in SQL output, but shorten display labels in the chart if
+    needed for readability.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q033
+  question: How is renter cost burden distributed across states in 2023?
+  template_id: distribution
+  geo_level: state
+  status: ready
+  platform: substack
+  produce_alternatives: true
+  notes: State-level distribution view. Compare boxplot vs heatmap_table because
+    the state count is small enough that a table may still be readable. Exclude
+    territories unless they are already part of the standard state grain.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q034
+  question: How does 5-year income growth relate to 5-year rent growth across major
+    metros?
+  template_id: correlation
+  geo_level: cbsa
+  status: ready
+  platform: both
+  produce_alternatives: true
+  notes: Filter to CBSAs with pop > 250k. X = income_growth_5yr, Y = rent_growth_5yr.
+    If the result set is dense, keep the fallback hexbin as `chart_alt.png` for
+    comparison.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q035
+  question: Which counties have the highest child poverty rates in 2023?
+  template_id: map
+  geo_level: county
+  status: ready
+  platform: substack
+  produce_alternatives: false
+  notes: County-level choropleth. Metric = child_poverty_rate or nearest equivalent.
+    Exclude Alaska, Hawaii, and territories if the projection or geometry handling
+    becomes too noisy for a first county map run.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q036
+  question: How have median household income rankings shifted across states since
+    2015?
+  template_id: rank_change
+  geo_level: state
+  status: ready
+  platform: both
+  produce_alternatives: false
+  notes: Use bump_chart if 3+ yearly points are available. Highlight the biggest
+    movers up and down rather than trying to label every state. Keep a fixed comparison
+    universe across the full time window.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q037
+  question: How does Arizona's age structure compare to Florida's in 2023?
+  template_id: demographic
+  geo_level: state
+  status: ready
+  platform: both
+  produce_alternatives: false
+  notes: Age/sex comparison between two aging-growth states. Requires age bins and
+    sex breakdown. If the age pyramid contract prefers one geography vs a benchmark,
+    treat Florida as the comparison benchmark in the notes and subtitle.
+  scheduled: null
+  ran_at: null
+  posted_at: null
+
+- id: q038
+  question: How do housing affordability, vacancy, and income growth compare across
+    major Rust Belt metros in 2023?
+  template_id: composition
+  geo_level: cbsa
+  status: ready
+  platform: substack
+  produce_alternatives: false
+  notes: Multi-metric scorecard or heatmap table for Chicago, Detroit, Cleveland,
+    Pittsburgh, Buffalo, and Milwaukee. Metrics = rent_to_income_ratio, vacancy_rate,
+    income_growth_5yr. Normalize by column if using heatmap_table.
+  scheduled: null
+  ran_at: null
+  posted_at: null
