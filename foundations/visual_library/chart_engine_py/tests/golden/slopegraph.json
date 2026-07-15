@@ -1,7 +1,8 @@
 {
-  "$schema": "https://vega.github.io/schema/vega-lite/v4.17.0.json",
+  "$schema": "https://vega.github.io/schema/vega-lite/normalized.json",
   "config": {
     "axis": {
+      "gridColor": "#D9E2EC",
       "labelColor": "#5B6770",
       "labelFont": "Inter",
       "titleFont": "Inter"
@@ -12,124 +13,282 @@
       "subtitleColor": "#52606D"
     },
     "view": {
-      "continuousHeight": 300,
-      "continuousWidth": 400,
       "stroke": null
     }
   },
   "datasets": {
-    "data-1660b6c9e019add50e5251f8a33e23e2": [
+    "dataset_1": [
       {
         "benchmark_flag": false,
+        "benchmark_label": null,
+        "complete_endpoint_flag": true,
+        "delta_value": 5.0,
+        "display_order": 1,
+        "end_value": 15.0,
         "geo_id": "1",
         "geo_level": "cbsa",
         "geo_name": "A",
-        "highlight_flag": true,
-        "line_type": "highlight",
-        "metric_id": "m1",
-        "metric_label": "Jobs",
-        "metric_value": 15.0,
-        "period": "2023",
-        "period_display": "2023",
-        "period_label": "2023",
-        "plot_value": 15.0,
-        "source": "ACS",
-        "vintage": "2023"
-      },
-      {
-        "benchmark_flag": false,
-        "geo_id": "2",
-        "geo_level": "cbsa",
-        "geo_name": "B",
-        "highlight_flag": false,
-        "line_type": "comparison",
-        "metric_id": "m1",
-        "metric_label": "Jobs",
-        "metric_value": 13.0,
-        "period": "2023",
-        "period_display": "2023",
-        "period_label": "2023",
-        "plot_value": 13.0,
-        "source": "ACS",
-        "vintage": "2023"
-      }
-    ],
-    "data-636dbb0abe8b08275519e732309ad336": [
-      {
-        "benchmark_flag": false,
-        "geo_id": "1",
-        "geo_level": "cbsa",
-        "geo_name": "A",
+        "group": "Peer CBSAs",
         "highlight_flag": true,
         "line_type": "highlight",
         "metric_id": "m1",
         "metric_label": "Jobs",
         "metric_value": 10.0,
+        "note": "Benchmark line is shown for reference.",
+        "pct_change": 0.5,
         "period": "2019",
         "period_display": "2019",
         "period_label": "2019",
+        "period_role": "start",
         "plot_value": 10.0,
         "source": "ACS",
+        "start_value": 10.0,
+        "variant": "value",
         "vintage": "2023"
       },
       {
         "benchmark_flag": false,
+        "benchmark_label": null,
+        "complete_endpoint_flag": true,
+        "delta_value": 5.0,
+        "display_order": 1,
+        "end_value": 15.0,
         "geo_id": "1",
         "geo_level": "cbsa",
         "geo_name": "A",
+        "group": "Peer CBSAs",
         "highlight_flag": true,
         "line_type": "highlight",
         "metric_id": "m1",
         "metric_label": "Jobs",
         "metric_value": 15.0,
+        "note": "Benchmark line is shown for reference.",
+        "pct_change": 0.5,
         "period": "2023",
         "period_display": "2023",
         "period_label": "2023",
+        "period_role": "end",
         "plot_value": 15.0,
         "source": "ACS",
+        "start_value": 10.0,
+        "variant": "value",
+        "vintage": "2023"
+      },
+      {
+        "benchmark_flag": true,
+        "benchmark_label": "US",
+        "complete_endpoint_flag": true,
+        "delta_value": 3.0,
+        "display_order": 2,
+        "end_value": 14.0,
+        "geo_id": "3",
+        "geo_level": "cbsa",
+        "geo_name": "National Benchmark",
+        "group": "Peer CBSAs",
+        "highlight_flag": false,
+        "line_type": "benchmark",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 11.0,
+        "note": "Benchmark line is shown for reference.",
+        "pct_change": 0.2727272727272727,
+        "period": "2019",
+        "period_display": "2019",
+        "period_label": "2019",
+        "period_role": "start",
+        "plot_value": 11.0,
+        "source": "ACS",
+        "start_value": 11.0,
+        "variant": "value",
+        "vintage": "2023"
+      },
+      {
+        "benchmark_flag": true,
+        "benchmark_label": "US",
+        "complete_endpoint_flag": true,
+        "delta_value": 3.0,
+        "display_order": 2,
+        "end_value": 14.0,
+        "geo_id": "3",
+        "geo_level": "cbsa",
+        "geo_name": "National Benchmark",
+        "group": "Peer CBSAs",
+        "highlight_flag": false,
+        "line_type": "benchmark",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 14.0,
+        "note": "Benchmark line is shown for reference.",
+        "pct_change": 0.2727272727272727,
+        "period": "2023",
+        "period_display": "2023",
+        "period_label": "2023",
+        "period_role": "end",
+        "plot_value": 14.0,
+        "source": "ACS",
+        "start_value": 11.0,
+        "variant": "value",
         "vintage": "2023"
       },
       {
         "benchmark_flag": false,
+        "benchmark_label": null,
+        "complete_endpoint_flag": true,
+        "delta_value": 1.0,
+        "display_order": 3,
+        "end_value": 13.0,
         "geo_id": "2",
         "geo_level": "cbsa",
         "geo_name": "B",
+        "group": "Peer CBSAs",
         "highlight_flag": false,
         "line_type": "comparison",
         "metric_id": "m1",
         "metric_label": "Jobs",
         "metric_value": 12.0,
+        "note": "Benchmark line is shown for reference.",
+        "pct_change": 0.08333333333333333,
         "period": "2019",
         "period_display": "2019",
         "period_label": "2019",
+        "period_role": "start",
         "plot_value": 12.0,
         "source": "ACS",
+        "start_value": 12.0,
+        "variant": "value",
         "vintage": "2023"
       },
       {
         "benchmark_flag": false,
+        "benchmark_label": null,
+        "complete_endpoint_flag": true,
+        "delta_value": 1.0,
+        "display_order": 3,
+        "end_value": 13.0,
         "geo_id": "2",
         "geo_level": "cbsa",
         "geo_name": "B",
+        "group": "Peer CBSAs",
         "highlight_flag": false,
         "line_type": "comparison",
         "metric_id": "m1",
         "metric_label": "Jobs",
         "metric_value": 13.0,
+        "note": "Benchmark line is shown for reference.",
+        "pct_change": 0.08333333333333333,
         "period": "2023",
         "period_display": "2023",
         "period_label": "2023",
+        "period_role": "end",
         "plot_value": 13.0,
         "source": "ACS",
+        "start_value": 12.0,
+        "variant": "value",
         "vintage": "2023"
       }
-    ]
+    ],
+    "dataset_2": [
+      {
+        "benchmark_flag": false,
+        "benchmark_label": null,
+        "complete_endpoint_flag": true,
+        "delta_value": 5.0,
+        "display_order": 1,
+        "end_value": 15.0,
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "group": "Peer CBSAs",
+        "highlight_flag": true,
+        "label_name": "A",
+        "label_side": "right",
+        "label_text": "A (+5)",
+        "line_type": "highlight",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 15.0,
+        "note": "Benchmark line is shown for reference.",
+        "pct_change": 0.5,
+        "period": "2023",
+        "period_display": "2023",
+        "period_label": "2023",
+        "period_role": "end",
+        "plot_value": 15.0,
+        "source": "ACS",
+        "start_value": 10.0,
+        "variant": "value",
+        "vintage": "2023"
+      },
+      {
+        "benchmark_flag": true,
+        "benchmark_label": "US",
+        "complete_endpoint_flag": true,
+        "delta_value": 3.0,
+        "display_order": 2,
+        "end_value": 14.0,
+        "geo_id": "3",
+        "geo_level": "cbsa",
+        "geo_name": "National Benchmark",
+        "group": "Peer CBSAs",
+        "highlight_flag": false,
+        "label_name": "National Benchmark",
+        "label_side": "right",
+        "label_text": "National Benchmark (+3)",
+        "line_type": "benchmark",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 14.0,
+        "note": "Benchmark line is shown for reference.",
+        "pct_change": 0.2727272727272727,
+        "period": "2023",
+        "period_display": "2023",
+        "period_label": "2023",
+        "period_role": "end",
+        "plot_value": 14.0,
+        "source": "ACS",
+        "start_value": 11.0,
+        "variant": "value",
+        "vintage": "2023"
+      },
+      {
+        "benchmark_flag": false,
+        "benchmark_label": null,
+        "complete_endpoint_flag": true,
+        "delta_value": 1.0,
+        "display_order": 3,
+        "end_value": 13.0,
+        "geo_id": "2",
+        "geo_level": "cbsa",
+        "geo_name": "B",
+        "group": "Peer CBSAs",
+        "highlight_flag": false,
+        "label_name": "B",
+        "label_side": "right",
+        "label_text": "B (+1)",
+        "line_type": "comparison",
+        "metric_id": "m1",
+        "metric_label": "Jobs",
+        "metric_value": 13.0,
+        "note": "Benchmark line is shown for reference.",
+        "pct_change": 0.08333333333333333,
+        "period": "2023",
+        "period_display": "2023",
+        "period_label": "2023",
+        "period_role": "end",
+        "plot_value": 13.0,
+        "source": "ACS",
+        "start_value": 12.0,
+        "variant": "value",
+        "vintage": "2023"
+      }
+    ],
+    "dataset_3": []
   },
   "height": 400,
   "layer": [
     {
       "data": {
-        "name": "data-636dbb0abe8b08275519e732309ad336"
+        "name": "dataset_1"
       },
       "encoding": {
         "color": {
@@ -156,15 +315,18 @@
         "tooltip": [
           {
             "field": "geo_name",
+            "title": "Geography",
             "type": "nominal"
           },
           {
             "field": "period_display",
+            "title": "Period",
             "type": "nominal"
           },
           {
             "field": "plot_value",
             "format": ",d",
+            "title": "Value",
             "type": "quantitative"
           }
         ],
@@ -178,7 +340,11 @@
           "type": "nominal"
         },
         "y": {
+          "axis": {
+            "format": ",d"
+          },
           "field": "plot_value",
+          "sort": null,
           "title": "Jobs",
           "type": "quantitative"
         }
@@ -190,11 +356,37 @@
     },
     {
       "data": {
-        "name": "data-1660b6c9e019add50e5251f8a33e23e2"
+        "name": "dataset_3"
       },
       "encoding": {
         "text": {
-          "field": "geo_name",
+          "field": "label_text",
+          "type": "nominal"
+        },
+        "x": {
+          "field": "period_display",
+          "type": "nominal"
+        },
+        "y": {
+          "field": "plot_value",
+          "type": "quantitative"
+        }
+      },
+      "mark": {
+        "align": "right",
+        "color": "#1F2933",
+        "dx": -6,
+        "font": "Inter",
+        "type": "text"
+      }
+    },
+    {
+      "data": {
+        "name": "dataset_2"
+      },
+      "encoding": {
+        "text": {
+          "field": "label_text",
           "type": "nominal"
         },
         "x": {
@@ -217,10 +409,15 @@
   ],
   "title": {
     "fontSize": 18,
-    "text": "Slopegraph"
+    "subtitle": [
+      "Change window: 2019-2023 | Scope: Peer CBSAs",
+      "",
+      "Source: ACS | Vintage: 2023 | Note: Benchmark line is shown for reference."
+    ],
+    "text": "Jobs change across selected cbsas"
   },
   "usermeta": {
-    "caption": "Source: ACS | Vintage: 2023"
+    "caption": "Source: ACS | Vintage: 2023 | Note: Benchmark line is shown for reference."
   },
   "width": 640
 }

@@ -1,0 +1,287 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/normalized.json",
+  "config": {
+    "axis": {
+      "gridColor": "#D9E2EC",
+      "labelColor": "#5B6770",
+      "labelFont": "Inter",
+      "titleFont": "Inter"
+    },
+    "legend": {
+      "labelColor": "#52606D",
+      "labelFont": "Inter"
+    },
+    "title": {
+      "color": "#1F2933",
+      "font": "Inter",
+      "subtitleColor": "#52606D",
+      "subtitleFont": "Inter"
+    },
+    "view": {
+      "stroke": null
+    }
+  },
+  "datasets": {
+    "dataset_1": [
+      {
+        "benchmark_value": 102.0,
+        "period": "2019"
+      },
+      {
+        "benchmark_value": 103.0,
+        "period": "2020"
+      },
+      {
+        "benchmark_value": 104.0,
+        "period": "2021"
+      },
+      {
+        "benchmark_value": 105.0,
+        "period": "2022"
+      }
+    ],
+    "dataset_2": [
+      {
+        "benchmark_value": 102.0,
+        "geo_name": "Peer Average",
+        "group": "South Atlantic",
+        "highlight_flag": false,
+        "index_base_period": 2019,
+        "metric_label": "Per-capita income index",
+        "note": "Indexed to 2019 to compare pace of change rather than absolute level.",
+        "period": "2019",
+        "plot_value": 100.0,
+        "series": "Peer Average",
+        "source": "BEA",
+        "time_window": "indexed",
+        "value": 100.0,
+        "variant": "indexed",
+        "vintage": "2024"
+      },
+      {
+        "benchmark_value": 103.0,
+        "geo_name": "Peer Average",
+        "group": "South Atlantic",
+        "highlight_flag": false,
+        "index_base_period": 2019,
+        "metric_label": "Per-capita income index",
+        "note": "Indexed to 2019 to compare pace of change rather than absolute level.",
+        "period": "2020",
+        "plot_value": 101.0,
+        "series": "Peer Average",
+        "source": "BEA",
+        "time_window": "indexed",
+        "value": 101.0,
+        "variant": "indexed",
+        "vintage": "2024"
+      },
+      {
+        "benchmark_value": 104.0,
+        "geo_name": "Peer Average",
+        "group": "South Atlantic",
+        "highlight_flag": false,
+        "index_base_period": 2019,
+        "metric_label": "Per-capita income index",
+        "note": "Indexed to 2019 to compare pace of change rather than absolute level.",
+        "period": "2021",
+        "plot_value": 103.0,
+        "series": "Peer Average",
+        "source": "BEA",
+        "time_window": "indexed",
+        "value": 103.0,
+        "variant": "indexed",
+        "vintage": "2024"
+      },
+      {
+        "benchmark_value": 105.0,
+        "geo_name": "Peer Average",
+        "group": "South Atlantic",
+        "highlight_flag": false,
+        "index_base_period": 2019,
+        "metric_label": "Per-capita income index",
+        "note": "Indexed to 2019 to compare pace of change rather than absolute level.",
+        "period": "2022",
+        "plot_value": 106.0,
+        "series": "Peer Average",
+        "source": "BEA",
+        "time_window": "indexed",
+        "value": 106.0,
+        "variant": "indexed",
+        "vintage": "2024"
+      },
+      {
+        "benchmark_value": 102.0,
+        "geo_name": "Wilmington, NC",
+        "group": "South Atlantic",
+        "highlight_flag": true,
+        "index_base_period": 2019,
+        "metric_label": "Per-capita income index",
+        "note": "Indexed to 2019 to compare pace of change rather than absolute level.",
+        "period": "2019",
+        "plot_value": 100.0,
+        "series": "Wilmington",
+        "source": "BEA",
+        "time_window": "indexed",
+        "value": 100.0,
+        "variant": "indexed",
+        "vintage": "2024"
+      },
+      {
+        "benchmark_value": 103.0,
+        "geo_name": "Wilmington, NC",
+        "group": "South Atlantic",
+        "highlight_flag": true,
+        "index_base_period": 2019,
+        "metric_label": "Per-capita income index",
+        "note": "Indexed to 2019 to compare pace of change rather than absolute level.",
+        "period": "2020",
+        "plot_value": 104.0,
+        "series": "Wilmington",
+        "source": "BEA",
+        "time_window": "indexed",
+        "value": 104.0,
+        "variant": "indexed",
+        "vintage": "2024"
+      },
+      {
+        "benchmark_value": 104.0,
+        "geo_name": "Wilmington, NC",
+        "group": "South Atlantic",
+        "highlight_flag": true,
+        "index_base_period": 2019,
+        "metric_label": "Per-capita income index",
+        "note": "Indexed to 2019 to compare pace of change rather than absolute level.",
+        "period": "2021",
+        "plot_value": 108.0,
+        "series": "Wilmington",
+        "source": "BEA",
+        "time_window": "indexed",
+        "value": 108.0,
+        "variant": "indexed",
+        "vintage": "2024"
+      },
+      {
+        "benchmark_value": 105.0,
+        "geo_name": "Wilmington, NC",
+        "group": "South Atlantic",
+        "highlight_flag": true,
+        "index_base_period": 2019,
+        "metric_label": "Per-capita income index",
+        "note": "Indexed to 2019 to compare pace of change rather than absolute level.",
+        "period": "2022",
+        "plot_value": 111.00000000000001,
+        "series": "Wilmington",
+        "source": "BEA",
+        "time_window": "indexed",
+        "value": 111.0,
+        "variant": "indexed",
+        "vintage": "2024"
+      }
+    ]
+  },
+  "height": 380,
+  "layer": [
+    {
+      "data": {
+        "name": "dataset_2"
+      },
+      "encoding": {
+        "color": {
+          "field": "series",
+          "legend": {
+            "columns": 2,
+            "orient": "bottom",
+            "title": null
+          },
+          "scale": {
+            "domain": [
+              "Peer Average",
+              "Wilmington"
+            ],
+            "range": [
+              "#AEBECD",
+              "#2C7FB8"
+            ]
+          },
+          "type": "nominal"
+        },
+        "tooltip": [
+          {
+            "field": "series",
+            "title": "Series",
+            "type": "nominal"
+          },
+          {
+            "field": "period",
+            "title": "Period",
+            "type": "ordinal"
+          },
+          {
+            "field": "plot_value",
+            "format": ",d",
+            "title": "Value",
+            "type": "quantitative"
+          }
+        ],
+        "x": {
+          "field": "period",
+          "title": null,
+          "type": "ordinal"
+        },
+        "y": {
+          "axis": {
+            "format": ",d"
+          },
+          "field": "plot_value",
+          "scale": {
+            "domain": [
+              98.67999999999999,
+              112.32000000000002
+            ],
+            "nice": false
+          },
+          "title": "Per-capita income index (2019 = 100)",
+          "type": "quantitative"
+        }
+      },
+      "mark": {
+        "point": true,
+        "type": "line"
+      }
+    },
+    {
+      "data": {
+        "name": "dataset_1"
+      },
+      "encoding": {
+        "x": {
+          "field": "period",
+          "type": "ordinal"
+        },
+        "y": {
+          "field": "benchmark_value",
+          "type": "quantitative"
+        }
+      },
+      "mark": {
+        "color": "#52606D",
+        "strokeDash": [
+          4,
+          4
+        ],
+        "strokeWidth": 1,
+        "type": "line"
+      }
+    }
+  ],
+  "title": {
+    "fontSize": 18,
+    "subtitle": [
+      "2019-2022 | Indexed to 2019 = 100 | Scope: South Atlantic",
+      "",
+      "Source: BEA | Vintage: 2024 | Note: Indexed to 2019 to compare pace of change rather than absolute level."
+    ],
+    "text": "Per-capita income index: Wilmington, NC vs peers"
+  },
+  "width": 640
+}

@@ -1,0 +1,7 @@
+# Step Notes for q021
+
+- [2026-07-12 21:35:00] Built the q021 scorecard for Austin from `gold.housing_core_wide` plus `gold.population_demographics`, using rent-to-income, vacancy rate, 5-year population growth, and cost-burden share as the housing-stress indicator set.
+- [2026-07-12 21:35:00] The backlog wording called for national benchmarks, but the housing Gold table does not carry a full US row for all four housing indicators. For this run I used a clearly labeled large-metro median benchmark across 2023 CBSAs with population above 250,000 so the comparison stayed internally consistent instead of mixing incompatible sources.
+- [2026-07-12 21:35:00] The first Python export failed in `vl-convert` because the shared strength-strip renderer mixed constant-value x encodings with field-based `x2` values. Updating the renderer to use explicit quantitative start and end fields fixed the export and hardened the chart type for later benchmark runs.
+- [2026-07-12 21:35:00] Both renders now land the same takeaway: Austin looks especially stretched on population growth and vacancy pressure, while the cost-burden comparison is less extreme. Python is the stronger artifact here because the benchmark strips are cleaner and easier to read than the denser R reference.
+- [2026-07-12 21:35:00] Side-by-side verdict for q021: `match_with_minor_drift`. This should count as the completed `strength_strip` parity proof point, with one important workflow note that benchmark assumptions must be documented when a literal national row is unavailable.

@@ -23,6 +23,7 @@ class ChartSpec:
     optional_fields: list = field(default_factory=list)
     column_mapping: dict = field(default_factory=dict)   # source_col -> canonical name
     default_benchmark: str | None = None
+    runtime_config: dict = field(default_factory=dict)   # per-request prep config
     docs: str = ""                    # the markdown body below the front-matter
 
 
@@ -54,6 +55,7 @@ def load_spec(path: str | Path) -> ChartSpec:
         optional_fields=meta.get("optional_fields", []),
         column_mapping=meta.get("column_mapping", {}) or {},
         default_benchmark=meta.get("default_benchmark"),
+        runtime_config=meta.get("runtime_config", {}) or {},
         docs=docs,
     )
 

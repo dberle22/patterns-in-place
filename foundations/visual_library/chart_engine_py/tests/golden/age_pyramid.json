@@ -1,5 +1,6 @@
 {
-  "$schema": "https://vega.github.io/schema/vega-lite/v4.17.0.json",
+  "$schema": "https://vega.github.io/schema/vega-lite/normalized.json",
+  "columns": 3,
   "config": {
     "axis": {
       "labelFont": "Inter",
@@ -9,24 +10,252 @@
       "font": "Inter"
     },
     "view": {
-      "continuousHeight": 300,
-      "continuousWidth": 400,
       "stroke": null
     }
   },
+  "data": {
+    "name": "dataset_1"
+  },
   "datasets": {
-    "data-9c00aa9dc2b1c1a0b4bf9b34ead12925": [
-      {
-        "x": 0
-      }
-    ],
-    "data-bfc33445710ce404c632ed5347dfae33": [
+    "dataset_1": [
       {
         "age_bin": "0-17",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2023",
+        "plot_abs_value": 0.15286624203821655,
+        "plot_value": 0.15286624203821655,
+        "pop_share": 0.15286624203821655,
+        "pop_value": 96,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "0-17",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2023",
+        "plot_abs_value": 0.15605095541401273,
+        "plot_value": -0.15605095541401273,
+        "pop_share": 0.15605095541401273,
+        "pop_value": 98,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "18-34",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2023",
+        "plot_abs_value": 0.1926751592356688,
+        "plot_value": 0.1926751592356688,
+        "pop_share": 0.1926751592356688,
+        "pop_value": 121,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "18-34",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2023",
+        "plot_abs_value": 0.18789808917197454,
+        "plot_value": -0.18789808917197454,
+        "pop_share": 0.18789808917197454,
+        "pop_value": 118,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "35-64",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2023",
+        "plot_abs_value": 0.15764331210191082,
+        "plot_value": 0.15764331210191082,
+        "pop_share": 0.15764331210191082,
+        "pop_value": 99,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "35-64",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2023",
+        "plot_abs_value": 0.15286624203821655,
+        "plot_value": -0.15286624203821655,
+        "pop_share": 0.15286624203821655,
+        "pop_value": 96,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "0-17",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.1529968454258675,
+        "plot_value": 0.1529968454258675,
+        "pop_share": 0.1529968454258675,
+        "pop_value": 97,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "0-17",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.15615141955835962,
+        "plot_value": -0.15615141955835962,
+        "pop_share": 0.15615141955835962,
+        "pop_value": 99,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "18-34",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.19242902208201892,
+        "plot_value": 0.19242902208201892,
+        "pop_share": 0.19242902208201892,
+        "pop_value": 122,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "18-34",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.18769716088328076,
+        "plot_value": -0.18769716088328076,
+        "pop_share": 0.18769716088328076,
+        "pop_value": 119,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "35-64",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.15772870662460567,
+        "plot_value": 0.15772870662460567,
+        "pop_share": 0.15772870662460567,
+        "pop_value": 100,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "35-64",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.1529968454258675,
+        "plot_value": -0.1529968454258675,
+        "pop_share": 0.1529968454258675,
+        "pop_value": 97,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "0-17",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
         "geo_id": "1",
         "geo_level": "cbsa",
-        "geo_name": "A",
+        "geo_name": "Wilmington, NC",
         "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
         "period": "2023",
         "plot_abs_value": 0.15447154471544716,
         "plot_value": 0.15447154471544716,
@@ -34,14 +263,18 @@
         "pop_value": 95,
         "sex": "Female",
         "source": "ACS",
-        "vintage": "2023"
+        "vintage": "2024"
       },
       {
         "age_bin": "0-17",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
         "geo_id": "1",
         "geo_level": "cbsa",
-        "geo_name": "A",
+        "geo_name": "Wilmington, NC",
         "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
         "period": "2023",
         "plot_abs_value": 0.16260162601626016,
         "plot_value": -0.16260162601626016,
@@ -49,14 +282,18 @@
         "pop_value": 100,
         "sex": "Male",
         "source": "ACS",
-        "vintage": "2023"
+        "vintage": "2024"
       },
       {
         "age_bin": "18-34",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
         "geo_id": "1",
         "geo_level": "cbsa",
-        "geo_name": "A",
+        "geo_name": "Wilmington, NC",
         "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
         "period": "2023",
         "plot_abs_value": 0.21138211382113822,
         "plot_value": 0.21138211382113822,
@@ -64,14 +301,18 @@
         "pop_value": 130,
         "sex": "Female",
         "source": "ACS",
-        "vintage": "2023"
+        "vintage": "2024"
       },
       {
         "age_bin": "18-34",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
         "geo_id": "1",
         "geo_level": "cbsa",
-        "geo_name": "A",
+        "geo_name": "Wilmington, NC",
         "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
         "period": "2023",
         "plot_abs_value": 0.1951219512195122,
         "plot_value": -0.1951219512195122,
@@ -79,14 +320,18 @@
         "pop_value": 120,
         "sex": "Male",
         "source": "ACS",
-        "vintage": "2023"
+        "vintage": "2024"
       },
       {
         "age_bin": "35-64",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
         "geo_id": "1",
         "geo_level": "cbsa",
-        "geo_name": "A",
+        "geo_name": "Wilmington, NC",
         "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
         "period": "2023",
         "plot_abs_value": 0.14634146341463414,
         "plot_value": 0.14634146341463414,
@@ -94,14 +339,18 @@
         "pop_value": 90,
         "sex": "Female",
         "source": "ACS",
-        "vintage": "2023"
+        "vintage": "2024"
       },
       {
         "age_bin": "35-64",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
         "geo_id": "1",
         "geo_level": "cbsa",
-        "geo_name": "A",
+        "geo_name": "Wilmington, NC",
         "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
         "period": "2023",
         "plot_abs_value": 0.13008130081300814,
         "plot_value": -0.13008130081300814,
@@ -109,89 +358,720 @@
         "pop_value": 80,
         "sex": "Male",
         "source": "ACS",
-        "vintage": "2023"
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "0-17",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Wilmington, NC",
+        "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.1537242472266244,
+        "plot_value": 0.1537242472266244,
+        "pop_share": 0.1537242472266244,
+        "pop_value": 97,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "0-17",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Wilmington, NC",
+        "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.16164817749603805,
+        "plot_value": -0.16164817749603805,
+        "pop_share": 0.16164817749603805,
+        "pop_value": 102,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "18-34",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Wilmington, NC",
+        "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.21077654516640254,
+        "plot_value": 0.21077654516640254,
+        "pop_share": 0.21077654516640254,
+        "pop_value": 133,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "18-34",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Wilmington, NC",
+        "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.196513470681458,
+        "plot_value": -0.196513470681458,
+        "pop_share": 0.196513470681458,
+        "pop_value": 124,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "35-64",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Wilmington, NC",
+        "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.14580031695721077,
+        "plot_value": 0.14580031695721077,
+        "pop_share": 0.14580031695721077,
+        "pop_value": 92,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "35-64",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Wilmington, NC",
+        "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.13153724247226625,
+        "plot_value": -0.13153724247226625,
+        "pop_share": 0.13153724247226625,
+        "pop_value": 83,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      }
+    ],
+    "dataset_2": [
+      {
+        "age_bin": "0-17",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2023",
+        "plot_abs_value": 0.15286624203821655,
+        "plot_value": 0.15286624203821655,
+        "pop_share": 0.15286624203821655,
+        "pop_value": 96,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "0-17",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2023",
+        "plot_abs_value": 0.15605095541401273,
+        "plot_value": -0.15605095541401273,
+        "pop_share": 0.15605095541401273,
+        "pop_value": 98,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "18-34",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2023",
+        "plot_abs_value": 0.1926751592356688,
+        "plot_value": 0.1926751592356688,
+        "pop_share": 0.1926751592356688,
+        "pop_value": 121,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "18-34",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2023",
+        "plot_abs_value": 0.18789808917197454,
+        "plot_value": -0.18789808917197454,
+        "pop_share": 0.18789808917197454,
+        "pop_value": 118,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "35-64",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2023",
+        "plot_abs_value": 0.15764331210191082,
+        "plot_value": 0.15764331210191082,
+        "pop_share": 0.15764331210191082,
+        "pop_value": 99,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "35-64",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2023",
+        "plot_abs_value": 0.15286624203821655,
+        "plot_value": -0.15286624203821655,
+        "pop_share": 0.15286624203821655,
+        "pop_value": 96,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "0-17",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.1529968454258675,
+        "plot_value": 0.1529968454258675,
+        "pop_share": 0.1529968454258675,
+        "pop_value": 97,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "0-17",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.15615141955835962,
+        "plot_value": -0.15615141955835962,
+        "pop_share": 0.15615141955835962,
+        "pop_value": 99,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "18-34",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.19242902208201892,
+        "plot_value": 0.19242902208201892,
+        "pop_share": 0.19242902208201892,
+        "pop_value": 122,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "18-34",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.18769716088328076,
+        "plot_value": -0.18769716088328076,
+        "pop_share": 0.18769716088328076,
+        "pop_value": 119,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "35-64",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.15772870662460567,
+        "plot_value": 0.15772870662460567,
+        "pop_share": 0.15772870662460567,
+        "pop_value": 100,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "35-64",
+        "benchmark_label": "United States",
+        "comparison_role": "Benchmark",
+        "facet_label": "United States",
+        "geo_id": "0",
+        "geo_level": "cbsa",
+        "geo_name": "United States",
+        "highlight_flag": false,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.1529968454258675,
+        "plot_value": -0.1529968454258675,
+        "pop_share": 0.1529968454258675,
+        "pop_value": 97,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      }
+    ],
+    "dataset_3": [
+      {
+        "x": 0
+      }
+    ],
+    "dataset_4": [
+      {
+        "age_bin": "0-17",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Wilmington, NC",
+        "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2023",
+        "plot_abs_value": 0.15447154471544716,
+        "plot_value": 0.15447154471544716,
+        "pop_share": 0.15447154471544716,
+        "pop_value": 95,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "0-17",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Wilmington, NC",
+        "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2023",
+        "plot_abs_value": 0.16260162601626016,
+        "plot_value": -0.16260162601626016,
+        "pop_share": 0.16260162601626016,
+        "pop_value": 100,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "18-34",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Wilmington, NC",
+        "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2023",
+        "plot_abs_value": 0.21138211382113822,
+        "plot_value": 0.21138211382113822,
+        "pop_share": 0.21138211382113822,
+        "pop_value": 130,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "18-34",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Wilmington, NC",
+        "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2023",
+        "plot_abs_value": 0.1951219512195122,
+        "plot_value": -0.1951219512195122,
+        "pop_share": 0.1951219512195122,
+        "pop_value": 120,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "35-64",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Wilmington, NC",
+        "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2023",
+        "plot_abs_value": 0.14634146341463414,
+        "plot_value": 0.14634146341463414,
+        "pop_share": 0.14634146341463414,
+        "pop_value": 90,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "35-64",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Wilmington, NC",
+        "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2023",
+        "plot_abs_value": 0.13008130081300814,
+        "plot_value": -0.13008130081300814,
+        "pop_share": 0.13008130081300814,
+        "pop_value": 80,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "0-17",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Wilmington, NC",
+        "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.1537242472266244,
+        "plot_value": 0.1537242472266244,
+        "pop_share": 0.1537242472266244,
+        "pop_value": 97,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "0-17",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Wilmington, NC",
+        "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.16164817749603805,
+        "plot_value": -0.16164817749603805,
+        "pop_share": 0.16164817749603805,
+        "pop_value": 102,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "18-34",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Wilmington, NC",
+        "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.21077654516640254,
+        "plot_value": 0.21077654516640254,
+        "pop_share": 0.21077654516640254,
+        "pop_value": 133,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "18-34",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Wilmington, NC",
+        "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.196513470681458,
+        "plot_value": -0.196513470681458,
+        "pop_share": 0.196513470681458,
+        "pop_value": 124,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "35-64",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Wilmington, NC",
+        "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.14580031695721077,
+        "plot_value": 0.14580031695721077,
+        "pop_share": 0.14580031695721077,
+        "pop_value": 92,
+        "sex": "Female",
+        "source": "ACS",
+        "vintage": "2024"
+      },
+      {
+        "age_bin": "35-64",
+        "benchmark_label": null,
+        "comparison_role": "Selected geography",
+        "facet_label": "Wilmington, NC",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "Wilmington, NC",
+        "highlight_flag": true,
+        "note": "Bars show Wilmington shares; dashed outline shows US benchmark.",
+        "period": "2024",
+        "plot_abs_value": 0.13153724247226625,
+        "plot_value": -0.13153724247226625,
+        "pop_share": 0.13153724247226625,
+        "pop_value": 83,
+        "sex": "Male",
+        "source": "ACS",
+        "vintage": "2024"
       }
     ]
   },
-  "height": 400,
-  "layer": [
-    {
-      "data": {
-        "name": "data-9c00aa9dc2b1c1a0b4bf9b34ead12925"
-      },
-      "encoding": {
-        "x": {
-          "field": "x",
-          "type": "quantitative"
+  "facet": {
+    "field": "facet_label",
+    "type": "nominal"
+  },
+  "spec": {
+    "height": 400,
+    "layer": [
+      {
+        "data": {
+          "name": "dataset_3"
+        },
+        "encoding": {
+          "x": {
+            "field": "x",
+            "type": "quantitative"
+          }
+        },
+        "mark": {
+          "color": "#5B6770",
+          "type": "rule"
         }
       },
-      "mark": {
-        "color": "#5B6770",
-        "type": "rule"
-      }
-    },
-    {
-      "data": {
-        "name": "data-bfc33445710ce404c632ed5347dfae33"
-      },
-      "encoding": {
-        "color": {
-          "field": "sex",
-          "legend": {
-            "title": null
-          },
-          "scale": {
-            "domain": [
-              "Male",
-              "Female"
-            ],
-            "range": [
-              "#4C78A8",
-              "#2A9D8F"
-            ]
-          },
-          "type": "nominal"
+      {
+        "data": {
+          "name": "dataset_2"
         },
-        "tooltip": [
-          {
-            "field": "age_bin",
-            "type": "nominal"
-          },
-          {
+        "encoding": {
+          "detail": {
             "field": "sex",
             "type": "nominal"
           },
-          {
-            "field": "plot_abs_value",
-            "format": ".1%",
-            "type": "quantitative"
-          }
-        ],
-        "x": {
-          "axis": {
-            "format": ".1%"
+          "strokeDash": {
+            "value": [
+              4,
+              2
+            ]
           },
-          "field": "plot_value",
-          "title": "Share of total population",
-          "type": "quantitative"
+          "x": {
+            "field": "plot_value",
+            "type": "quantitative"
+          },
+          "y": {
+            "field": "age_bin",
+            "sort": [
+              "0-17",
+              "18-34",
+              "35-64"
+            ],
+            "title": null,
+            "type": "nominal"
+          }
         },
-        "y": {
-          "field": "age_bin",
-          "sort": [
-            "0-17",
-            "18-34",
-            "35-64"
-          ],
-          "title": null,
-          "type": "nominal"
+        "mark": {
+          "color": "#52606D",
+          "opacity": 0.9,
+          "strokeWidth": 1.5,
+          "type": "line"
         }
       },
-      "mark": "bar"
-    }
-  ],
-  "title": "Age Pyramid",
-  "usermeta": {
-    "caption": "Source: ACS | Vintage: 2023"
+      {
+        "data": {
+          "name": "dataset_4"
+        },
+        "encoding": {
+          "color": {
+            "field": "sex",
+            "legend": {
+              "title": null
+            },
+            "scale": {
+              "domain": [
+                "Male",
+                "Female"
+              ],
+              "range": [
+                "#4C78A8",
+                "#1D7F5F"
+              ]
+            },
+            "type": "nominal"
+          },
+          "tooltip": [
+            {
+              "field": "age_bin",
+              "type": "nominal"
+            },
+            {
+              "field": "sex",
+              "type": "nominal"
+            },
+            {
+              "field": "plot_abs_value",
+              "format": ".1%",
+              "type": "quantitative"
+            }
+          ],
+          "x": {
+            "axis": {
+              "format": ".1%"
+            },
+            "field": "plot_value",
+            "title": "Share of total population",
+            "type": "quantitative"
+          },
+          "y": {
+            "field": "age_bin",
+            "sort": [
+              "0-17",
+              "18-34",
+              "35-64"
+            ],
+            "title": null,
+            "type": "nominal"
+          }
+        },
+        "mark": "bar"
+      }
+    ],
+    "width": 640
   },
-  "width": 640
+  "title": {
+    "fontSize": 18,
+    "subtitle": [
+      "Period: 2023-2024 | Measure: percent of total population | Male plotted left; female plotted right",
+      "",
+      "Source: ACS | Vintage: 2024 | Note: Bars show Wilmington shares; dashed outline shows US benchmark. Gray dashed outlines show United",
+      "States using the same age bins and period when available."
+    ],
+    "text": "Age structure: Wilmington, NC vs United States"
+  },
+  "usermeta": {
+    "caption": "Source: ACS | Vintage: 2024 | Note: Bars show Wilmington shares; dashed outline shows US benchmark. Gray dashed outlines show United States using the same age bins and period when available."
+  }
 }

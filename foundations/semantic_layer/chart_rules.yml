@@ -20,6 +20,16 @@ rules:
       - slopegraph
     rationale: Line charts best communicate temporal movement; slopegraph is acceptable for two-point comparisons.
 
+  - rule_id: compare_selected_default
+    question_type: compare_selected
+    result_shape: small set of named geographies and one or more comparable measures
+    approved_chart_types:
+      - bar
+      - slopegraph
+    fallback_chart_types:
+      - heatmap_table
+    rationale: Named-entity comparisons reuse the chatbot comparison logic but keep the CE backlog template_id explicit.
+
   - rule_id: comparison_selected
     question_type: comparison
     result_shape: small set of user-selected geographies and one or two metrics
@@ -48,6 +58,15 @@ rules:
       - strength_strip
     rationale: Bar with a reference marker is the clearest benchmark starting point in MVP.
 
+  - rule_id: growth_default
+    question_type: growth
+    result_shape: top-N ordered list by rate of change over a defined window
+    approved_chart_types:
+      - bar
+    fallback_chart_types:
+      - heatmap_table
+    rationale: Growth questions are still ranked comparisons, but they stay distinct in the backlog for editorial tracking.
+
   - rule_id: correlation_default
     question_type: correlation
     result_shape: two quantitative measures across many geographies
@@ -56,6 +75,42 @@ rules:
     fallback_chart_types:
       - hexbin
     rationale: Scatter is the default relationship chart; hexbin is a fallback for very dense point clouds.
+
+  - rule_id: composition_default
+    question_type: composition
+    result_shape: multi-metric scorecard or component breakdown for one or a few geographies
+    approved_chart_types:
+      - waterfall
+    fallback_chart_types:
+      - heatmap_table
+    rationale: Composition questions usually start as component comparisons; notes can override to heatmap_table or strength_strip for scorecard-style output.
+
+  - rule_id: map_default
+    question_type: map
+    result_shape: supported geography dimension with a spatial pattern in one or two measures
+    approved_chart_types:
+      - choropleth
+    fallback_chart_types:
+      - highlight_context_map
+    rationale: Choropleth is the default map form; more specialized map types come from notes or constraint-driven fallback.
+
+  - rule_id: demographic_default
+    question_type: demographic
+    result_shape: age bins and sex breakdown for a geography or geography comparison
+    approved_chart_types:
+      - age_pyramid
+    fallback_chart_types:
+      - heatmap_table
+    rationale: Age pyramids are purpose-built for age-sex structure; tabular fallback is acceptable when the required bins are incomplete.
+
+  - rule_id: rank_change_default
+    question_type: rank_change
+    result_shape: ranking positions tracked across time for a common geography set
+    approved_chart_types:
+      - bump_chart
+    fallback_chart_types:
+      - slopegraph
+    rationale: Use bump_chart when ranking movement spans three or more periods; slopegraph is the two-point fallback.
 
 selection_constraints:
   - constraint_id: map_requires_geography_geometry
@@ -66,6 +121,10 @@ selection_constraints:
     applies_to: [slopegraph]
     rule: Only use slopegraph when the result has exactly two comparable time points.
 
+  - constraint_id: bump_chart_requires_three_or_more_time_points
+    applies_to: [bump_chart]
+    rule: Only use bump_chart when the result has at least three comparable time points for each ranked entity.
+
   - constraint_id: boxplot_prefers_large_distribution
     applies_to: [boxplot]
     rule: Prefer boxplot when at least 8 comparison geographies exist at the same grain.
@@ -73,3 +132,23 @@ selection_constraints:
   - constraint_id: scatter_requires_two_measures
     applies_to: [scatter]
     rule: Only use scatter when the result has exactly two primary measures and at least one geography dimension.
+
+  - constraint_id: hexbin_prefers_dense_points
+    applies_to: [hexbin]
+    rule: Prefer hexbin when the result has more than 200 observations or the scatter point cloud is too dense to read clearly.
+
+  - constraint_id: age_pyramid_requires_age_and_sex
+    applies_to: [age_pyramid]
+    rule: Only use age_pyramid when the result includes age-bin and sex fields at a common geography.
+
+  - constraint_id: strength_strip_requires_benchmark_columns
+    applies_to: [strength_strip]
+    rule: Only use strength_strip when each metric can be paired with a benchmark or peer reference value.
+
+  - constraint_id: correlation_heatmap_requires_matrix_shape
+    applies_to: [correlation_heatmap]
+    rule: Only use correlation_heatmap when the result is already a metric-by-metric correlation matrix or can be reduced to one safely.
+
+  - constraint_id: bivariate_choropleth_requires_two_binnable_metrics
+    applies_to: [bivariate_choropleth]
+    rule: Only use bivariate_choropleth when the result includes exactly two geographic measures that can be binned into comparable classes.

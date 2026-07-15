@@ -25,10 +25,12 @@ from chart_engine.request import ChartRequest, NumberFormat
 from chart_engine.theme import Theme
 from tests.fixtures import (
     age_pyramid_fixture,
+    bar_fixture,
     boxplot_fixture,
     bump_chart_fixture,
     correlation_heatmap_fixture,
     heatmap_table_fixture,
+    line_fixture,
     scatter_fixture,
     slopegraph_fixture,
     strength_strip_fixture,
@@ -112,6 +114,30 @@ class RegressionTests(unittest.TestCase):
         chart_dict = self._render_chart("scatter", scatter_fixture())
         self._assert_matches_golden("scatter", chart_dict)
 
+    def test_bar_chart_matches_golden(self) -> None:
+        request = ChartRequest(
+            data=bar_fixture(),
+            chart_type="bar_chart",
+            theme=self.theme,
+            column_mapping={
+                "geo_name": "entity",
+                "metric_value": "value",
+            },
+            number_format=NumberFormat(unit="percent", decimals=1),
+        )
+        chart_dict = render(request).chart.to_dict()
+        self._assert_matches_golden("bar_chart", chart_dict)
+
+    def test_line_chart_matches_golden(self) -> None:
+        chart_dict = self._render_chart("line_chart", line_fixture())
+        self._assert_matches_golden("line_chart", chart_dict)
+
+    def test_line_chart_suppresses_single_series_legend(self) -> None:
+        data = line_fixture().loc[lambda frame: frame["series"] == "Wilmington"].copy()
+        chart_dict = self._render_chart("line_chart", data)
+        color_encoding = chart_dict["layer"][0]["encoding"]["color"]
+        self.assertIsNone(color_encoding.get("legend"))
+
     def test_slopegraph_matches_golden(self) -> None:
         chart_dict = self._render_chart("slopegraph", slopegraph_fixture())
         self._assert_matches_golden("slopegraph", chart_dict)
@@ -119,6 +145,14 @@ class RegressionTests(unittest.TestCase):
     def test_boxplot_matches_golden(self) -> None:
         chart_dict = self._render_chart("boxplot", boxplot_fixture())
         self._assert_matches_golden("boxplot", chart_dict)
+
+    def test_boxplot_defaults_single_group_to_horizontal(self) -> None:
+        data = boxplot_fixture().copy()
+        data["group"] = "All major CBSAs"
+        chart_dict = self._render_chart("boxplot", data)
+        box_encoding = chart_dict["layer"][0]["encoding"]
+        self.assertEqual(box_encoding["x"]["field"], "plot_value")
+        self.assertEqual(box_encoding["y"]["field"], "box_group")
 
     def test_heatmap_table_matches_golden(self) -> None:
         chart_dict = self._render_chart("heatmap_table", heatmap_table_fixture())

@@ -44,24 +44,90 @@ class GeoRenderTests(unittest.TestCase):
         return render(request).chart
 
     def test_choropleth_renders_matplotlib_figure(self) -> None:
-        figure = self._render("choropleth", choropleth_fixture())
+        request = ChartRequest(
+            data=choropleth_fixture(),
+            chart_type="choropleth",
+            theme=self.theme,
+            number_format=NumberFormat(unit="count", decimals=0),
+            field_values={"variant": "diverging", "facet_by": "group"},
+        )
+        figure = render(request).chart
         self.assertEqual(figure.__class__.__name__, "Figure")
+        self.assertGreaterEqual(len(figure.axes), 3)
+
+    def test_choropleth_uses_dark_high_sequential_scale(self) -> None:
+        request = ChartRequest(
+            data=choropleth_fixture(),
+            chart_type="choropleth",
+            theme=self.theme,
+            number_format=NumberFormat(unit="count", decimals=0),
+        )
+        figure = render(request).chart
+        collection = figure.axes[0].collections[0]
+        self.assertEqual(collection.cmap.name.lower(), "blues")
 
     def test_hexbin_renders_matplotlib_figure(self) -> None:
-        figure = self._render("hexbin", hexbin_fixture())
+        request = ChartRequest(
+            data=hexbin_fixture(),
+            chart_type="hexbin",
+            theme=self.theme,
+            number_format=NumberFormat(unit="count", decimals=0),
+            field_values={"facet_by": "group", "use_weights": True, "add_reference_lines": True},
+        )
+        figure = render(request).chart
         self.assertEqual(figure.__class__.__name__, "Figure")
+        self.assertGreaterEqual(len(figure.axes), 4)
+        self.assertGreaterEqual(len(figure.axes[0].lines), 2)
 
     def test_highlight_context_map_renders_matplotlib_figure(self) -> None:
-        figure = self._render("highlight_context_map", highlight_context_map_fixture())
+        request = ChartRequest(
+            data=highlight_context_map_fixture(),
+            chart_type="highlight_context_map",
+            theme=self.theme,
+            number_format=NumberFormat(unit="count", decimals=0),
+            field_values={"variant": "focus_only", "facet_by": "group"},
+        )
+        figure = render(request).chart
         self.assertEqual(figure.__class__.__name__, "Figure")
+        self.assertGreaterEqual(len(figure.legends), 1)
+        self.assertIn("Map role", [legend.get_title().get_text() for legend in figure.legends if legend.get_title()])
+
+    def test_highlight_context_map_binned_variant_uses_separate_legends(self) -> None:
+        request = ChartRequest(
+            data=highlight_context_map_fixture(),
+            chart_type="highlight_context_map",
+            theme=self.theme,
+            number_format=NumberFormat(unit="count", decimals=0),
+            field_values={"variant": "binned"},
+        )
+        figure = render(request).chart
+        legend_titles = [legend.get_title().get_text() for legend in figure.legends if legend.get_title()]
+        self.assertIn("Jobs", legend_titles)
+        self.assertIn("Map role", legend_titles)
 
     def test_proportional_symbol_map_renders_matplotlib_figure(self) -> None:
-        figure = self._render("proportional_symbol_map", proportional_symbol_map_fixture())
+        request = ChartRequest(
+            data=proportional_symbol_map_fixture(),
+            chart_type="proportional_symbol_map",
+            theme=self.theme,
+            number_format=NumberFormat(unit="count", decimals=0),
+            field_values={"color_mode": "color_group"},
+        )
+        figure = render(request).chart
         self.assertEqual(figure.__class__.__name__, "Figure")
+        self.assertGreaterEqual(len(figure.axes[0].get_legend().get_texts()), 1)
 
     def test_bivariate_choropleth_renders_matplotlib_figure(self) -> None:
-        figure = self._render("bivariate_choropleth", bivariate_choropleth_fixture())
+        request = ChartRequest(
+            data=bivariate_choropleth_fixture(),
+            chart_type="bivariate_choropleth",
+            theme=self.theme,
+            number_format=NumberFormat(unit="count", decimals=0),
+            field_values={"facet_by": "group"},
+        )
+        figure = render(request).chart
         self.assertEqual(figure.__class__.__name__, "Figure")
+        self.assertGreaterEqual(len(figure.axes), 3)
 
 
 if __name__ == "__main__":

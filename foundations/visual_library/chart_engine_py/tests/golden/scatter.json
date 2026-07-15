@@ -1,5 +1,5 @@
 {
-  "$schema": "https://vega.github.io/schema/vega-lite/v4.17.0.json",
+  "$schema": "https://vega.github.io/schema/vega-lite/normalized.json",
   "config": {
     "axis": {
       "gridColor": "#D9E2EC",
@@ -17,13 +17,11 @@
       "subtitleColor": "#52606D"
     },
     "view": {
-      "continuousHeight": 300,
-      "continuousWidth": 400,
       "stroke": null
     }
   },
   "datasets": {
-    "data-62ddd6a00c1525f8f9de10fcee7d101d": [
+    "dataset_1": [
       {
         "geo_id": "2",
         "geo_level": "cbsa",
@@ -40,7 +38,7 @@
         "y_value": 22.0
       }
     ],
-    "data-674e0ac5cb32a2668bb5c5fe558779ef": [
+    "dataset_2": [
       {
         "geo_id": "1",
         "geo_level": "cbsa",
@@ -92,7 +90,7 @@
   "layer": [
     {
       "data": {
-        "name": "data-674e0ac5cb32a2668bb5c5fe558779ef"
+        "name": "dataset_2"
       },
       "encoding": {
         "color": {
@@ -163,7 +161,7 @@
     },
     {
       "data": {
-        "name": "data-674e0ac5cb32a2668bb5c5fe558779ef"
+        "name": "dataset_2"
       },
       "encoding": {
         "x": {
@@ -193,7 +191,7 @@
     },
     {
       "data": {
-        "name": "data-62ddd6a00c1525f8f9de10fcee7d101d"
+        "name": "dataset_1"
       },
       "encoding": {
         "text": {
@@ -221,7 +219,11 @@
   ],
   "title": {
     "fontSize": 18,
-    "subtitle": "2023",
+    "subtitle": [
+      "2023",
+      "",
+      "Source: ACS | Vintage: 2023"
+    ],
     "text": "Scatter Plots"
   },
   "usermeta": {

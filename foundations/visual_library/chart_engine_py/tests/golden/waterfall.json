@@ -1,5 +1,5 @@
 {
-  "$schema": "https://vega.github.io/schema/vega-lite/v4.17.0.json",
+  "$schema": "https://vega.github.io/schema/vega-lite/normalized.json",
   "config": {
     "axis": {
       "labelFont": "Inter",
@@ -9,21 +9,149 @@
       "font": "Inter"
     },
     "view": {
-      "continuousHeight": 300,
-      "continuousWidth": 400,
       "stroke": null
     }
   },
   "datasets": {
-    "data-06fd9f850666401b4599de5588b60692": [
+    "dataset_1": [
       {
         "y": 0
       }
     ],
-    "data-7e257f565d8ea0157465bb0fc838bf71": [
+    "dataset_2": [
       {
+        "additive_pass": true,
+        "additive_residual": 0.0,
+        "additive_total": 100.0,
+        "bar_ymax": 90.0,
+        "bar_ymin": -90.0,
+        "benchmark_label": "Benchmark",
+        "component_group": null,
         "component_id": "c1",
         "component_label": "Base",
+        "component_share": 0.9,
+        "component_value": 90.0,
+        "cumulative_end": 90.0,
+        "cumulative_start": -90.0,
+        "direction": "positive",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "label_y": 95.0,
+        "plot_value": 90.0,
+        "row_type": "component",
+        "sort_order": 1,
+        "source": "ACS",
+        "time_window": "2023",
+        "total_label": "Total",
+        "value_label": "90",
+        "vintage": "2023",
+        "waterfall_group": "cbsa|1|A|2023|Benchmark",
+        "waterfall_position": 1
+      },
+      {
+        "additive_pass": true,
+        "additive_residual": 0.0,
+        "additive_total": 100.0,
+        "bar_ymax": 105.0,
+        "bar_ymin": 75.0,
+        "benchmark_label": "Benchmark",
+        "component_group": null,
+        "component_id": "c2",
+        "component_label": "Growth",
+        "component_share": 0.15,
+        "component_value": 15.0,
+        "cumulative_end": 105.0,
+        "cumulative_start": 75.0,
+        "direction": "positive",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "label_y": 110.0,
+        "plot_value": 15.0,
+        "row_type": "component",
+        "sort_order": 2,
+        "source": "ACS",
+        "time_window": "2023",
+        "total_label": "Total",
+        "value_label": "15",
+        "vintage": "2023",
+        "waterfall_group": "cbsa|1|A|2023|Benchmark",
+        "waterfall_position": 2
+      },
+      {
+        "additive_pass": true,
+        "additive_residual": 0.0,
+        "additive_total": 100.0,
+        "bar_ymax": 110.0,
+        "bar_ymin": 100.0,
+        "benchmark_label": "Benchmark",
+        "component_group": null,
+        "component_id": "c3",
+        "component_label": "Adjustment",
+        "component_share": -0.05,
+        "component_value": -5.0,
+        "cumulative_end": 100.0,
+        "cumulative_start": 110.0,
+        "direction": "negative",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "label_y": 105.0,
+        "plot_value": -5.0,
+        "row_type": "component",
+        "sort_order": 3,
+        "source": "ACS",
+        "time_window": "2023",
+        "total_label": "Total",
+        "value_label": "-5",
+        "vintage": "2023",
+        "waterfall_group": "cbsa|1|A|2023|Benchmark",
+        "waterfall_position": 3
+      },
+      {
+        "additive_pass": true,
+        "additive_residual": 0.0,
+        "additive_total": 100.0,
+        "bar_ymax": 100.0,
+        "bar_ymin": 0.0,
+        "benchmark_label": "Benchmark",
+        "component_group": "Total",
+        "component_id": "total",
+        "component_label": "Total",
+        "component_share": 1.0,
+        "component_value": 100.0,
+        "cumulative_end": 100.0,
+        "cumulative_start": 0.0,
+        "direction": "total",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "label_y": 105.0,
+        "plot_value": 100.0,
+        "row_type": "total",
+        "sort_order": 3,
+        "source": "ACS",
+        "time_window": "2023",
+        "total_label": "Total",
+        "value_label": "100",
+        "vintage": "2023",
+        "waterfall_group": "cbsa|1|A|2023|Benchmark",
+        "waterfall_position": 4
+      }
+    ],
+    "dataset_3": [
+      {
+        "additive_pass": true,
+        "additive_residual": 0.0,
+        "additive_total": 110.0,
+        "bar_ymax": 100.0,
+        "bar_ymin": -100.0,
+        "benchmark_label": "Target",
+        "component_group": null,
+        "component_id": "c1",
+        "component_label": "Base",
+        "component_share": 0.9090909090909091,
         "component_value": 100.0,
         "cumulative_end": 100.0,
         "cumulative_start": -100.0,
@@ -31,16 +159,32 @@
         "geo_id": "1",
         "geo_level": "cbsa",
         "geo_name": "A",
+        "label_y": 105.75,
+        "plot_value": 100.0,
+        "row_type": "component",
         "sort_order": 1,
         "source": "ACS",
         "time_window": "2023",
         "total_label": "Total",
+        "value_label": "100",
         "vintage": "2023",
-        "waterfall_position": 1
+        "waterfall_group": "cbsa|1|A|2023|Target",
+        "waterfall_position": 1,
+        "x": 1,
+        "x2": 2,
+        "y": 100.0
       },
       {
+        "additive_pass": true,
+        "additive_residual": 0.0,
+        "additive_total": 110.0,
+        "bar_ymax": 120.0,
+        "bar_ymin": 80.0,
+        "benchmark_label": "Target",
+        "component_group": null,
         "component_id": "c2",
         "component_label": "Growth",
+        "component_share": 0.18181818181818182,
         "component_value": 20.0,
         "cumulative_end": 120.0,
         "cumulative_start": 80.0,
@@ -48,16 +192,32 @@
         "geo_id": "1",
         "geo_level": "cbsa",
         "geo_name": "A",
+        "label_y": 125.75,
+        "plot_value": 20.0,
+        "row_type": "component",
         "sort_order": 2,
         "source": "ACS",
         "time_window": "2023",
         "total_label": "Total",
+        "value_label": "20",
         "vintage": "2023",
-        "waterfall_position": 2
+        "waterfall_group": "cbsa|1|A|2023|Target",
+        "waterfall_position": 2,
+        "x": 2,
+        "x2": 3,
+        "y": 120.0
       },
       {
+        "additive_pass": true,
+        "additive_residual": 0.0,
+        "additive_total": 110.0,
+        "bar_ymax": 130.0,
+        "bar_ymin": 110.0,
+        "benchmark_label": "Target",
+        "component_group": null,
         "component_id": "c3",
         "component_label": "Adjustment",
+        "component_share": -0.09090909090909091,
         "component_value": -10.0,
         "cumulative_end": 110.0,
         "cumulative_start": 130.0,
@@ -65,84 +225,528 @@
         "geo_id": "1",
         "geo_level": "cbsa",
         "geo_name": "A",
+        "label_y": 124.25,
+        "plot_value": -10.0,
+        "row_type": "component",
         "sort_order": 3,
         "source": "ACS",
         "time_window": "2023",
         "total_label": "Total",
+        "value_label": "-10",
         "vintage": "2023",
+        "waterfall_group": "cbsa|1|A|2023|Target",
+        "waterfall_position": 3,
+        "x": 3,
+        "x2": 4,
+        "y": 110.0
+      }
+    ],
+    "dataset_4": [
+      {
+        "additive_pass": true,
+        "additive_residual": 0.0,
+        "additive_total": 110.0,
+        "bar_ymax": 100.0,
+        "bar_ymin": -100.0,
+        "benchmark_label": "Target",
+        "component_group": null,
+        "component_id": "c1",
+        "component_label": "Base",
+        "component_share": 0.9090909090909091,
+        "component_value": 100.0,
+        "cumulative_end": 100.0,
+        "cumulative_start": -100.0,
+        "direction": "positive",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "label_y": 105.75,
+        "plot_value": 100.0,
+        "row_type": "component",
+        "sort_order": 1,
+        "source": "ACS",
+        "time_window": "2023",
+        "total_label": "Total",
+        "value_label": "100",
+        "vintage": "2023",
+        "waterfall_group": "cbsa|1|A|2023|Target",
+        "waterfall_position": 1
+      },
+      {
+        "additive_pass": true,
+        "additive_residual": 0.0,
+        "additive_total": 110.0,
+        "bar_ymax": 120.0,
+        "bar_ymin": 80.0,
+        "benchmark_label": "Target",
+        "component_group": null,
+        "component_id": "c2",
+        "component_label": "Growth",
+        "component_share": 0.18181818181818182,
+        "component_value": 20.0,
+        "cumulative_end": 120.0,
+        "cumulative_start": 80.0,
+        "direction": "positive",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "label_y": 125.75,
+        "plot_value": 20.0,
+        "row_type": "component",
+        "sort_order": 2,
+        "source": "ACS",
+        "time_window": "2023",
+        "total_label": "Total",
+        "value_label": "20",
+        "vintage": "2023",
+        "waterfall_group": "cbsa|1|A|2023|Target",
+        "waterfall_position": 2
+      },
+      {
+        "additive_pass": true,
+        "additive_residual": 0.0,
+        "additive_total": 110.0,
+        "bar_ymax": 130.0,
+        "bar_ymin": 110.0,
+        "benchmark_label": "Target",
+        "component_group": null,
+        "component_id": "c3",
+        "component_label": "Adjustment",
+        "component_share": -0.09090909090909091,
+        "component_value": -10.0,
+        "cumulative_end": 110.0,
+        "cumulative_start": 130.0,
+        "direction": "negative",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "label_y": 124.25,
+        "plot_value": -10.0,
+        "row_type": "component",
+        "sort_order": 3,
+        "source": "ACS",
+        "time_window": "2023",
+        "total_label": "Total",
+        "value_label": "-10",
+        "vintage": "2023",
+        "waterfall_group": "cbsa|1|A|2023|Target",
         "waterfall_position": 3
+      },
+      {
+        "additive_pass": true,
+        "additive_residual": 0.0,
+        "additive_total": 110.0,
+        "bar_ymax": 110.0,
+        "bar_ymin": 0.0,
+        "benchmark_label": "Target",
+        "component_group": "Total",
+        "component_id": "total",
+        "component_label": "Total",
+        "component_share": 1.0,
+        "component_value": 110.0,
+        "cumulative_end": 110.0,
+        "cumulative_start": 0.0,
+        "direction": "total",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "label_y": 115.75,
+        "plot_value": 110.0,
+        "row_type": "total",
+        "sort_order": 3,
+        "source": "ACS",
+        "time_window": "2023",
+        "total_label": "Total",
+        "value_label": "110",
+        "vintage": "2023",
+        "waterfall_group": "cbsa|1|A|2023|Target",
+        "waterfall_position": 4
+      }
+    ],
+    "dataset_5": [
+      {
+        "additive_pass": true,
+        "additive_residual": 0.0,
+        "additive_total": 100.0,
+        "bar_ymax": 90.0,
+        "bar_ymin": -90.0,
+        "benchmark_label": "Benchmark",
+        "component_group": null,
+        "component_id": "c1",
+        "component_label": "Base",
+        "component_share": 0.9,
+        "component_value": 90.0,
+        "cumulative_end": 90.0,
+        "cumulative_start": -90.0,
+        "direction": "positive",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "label_y": 95.0,
+        "plot_value": 90.0,
+        "row_type": "component",
+        "sort_order": 1,
+        "source": "ACS",
+        "time_window": "2023",
+        "total_label": "Total",
+        "value_label": "90",
+        "vintage": "2023",
+        "waterfall_group": "cbsa|1|A|2023|Benchmark",
+        "waterfall_position": 1,
+        "x": 1,
+        "x2": 2,
+        "y": 90.0
+      },
+      {
+        "additive_pass": true,
+        "additive_residual": 0.0,
+        "additive_total": 100.0,
+        "bar_ymax": 105.0,
+        "bar_ymin": 75.0,
+        "benchmark_label": "Benchmark",
+        "component_group": null,
+        "component_id": "c2",
+        "component_label": "Growth",
+        "component_share": 0.15,
+        "component_value": 15.0,
+        "cumulative_end": 105.0,
+        "cumulative_start": 75.0,
+        "direction": "positive",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "label_y": 110.0,
+        "plot_value": 15.0,
+        "row_type": "component",
+        "sort_order": 2,
+        "source": "ACS",
+        "time_window": "2023",
+        "total_label": "Total",
+        "value_label": "15",
+        "vintage": "2023",
+        "waterfall_group": "cbsa|1|A|2023|Benchmark",
+        "waterfall_position": 2,
+        "x": 2,
+        "x2": 3,
+        "y": 105.0
+      },
+      {
+        "additive_pass": true,
+        "additive_residual": 0.0,
+        "additive_total": 100.0,
+        "bar_ymax": 110.0,
+        "bar_ymin": 100.0,
+        "benchmark_label": "Benchmark",
+        "component_group": null,
+        "component_id": "c3",
+        "component_label": "Adjustment",
+        "component_share": -0.05,
+        "component_value": -5.0,
+        "cumulative_end": 100.0,
+        "cumulative_start": 110.0,
+        "direction": "negative",
+        "geo_id": "1",
+        "geo_level": "cbsa",
+        "geo_name": "A",
+        "label_y": 105.0,
+        "plot_value": -5.0,
+        "row_type": "component",
+        "sort_order": 3,
+        "source": "ACS",
+        "time_window": "2023",
+        "total_label": "Total",
+        "value_label": "-5",
+        "vintage": "2023",
+        "waterfall_group": "cbsa|1|A|2023|Benchmark",
+        "waterfall_position": 3,
+        "x": 3,
+        "x2": 4,
+        "y": 100.0
       }
     ]
   },
-  "height": 400,
-  "layer": [
-    {
-      "data": {
-        "name": "data-06fd9f850666401b4599de5588b60692"
-      },
-      "encoding": {
-        "y": {
-          "field": "y",
-          "type": "quantitative"
-        }
-      },
-      "mark": {
-        "color": "#5B6770",
-        "type": "rule"
-      }
-    },
-    {
-      "data": {
-        "name": "data-7e257f565d8ea0157465bb0fc838bf71"
-      },
-      "encoding": {
-        "color": {
-          "field": "direction",
-          "legend": null,
-          "scale": {
-            "domain": [
-              "positive",
-              "negative"
-            ],
-            "range": [
-              "#0C7C78",
-              "#D66A4E"
-            ]
-          },
-          "type": "nominal"
-        },
-        "tooltip": [
-          {
-            "field": "component_label",
-            "type": "nominal"
-          },
-          {
-            "field": "component_value",
-            "format": ",d",
-            "type": "quantitative"
-          }
-        ],
-        "x": {
-          "field": "component_label",
-          "sort": null,
-          "title": null,
-          "type": "nominal"
-        },
-        "y": {
-          "field": "cumulative_end",
-          "title": "Total",
-          "type": "quantitative"
-        },
-        "y2": {
-          "field": "cumulative_start"
-        }
-      },
-      "mark": "bar"
-    }
-  ],
-  "title": "Waterfall Chart",
+  "title": {
+    "fontSize": 18,
+    "subtitle": [
+      "2023",
+      "",
+      "Source: ACS | Vintage: 2023"
+    ],
+    "text": "Waterfall Chart"
+  },
   "usermeta": {
     "caption": "Source: ACS | Vintage: 2023"
   },
-  "width": 640
+  "vconcat": [
+    {
+      "height": 400,
+      "layer": [
+        {
+          "data": {
+            "name": "dataset_1"
+          },
+          "encoding": {
+            "y": {
+              "field": "y",
+              "type": "quantitative"
+            }
+          },
+          "mark": {
+            "color": "#5B6770",
+            "type": "rule"
+          }
+        },
+        {
+          "data": {
+            "name": "dataset_2"
+          },
+          "encoding": {
+            "color": {
+              "field": "direction",
+              "legend": {
+                "title": null
+              },
+              "scale": {
+                "domain": [
+                  "positive",
+                  "negative",
+                  "total"
+                ],
+                "range": [
+                  "#0C7C78",
+                  "#D66A4E",
+                  "#1F2933"
+                ]
+              },
+              "type": "nominal"
+            },
+            "tooltip": [
+              {
+                "field": "component_label",
+                "type": "nominal"
+              },
+              {
+                "field": "plot_value",
+                "format": ",d",
+                "type": "quantitative"
+              },
+              {
+                "field": "row_type",
+                "type": "nominal"
+              }
+            ],
+            "x": {
+              "field": "component_label",
+              "sort": {
+                "field": "waterfall_position"
+              },
+              "title": null,
+              "type": "nominal"
+            },
+            "y": {
+              "field": "bar_ymax",
+              "title": "Total",
+              "type": "quantitative"
+            },
+            "y2": {
+              "field": "bar_ymin"
+            }
+          },
+          "mark": "bar"
+        },
+        {
+          "data": {
+            "name": "dataset_5"
+          },
+          "encoding": {
+            "x": {
+              "field": "x",
+              "type": "quantitative"
+            },
+            "x2": {
+              "field": "x2"
+            },
+            "y": {
+              "field": "y",
+              "type": "quantitative"
+            }
+          },
+          "mark": {
+            "color": "#52606D",
+            "strokeDash": [
+              3,
+              3
+            ],
+            "strokeWidth": 1,
+            "type": "rule"
+          }
+        },
+        {
+          "data": {
+            "name": "dataset_2"
+          },
+          "encoding": {
+            "text": {
+              "field": "value_label",
+              "type": "nominal"
+            },
+            "x": {
+              "field": "component_label",
+              "sort": {
+                "field": "waterfall_position"
+              },
+              "type": "nominal"
+            },
+            "y": {
+              "field": "label_y",
+              "type": "quantitative"
+            }
+          },
+          "mark": {
+            "color": "#1F2933",
+            "dy": -6,
+            "font": "Inter",
+            "type": "text"
+          }
+        }
+      ],
+      "title": "Benchmark",
+      "width": 640
+    },
+    {
+      "height": 400,
+      "layer": [
+        {
+          "data": {
+            "name": "dataset_1"
+          },
+          "encoding": {
+            "y": {
+              "field": "y",
+              "type": "quantitative"
+            }
+          },
+          "mark": {
+            "color": "#5B6770",
+            "type": "rule"
+          }
+        },
+        {
+          "data": {
+            "name": "dataset_4"
+          },
+          "encoding": {
+            "color": {
+              "field": "direction",
+              "legend": {
+                "title": null
+              },
+              "scale": {
+                "domain": [
+                  "positive",
+                  "negative",
+                  "total"
+                ],
+                "range": [
+                  "#0C7C78",
+                  "#D66A4E",
+                  "#1F2933"
+                ]
+              },
+              "type": "nominal"
+            },
+            "tooltip": [
+              {
+                "field": "component_label",
+                "type": "nominal"
+              },
+              {
+                "field": "plot_value",
+                "format": ",d",
+                "type": "quantitative"
+              },
+              {
+                "field": "row_type",
+                "type": "nominal"
+              }
+            ],
+            "x": {
+              "field": "component_label",
+              "sort": {
+                "field": "waterfall_position"
+              },
+              "title": null,
+              "type": "nominal"
+            },
+            "y": {
+              "field": "bar_ymax",
+              "title": "Total",
+              "type": "quantitative"
+            },
+            "y2": {
+              "field": "bar_ymin"
+            }
+          },
+          "mark": "bar"
+        },
+        {
+          "data": {
+            "name": "dataset_3"
+          },
+          "encoding": {
+            "x": {
+              "field": "x",
+              "type": "quantitative"
+            },
+            "x2": {
+              "field": "x2"
+            },
+            "y": {
+              "field": "y",
+              "type": "quantitative"
+            }
+          },
+          "mark": {
+            "color": "#52606D",
+            "strokeDash": [
+              3,
+              3
+            ],
+            "strokeWidth": 1,
+            "type": "rule"
+          }
+        },
+        {
+          "data": {
+            "name": "dataset_4"
+          },
+          "encoding": {
+            "text": {
+              "field": "value_label",
+              "type": "nominal"
+            },
+            "x": {
+              "field": "component_label",
+              "sort": {
+                "field": "waterfall_position"
+              },
+              "type": "nominal"
+            },
+            "y": {
+              "field": "label_y",
+              "type": "quantitative"
+            }
+          },
+          "mark": {
+            "color": "#1F2933",
+            "dy": -6,
+            "font": "Inter",
+            "type": "text"
+          }
+        }
+      ],
+      "title": "Target",
+      "width": 640
+    }
+  ]
 }

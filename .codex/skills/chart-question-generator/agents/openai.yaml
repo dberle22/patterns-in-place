@@ -1,0 +1,4 @@
+interface:
+  display_name: "Chart Question Generator"
+  short_description: "Generate backlog-ready Chart A Day questions"
+  default_prompt: "Generate or refine Chart A Day backlog entries for publisher/chart_a_day/backlog.yaml."

@@ -10,6 +10,8 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import Any
 
+import math
+
 from ..captions import build_caption, wrap_text
 
 
@@ -65,22 +67,46 @@ def create_figure(request: Any, chart_type: str) -> tuple[Any, Any]:
     return fig, ax
 
 
+def create_subplots(request: Any, chart_type: str, panel_count: int, *, columns: int = 2) -> tuple[Any, list[Any]]:
+    plt, _, _, _, _, _ = require_matplotlib()
+    dpi = 96
+    base_width = request.dimensions.width if request.dimensions and request.dimensions.width else request.theme.width(chart_type)
+    base_height = request.dimensions.height if request.dimensions and request.dimensions.height else request.theme.height(chart_type)
+    columns = max(1, min(columns, panel_count))
+    rows = int(math.ceil(panel_count / columns))
+    fig, axes = plt.subplots(
+        rows,
+        columns,
+        figsize=((base_width * columns) / dpi, (base_height * rows) / dpi),
+        dpi=dpi,
+        squeeze=False,
+    )
+    fig.patch.set_facecolor(request.theme.color("background.canvas", "#F7F9FB"))
+    axes_list = axes.flatten().tolist()
+    for ax in axes_list:
+        ax.set_facecolor(request.theme.color("background.panel", "#FFFFFF"))
+    return fig, axes_list
+
+
 def apply_titles(fig: Any, ax: Any, request: Any, chart_type: str, default_title: str, default_subtitle: str | None = None) -> None:
     title = request.title or default_title
     subtitle = request.subtitle or default_subtitle
     font_family = resolve_font_family(request.theme.font_family())
-    ax.set_title(
+    fig.text(
+        0.05,
+        0.93,
         title,
-        loc="left",
+        ha="left",
+        va="top",
         fontsize=request.theme.title_size(),
-        fontfamily=font_family,
+        family=font_family,
         color=request.theme.color("neutral.text", "#1F2933"),
-        pad=14,
+        weight="bold",
     )
     if subtitle:
         fig.text(
-            0.125,
-            0.92,
+            0.05,
+            0.885,
             wrap_text(subtitle, 110),
             ha="left",
             va="top",
@@ -110,8 +136,21 @@ def add_caption(fig: Any, df: Any, request: Any) -> None:
     )
 
 
+def set_map_limits(ax: Any, bounds: tuple[float, float, float, float] | None, *, pad_ratio: float = 0.03) -> None:
+    """Apply explicit map bounds so wide national geometries fill the available panel cleanly."""
+    if not bounds:
+        return
+    min_x, min_y, max_x, max_y = bounds
+    span_x = max(max_x - min_x, 1e-6)
+    span_y = max(max_y - min_y, 1e-6)
+    ax.set_xlim(min_x - (span_x * pad_ratio), max_x + (span_x * pad_ratio))
+    ax.set_ylim(min_y - (span_y * pad_ratio), max_y + (span_y * pad_ratio))
+
+
 def finalize_map_axes(ax: Any) -> None:
-    ax.set_aspect("equal", adjustable="datalim")
+    ax.set_aspect("equal", adjustable="box")
+    ax.set_anchor("C")
+    ax.margins(0)
     ax.set_xticks([])
     ax.set_yticks([])
     for spine in ax.spines.values():

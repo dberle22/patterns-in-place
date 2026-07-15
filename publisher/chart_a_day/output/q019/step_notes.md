@@ -1,0 +1,7 @@
+# Step Notes for q019
+
+- [2026-07-12 21:35:00] Built the q019 scorecard from `gold.housing_core_wide` plus `gold.population_demographics`, restricting the comparison set to Austin, Dallas, Phoenix, Nashville, Charlotte, Atlanta, Tampa, and Orlando in 2023.
+- [2026-07-12 21:35:00] The SQL precomputed column-level stress percentiles so the same normalized values could flow through both the R and Python heatmap-table paths. Rent burden and population growth treat higher values as higher stress, while vacancy rate reverses the ordering so tighter markets shade darker.
+- [2026-07-12 21:35:00] The first Python export failed inside `vl-convert` because the renderer used `scale=None` for text colors. Updating the shared Python `heatmap_table` renderer to use an explicit palette-scale mapping fixed the export for this run and future heatmap-table questions.
+- [2026-07-12 21:35:00] Both renders now tell the same story: Austin and Phoenix sit near the high-stress end across multiple dimensions, while Atlanta and Orlando look relatively looser on vacancy. The remaining drift is visual rather than analytical: the R reference preserves row and column emphasis better, while Python still feels more cramped and less intentionally ordered.
+- [2026-07-12 21:35:00] Side-by-side verdict for q019: `match_with_minor_drift`. This should count as the completed `heatmap_table` parity proof point for the composition family.

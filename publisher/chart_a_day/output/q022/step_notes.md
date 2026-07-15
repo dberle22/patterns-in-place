@@ -1,0 +1,7 @@
+# Step Notes for q022
+
+- [2026-07-12 22:20:00] Built the q022 long metric frame by joining `gold.population_demographics`, `gold.housing_core_wide`, and `gold.economics_income_wide` for 2023 CBSAs with population above 250,000. The four metrics are rent-to-income ratio, vacancy rate, per capita income growth (5y), and population growth (5y).
+- [2026-07-12 22:20:00] The Python render worked on the first pass after the shared label-color export fix from the heatmap family was applied here too. The matrix shows mostly modest relationships rather than one dominant block: rent burden is mildly positively associated with both income growth and low-vacancy pressure, while population growth has only a weak negative relationship with vacancy.
+- [2026-07-12 22:20:00] The R reference initially failed in `prep_correlation_heatmap()` because the prep path handed a tibble directly into the reshape logic before correlation ordering. Coercing that slice to a base data frame fixed the shared R prep bug and restored the expected 4x4 matrix.
+- [2026-07-12 22:20:00] Both outputs tell the same story, but they emphasize it differently. Python is more compact and analytical; R is more polished on subtitle/caption hierarchy and lands the comparison matrix more clearly as a presentation artifact.
+- [2026-07-12 22:20:00] Side-by-side verdict for q022: `match_with_minor_drift`. This closes the `correlation_heatmap` proof point and resolves a real shared R prep issue rather than a one-off wrapper problem.

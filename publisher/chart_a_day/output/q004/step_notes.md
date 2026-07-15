@@ -1,0 +1,8 @@
+# Step Notes for q004
+
+- [2026-07-12 19:56:53] Built the q004 SQL artifact as a clean top-metro rent trend: top 10 CBSAs by 2023 population from `gold.population_demographics`, joined to annual `median_gross_rent` in `gold.housing_core_wide`, with 2018 through 2023 coverage and top-three population metros highlighted.
+- [2026-07-12 19:56:53] The extract shape is correct before rendering: 60 rows total, 10 metros x 6 annual periods, with the 2023 high end led by Los Angeles (`$2,002.7`), Washington (`$1,977.2`), and New York (`$1,853.4`).
+- [2026-07-12 19:56:53] Both render stacks completed from the same `result.csv`. The R reference stayed visually stronger on first pass because the Python legend inherited long full CBSA names and compressed the bottom legend area.
+- [2026-07-12 19:56:53] Tightened the Python wrapper instead of forcing a riskier renderer rewrite mid-batch: added concise metro display labels plus a wider canvas so the main `line_chart` reads cleanly in social dimensions while preserving the same analytical series set.
+- [2026-07-12 19:56:53] The fallback `slopegraph` is still useful as an exploratory comparison, but it remains the weaker communication artifact for this question because 10 end labels bunch together on the 2023 side even after label shortening.
+- [2026-07-12 19:56:53] Side-by-side verdict for q004: `match_with_minor_drift`. The story, ordering, and highlighted top-metro read match across R and Python. Remaining drift is mostly presentation-mode polish around subtitle density and whether the slopegraph fallback should be kept for high-series trend questions.

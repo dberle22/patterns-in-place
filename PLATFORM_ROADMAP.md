@@ -227,6 +227,8 @@ The Deep Dive template (`metro_deep_dive_template_guidance.md`) defines the stru
 
 ## Track G — Publisher / Content Pipeline
 
+*Detailed roadmap: [`publisher/PUBLISHER_ROADMAP.md`](publisher/PUBLISHER_ROADMAP.md). This track covers three products: Data Stories (DS), Chart Engine (CE), and Chatbot (CH). What follows is the summary view.*
+
 **Status:** Infrastructure built; zero posts published. Ready to start.
 
 *The Publisher is the content flywheel. Two independent tracks: technical writing (how the platform was built) and data analysis writing (what it finds). Both generate credibility and audience. The most powerful posts sit at the intersection.*
@@ -264,6 +266,8 @@ Both publishing tracks can run in parallel. Technical posts go to LinkedIn and t
 ---
 
 ## Track H — Chatbot
+
+*Detailed roadmap: [`publisher/PUBLISHER_ROADMAP.md`](publisher/PUBLISHER_ROADMAP.md) → Track CH.*
 
 **Status:** Local and functional; needs prod deploy.
 
@@ -460,8 +464,8 @@ Track J (Publishing & Distribution)
 | [`area-explorer/AREA_EXPLORER_ROADMAP.md`](area-explorer/AREA_EXPLORER_ROADMAP.md) | Product spec and build phases for all three Streamlit apps + landing page |
 | [`metro-deep-dive/RESEARCH_TOOL_ROADMAP.md`](metro-deep-dive/RESEARCH_TOOL_ROADMAP.md) | Research Tool spec — tab-by-tab build sequence, data sources, relationship to Deep Dive reports |
 | [`foundations/data_dictionary/docs/PLATFORM_COMPLETION_PLAN.md`](foundations/data_dictionary/docs/PLATFORM_COMPLETION_PLAN.md) | Task-level ETL tracker for all Places source tracks (Tracks 1–17+) |
+| [`publisher/PUBLISHER_ROADMAP.md`](publisher/PUBLISHER_ROADMAP.md) | Publisher product roadmap — three products (Data Stories, Chart Engine, Chatbot), milestones, sequencing, distribution |
 | [`publisher/MIGRATION.md`](publisher/MIGRATION.md) | Publisher migration plan, path fixes, verification gates, future cleanup |
-| [`publisher/content/publisher_backlog.md`](publisher/content/publisher_backlog.md) | Two-track content strategy, 7-step workflow, Track 1 and Track 2 post backlog |
 | [`stoop/MIGRATION.md`](stoop/MIGRATION.md) | Stoop migration plan, verification gates, long-term Points pipeline roadmap |
 | [`OUTREACH_TRACKER.md`](OUTREACH_TRACKER.md) | Five distribution lanes, per-target leads and timing, sequenced action plan |
 | [`TECH_LANDSCAPE_MAP.md`](TECH_LANDSCAPE_MAP.md) | Community map, contributable OSS projects, positioning by category |
