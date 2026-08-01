@@ -295,11 +295,7 @@ def _render_stacked_bar(
         y=y_encoding,
         color=alt.Color("series:N", scale=color_scale, legend=alt.Legend(title=None)),
         order=alt.Order("series:N"),
-        tooltip=[
-            alt.Tooltip("entity:N", title="Entity"),
-            alt.Tooltip("series:N", title="Series"),
-            alt.Tooltip(f"{value_field}:Q", title="Value", format=theme.d3_format(_percent_like_request(request).number_format if variant == "stacked_100" else request.number_format)),
-        ],
+        tooltip=_stacked_tooltips(data, theme, request, value_field, variant),
     )
     return chart.properties(width=width, height=height)
 
@@ -390,6 +386,41 @@ def _stacked_axis_title(df: pd.DataFrame, variant: str) -> str | None:
     if variant == "stacked_100":
         return "Share of total"
     return _axis_title(df)
+
+
+def _stacked_tooltips(
+    df: pd.DataFrame,
+    theme,
+    request: ChartRequest,
+    value_field: str,
+    variant: str,
+) -> list[alt.Tooltip]:
+    percent_request = _percent_like_request(request) if variant == "stacked_100" else request
+    tooltips = [
+        alt.Tooltip("entity:N", title="Entity"),
+        alt.Tooltip("series:N", title="Series"),
+        alt.Tooltip(
+            f"{value_field}:Q",
+            title="Share" if variant == "stacked_100" else "Value",
+            format=theme.d3_format(percent_request.number_format),
+        ),
+    ]
+    if "raw_value" in df.columns:
+        if "raw_value_label" in df.columns:
+            tooltips.append(alt.Tooltip("raw_value_label:N", title="Raw value"))
+        else:
+            tooltips.append(
+                alt.Tooltip(
+                    "raw_value:Q",
+                    title="Raw value",
+                    format=theme.d3_format(request.number_format),
+                )
+            )
+    if "time_window" in df.columns:
+        tooltips.append(alt.Tooltip("time_window:N", title="Year"))
+    if "source" in df.columns:
+        tooltips.append(alt.Tooltip("source:N", title="Source basis"))
+    return tooltips
 
 
 def _format_bar_value(value: float | int | None, request: ChartRequest) -> str:

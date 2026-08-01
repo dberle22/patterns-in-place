@@ -1,0 +1,267 @@
+{
+  "market_id": "richmond_sample_richmond_core",
+  "bbox": {
+    "west": -77.62,
+    "south": 37.43,
+    "east": -77.22,
+    "north": 37.67
+  },
+  "extract_date": "2026-07-29T01:53:50+00:00",
+  "layers": [
+    {
+      "source": "osm",
+      "layer_name": "highways",
+      "geometry_type": "point",
+      "row_count": 0,
+      "query_config": {
+        "selectors": [
+          "way[\"highway\"~\"motorway|motorway_link|trunk|trunk_link\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 3: HTTP Error 429: Too Many Requests; tile 4: HTTP Error 429: Too Many Requests; tile 5: HTTP Error 429: Too Many Requests; tile 7: HTTP Error 429: Too Many Requests; tile 9: HTTP Error 504: Gateway Timeout"
+    },
+    {
+      "source": "osm",
+      "layer_name": "highways",
+      "geometry_type": "linestring",
+      "row_count": 1336,
+      "query_config": {
+        "selectors": [
+          "way[\"highway\"~\"motorway|motorway_link|trunk|trunk_link\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 3: HTTP Error 429: Too Many Requests; tile 4: HTTP Error 429: Too Many Requests; tile 5: HTTP Error 429: Too Many Requests; tile 7: HTTP Error 429: Too Many Requests; tile 9: HTTP Error 504: Gateway Timeout"
+    },
+    {
+      "source": "osm",
+      "layer_name": "highways",
+      "geometry_type": "polygon",
+      "row_count": 0,
+      "query_config": {
+        "selectors": [
+          "way[\"highway\"~\"motorway|motorway_link|trunk|trunk_link\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 3: HTTP Error 429: Too Many Requests; tile 4: HTTP Error 429: Too Many Requests; tile 5: HTTP Error 429: Too Many Requests; tile 7: HTTP Error 429: Too Many Requests; tile 9: HTTP Error 504: Gateway Timeout"
+    },
+    {
+      "source": "osm",
+      "layer_name": "major_roads",
+      "geometry_type": "point",
+      "row_count": 0,
+      "query_config": {
+        "selectors": [
+          "way[\"highway\"~\"primary|primary_link|secondary|secondary_link|tertiary|tertiary_link\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 2: HTTP Error 429: Too Many Requests; tile 3: HTTP Error 429: Too Many Requests; tile 4: HTTP Error 429: Too Many Requests; tile 5: HTTP Error 429: Too Many Requests; tile 7: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "source": "osm",
+      "layer_name": "major_roads",
+      "geometry_type": "linestring",
+      "row_count": 2212,
+      "query_config": {
+        "selectors": [
+          "way[\"highway\"~\"primary|primary_link|secondary|secondary_link|tertiary|tertiary_link\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 2: HTTP Error 429: Too Many Requests; tile 3: HTTP Error 429: Too Many Requests; tile 4: HTTP Error 429: Too Many Requests; tile 5: HTTP Error 429: Too Many Requests; tile 7: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "source": "osm",
+      "layer_name": "major_roads",
+      "geometry_type": "polygon",
+      "row_count": 0,
+      "query_config": {
+        "selectors": [
+          "way[\"highway\"~\"primary|primary_link|secondary|secondary_link|tertiary|tertiary_link\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 2: HTTP Error 429: Too Many Requests; tile 3: HTTP Error 429: Too Many Requests; tile 4: HTTP Error 429: Too Many Requests; tile 5: HTTP Error 429: Too Many Requests; tile 7: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "source": "osm",
+      "layer_name": "rail",
+      "geometry_type": "point",
+      "row_count": 0,
+      "query_config": {
+        "selectors": [
+          "way[\"railway\"~\"rail|light_rail|subway\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 1: HTTP Error 429: Too Many Requests; tile 2: HTTP Error 429: Too Many Requests; tile 3: HTTP Error 429: Too Many Requests; tile 4: HTTP Error 429: Too Many Requests; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>"
+    },
+    {
+      "source": "osm",
+      "layer_name": "rail",
+      "geometry_type": "linestring",
+      "row_count": 0,
+      "query_config": {
+        "selectors": [
+          "way[\"railway\"~\"rail|light_rail|subway\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 1: HTTP Error 429: Too Many Requests; tile 2: HTTP Error 429: Too Many Requests; tile 3: HTTP Error 429: Too Many Requests; tile 4: HTTP Error 429: Too Many Requests; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>"
+    },
+    {
+      "source": "osm",
+      "layer_name": "rail",
+      "geometry_type": "polygon",
+      "row_count": 0,
+      "query_config": {
+        "selectors": [
+          "way[\"railway\"~\"rail|light_rail|subway\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 1: HTTP Error 429: Too Many Requests; tile 2: HTTP Error 429: Too Many Requests; tile 3: HTTP Error 429: Too Many Requests; tile 4: HTTP Error 429: Too Many Requests; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>"
+    },
+    {
+      "source": "osm",
+      "layer_name": "airports",
+      "geometry_type": "point",
+      "row_count": 0,
+      "query_config": {
+        "selectors": [
+          "nwr[\"aeroway\"~\"aerodrome|terminal|runway|helipad\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 1: <urlopen error [Errno 54] Connection reset by peer>; tile 2: <urlopen error [Errno 54] Connection reset by peer>; tile 3: <urlopen error [Errno 54] Connection reset by peer>; tile 4: <urlopen error [Errno 54] Connection reset by peer>; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>"
+    },
+    {
+      "source": "osm",
+      "layer_name": "airports",
+      "geometry_type": "linestring",
+      "row_count": 0,
+      "query_config": {
+        "selectors": [
+          "nwr[\"aeroway\"~\"aerodrome|terminal|runway|helipad\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 1: <urlopen error [Errno 54] Connection reset by peer>; tile 2: <urlopen error [Errno 54] Connection reset by peer>; tile 3: <urlopen error [Errno 54] Connection reset by peer>; tile 4: <urlopen error [Errno 54] Connection reset by peer>; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>"
+    },
+    {
+      "source": "osm",
+      "layer_name": "airports",
+      "geometry_type": "polygon",
+      "row_count": 0,
+      "query_config": {
+        "selectors": [
+          "nwr[\"aeroway\"~\"aerodrome|terminal|runway|helipad\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 1: <urlopen error [Errno 54] Connection reset by peer>; tile 2: <urlopen error [Errno 54] Connection reset by peer>; tile 3: <urlopen error [Errno 54] Connection reset by peer>; tile 4: <urlopen error [Errno 54] Connection reset by peer>; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>"
+    },
+    {
+      "source": "osm",
+      "layer_name": "ports",
+      "geometry_type": "point",
+      "row_count": 0,
+      "query_config": {
+        "selectors": [
+          "nwr[\"harbour\"]({bbox});",
+          "nwr[\"landuse\"=\"port\"]({bbox});",
+          "nwr[\"industrial\"=\"port\"]({bbox});",
+          "nwr[\"amenity\"=\"ferry_terminal\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 1: <urlopen error [Errno 54] Connection reset by peer>; tile 2: <urlopen error [Errno 54] Connection reset by peer>; tile 3: <urlopen error [Errno 54] Connection reset by peer>; tile 4: <urlopen error [Errno 54] Connection reset by peer>; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>"
+    },
+    {
+      "source": "osm",
+      "layer_name": "ports",
+      "geometry_type": "linestring",
+      "row_count": 0,
+      "query_config": {
+        "selectors": [
+          "nwr[\"harbour\"]({bbox});",
+          "nwr[\"landuse\"=\"port\"]({bbox});",
+          "nwr[\"industrial\"=\"port\"]({bbox});",
+          "nwr[\"amenity\"=\"ferry_terminal\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 1: <urlopen error [Errno 54] Connection reset by peer>; tile 2: <urlopen error [Errno 54] Connection reset by peer>; tile 3: <urlopen error [Errno 54] Connection reset by peer>; tile 4: <urlopen error [Errno 54] Connection reset by peer>; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>"
+    },
+    {
+      "source": "osm",
+      "layer_name": "ports",
+      "geometry_type": "polygon",
+      "row_count": 0,
+      "query_config": {
+        "selectors": [
+          "nwr[\"harbour\"]({bbox});",
+          "nwr[\"landuse\"=\"port\"]({bbox});",
+          "nwr[\"industrial\"=\"port\"]({bbox});",
+          "nwr[\"amenity\"=\"ferry_terminal\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 1: <urlopen error [Errno 54] Connection reset by peer>; tile 2: <urlopen error [Errno 54] Connection reset by peer>; tile 3: <urlopen error [Errno 54] Connection reset by peer>; tile 4: <urlopen error [Errno 54] Connection reset by peer>; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>"
+    },
+    {
+      "source": "osm",
+      "layer_name": "warehouses_logistics",
+      "geometry_type": "point",
+      "row_count": 0,
+      "query_config": {
+        "selectors": [
+          "nwr[\"building\"=\"warehouse\"]({bbox});",
+          "nwr[\"office\"=\"logistics\"]({bbox});",
+          "nwr[\"industrial\"~\"logistics|depot\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 1: <urlopen error [Errno 54] Connection reset by peer>; tile 2: <urlopen error [Errno 54] Connection reset by peer>; tile 3: <urlopen error [Errno 54] Connection reset by peer>; tile 4: <urlopen error [Errno 54] Connection reset by peer>; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>"
+    },
+    {
+      "source": "osm",
+      "layer_name": "warehouses_logistics",
+      "geometry_type": "linestring",
+      "row_count": 0,
+      "query_config": {
+        "selectors": [
+          "nwr[\"building\"=\"warehouse\"]({bbox});",
+          "nwr[\"office\"=\"logistics\"]({bbox});",
+          "nwr[\"industrial\"~\"logistics|depot\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 1: <urlopen error [Errno 54] Connection reset by peer>; tile 2: <urlopen error [Errno 54] Connection reset by peer>; tile 3: <urlopen error [Errno 54] Connection reset by peer>; tile 4: <urlopen error [Errno 54] Connection reset by peer>; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>"
+    },
+    {
+      "source": "osm",
+      "layer_name": "warehouses_logistics",
+      "geometry_type": "polygon",
+      "row_count": 0,
+      "query_config": {
+        "selectors": [
+          "nwr[\"building\"=\"warehouse\"]({bbox});",
+          "nwr[\"office\"=\"logistics\"]({bbox});",
+          "nwr[\"industrial\"~\"logistics|depot\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 1: <urlopen error [Errno 54] Connection reset by peer>; tile 2: <urlopen error [Errno 54] Connection reset by peer>; tile 3: <urlopen error [Errno 54] Connection reset by peer>; tile 4: <urlopen error [Errno 54] Connection reset by peer>; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>"
+    }
+  ],
+  "notes": [
+    "OSM layer rail failed across tiled requests: tile 1: HTTP Error 429: Too Many Requests; tile 2: HTTP Error 429: Too Many Requests; tile 3: HTTP Error 429: Too Many Requests; tile 4: HTTP Error 429: Too Many Requests; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>.",
+    "OSM layer airports failed across tiled requests: tile 1: <urlopen error [Errno 54] Connection reset by peer>; tile 2: <urlopen error [Errno 54] Connection reset by peer>; tile 3: <urlopen error [Errno 54] Connection reset by peer>; tile 4: <urlopen error [Errno 54] Connection reset by peer>; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>.",
+    "OSM layer ports failed across tiled requests: tile 1: <urlopen error [Errno 54] Connection reset by peer>; tile 2: <urlopen error [Errno 54] Connection reset by peer>; tile 3: <urlopen error [Errno 54] Connection reset by peer>; tile 4: <urlopen error [Errno 54] Connection reset by peer>; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>.",
+    "OSM layer warehouses_logistics failed across tiled requests: tile 1: <urlopen error [Errno 54] Connection reset by peer>; tile 2: <urlopen error [Errno 54] Connection reset by peer>; tile 3: <urlopen error [Errno 54] Connection reset by peer>; tile 4: <urlopen error [Errno 54] Connection reset by peer>; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>."
+  ]
+}

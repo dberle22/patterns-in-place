@@ -1,0 +1,19 @@
+{
+  "sample_name": "downtown_pilot",
+  "layers_requested": [
+    "highways"
+  ],
+  "bbox": {
+    "west": -77.5,
+    "south": 37.5,
+    "east": -77.39,
+    "north": 37.59
+  },
+  "extract_date": "2026-07-29T01:57:25+00:00",
+  "line_rows": 0,
+  "polygon_rows": 0,
+  "point_rows": 0,
+  "line_layer_counts": {},
+  "polygon_layer_counts": {},
+  "point_layer_counts": {}
+}

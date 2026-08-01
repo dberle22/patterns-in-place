@@ -1,0 +1,52 @@
+{
+  "market_id": "27260",
+  "bbox": {
+    "west": -82.5097918101678,
+    "south": 29.572432,
+    "east": -81.1628778426699,
+    "north": 30.879922
+  },
+  "extract_date": "2026-08-01T13:13:17+00:00",
+  "layers": [
+    {
+      "source": "fdot",
+      "layer_name": "aadt_segments",
+      "geometry_type": "line",
+      "row_count": 2314,
+      "query_config": {
+        "state": "FL",
+        "service_url": "https://gis.fdot.gov/arcgis/rest/services/RCI_Layers/FeatureServer/0/query",
+        "bbox": [
+          -82.5097918101678,
+          29.572432,
+          -81.1628778426699,
+          30.879922
+        ]
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "fdot",
+      "layer_name": "aadt_historical_segments",
+      "geometry_type": "line",
+      "row_count": 11341,
+      "query_config": {
+        "state": "FL",
+        "service_url": "https://services1.arcgis.com/O1JpcwDW8sjYuddV/ArcGIS/rest/services/Annual_Average_Daily_Traffic_Historical_TDA/FeatureServer/0/query",
+        "bbox": [
+          -82.5097918101678,
+          29.572432,
+          -81.1628778426699,
+          30.879922
+        ]
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    }
+  ],
+  "notes": [
+    "FDOT statewide AADT segments clipped to the requested market bbox.",
+    "FDOT historical AADT segments clipped to the requested market bbox.",
+    "AADT is an annual average daily traffic statistic, not a peak-hour observed count.",
+    "Source: official FDOT AADT FeatureServer layer 0."
+  ]
+}

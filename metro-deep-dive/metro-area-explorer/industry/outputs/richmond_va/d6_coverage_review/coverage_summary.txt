@@ -1,0 +1,5 @@
+Richmond D6 coverage review
+Sector coverage matched employment share: 0.9693
+Sector unmatched rows: 46
+Occupation coverage matched employment share: 0.7726
+Occupation unmatched rows: 103

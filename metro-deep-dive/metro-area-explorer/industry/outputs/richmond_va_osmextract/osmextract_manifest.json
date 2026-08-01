@@ -1,0 +1,58 @@
+{
+  "market_id": "richmond_va",
+  "source": "osmextract",
+  "provider": "openstreetmap_fr",
+  "place": "Richmond",
+  "extract_date": "2026-07-29T02:07:57Z",
+  "layers": [
+    {
+      "source": "osm",
+      "layer_name": "major_roads",
+      "geometry_type": "line",
+      "row_count": 16572
+    },
+    {
+      "source": "osm",
+      "layer_name": "highways",
+      "geometry_type": "line",
+      "row_count": 5300
+    },
+    {
+      "source": "osm",
+      "layer_name": "rail",
+      "geometry_type": "line",
+      "row_count": 1374
+    },
+    {
+      "source": "osm",
+      "layer_name": "airports",
+      "geometry_type": "point",
+      "row_count": 51
+    },
+    {
+      "source": "osm",
+      "layer_name": "ports",
+      "geometry_type": "point",
+      "row_count": 6
+    },
+    {
+      "source": "osm",
+      "layer_name": "warehouses_logistics",
+      "geometry_type": "polygon",
+      "row_count": 114
+    },
+    {
+      "source": "osm",
+      "layer_name": "airports",
+      "geometry_type": "polygon",
+      "row_count": 64
+    },
+    {
+      "source": "osm",
+      "layer_name": "ports",
+      "geometry_type": "polygon",
+      "row_count": 1
+    }
+  ],
+  "notes": ["Matched provider openstreetmap_fr extract: http://download.openstreetmap.fr/extracts/north-america/us-south/virginia/richmond-latest.osm.pbf", "Reported source file size: 76222852 bytes", "Cached GeoPackage path: /Users/danberle/Documents/projects/patterns_in_place/metro-deep-dive/metro-area-explorer/industry/outputs/richmond_va_osmextract/raw/openstreetmap_fr_richmond-latest.gpkg"]
+}

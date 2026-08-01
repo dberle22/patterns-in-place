@@ -1,0 +1,25 @@
+{
+  "market_slug": "richmond_va",
+  "provider": "openstreetmap_fr",
+  "place": "Richmond",
+  "extract_date": "2026-07-29T02:07:57Z",
+  "source_url": "http://download.openstreetmap.fr/extracts/north-america/us-south/virginia/richmond-latest.osm.pbf",
+  "source_file_size": 76222852,
+  "line_rows": 23246,
+  "point_rows": 57,
+  "polygon_rows": 179,
+  "line_layer_counts": {
+    "highways": 5300,
+    "major_roads": 16572,
+    "rail": 1374
+  },
+  "point_layer_counts": {
+    "airports": 51,
+    "ports": 6
+  },
+  "polygon_layer_counts": {
+    "airports": 64,
+    "ports": 1,
+    "warehouses_logistics": 114
+  }
+}

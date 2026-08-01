@@ -1,0 +1,28 @@
+{
+  "market_slug": "jacksonville_fl",
+  "provider": "openstreetmap_fr",
+  "place": "Jacksonville, Florida",
+  "extract_date": "2026-08-01T02:48:37Z",
+  "source_url": "http://download.openstreetmap.fr/extracts/north-america/us-south/florida/northeast-latest.osm.pbf",
+  "source_file_size": 64886477,
+  "line_rows": 25431,
+  "point_rows": 36,
+  "polygon_rows": 20201,
+  "line_layer_counts": {
+    "highways": 7227,
+    "major_roads": 15926,
+    "rail": 1632,
+    "water": 646
+  },
+  "point_layer_counts": {
+    "airports": 27,
+    "ports": 7,
+    "warehouses_logistics": 2
+  },
+  "polygon_layer_counts": {
+    "airports": 81,
+    "ports": 26,
+    "warehouses_logistics": 202,
+    "water": 19892
+  }
+}

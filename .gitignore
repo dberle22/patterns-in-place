@@ -79,8 +79,10 @@ foundations/visual_library/chart_engine_py/example/output_*.html
 .idea/
 .vscode/
 
-# ── Claude Code local settings ───────────────────────────────────────────────
-.claude/settings.local.json
+# ── Claude Code local workspace ──────────────────────────────────────────────
+# Claude stores machine-local permissions and paths here, so the whole folder
+# should stay out of version control.
+.claude/
 
 # ── Notes vault (Obsidian — not version controlled here) ─────────────────────
 notes/
