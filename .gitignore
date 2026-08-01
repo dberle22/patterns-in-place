@@ -44,6 +44,7 @@ stoop/data/
 *.shx
 *.prj
 *.tif
+*.osm.pbf
 *.html
 !docs/**/*.html
 !**/README*.html
