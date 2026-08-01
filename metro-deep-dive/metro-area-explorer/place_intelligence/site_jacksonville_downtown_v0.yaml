@@ -1,0 +1,12 @@
+site_id: jacksonville_fl_downtown_v0
+address: 1 E Independent Dr, Jacksonville, FL 32202
+lat: 30.325113737704
+lon: -81.657528819577
+geocode_source: manual_override
+market_id: "27260"
+asset_type: retail
+rings_mi:
+  - 1
+  - 3
+  - 5
+primary_ring_mi: 3

@@ -332,17 +332,19 @@ Status: complete on 2026-08-01. `ingest_fdot_aadt.py` now writes both current an
 
 **4.3 — FEMA NRI confirmation**
 - Confirm table name and grain first (spec reports it as "already available" but unconfirmed). If tract-grain NRI exists, it apportions through D1 like any other tract metric — no new ingest.
+Status: complete on 2026-08-01. `patterns_in_place.silver.fema_nri` is now confirmed locally with tract, county, and CBSA rows at year 2025, and `site_prep.py` now builds tract-apportioned catchment NRI scores plus the matching CBSA benchmark from that same Silver table.
 
 **4.4 — FEMA NFHL point-in-polygon (timebox: 1 hour)**
 - Zone lookup at the site point (X/AE/VE/etc.), SFHA yes/no, panel effective date, via the published REST service.
 - Ring flood-zone area shares in a projected CRS.
+Status: complete on 2026-08-01. `site_prep.py` now queries FEMA's live NFHL ArcGIS service for both the site-point zone/panel lookup and the ring-level flood-zone polygons, with batched object-id fetches so the Jacksonville 5-mile area stays within service limits.
 
 **Acceptance criteria (verbatim):**
-- [ ] NRI availability and grain confirmed before any assumption is built on it
-- [ ] Zone lookup returns designation for site point, states NFHL panel effective date
-- [ ] Copy explicitly states this is screening-level, not a flood determination/elevation certificate/insurance rating
-- [ ] Ring flood-zone area shares computed in a projected CRS
-- [ ] NRI and NFHL presented as answering different questions, not two versions of the same read
+- [x] NRI availability and grain confirmed before any assumption is built on it
+- [x] Zone lookup returns designation for site point, states NFHL panel effective date
+- [x] Copy explicitly states this is screening-level, not a flood determination/elevation certificate/insurance rating
+- [x] Ring flood-zone area shares computed in a projected CRS
+- [x] NRI and NFHL presented as answering different questions, not two versions of the same read
 
 **Testing:** `metro-deep-dive/tests/test_pi_d4.py`, `test_pi_d5.py` — same synthetic-fixture + monkeypatch pattern. D4's snap-tolerance failure path and D5's "cut gracefully" path are the two most important cases to cover, since both are explicit acceptance criteria about failing/degrading visibly rather than silently.
 
@@ -357,26 +359,32 @@ Read `PI_SPEC.md` lines 249-297 in full — the two organizing principles (one m
 **5.1 — Context map component**
 - Build the `pydeck` context map **once**, reused across all 5 tabs with per-tab default layer state (rings, POIs by category, road network weighted by AADT if D4 shipped, flood zones if D5 shipped, severed-area shading, tract fill by selected metric).
 - This is itself a flagged foundations-promotion candidate if it generalizes past this one site — note but do not promote yet.
+Status: complete on 2026-08-01. `shared_ui.py` now renders one reusable `pydeck` context-map component with per-tab default layer states, tract-fill metric selection, and optional POI / roads / flood / severed-area overlays.
 
 **5.2 — Five tabs**
 - Build `pages/d_overview.py`, `d_people.py`, `d_place.py`, `d_market.py`, `d_methods.py` per the table in `PI_SPEC.md` lines 263-269. Each tab renders independently — an incomplete deliverable hides cleanly (same subheader-guard pattern as Industry).
 - **Market tab specifically:** reverse-engineer from what a site-level reader needs from metro context, then check against what Metro Deep Dive currently produces. Whatever earns its place is a candidate for a standardized MDD summary component — flag it explicitly in `decisions.md`, this is a named foundations-promotion candidate in the spec (line 271).
+Status: complete on 2026-08-01. The thin `app.py` shell now dispatches to five page modules, each built around guarded blocks so missing D2/D4/D5 payloads degrade cleanly without breaking the rest of the brief. The app now reads site artifacts from disk rather than recomputing D1-D5 payloads at page load.
 
 **5.3 — Trajectory-as-view wiring**
 - Every metric panel from D2/D3 gets its 5yr-change companion rendered directly beneath it, mirroring the Industry bump-chart placement pattern (`pages/d1_makeup_change.py:231-240`) exactly — gate on sufficient year history the same way, with the same kind of explanatory hidden-state message when insufficient.
+Status: complete on 2026-08-01 for the current v0 surface. The People and Place tabs now pair current-value views with their change or trend companions where the prep payload exposes them, and hide the companion with an explanatory message when it is unavailable.
 
 **5.4 — Provenance and labeling**
 - Every chart carries source + vintage label. Every apportioned number is visually distinguishable from a directly-observed number (e.g. consistent icon/footnote convention — decide once, apply everywhere). No composite score anywhere in the app.
+Status: complete on 2026-08-01 for the current app surface. Chart subtitles and page captions now carry source/vintage context, apportioned numbers are labeled in copy as catchment/apportioned reads, directly observed D3/D4 values are labeled as such, and no composite score was introduced.
 
 **Acceptance criteria (verbatim):**
-- [ ] App runs end-to-end from `site.yaml`, following the Industry `data_prep.py` + `app.py` split
-- [ ] Prep layer returns dataframes with no Streamlit imports
-- [ ] Context map built once, reused across tabs with per-tab default layer state — not re-instantiated per section
-- [ ] Every chart carries a source and vintage label; panels do not imply a common year across sources
-- [ ] Every apportioned number is visually distinguishable from a directly-observed number
-- [ ] No composite score appears anywhere
-- [ ] Each tab renders independently; an incomplete deliverable can be hidden without breaking the app
+- [x] App runs end-to-end from `site.yaml`, following the Industry `data_prep.py` + `app.py` split
+- [x] Prep layer returns dataframes with no Streamlit imports
+- [x] Context map built once, reused across tabs with per-tab default layer state — not re-instantiated per section
+- [x] Every chart carries a source and vintage label; panels do not imply a common year across sources
+- [x] Every apportioned number is visually distinguishable from a directly-observed number
+- [x] No composite score appears anywhere
+- [x] Each tab renders independently; an incomplete deliverable can be hidden without breaking the app
 - [ ] Running against a second Jacksonville address produces a correct, different result with no code changes
+Status note: automated smoke coverage now exists in `metro-deep-dive/tests/test_pi_d6.py`, the full targeted PI suite passes locally, and config discovery now covers both `site_jacksonville_v0.yaml` and `site_jacksonville_downtown_v0.yaml`. The remaining unchecked acceptance item is the live end-to-end artifact/Streamlit validation for the downtown config.
+Artifact note: the prep step now writes app-ready `csv`, `json`, and `geojson` files under `outputs/<market_alias>/site_artifacts/<site_id>/` so the Streamlit layer only performs lightweight reads and display formatting.
 
 **Testing:** `metro-deep-dive/tests/test_pi_d6.py` — smoke-test each tab's `render_page` against both a fully-populated payload and a deliberately incomplete one (mirroring the D4 "graceful missing cache" test). Manual test: run the Streamlit app against two distinct real Jacksonville addresses and confirm distinct, correct output with zero code changes (explicit acceptance criterion — cannot be verified by unit test alone, must be done by hand per the repo's stated two-layer validation approach).
 

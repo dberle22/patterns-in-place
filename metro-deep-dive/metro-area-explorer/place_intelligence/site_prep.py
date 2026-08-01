@@ -3,17 +3,20 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from functools import lru_cache
 import json
 from pathlib import Path
 import sys
 from typing import Any, Literal
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
 
 import duckdb
 import geopandas as gpd
 import numpy as np
 import pandas as pd
-from shapely.geometry import Point, shape
+from shapely.geometry import LinearRing, MultiPolygon, Point, Polygon, shape
 from shapely import wkb
 from shapely.ops import linemerge, split, unary_union
 import yaml
@@ -22,6 +25,7 @@ import yaml
 VALID_ASSET_TYPES = {"retail", "residential", "mixed"}
 DEFAULT_RINGS_MI = [1, 3, 5]
 DEFAULT_PRIMARY_RING_MI = 3
+DEFAULT_SITE_CONFIG_PATH = Path(__file__).resolve().parent / "site_jacksonville_v0.yaml"
 REPO_ROOT = Path(__file__).resolve().parents[3]
 SECTION_ROOT = Path(__file__).resolve().parent
 DB_PATH = REPO_ROOT / "foundations" / "etl" / "data" / "duckdb" / "patterns_in_place.duckdb"
@@ -32,6 +36,11 @@ D3_BARRIER_SPACING_THRESHOLD_MI = 1.0
 D3_SITE_CARD_SEVERED_POP_SHARE_THRESHOLD = 0.2
 D3_FRONTAGE_DISTANCE_THRESHOLD_MI = 0.1
 D3_WATER_BARRIER_BUFFER_M = 30.0
+D5_NFHL_MAPSERVER_URL = "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer"
+D5_NFHL_ZONE_LAYER_ID = 28
+D5_NFHL_PANEL_LAYER_ID = 3
+D5_NFHL_BATCH_SIZE = 200
+D5_NFHL_TIMEOUT_SECONDS = 8
 if str(SECTION_ROOT) not in sys.path:
     sys.path.insert(0, str(SECTION_ROOT))
 
@@ -123,6 +132,41 @@ D3_JOB_BREAKOUT_COLUMNS = {
     "health_care": "jobs_ind_health_care_social_assistance",
     "professional_scientific": "jobs_ind_professional_scientific_technical",
 }
+D5_NRI_HAZARD_LABELS = {
+    "avalanche_risk_score": "Avalanche",
+    "coastal_flooding_risk_score": "Coastal flooding",
+    "cold_wave_risk_score": "Cold wave",
+    "drought_risk_score": "Drought",
+    "earthquake_risk_score": "Earthquake",
+    "hail_risk_score": "Hail",
+    "heat_wave_risk_score": "Heat wave",
+    "hurricane_risk_score": "Hurricane",
+    "ice_storm_risk_score": "Ice storm",
+    "inland_flooding_risk_score": "Inland flooding",
+    "landslide_risk_score": "Landslide",
+    "lightning_risk_score": "Lightning",
+    "strong_wind_risk_score": "Strong wind",
+    "tornado_risk_score": "Tornado",
+    "tsunami_risk_score": "Tsunami",
+    "volcanic_activity_risk_score": "Volcanic activity",
+    "wildfire_risk_score": "Wildfire",
+    "winter_weather_risk_score": "Winter weather",
+}
+D5_NRI_CORE_COLUMNS = [
+    "risk_score",
+    "eal_score",
+    "social_vulnerability_score",
+    "community_resilience_score",
+    "coastal_flooding_risk_score",
+    "inland_flooding_risk_score",
+    "hurricane_risk_score",
+]
+D6_TRACT_FILL_METRICS = {
+    "pop_total": "Population",
+    "median_hh_income": "Median household income",
+    "median_home_value": "Median home value",
+    "pct_ba_plus": "BA+ share",
+}
 
 
 @dataclass(frozen=True)
@@ -147,6 +191,19 @@ class MetricSkipReason:
     metric: str
     reason: str
     table_name: str
+
+
+@dataclass(frozen=True)
+class ResolvedSite:
+    """Site config plus the resolved coordinates and tract used for D6 rendering."""
+
+    site: Site
+    lat: float
+    lon: float
+    tract_geoid: str
+    matched_address: str
+    match_type: str
+    geocode_source: str
 
 
 def get_connection() -> duckdb.DuckDBPyConnection:
@@ -189,6 +246,68 @@ def load_site(path: str) -> Site:
     )
 
 
+def list_site_configs() -> list[Path]:
+    """Discover site YAML files so the D6 app can stay config-driven."""
+
+    return sorted(SECTION_ROOT.glob("site*.yaml"))
+
+
+def get_default_site_config_path() -> Path:
+    """Return the default spotlight site config path for the D6 app shell."""
+
+    return DEFAULT_SITE_CONFIG_PATH
+
+
+def resolve_site(site: Site) -> ResolvedSite:
+    """Resolve one site to stable coordinates and tract provenance for downstream prep."""
+
+    from geocode import resolve_site_geocode
+
+    geocode_result = resolve_site_geocode(site)
+    return ResolvedSite(
+        site=site,
+        lat=float(geocode_result.lat),
+        lon=float(geocode_result.lon),
+        tract_geoid=str(geocode_result.tract_geoid),
+        matched_address=str(geocode_result.matched_address),
+        match_type=str(geocode_result.match_type),
+        geocode_source=str(geocode_result.geocode_source),
+    )
+
+
+def build_site_weight_table(site: Site) -> pd.DataFrame:
+    """Compute the D1 tract weight table for one configured site."""
+
+    from apportion import apportion_weights, build_rings
+
+    resolved_site = resolve_site(site)
+    rings = build_rings(lat=resolved_site.lat, lon=resolved_site.lon, rings_mi=site.rings_mi).copy()
+    rings["site_id"] = site.site_id
+    weights = apportion_weights(rings, market_id=site.market_id)
+    if weights.empty:
+        return weights
+    weights["site_id"] = site.site_id
+    return weights
+
+
+def build_site_base_payload(site: Site) -> dict[str, Any]:
+    """Build the shared D1 foundation the D6 tabs all sit on top of."""
+
+    from apportion import coverage_diagnostic
+
+    resolved_site = resolve_site(site)
+    weight_table = build_site_weight_table(site)
+    coverage = coverage_diagnostic(weight_table)
+    cumulative_rings = _build_cumulative_rings(resolved_site.lat, resolved_site.lon, site.rings_mi)
+    return {
+        "site": site,
+        "resolved_site": resolved_site,
+        "weight_table": weight_table,
+        "coverage_diagnostic": coverage,
+        "cumulative_rings": cumulative_rings,
+    }
+
+
 def build_catchment_profile(site: Site, weight_table: pd.DataFrame) -> pd.DataFrame:
     """Build the long-format D2 catchment surface from tract metrics plus weights."""
 
@@ -203,40 +322,15 @@ def build_benchmark_table(site: Site) -> pd.DataFrame:
     county_geoid, state_fips = _get_site_county_and_state(site)
     for metric in METRIC_DEFINITIONS:
         metric_surface = _query_metric_surface(metric, site.market_id)
-        benchmark_frame = metric_surface.loc[
-            metric_surface["geo_level_normalized"].isin({"cbsa", "county", "state", "us"})
-        ].copy()
-        if benchmark_frame.empty:
-            continue
-
-        latest_year = int(benchmark_frame["year"].max())
-        latest_frame = benchmark_frame.loc[benchmark_frame["year"] == latest_year].copy()
-        selector = (
-            ((latest_frame["geo_level_normalized"] == "cbsa") & (latest_frame["geo_id"] == str(site.market_id)))
-            | ((latest_frame["geo_level_normalized"] == "county") & (latest_frame["geo_id"] == county_geoid))
-            | ((latest_frame["geo_level_normalized"] == "state") & (latest_frame["geo_id"] == state_fips))
-            | (latest_frame["geo_level_normalized"] == "us")
-        )
-        selected = latest_frame.loc[selector].copy()
-        if selected.empty:
-            continue
-
-        for row in selected.itertuples(index=False):
-            benchmark_rows.append(
-                {
-                    "site_id": site.site_id,
-                    "ring_mi": site.primary_ring_mi,
-                    "benchmark_level": _normalize_benchmark_level(str(row.geo_level_normalized)),
-                    "benchmark_geo_id": str(row.geo_id),
-                    "benchmark_geo_name": str(row.geo_name),
-                    "metric": metric.metric_id,
-                    "metric_label": metric.label,
-                    "topic": metric.topic,
-                    "value": float(row.metric_value) if pd.notna(row.metric_value) else None,
-                    "year": int(row.year),
-                    "source_table": metric.table_name,
-                }
+        benchmark_rows.extend(
+            _build_metric_benchmark_rows(
+                site,
+                metric,
+                metric_surface,
+                county_geoid=county_geoid,
+                state_fips=state_fips,
             )
+        )
 
     return pd.DataFrame(benchmark_rows).sort_values(
         ["metric", "benchmark_level"],
@@ -278,12 +372,19 @@ def compute_percentile(metric: str, ring_value: float, market_id: str) -> tuple[
 
 
 def build_d2_profile_payload(site: Site, weight_table: pd.DataFrame) -> dict[str, Any]:
-    """Assemble the current D2 payload, including structured skip reasons for the UI."""
+    """Assemble D2 as one canonical long table plus app-facing aggregated views."""
 
-    catchment_rows: list[dict[str, Any]] = []
+    metric_long_rows: list[dict[str, Any]] = []
     skip_reasons: list[MetricSkipReason] = []
+    county_geoid, state_fips = _get_site_county_and_state(site)
     for metric in METRIC_DEFINITIONS:
-        metric_rows = _build_metric_catchment_rows(site, weight_table, metric)
+        metric_surface = _query_metric_surface(metric, site.market_id)
+        metric_rows = _build_metric_catchment_rows(
+            site,
+            weight_table,
+            metric,
+            metric_surface=metric_surface,
+        )
         if metric_rows.empty:
             skip_reasons.append(
                 MetricSkipReason(
@@ -293,14 +394,93 @@ def build_d2_profile_payload(site: Site, weight_table: pd.DataFrame) -> dict[str
                 )
             )
             continue
-        catchment_rows.extend(metric_rows.to_dict("records"))
+
+        for row in metric_rows.to_dict("records"):
+            metric_long_rows.append(
+                {
+                    "site_id": row["site_id"],
+                    "market_id": site.market_id,
+                    "record_type": "catchment",
+                    "metric": row["metric"],
+                    "metric_label": row["metric_label"],
+                    "topic": row["topic"],
+                    "ring_mi": row["ring_mi"],
+                    "benchmark_level": None,
+                    "benchmark_geo_id": None,
+                    "benchmark_geo_name": None,
+                    "value": row["value"],
+                    "year": row["year"],
+                    "source_table": row["source_table"],
+                    "change_5yr": row["change_5yr"],
+                    "change_5yr_period": row["change_5yr_period"],
+                    "cbsa_percentile": row["cbsa_percentile"],
+                    "cbsa_percentile_denominator": row["cbsa_percentile_denominator"],
+                }
+            )
+
+        for row in _build_metric_benchmark_rows(
+            site,
+            metric,
+            metric_surface,
+            county_geoid=county_geoid,
+            state_fips=state_fips,
+        ):
+            metric_long_rows.append(
+                {
+                    "site_id": row["site_id"],
+                    "market_id": site.market_id,
+                    "record_type": "benchmark",
+                    "metric": row["metric"],
+                    "metric_label": row["metric_label"],
+                    "topic": row["topic"],
+                    "ring_mi": row["ring_mi"],
+                    "benchmark_level": row["benchmark_level"],
+                    "benchmark_geo_id": row["benchmark_geo_id"],
+                    "benchmark_geo_name": row["benchmark_geo_name"],
+                    "value": row["value"],
+                    "year": row["year"],
+                    "source_table": row["source_table"],
+                    "change_5yr": None,
+                    "change_5yr_period": None,
+                    "cbsa_percentile": None,
+                    "cbsa_percentile_denominator": None,
+                }
+            )
+
+    metric_long = pd.DataFrame(metric_long_rows).sort_values(
+        ["metric", "record_type", "ring_mi", "benchmark_level"],
+        kind="mergesort",
+        na_position="last",
+    ).reset_index(drop=True) if metric_long_rows else _empty_d2_metric_long()
+    catchment_profile = (
+        metric_long.loc[metric_long["record_type"] == "catchment"]
+        .drop(columns=["record_type", "market_id"])
+        .reset_index(drop=True)
+        if not metric_long.empty
+        else pd.DataFrame()
+    )
+    benchmark_table = (
+        metric_long.loc[metric_long["record_type"] == "benchmark"]
+        .drop(
+            columns=[
+                "record_type",
+                "market_id",
+                "change_5yr",
+                "change_5yr_period",
+                "cbsa_percentile",
+                "cbsa_percentile_denominator",
+            ]
+        )
+        .reset_index(drop=True)
+        if not metric_long.empty
+        else _empty_benchmark_table()
+    )
 
     return {
-        "catchment_profile": pd.DataFrame(catchment_rows).sort_values(
-            ["metric", "ring_mi"],
-            kind="mergesort",
-        ).reset_index(drop=True) if catchment_rows else pd.DataFrame(),
-        "benchmark_table": build_benchmark_table(site),
+        "metric_long": metric_long,
+        "metric_summary": _build_d2_metric_summary(metric_long, site),
+        "catchment_profile": catchment_profile,
+        "benchmark_table": benchmark_table,
         "skip_reasons": pd.DataFrame([reason.__dict__ for reason in skip_reasons]),
     }
 
@@ -694,6 +874,274 @@ def get_d4_traffic_payload(
     }
 
 
+def get_d5_flood_payload(
+    site: Site,
+    weight_table: pd.DataFrame,
+    cumulative_rings: gpd.GeoDataFrame | None = None,
+) -> dict[str, Any]:
+    """Build the D5 flood payload from tract NRI and live FEMA NFHL lookups."""
+
+    lat, lon = _resolve_site_coordinates(site)
+    rings = cumulative_rings if cumulative_rings is not None else _build_cumulative_rings(lat, lon, site.rings_mi)
+    nri_payload = build_nri_flood_risk_payload(site, weight_table)
+
+    nfhl_status = "ok"
+    nfhl_error = None
+    try:
+        site_zone = lookup_nfhl_site_flood_zone(site)
+        ring_shares = build_nfhl_ring_share_table(site, rings)
+    except Exception as exc:
+        nfhl_status = "unavailable"
+        nfhl_error = str(exc)
+        site_zone = _empty_nfhl_site_lookup(site)
+        ring_shares = _empty_nfhl_ring_share_table(site)
+
+    return {
+        "site_id": site.site_id,
+        "nri_catchment_scores": nri_payload["catchment_scores"],
+        "nri_catchment_top_hazards": nri_payload["catchment_top_hazards"],
+        "nri_cbsa_benchmark": nri_payload["cbsa_benchmark"],
+        "nri_cbsa_top_hazards": nri_payload["cbsa_top_hazards"],
+        "nfhl_site_zone": site_zone,
+        "nfhl_ring_shares": ring_shares,
+        "nfhl_service_status": nfhl_status,
+        "nfhl_service_error": nfhl_error,
+        "copy_note": (
+            "NFHL answers the parcel-level map question: which FEMA flood zone the site sits in today. "
+            "NRI answers the broader catchment-risk question by summarizing modeled hazard scores across nearby tracts. "
+            "This is a screening-level read from published FEMA mapping, not a flood determination, elevation certificate, or insurance rating."
+        ),
+    }
+
+
+def build_nri_flood_risk_payload(site: Site, weight_table: pd.DataFrame) -> dict[str, pd.DataFrame]:
+    """Apportion tract-grain FEMA NRI rows into cumulative rings and pair them with the CBSA row."""
+
+    catchment_score_columns = [
+        "site_id",
+        "ring_mi",
+        "year",
+        "risk_score",
+        "eal_score",
+        "social_vulnerability_score",
+        "community_resilience_score",
+        "coastal_flooding_risk_score",
+        "inland_flooding_risk_score",
+        "hurricane_risk_score",
+    ]
+    if weight_table.empty:
+        return {
+            "catchment_scores": pd.DataFrame(columns=catchment_score_columns),
+            "catchment_top_hazards": _empty_nri_top_hazards(),
+            "cbsa_benchmark": pd.DataFrame(columns=["site_id", "market_id", "geo_name", "year", *D5_NRI_CORE_COLUMNS]),
+            "cbsa_top_hazards": _empty_nri_top_hazards(),
+        }
+
+    nri = _query_nri_surface(site.market_id)
+    tract_rows = nri.loc[nri["geo_level"] == "tract"].copy()
+    cbsa_rows = nri.loc[(nri["geo_level"] == "cbsa") & (nri["geo_id"] == str(site.market_id))].copy()
+    if tract_rows.empty:
+        return {
+            "catchment_scores": pd.DataFrame(columns=catchment_score_columns),
+            "catchment_top_hazards": _empty_nri_top_hazards(),
+            "cbsa_benchmark": pd.DataFrame(columns=["site_id", "market_id", "geo_name", "year", *D5_NRI_CORE_COLUMNS]),
+            "cbsa_top_hazards": _empty_nri_top_hazards(),
+        }
+
+    cumulative_weights = _build_cumulative_weight_table(weight_table, site.rings_mi)
+    hazard_columns = [column for column in D5_NRI_HAZARD_LABELS if column in tract_rows.columns]
+    metric_columns = [column for column in D5_NRI_CORE_COLUMNS if column in tract_rows.columns]
+
+    metric_results: dict[str, pd.Series] = {}
+    for column in [*metric_columns, *hazard_columns]:
+        metric_values = tract_rows[["geo_id", column]].dropna()
+        if metric_values.empty:
+            continue
+        metric_results[column] = _apportion_metric_series(
+            column,
+            "intensive",
+            metric_values.set_index("geo_id")[column],
+            cumulative_weights,
+        )
+
+    catchment_rows: list[dict[str, Any]] = []
+    catchment_top_hazards: list[dict[str, Any]] = []
+    catchment_year = int(tract_rows["year"].max())
+    for ring_mi in sorted(site.rings_mi):
+        row = {
+            "site_id": site.site_id,
+            "ring_mi": int(ring_mi),
+            "year": catchment_year,
+        }
+        for column in metric_columns:
+            result = metric_results.get(column)
+            row[column] = float(result.loc[ring_mi]) if result is not None and ring_mi in result.index else None
+        catchment_rows.append(row)
+
+        top_scores = {
+            column: float(result.loc[ring_mi])
+            for column, result in metric_results.items()
+            if column in hazard_columns and ring_mi in result.index and pd.notna(result.loc[ring_mi])
+        }
+        for rank, (hazard_id, score) in enumerate(
+            sorted(top_scores.items(), key=lambda item: item[1], reverse=True)[:3],
+            start=1,
+        ):
+            catchment_top_hazards.append(
+                {
+                    "site_id": site.site_id,
+                    "geography": f"{ring_mi}-mile ring",
+                    "ring_mi": int(ring_mi),
+                    "rank": rank,
+                    "hazard_id": hazard_id,
+                    "hazard_label": D5_NRI_HAZARD_LABELS.get(hazard_id, hazard_id),
+                    "risk_score": score,
+                }
+            )
+
+    cbsa_benchmark = pd.DataFrame(columns=["site_id", "market_id", "geo_name", "year", *D5_NRI_CORE_COLUMNS])
+    cbsa_top_hazards = _empty_nri_top_hazards()
+    if not cbsa_rows.empty:
+        cbsa_row = cbsa_rows.sort_values("year", ascending=False, kind="mergesort").iloc[0]
+        benchmark_row = {
+            "site_id": site.site_id,
+            "market_id": str(site.market_id),
+            "geo_name": cbsa_row.get("geo_name"),
+            "year": int(cbsa_row["year"]),
+        }
+        for column in metric_columns:
+            benchmark_row[column] = float(cbsa_row[column]) if pd.notna(cbsa_row[column]) else None
+        cbsa_benchmark = pd.DataFrame([benchmark_row])
+
+        cbsa_scores = {
+            column: float(cbsa_row[column])
+            for column in hazard_columns
+            if pd.notna(cbsa_row.get(column))
+        }
+        cbsa_top_hazards = pd.DataFrame(
+            [
+                {
+                    "site_id": site.site_id,
+                    "geography": str(cbsa_row.get("geo_name") or site.market_id),
+                    "ring_mi": None,
+                    "rank": rank,
+                    "hazard_id": hazard_id,
+                    "hazard_label": D5_NRI_HAZARD_LABELS.get(hazard_id, hazard_id),
+                    "risk_score": score,
+                }
+                for rank, (hazard_id, score) in enumerate(
+                    sorted(cbsa_scores.items(), key=lambda item: item[1], reverse=True)[:3],
+                    start=1,
+                )
+            ]
+        )
+
+    return {
+        "catchment_scores": pd.DataFrame(catchment_rows),
+        "catchment_top_hazards": pd.DataFrame(catchment_top_hazards) if catchment_top_hazards else _empty_nri_top_hazards(),
+        "cbsa_benchmark": cbsa_benchmark,
+        "cbsa_top_hazards": cbsa_top_hazards,
+    }
+
+
+def lookup_nfhl_site_flood_zone(site: Site) -> pd.DataFrame:
+    """Look up the site's FEMA flood zone and matching FIRM panel metadata."""
+
+    lat, lon = _resolve_site_coordinates(site)
+    zone_features = _query_nfhl_features(
+        layer_id=D5_NFHL_ZONE_LAYER_ID,
+        geometry_text=f"{lon},{lat}",
+        geometry_type="esriGeometryPoint",
+        out_fields=["FLD_ZONE", "ZONE_SUBTY", "SFHA_TF", "STATIC_BFE", "DEPTH", "SOURCE_CIT"],
+        return_geometry=False,
+    )
+    panel_features = _query_nfhl_features(
+        layer_id=D5_NFHL_PANEL_LAYER_ID,
+        geometry_text=f"{lon},{lat}",
+        geometry_type="esriGeometryPoint",
+        out_fields=["FIRM_PAN", "EFF_DATE", "PANEL", "SUFFIX", "DFIRM_ID"],
+        return_geometry=False,
+    )
+
+    zone_attributes = (zone_features[0].get("attributes") or {}) if zone_features else {}
+    panel_attributes = (panel_features[0].get("attributes") or {}) if panel_features else {}
+    zone_code = zone_attributes.get("FLD_ZONE")
+    zone_subtype = zone_attributes.get("ZONE_SUBTY")
+    sfha_value = zone_attributes.get("SFHA_TF")
+
+    return pd.DataFrame(
+        [
+            {
+                "site_id": site.site_id,
+                "flood_zone": None if zone_code in (None, "") else str(zone_code),
+                "zone_subtype": None if zone_subtype in (None, "") else str(zone_subtype),
+                "sfha_flag": True if sfha_value == "T" else False if sfha_value == "F" else None,
+                "static_bfe": _normalize_fema_numeric(zone_attributes.get("STATIC_BFE")),
+                "depth": _normalize_fema_numeric(zone_attributes.get("DEPTH")),
+                "source_citation": zone_attributes.get("SOURCE_CIT"),
+                "firm_panel": panel_attributes.get("FIRM_PAN"),
+                "panel_effective_date": _format_arcgis_epoch_ms(panel_attributes.get("EFF_DATE")),
+                "panel_number": panel_attributes.get("PANEL"),
+                "panel_suffix": panel_attributes.get("SUFFIX"),
+                "dfirm_id": panel_attributes.get("DFIRM_ID"),
+            }
+        ]
+    )
+
+
+def build_nfhl_ring_share_table(
+    site: Site,
+    cumulative_rings: gpd.GeoDataFrame,
+    zone_features: gpd.GeoDataFrame | None = None,
+) -> pd.DataFrame:
+    """Compute projected ring-area shares by FEMA flood zone from NFHL polygons."""
+
+    zones = zone_features if zone_features is not None else _load_nfhl_zone_geometries(cumulative_rings)
+    if zones.empty:
+        return _empty_nfhl_ring_share_table(site)
+
+    projected_zones = zones.to_crs(cumulative_rings.crs)
+    rows: list[dict[str, Any]] = []
+    for ring in cumulative_rings.itertuples(index=False):
+        ring_area_sqmi = float(ring.geometry.area / 2_589_988.110336)
+        ring_features = projected_zones.loc[projected_zones.geometry.intersects(ring.geometry)].copy()
+        if ring_features.empty:
+            continue
+
+        ring_features["intersection_area_sqmi"] = (
+            ring_features.geometry.intersection(ring.geometry).area / 2_589_988.110336
+        )
+        ring_features = ring_features.loc[ring_features["intersection_area_sqmi"] > 0].copy()
+        if ring_features.empty:
+            continue
+
+        grouped = (
+            ring_features.groupby(["flood_zone", "zone_subtype", "sfha_flag"], dropna=False)["intersection_area_sqmi"]
+            .sum()
+            .reset_index()
+        )
+        grouped["ring_mi"] = int(ring.ring_mi)
+        grouped["ring_area_sqmi"] = ring_area_sqmi
+        grouped["area_share"] = grouped["intersection_area_sqmi"] / ring_area_sqmi if ring_area_sqmi else np.nan
+        grouped["site_id"] = site.site_id
+        rows.extend(grouped.to_dict("records"))
+
+    if not rows:
+        return _empty_nfhl_ring_share_table(site)
+    return pd.DataFrame(rows)[
+        [
+            "site_id",
+            "ring_mi",
+            "flood_zone",
+            "zone_subtype",
+            "sfha_flag",
+            "intersection_area_sqmi",
+            "ring_area_sqmi",
+            "area_share",
+        ]
+    ].sort_values(["ring_mi", "flood_zone", "zone_subtype"], kind="mergesort").reset_index(drop=True)
+
+
 def snap_frontage_aadt(
     site: Site,
     segments: gpd.GeoDataFrame | None = None,
@@ -801,10 +1249,15 @@ def _build_metric_catchment_rows(
     site: Site,
     weight_table: pd.DataFrame,
     metric: MetricDefinition,
+    metric_surface: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
     """Aggregate one metric into ring rows and wire in vintages, percentiles, and change."""
 
-    metric_surface = _query_metric_surface(metric, site.market_id)
+    metric_surface = (
+        metric_surface.copy()
+        if metric_surface is not None
+        else _query_metric_surface(metric, site.market_id)
+    )
     tract_frame = metric_surface.loc[metric_surface["geo_level_normalized"] == "tract"].copy()
     if tract_frame.empty:
         return pd.DataFrame()
@@ -860,6 +1313,203 @@ def _build_metric_catchment_rows(
     return pd.DataFrame(rows)
 
 
+def _build_metric_benchmark_rows(
+    site: Site,
+    metric: MetricDefinition,
+    metric_surface: pd.DataFrame,
+    county_geoid: str,
+    state_fips: str,
+) -> list[dict[str, Any]]:
+    """Project one metric's current benchmark rows from an already-loaded surface."""
+
+    benchmark_frame = metric_surface.loc[
+        metric_surface["geo_level_normalized"].isin({"cbsa", "county", "state", "us"})
+    ].copy()
+    if benchmark_frame.empty:
+        return []
+
+    latest_year = int(benchmark_frame["year"].max())
+    latest_frame = benchmark_frame.loc[benchmark_frame["year"] == latest_year].copy()
+    selector = (
+        ((latest_frame["geo_level_normalized"] == "cbsa") & (latest_frame["geo_id"] == str(site.market_id)))
+        | ((latest_frame["geo_level_normalized"] == "county") & (latest_frame["geo_id"] == county_geoid))
+        | ((latest_frame["geo_level_normalized"] == "state") & (latest_frame["geo_id"] == state_fips))
+        | (latest_frame["geo_level_normalized"] == "us")
+    )
+    selected = latest_frame.loc[selector].copy()
+    if selected.empty:
+        return []
+
+    rows: list[dict[str, Any]] = []
+    for row in selected.itertuples(index=False):
+        rows.append(
+            {
+                "site_id": site.site_id,
+                "ring_mi": site.primary_ring_mi,
+                "benchmark_level": _normalize_benchmark_level(str(row.geo_level_normalized)),
+                "benchmark_geo_id": str(row.geo_id),
+                "benchmark_geo_name": str(row.geo_name),
+                "metric": metric.metric_id,
+                "metric_label": metric.label,
+                "topic": metric.topic,
+                "value": float(row.metric_value) if pd.notna(row.metric_value) else None,
+                "year": int(row.year),
+                "source_table": metric.table_name,
+            }
+        )
+    return rows
+
+
+def _build_d2_metric_summary(metric_long: pd.DataFrame, site: Site) -> pd.DataFrame:
+    """Aggregate the canonical D2 long table into one app-friendly row per metric."""
+
+    if metric_long.empty:
+        return _empty_d2_metric_summary(site)
+
+    catchment = metric_long.loc[metric_long["record_type"] == "catchment"].copy()
+    if catchment.empty:
+        return _empty_d2_metric_summary(site)
+    benchmarks = metric_long.loc[metric_long["record_type"] == "benchmark"].copy()
+
+    rows: list[dict[str, Any]] = []
+    ring_values = sorted(int(ring) for ring in site.rings_mi)
+    for metric, metric_rows in catchment.groupby("metric", sort=False):
+        metric_rows = metric_rows.sort_values("ring_mi", kind="mergesort").copy()
+        first_row = metric_rows.iloc[0]
+        primary_row = metric_rows.loc[metric_rows["ring_mi"] == int(site.primary_ring_mi)].head(1)
+        benchmark_rows = benchmarks.loc[benchmarks["metric"] == metric].copy()
+
+        row: dict[str, Any] = {
+            "site_id": site.site_id,
+            "market_id": site.market_id,
+            "metric": metric,
+            "metric_label": first_row["metric_label"],
+            "topic": first_row["topic"],
+            "source_table": first_row["source_table"],
+            "primary_ring_mi": int(site.primary_ring_mi),
+        }
+
+        for ring_mi in ring_values:
+            ring_row = metric_rows.loc[metric_rows["ring_mi"] == int(ring_mi)].head(1)
+            row[f"ring_{ring_mi}_value"] = None if ring_row.empty else float(ring_row["value"].iloc[0])
+            row[f"ring_{ring_mi}_year"] = None if ring_row.empty else int(ring_row["year"].iloc[0])
+            row[f"ring_{ring_mi}_change_5yr"] = None if ring_row.empty or pd.isna(ring_row["change_5yr"].iloc[0]) else float(ring_row["change_5yr"].iloc[0])
+            row[f"ring_{ring_mi}_change_5yr_period"] = None if ring_row.empty else ring_row["change_5yr_period"].iloc[0]
+
+        if primary_row.empty:
+            row["primary_value"] = None
+            row["primary_year"] = None
+            row["primary_change_5yr"] = None
+            row["primary_change_5yr_period"] = None
+            row["primary_cbsa_percentile"] = None
+            row["primary_cbsa_percentile_denominator"] = None
+        else:
+            row["primary_value"] = float(primary_row["value"].iloc[0])
+            row["primary_year"] = int(primary_row["year"].iloc[0])
+            row["primary_change_5yr"] = None if pd.isna(primary_row["change_5yr"].iloc[0]) else float(primary_row["change_5yr"].iloc[0])
+            row["primary_change_5yr_period"] = primary_row["change_5yr_period"].iloc[0]
+            row["primary_cbsa_percentile"] = None if pd.isna(primary_row["cbsa_percentile"].iloc[0]) else float(primary_row["cbsa_percentile"].iloc[0])
+            row["primary_cbsa_percentile_denominator"] = None if pd.isna(primary_row["cbsa_percentile_denominator"].iloc[0]) else int(primary_row["cbsa_percentile_denominator"].iloc[0])
+
+        for benchmark_level in ["cbsa", "county", "state", "national"]:
+            benchmark_row = benchmark_rows.loc[benchmark_rows["benchmark_level"] == benchmark_level].head(1)
+            row[f"benchmark_{benchmark_level}_value"] = None if benchmark_row.empty else float(benchmark_row["value"].iloc[0])
+            row[f"benchmark_{benchmark_level}_year"] = None if benchmark_row.empty else int(benchmark_row["year"].iloc[0])
+            row[f"benchmark_{benchmark_level}_geo_name"] = None if benchmark_row.empty else benchmark_row["benchmark_geo_name"].iloc[0]
+
+        rows.append(row)
+
+    return pd.DataFrame(rows).sort_values(["topic", "metric_label"], kind="mergesort").reset_index(drop=True)
+
+
+def _empty_d2_metric_long() -> pd.DataFrame:
+    """Return the canonical empty D2 long-record frame."""
+
+    return pd.DataFrame(
+        columns=[
+            "site_id",
+            "market_id",
+            "record_type",
+            "metric",
+            "metric_label",
+            "topic",
+            "ring_mi",
+            "benchmark_level",
+            "benchmark_geo_id",
+            "benchmark_geo_name",
+            "value",
+            "year",
+            "source_table",
+            "change_5yr",
+            "change_5yr_period",
+            "cbsa_percentile",
+            "cbsa_percentile_denominator",
+        ]
+    )
+
+
+def _empty_benchmark_table() -> pd.DataFrame:
+    """Return the legacy empty D2 benchmark table shape."""
+
+    return pd.DataFrame(
+        columns=[
+            "site_id",
+            "ring_mi",
+            "benchmark_level",
+            "benchmark_geo_id",
+            "benchmark_geo_name",
+            "metric",
+            "metric_label",
+            "topic",
+            "value",
+            "year",
+            "source_table",
+        ]
+    )
+
+
+def _empty_d2_metric_summary(site: Site) -> pd.DataFrame:
+    """Return the app-facing empty D2 summary shape."""
+
+    columns = [
+        "site_id",
+        "market_id",
+        "metric",
+        "metric_label",
+        "topic",
+        "source_table",
+        "primary_ring_mi",
+        "primary_value",
+        "primary_year",
+        "primary_change_5yr",
+        "primary_change_5yr_period",
+        "primary_cbsa_percentile",
+        "primary_cbsa_percentile_denominator",
+        "benchmark_cbsa_value",
+        "benchmark_cbsa_year",
+        "benchmark_cbsa_geo_name",
+        "benchmark_county_value",
+        "benchmark_county_year",
+        "benchmark_county_geo_name",
+        "benchmark_state_value",
+        "benchmark_state_year",
+        "benchmark_state_geo_name",
+        "benchmark_national_value",
+        "benchmark_national_year",
+        "benchmark_national_geo_name",
+    ]
+    for ring_mi in sorted(int(ring) for ring in site.rings_mi):
+        columns.extend(
+            [
+                f"ring_{ring_mi}_value",
+                f"ring_{ring_mi}_year",
+                f"ring_{ring_mi}_change_5yr",
+                f"ring_{ring_mi}_change_5yr_period",
+            ]
+        )
+    return pd.DataFrame(columns=columns)
+
+
 def _apportion_metric_series(
     metric_name: str,
     kind: Literal["extensive", "intensive"],
@@ -913,9 +1563,11 @@ def _get_site_county_and_state(site: Site) -> tuple[str, str]:
 
 
 @lru_cache(maxsize=None)
-def _query_metric_surface(metric: MetricDefinition, market_id: str) -> pd.DataFrame:
-    """Read tract + benchmark rows for one metric through one shared SQL path."""
+def _query_gold_table_surface(table_name: str, market_id: str) -> pd.DataFrame:
+    """Read one Gold table once for a market so multiple metrics can share the same surface."""
 
+    metric_columns = _metric_value_columns_for_table(table_name)
+    select_metric_columns = ",\n                ".join(f"t.{column}" for column in metric_columns)
     con = get_connection()
     try:
         rows = con.execute(
@@ -931,13 +1583,12 @@ def _query_metric_surface(metric: MetricDefinition, market_id: str) -> pd.DataFr
                 t.geo_id,
                 t.geo_name,
                 t.year,
-                t.{metric.value_column} AS metric_value
-            FROM patterns_in_place.gold.{metric.table_name} t
+                {select_metric_columns}
+            FROM patterns_in_place.gold.{table_name} t
             LEFT JOIN patterns_in_place.geo.tracts_all_us g
                 ON t.geo_level = 'tract'
                AND t.geo_id = g.tract_geoid
-            WHERE t.{metric.value_column} IS NOT NULL
-              AND (
+            WHERE (
                     (LOWER(t.geo_level) = 'tract' AND g.county_geoid IN (SELECT county_geoid FROM market_counties))
                  OR (LOWER(t.geo_level) IN ('cbsa', 'county', 'state', 'us'))
               )
@@ -952,6 +1603,55 @@ def _query_metric_surface(metric: MetricDefinition, market_id: str) -> pd.DataFr
     finally:
         con.close()
     return rows
+
+
+def _metric_value_columns_for_table(table_name: str) -> list[str]:
+    """Return the D2 metric columns needed from one Gold table."""
+
+    columns = sorted(
+        {
+            metric.value_column
+            for metric in METRIC_DEFINITIONS
+            if metric.table_name == table_name
+        }
+    )
+    if not columns:
+        raise ValueError(f"No D2 metric columns registered for table '{table_name}'.")
+    return columns
+
+
+def _query_metric_surface(metric: MetricDefinition, market_id: str) -> pd.DataFrame:
+    """Project one metric's value column out of a shared cached Gold table surface."""
+
+    table_rows = _query_gold_table_surface(metric.table_name, market_id)
+    if metric.value_column not in table_rows.columns:
+        return pd.DataFrame(
+            columns=[
+                "geo_level_normalized",
+                "geo_level",
+                "geo_id",
+                "geo_name",
+                "year",
+                "metric_value",
+            ]
+        )
+
+    metric_rows = table_rows.loc[table_rows[metric.value_column].notna()].copy()
+    if metric_rows.empty:
+        return pd.DataFrame(
+            columns=[
+                "geo_level_normalized",
+                "geo_level",
+                "geo_id",
+                "geo_name",
+                "year",
+                "metric_value",
+            ]
+        )
+
+    return metric_rows[
+        ["geo_level_normalized", "geo_level", "geo_id", "geo_name", "year", metric.value_column]
+    ].rename(columns={metric.value_column: "metric_value"})
 
 
 def _get_metric_definition(metric: str) -> MetricDefinition:
@@ -1100,6 +1800,44 @@ def _build_cumulative_ring_series(band_series: pd.Series, ring_order: list[int])
     return output
 
 
+def _build_cumulative_weight_table(weight_table: pd.DataFrame, ring_order: list[int]) -> pd.DataFrame:
+    """Roll band weights up into cumulative circles for D3/D5 catchment summaries."""
+
+    if weight_table.empty:
+        return weight_table.copy()
+
+    rows: list[pd.DataFrame] = []
+    for ring_mi in sorted(ring_order):
+        cumulative = (
+            weight_table.loc[weight_table["ring_mi"] <= ring_mi]
+            .groupby("tract_geoid", as_index=False)["weight"]
+            .sum()
+        )
+        cumulative["site_id"] = weight_table["site_id"].iloc[0]
+        cumulative["ring_mi"] = int(ring_mi)
+        cumulative["weight_method"] = "cumulative_areal"
+        cumulative["intersect_area"] = np.nan
+        cumulative["tract_area"] = np.nan
+        cumulative["containment"] = "cumulative"
+        cumulative["centroid_in"] = np.nan
+        rows.append(
+            cumulative[
+                [
+                    "site_id",
+                    "ring_mi",
+                    "tract_geoid",
+                    "weight",
+                    "weight_method",
+                    "intersect_area",
+                    "tract_area",
+                    "containment",
+                    "centroid_in",
+                ]
+            ]
+        )
+    return pd.concat(rows, ignore_index=True)
+
+
 @lru_cache(maxsize=None)
 def _load_overture_pois(market_id: str) -> gpd.GeoDataFrame:
     """Load the Jacksonville Overture POI cache as a GeoDataFrame."""
@@ -1201,6 +1939,264 @@ def _load_fdot_aadt_historical_segments(market_id: str) -> gpd.GeoDataFrame:
         con.close()
     geometry = frame["geometry"].apply(lambda value: shape(json.loads(value)) if isinstance(value, str) and value else None)
     return gpd.GeoDataFrame(frame, geometry=geometry, crs="EPSG:4326").dropna(subset=["geometry"])
+
+
+@lru_cache(maxsize=None)
+def _query_nri_surface(market_id: str) -> pd.DataFrame:
+    """Read tract + CBSA FEMA NRI rows for one market from the existing Silver table."""
+
+    con = get_connection()
+    try:
+        rows = con.execute(
+            """
+            WITH market_counties AS (
+                SELECT DISTINCT county_geoid
+                FROM patterns_in_place.silver.xwalk_cbsa_county
+                WHERE cbsa_code = ?
+            ),
+            latest_year AS (
+                SELECT MAX(year) AS year
+                FROM patterns_in_place.silver.fema_nri
+            )
+            SELECT
+                n.*
+            FROM patterns_in_place.silver.fema_nri n
+            LEFT JOIN patterns_in_place.geo.tracts_all_us g
+                ON n.geo_level = 'tract'
+               AND n.geo_id = g.tract_geoid
+            WHERE n.year = (SELECT year FROM latest_year)
+              AND (
+                    (n.geo_level = 'tract' AND g.county_geoid IN (SELECT county_geoid FROM market_counties))
+                 OR (n.geo_level = 'cbsa' AND n.geo_id = ?)
+              )
+            ORDER BY n.geo_level, n.geo_id
+            """,
+            [str(market_id), str(market_id)],
+        ).fetchdf()
+    finally:
+        con.close()
+    return rows
+
+
+def _request_arcgis_json(url: str, params: dict[str, Any]) -> dict[str, Any]:
+    """Call one ArcGIS REST endpoint and parse the JSON payload defensively."""
+
+    request = Request(
+        f"{url}?{urlencode(params)}",
+        headers={"Accept": "application/json", "User-Agent": "patterns-in-place-codex/1.0"},
+        method="GET",
+    )
+    with urlopen(request, timeout=D5_NFHL_TIMEOUT_SECONDS) as response:  # noqa: S310 - fixed FEMA endpoint
+        payload = json.loads(response.read().decode("utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError("FEMA NFHL service returned a non-object JSON payload.")
+    if "error" in payload:
+        message = payload["error"].get("message") if isinstance(payload["error"], dict) else str(payload["error"])
+        raise ValueError(f"FEMA NFHL service returned an error: {message}")
+    return payload
+
+
+def _query_nfhl_features(
+    layer_id: int,
+    geometry_text: str,
+    geometry_type: str,
+    out_fields: list[str],
+    return_geometry: bool,
+) -> list[dict[str, Any]]:
+    """Query one NFHL layer for the supplied geometry filter."""
+
+    payload = _request_arcgis_json(
+        f"{D5_NFHL_MAPSERVER_URL}/{layer_id}/query",
+        {
+            "f": "json",
+            "where": "1=1",
+            "geometry": geometry_text,
+            "geometryType": geometry_type,
+            "inSR": "4326",
+            "spatialRel": "esriSpatialRelIntersects",
+            "returnGeometry": "true" if return_geometry else "false",
+            "outFields": ",".join(out_fields),
+            "outSR": "4326",
+        },
+    )
+    features = payload.get("features") or []
+    if not isinstance(features, list):
+        raise ValueError("FEMA NFHL service returned an invalid feature collection.")
+    return features
+
+
+def _load_nfhl_zone_geometries(cumulative_rings: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    """Fetch the live NFHL zone polygons that intersect the site's largest ring envelope."""
+
+    bounds = cumulative_rings.to_crs("EPSG:4326").total_bounds
+    geometry_text = ",".join(str(value) for value in bounds.tolist())
+    ids_payload = _request_arcgis_json(
+        f"{D5_NFHL_MAPSERVER_URL}/{D5_NFHL_ZONE_LAYER_ID}/query",
+        {
+            "f": "json",
+            "where": "1=1",
+            "geometry": geometry_text,
+            "geometryType": "esriGeometryEnvelope",
+            "inSR": "4326",
+            "spatialRel": "esriSpatialRelIntersects",
+            "returnIdsOnly": "true",
+        },
+    )
+    object_ids = ids_payload.get("objectIds") or []
+    if not object_ids:
+        return gpd.GeoDataFrame(columns=["flood_zone", "zone_subtype", "sfha_flag", "geometry"], geometry="geometry", crs="EPSG:4269")
+
+    rows: list[dict[str, Any]] = []
+    for idx in range(0, len(object_ids), D5_NFHL_BATCH_SIZE):
+        batch_ids = object_ids[idx : idx + D5_NFHL_BATCH_SIZE]
+        payload = _request_arcgis_json(
+            f"{D5_NFHL_MAPSERVER_URL}/{D5_NFHL_ZONE_LAYER_ID}/query",
+            {
+                "f": "json",
+                "objectIds": ",".join(str(value) for value in batch_ids),
+                "returnGeometry": "true",
+                "outFields": "FLD_ZONE,ZONE_SUBTY,SFHA_TF,SOURCE_CIT",
+                "outSR": "4326",
+            },
+        )
+        for feature in payload.get("features") or []:
+            attributes = feature.get("attributes") or {}
+            geometry = _arcgis_polygon_to_shape(feature.get("geometry"))
+            if geometry is None or geometry.is_empty:
+                continue
+            rows.append(
+                {
+                    "flood_zone": attributes.get("FLD_ZONE"),
+                    "zone_subtype": attributes.get("ZONE_SUBTY"),
+                    "sfha_flag": True if attributes.get("SFHA_TF") == "T" else False if attributes.get("SFHA_TF") == "F" else None,
+                    "source_citation": attributes.get("SOURCE_CIT"),
+                    "geometry": geometry,
+                }
+            )
+
+    return gpd.GeoDataFrame(rows, geometry="geometry", crs="EPSG:4326").dropna(subset=["geometry"]) if rows else gpd.GeoDataFrame(
+        columns=["flood_zone", "zone_subtype", "sfha_flag", "source_citation", "geometry"],
+        geometry="geometry",
+        crs="EPSG:4326",
+    )
+
+
+def _arcgis_polygon_to_shape(geometry: dict[str, Any] | None):
+    """Convert ArcGIS polygon JSON into a shapely polygon or multipolygon."""
+
+    if geometry is None:
+        return None
+    if "rings" not in geometry:
+        geojson = _geometry_to_geojson(geometry)
+        return shape(geojson) if geojson is not None else None
+
+    polygons: list[Polygon] = []
+    current_shell: list[tuple[float, float]] | None = None
+    current_holes: list[list[tuple[float, float]]] = []
+    for ring in geometry["rings"]:
+        if not ring or len(ring) < 4:
+            continue
+        ring_coords = [(float(x), float(y)) for x, y in ring]
+        linear_ring = LinearRing(ring_coords)
+        if linear_ring.is_ccw:
+            if current_shell is not None:
+                current_holes.append(ring_coords)
+        else:
+            if current_shell is not None:
+                polygons.append(Polygon(current_shell, current_holes))
+            current_shell = ring_coords
+            current_holes = []
+
+    if current_shell is not None:
+        polygons.append(Polygon(current_shell, current_holes))
+
+    polygons = [polygon for polygon in polygons if not polygon.is_empty]
+    if not polygons:
+        return None
+    if len(polygons) == 1:
+        return polygons[0]
+    return MultiPolygon(polygons)
+
+
+def _geometry_to_geojson(geometry: dict[str, Any] | None) -> dict[str, Any] | None:
+    """Normalize ArcGIS JSON geometry into a GeoJSON-like dict when possible."""
+
+    if geometry is None:
+        return None
+    if "type" in geometry:
+        return geometry
+    if "paths" in geometry:
+        if len(geometry["paths"]) == 1:
+            return {"type": "LineString", "coordinates": geometry["paths"][0]}
+        return {"type": "MultiLineString", "coordinates": geometry["paths"]}
+    if "x" in geometry and "y" in geometry:
+        return {"type": "Point", "coordinates": [geometry["x"], geometry["y"]]}
+    return None
+
+
+def _normalize_fema_numeric(value: Any) -> float | None:
+    """Treat FEMA sentinel values as missing rather than reportable numbers."""
+
+    if value is None or pd.isna(value):
+        return None
+    number = float(value)
+    if number <= -9999:
+        return None
+    return number
+
+
+def _format_arcgis_epoch_ms(value: Any) -> str | None:
+    """Convert ArcGIS epoch-millis dates into ISO calendar dates."""
+
+    if value is None or pd.isna(value):
+        return None
+    return datetime.fromtimestamp(float(value) / 1000.0, tz=timezone.utc).date().isoformat()
+
+
+def _empty_nri_top_hazards() -> pd.DataFrame:
+    """Return the stable empty-frame shape for NRI top-hazard outputs."""
+
+    return pd.DataFrame(columns=["site_id", "geography", "ring_mi", "rank", "hazard_id", "hazard_label", "risk_score"])
+
+
+def _empty_nfhl_site_lookup(site: Site) -> pd.DataFrame:
+    """Return the stable empty-frame shape for NFHL site-point outputs."""
+
+    return pd.DataFrame(
+        [
+            {
+                "site_id": site.site_id,
+                "flood_zone": None,
+                "zone_subtype": None,
+                "sfha_flag": None,
+                "static_bfe": None,
+                "depth": None,
+                "source_citation": None,
+                "firm_panel": None,
+                "panel_effective_date": None,
+                "panel_number": None,
+                "panel_suffix": None,
+                "dfirm_id": None,
+            }
+        ]
+    )
+
+
+def _empty_nfhl_ring_share_table(site: Site) -> pd.DataFrame:
+    """Return the stable empty-frame shape for NFHL ring-share outputs."""
+
+    return pd.DataFrame(
+        columns=[
+            "site_id",
+            "ring_mi",
+            "flood_zone",
+            "zone_subtype",
+            "sfha_flag",
+            "intersection_area_sqmi",
+            "ring_area_sqmi",
+            "area_share",
+        ]
+    )
 
 
 def _prepare_barrier_features(lines: gpd.GeoDataFrame, polygons: gpd.GeoDataFrame, target_crs) -> gpd.GeoDataFrame:
@@ -1496,6 +2492,336 @@ def _build_typology_input(daytime: pd.DataFrame, poi_counts: pd.DataFrame, road_
         "schools_count": 0,
         "dominant_sector_id": dominant_sector_id,
     }
+
+
+def build_context_map_payload(
+    site: Site,
+    weight_table: pd.DataFrame,
+    fill_metric: str = "pop_total",
+    include_flood_context: bool = True,
+) -> dict[str, Any]:
+    """Build the shared D6 context-map payload once per site/metric combination."""
+
+    resolved_site = resolve_site(site)
+    cumulative_rings = _build_cumulative_rings(resolved_site.lat, resolved_site.lon, site.rings_mi)
+    d3_payload = get_d3_context_payload(site, weight_table)
+    d5_payload = (
+        get_d5_flood_payload(site, weight_table, cumulative_rings=cumulative_rings)
+        if include_flood_context
+        else {"nfhl_service_status": "skipped", "nfhl_service_error": None}
+    )
+
+    baseline_rings = d3_payload["ring_variants"]["baseline_rings"].to_crs("EPSG:4326")
+    adjusted_rings = d3_payload["ring_variants"]["water_adjusted_rings"].to_crs("EPSG:4326")
+    tract_fill = build_context_tract_fill(site, fill_metric)
+
+    return {
+        "site_point": [
+            {
+                "name": site.address,
+                "lat": resolved_site.lat,
+                "lon": resolved_site.lon,
+                "match_type": resolved_site.match_type,
+                "geocode_source": resolved_site.geocode_source,
+            }
+        ],
+        "view_state": {
+            "latitude": float(resolved_site.lat),
+            "longitude": float(resolved_site.lon),
+            "zoom": 10.5,
+        },
+        "available_fill_metrics": D6_TRACT_FILL_METRICS,
+        "tract_fill": tract_fill,
+        "rings_geojson": _frame_to_feature_collection(baseline_rings),
+        "water_adjusted_rings_geojson": _frame_to_feature_collection(adjusted_rings),
+        "severed_area_geojson": _build_severed_area_features(baseline_rings, adjusted_rings),
+        "poi_rows": _build_context_poi_layer(site),
+        "road_geojson": _build_context_road_layer(site),
+        "flood_geojson": _build_context_flood_layer(cumulative_rings) if include_flood_context else {"type": "FeatureCollection", "features": []},
+        "barrier_summary": d3_payload["barrier_summary"],
+        "nfhl_service_status": d5_payload["nfhl_service_status"],
+        "nfhl_service_error": d5_payload["nfhl_service_error"],
+    }
+
+
+def build_context_tract_fill(site: Site, metric: str) -> dict[str, Any]:
+    """Build the tract-fill layer beneath the shared D6 context map."""
+
+    metric_def = _get_metric_definition(metric)
+    metric_surface = _query_metric_surface(metric_def, site.market_id)
+    tract_rows = metric_surface.loc[metric_surface["geo_level_normalized"] == "tract"].copy()
+    if tract_rows.empty:
+        return {
+            "features": [],
+            "metric": metric,
+            "metric_label": metric_def.label,
+            "year": None,
+            "source_table": metric_def.table_name,
+        }
+
+    latest_year = int(tract_rows["year"].max())
+    latest_rows = tract_rows.loc[tract_rows["year"] == latest_year, ["geo_id", "geo_name", "metric_value"]].copy()
+    tract_geoms = _query_market_tract_geometries(site.market_id)
+    merged = tract_geoms.merge(latest_rows, left_on="tract_geoid", right_on="geo_id", how="left")
+    colors = _compute_fill_colors(merged["metric_value"])
+    features: list[dict[str, Any]] = []
+    geojson = json.loads(merged.to_json())
+    for idx, feature in enumerate(geojson.get("features", [])):
+        props = feature.setdefault("properties", {})
+        props["fill_color"] = colors[idx]
+        props["metric_label"] = metric_def.label
+        props["metric_value"] = None if pd.isna(props.get("metric_value")) else float(props["metric_value"])
+        props["tract_name"] = str(props.get("geo_name") or props.get("tract_geoid"))
+        features.append(feature)
+    return {
+        "features": features,
+        "metric": metric,
+        "metric_label": metric_def.label,
+        "year": latest_year,
+        "source_table": metric_def.table_name,
+    }
+
+
+def build_market_context_payload(site: Site) -> dict[str, Any]:
+    """Build the compact D6 Market-tab payload from existing Gold surfaces."""
+
+    return {
+        "industry_context": _query_market_industry_context(site.market_id),
+        "housing_context": _query_market_housing_context(site.market_id),
+        "candidate_note": (
+            "This Market tab is intentionally small and is a candidate for a reusable Metro Deep Dive summary "
+            "component rather than Place Intelligence-only UI."
+        ),
+    }
+
+
+def _build_context_poi_layer(site: Site) -> pd.DataFrame:
+    """Prepare point rows for the shared context map POI layer."""
+
+    pois = _load_overture_pois(site.market_id)
+    if pois.empty:
+        return pd.DataFrame(columns=["name", "poi_class", "lon", "lat"])
+    pois = pois.copy()
+    pois["poi_class"] = pois.apply(classify_poi, axis=1)
+    pois = pois.loc[pois["poi_class"].notna()].copy()
+    if pois.empty:
+        return pd.DataFrame(columns=["name", "poi_class", "lon", "lat"])
+    pois = pois.to_crs("EPSG:4326")
+    output = pd.DataFrame(
+        {
+            "name": pois["name"] if "name" in pois.columns else None,
+            "poi_class": pois["poi_class"],
+            "lon": pois.geometry.x,
+            "lat": pois.geometry.y,
+        }
+    )
+    return output.dropna(subset=["lon", "lat"]).reset_index(drop=True)
+
+
+def _build_context_road_layer(site: Site) -> dict[str, Any]:
+    """Prefer D4 AADT segments for the shared map road layer when they exist."""
+
+    segments = _load_fdot_aadt_segments(site.market_id)
+    if not segments.empty:
+        segments = segments.to_crs("EPSG:4326")
+        geojson = json.loads(segments.to_json())
+        for feature in geojson.get("features", []):
+            props = feature.setdefault("properties", {})
+            props["label"] = str(props.get("roadway") or props.get("source_id") or "AADT segment")
+            props["aadt"] = None if props.get("aadt") is None else float(props["aadt"])
+        return geojson
+
+    lines = _load_osm_lines(site.market_id)
+    if lines.empty:
+        return {"type": "FeatureCollection", "features": []}
+    subset = lines.loc[lines["layer_group"].isin({"highways", "major_roads", "rail"})].to_crs("EPSG:4326")
+    geojson = json.loads(subset.to_json())
+    for feature in geojson.get("features", []):
+        props = feature.setdefault("properties", {})
+        props["label"] = str(props.get("layer_group") or "road")
+        props["aadt"] = None
+    return geojson
+
+
+def _build_context_flood_layer(cumulative_rings: gpd.GeoDataFrame) -> dict[str, Any]:
+    """Load one optional NFHL polygon layer for the D6 map and degrade cleanly on failure."""
+
+    try:
+        zones = _load_nfhl_zone_geometries(cumulative_rings)
+    except Exception:
+        return {"type": "FeatureCollection", "features": []}
+    if zones.empty:
+        return {"type": "FeatureCollection", "features": []}
+    return _frame_to_feature_collection(zones.to_crs("EPSG:4326"))
+
+
+def _build_severed_area_features(
+    baseline_rings: gpd.GeoDataFrame,
+    adjusted_rings: gpd.GeoDataFrame,
+) -> dict[str, Any]:
+    """Turn water-adjusted ring differences into a single shading layer."""
+
+    features: list[dict[str, Any]] = []
+    adjusted_lookup = adjusted_rings.set_index("ring_mi")
+    for ring in baseline_rings.itertuples(index=False):
+        if int(ring.ring_mi) not in adjusted_lookup.index:
+            continue
+        removed_geom = ring.geometry.difference(adjusted_lookup.loc[int(ring.ring_mi), "geometry"])
+        if removed_geom.is_empty:
+            continue
+        feature = json.loads(gpd.GeoSeries([removed_geom], crs=baseline_rings.crs).to_json())["features"][0]
+        feature.setdefault("properties", {})["ring_mi"] = int(ring.ring_mi)
+        features.append(feature)
+    return {"type": "FeatureCollection", "features": features}
+
+
+@lru_cache(maxsize=None)
+def _query_market_tract_geometries(market_id: str) -> gpd.GeoDataFrame:
+    """Read tract geometry once for the D6 context map tract-fill layer."""
+
+    con = get_connection()
+    try:
+        con.execute("LOAD spatial;")
+        rows = con.execute(
+            """
+            WITH market_counties AS (
+                SELECT DISTINCT county_geoid
+                FROM patterns_in_place.silver.xwalk_cbsa_county
+                WHERE cbsa_code = ?
+            )
+            SELECT
+                tract_geoid,
+                county_name,
+                ST_AsWKB(geom) AS geom_wkb
+            FROM patterns_in_place.geo.tracts_all_us
+            WHERE county_geoid IN (SELECT county_geoid FROM market_counties)
+            ORDER BY tract_geoid
+            """,
+            [str(market_id)],
+        ).fetchall()
+    finally:
+        con.close()
+    return gpd.GeoDataFrame(
+        [{"tract_geoid": str(tract_geoid), "county_name": str(county_name)} for tract_geoid, county_name, _ in rows],
+        geometry=[wkb.loads(bytes(geom)) for _, _, geom in rows],
+        crs="EPSG:4326",
+    )
+
+
+@lru_cache(maxsize=None)
+def _query_market_industry_context(market_id: str) -> dict[str, pd.DataFrame]:
+    """Pull the latest-year CBSA employment and GDP mix from Gold."""
+
+    con = get_connection()
+    try:
+        employment = con.execute(
+            """
+            WITH latest_year AS (
+                SELECT MAX(year) AS year
+                FROM patterns_in_place.gold.economics_industry_wide
+                WHERE geo_level = 'cbsa'
+                  AND geo_id = ?
+            )
+            SELECT
+                year,
+                sector_id,
+                sector_label,
+                emp_share AS share_value,
+                total_emp AS raw_value,
+                source
+            FROM patterns_in_place.gold.economics_industry_wide
+            WHERE geo_level = 'cbsa'
+              AND geo_id = ?
+              AND year = (SELECT year FROM latest_year)
+            ORDER BY emp_share DESC NULLS LAST
+            """,
+            [str(market_id), str(market_id)],
+        ).fetchdf()
+        gdp = con.execute(
+            """
+            WITH latest_year AS (
+                SELECT MAX(year) AS year
+                FROM patterns_in_place.gold.economics_industry_wide
+                WHERE geo_level = 'cbsa'
+                  AND geo_id = ?
+            )
+            SELECT
+                year,
+                sector_id,
+                sector_label,
+                gdp_share AS share_value,
+                real_gdp AS raw_value,
+                source
+            FROM patterns_in_place.gold.economics_industry_wide
+            WHERE geo_level = 'cbsa'
+              AND geo_id = ?
+              AND year = (SELECT year FROM latest_year)
+            ORDER BY gdp_share DESC NULLS LAST
+            """,
+            [str(market_id), str(market_id)],
+        ).fetchdf()
+    finally:
+        con.close()
+    return {"employment_mix": employment, "gdp_mix": gdp}
+
+
+@lru_cache(maxsize=None)
+def _query_market_housing_context(market_id: str) -> pd.DataFrame:
+    """Read a small CBSA housing-market trend series for the Market tab."""
+
+    con = get_connection()
+    try:
+        return con.execute(
+            """
+            SELECT
+                year,
+                geo_name,
+                zhvi_annual_avg,
+                zori_annual_avg,
+                hpi_yoy_pct,
+                zori_annual_avg_yoy_pct
+            FROM patterns_in_place.gold.housing_market_wide
+            WHERE geo_level = 'cbsa'
+              AND geo_id = ?
+            ORDER BY year
+            """,
+            [str(market_id)],
+        ).fetchdf()
+    finally:
+        con.close()
+
+
+def _compute_fill_colors(values: pd.Series) -> list[list[int]]:
+    """Translate one numeric surface into a stable sequential fill ramp."""
+
+    numeric = pd.to_numeric(values, errors="coerce")
+    valid = numeric.dropna()
+    if valid.empty:
+        return [[229, 231, 235, 120] for _ in range(len(values))]
+    low = float(valid.min())
+    high = float(valid.max())
+    span = high - low if high != low else 1.0
+    colors: list[list[int]] = []
+    for value in numeric:
+        if pd.isna(value):
+            colors.append([229, 231, 235, 120])
+            continue
+        ratio = (float(value) - low) / span
+        colors.append(
+            [
+                int(241 + ratio * (44 - 241)),
+                int(245 + ratio * (123 - 245)),
+                int(255 + ratio * (182 - 255)),
+                165,
+            ]
+        )
+    return colors
+
+
+def _frame_to_feature_collection(frame: gpd.GeoDataFrame) -> dict[str, Any]:
+    """Convert one GeoDataFrame into a pydeck-ready FeatureCollection."""
+
+    return json.loads(frame.to_json()) if not frame.empty else {"type": "FeatureCollection", "features": []}
 
 
 def _read_site_yaml(path: str) -> dict[str, Any]:

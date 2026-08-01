@@ -121,6 +121,44 @@ def test_build_d2_profile_payload_records_skip_reason_for_missing_metric(
     assert "No tract-grain values available" in payload["skip_reasons"].iloc[0]["reason"]
 
 
+def test_build_d2_profile_payload_emits_canonical_long_and_summary_tables(
+    monkeypatch,
+    pi_d2,
+    synthetic_site,
+    synthetic_weights,
+):
+    metric = pi_d2._get_metric_definition("pop_total")
+    surface = pd.DataFrame(
+        [
+            {"geo_level_normalized": "tract", "geo_level": "tract", "geo_id": "12031000100", "geo_name": "T1", "year": 2019, "metric_value": 100.0},
+            {"geo_level_normalized": "tract", "geo_level": "tract", "geo_id": "12031000200", "geo_name": "T2", "year": 2019, "metric_value": 200.0},
+            {"geo_level_normalized": "tract", "geo_level": "tract", "geo_id": "12031000300", "geo_name": "T3", "year": 2019, "metric_value": 300.0},
+            {"geo_level_normalized": "tract", "geo_level": "tract", "geo_id": "12031000100", "geo_name": "T1", "year": 2024, "metric_value": 110.0},
+            {"geo_level_normalized": "tract", "geo_level": "tract", "geo_id": "12031000200", "geo_name": "T2", "year": 2024, "metric_value": 210.0},
+            {"geo_level_normalized": "tract", "geo_level": "tract", "geo_id": "12031000300", "geo_name": "T3", "year": 2024, "metric_value": 310.0},
+            {"geo_level_normalized": "cbsa", "geo_level": "cbsa", "geo_id": "27260", "geo_name": "Jacksonville, FL", "year": 2024, "metric_value": 999.0},
+            {"geo_level_normalized": "county", "geo_level": "county", "geo_id": "12031", "geo_name": "Duval County", "year": 2024, "metric_value": 888.0},
+            {"geo_level_normalized": "state", "geo_level": "state", "geo_id": "12", "geo_name": "Florida", "year": 2024, "metric_value": 777.0},
+            {"geo_level_normalized": "us", "geo_level": "US", "geo_id": "1", "geo_name": "United States", "year": 2024, "metric_value": 666.0},
+        ]
+    )
+
+    monkeypatch.setattr(pi_d2, "METRIC_DEFINITIONS", (metric,))
+    monkeypatch.setattr(pi_d2, "METRIC_DEFINITION_MAP", {metric.metric_id: metric})
+    monkeypatch.setattr(pi_d2, "_query_metric_surface", lambda _metric, _market_id: surface)
+    monkeypatch.setattr(pi_d2, "_get_site_county_and_state", lambda site: ("12031", "12"))
+
+    payload = pi_d2.build_d2_profile_payload(synthetic_site, synthetic_weights)
+
+    assert set(payload["metric_long"]["record_type"]) == {"catchment", "benchmark"}
+    assert "metric_summary" in payload
+    summary_row = payload["metric_summary"].iloc[0]
+    assert summary_row["metric"] == "pop_total"
+    assert summary_row["primary_ring_mi"] == 3
+    assert summary_row["benchmark_cbsa_value"] == 999.0
+    assert summary_row["ring_1_value"] == pytest.approx(110.0)
+
+
 def test_build_benchmark_table_uses_same_query_path_as_catchment(
     monkeypatch,
     pi_d2,

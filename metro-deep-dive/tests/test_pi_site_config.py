@@ -111,3 +111,18 @@ def test_load_site_parses_manual_coordinates_and_custom_rings(tmp_path, pi_site_
 
 def test_collect_imports_for_place_intelligence_files(pi_site_prep):
     assert pi_site_prep.Site.__name__ == "Site"
+
+
+def test_list_site_configs_discovers_both_jacksonville_configs(pi_site_prep):
+    site_configs = pi_site_prep.list_site_configs()
+    site_names = sorted(path.name for path in site_configs)
+
+    assert "site_jacksonville_v0.yaml" in site_names
+    assert "site_jacksonville_downtown_v0.yaml" in site_names
+
+    downtown_path = next(path for path in site_configs if path.name == "site_jacksonville_downtown_v0.yaml")
+    downtown_site = pi_site_prep.load_site(str(downtown_path))
+
+    assert downtown_site.site_id == "jacksonville_fl_downtown_v0"
+    assert downtown_site.geocode_source == "manual_override"
+    assert downtown_site.primary_ring_mi == 3
