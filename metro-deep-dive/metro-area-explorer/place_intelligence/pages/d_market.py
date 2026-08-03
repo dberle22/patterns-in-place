@@ -16,25 +16,26 @@ if str(SECTION_ROOT) not in sys.path:
 from shared_ui import (
     build_simple_bar_chart,
     build_simple_line_chart,
-    load_market_payload,
+    load_market_page_payload,
     render_chart_result,
     render_html_table,
+    source_label,
 )
 
 
 def render_page(site_config_path: str) -> None:
     """Render the compact Jacksonville market context page."""
 
-    payload = load_market_payload(site_config_path)
-    industry = payload["industry_context"]
-    housing = payload["housing_context"]
+    payload = load_market_page_payload(site_config_path)
+    employment = pd.DataFrame(payload.get("employment_mix", []))
+    gdp = pd.DataFrame(payload.get("gdp_mix", []))
+    housing = pd.DataFrame(payload.get("housing_context", []))
+    meta = payload.get("meta", {})
 
     st.header("4. Market")
-    st.caption(payload["candidate_note"])
+    st.caption(meta.get("candidate_note"))
 
     st.subheader("Industry mix")
-    employment = industry["employment_mix"]
-    gdp = industry["gdp_mix"]
     if employment.empty and gdp.empty:
         st.info("Market industry context is unavailable for this site.")
     else:
@@ -55,6 +56,7 @@ def render_page(site_config_path: str) -> None:
         if not rows.empty:
             display = rows.head(10)[["sector_label", "share_value", "raw_value", "year", "source"]].copy()
             display = display.rename(columns={"sector_label": "Sector", "share_value": value_label, "raw_value": "Raw value", "year": "Year", "source": "Source"})
+            display["Source"] = display["Source"].map(source_label)
             render_html_table(display)
 
     st.subheader("Housing market trend")

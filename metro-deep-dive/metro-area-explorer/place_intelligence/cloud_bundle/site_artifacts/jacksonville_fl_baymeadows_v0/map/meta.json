@@ -1,0 +1,30 @@
+{
+  "site_point": [
+    {
+      "name": "3832 Baymeadows Road, Jacksonville, FL 32217",
+      "lat": 30.217618577902,
+      "lon": -81.616679103522,
+      "match_type": "manual_override",
+      "geocode_source": "manual_override"
+    }
+  ],
+  "view_state": {
+    "latitude": 30.217618577902,
+    "longitude": -81.616679103522,
+    "zoom": 10.5
+  },
+  "tract_fill_years": {
+    "pop_total": 2024,
+    "median_hh_income": 2024,
+    "median_home_value": 2024,
+    "pct_ba_plus": 2024
+  },
+  "tract_fill_sources": {
+    "pop_total": "population_demographics",
+    "median_hh_income": "economics_income_wide",
+    "median_home_value": "housing_core_wide",
+    "pct_ba_plus": "population_demographics"
+  },
+  "nfhl_service_status": "ok",
+  "nfhl_service_error": null
+}

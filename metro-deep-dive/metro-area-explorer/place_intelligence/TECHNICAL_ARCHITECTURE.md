@@ -515,6 +515,531 @@ Each page module:
 - charts are routed through shared helpers and chart-engine adapters in `shared_ui.py`
 - maps are built from serialized geojson/csv artifacts, not from live recomputation
 
+## 7.1 Page review framework
+
+Because the pages are now interconnected and performance issues are surfacing at the app level, page review should happen in one consistent structure:
+
+1. what the page renders for the user
+2. which payloads it loads today
+3. which artifact files those payloads read
+4. which upstream prep/build functions produced those files
+5. which dependencies are truly required for first paint
+6. what should be refactored for page-level performance
+
+This keeps the review grounded in outputs rather than abstract modules.
+
+## 7.2 Page inventory at a glance
+
+This is the working page-by-page dependency map to expand as the review proceeds.
+
+| Page | User-facing purpose | Current payload families | Review status |
+|---|---|---|---|
+| `pages/d_overview.py` | Orientation-first site summary and map | D1 base, D2 summary/profile, D3 summary, D5 site flood note, shared map payload | Reviewed below |
+| `pages/d_people.py` | Catchment population and household profile | D2, likely shared map payload | Pending |
+| `pages/d_place.py` | Daytime activity, POIs, roads, barriers, and place context | D3, D4, D5, shared map payload | Pending |
+| `pages/d_market.py` | Market-wide context and benchmarks outside the catchment | D2 benchmarks, market payload, possibly D4/D5 context | Pending |
+| `pages/d_methods.py` | Methods, caveats, and diagnostic transparency | D1 diagnostics plus selected D2-D5 metadata | Pending |
+
+## 7.3 App content inventory
+
+This section is the working guide to what the app is supposed to show and what it actually shows today.
+
+For each page, it records:
+
+- the page job in the product
+- the current visible sections in the Streamlit implementation
+- the current charts, tables, cards, and maps
+- the insight the page is supposed to help a reader answer
+- the main gaps between the current implementation and the spec
+
+This is intentionally more output-oriented than the dependency review. It is the section to use when deciding what to build next on each page.
+
+### `pages/d_overview.py`
+
+**Page job**
+
+Orient the reader quickly to the site, its primary catchment, and the highest-priority screens that should shape the rest of the read.
+
+**Current visible sections**
+
+- top-line site metrics row
+- resolved coordinate / geocode caption
+- context map
+- primary-ring headline table
+- flags and caveats
+
+**Current UI elements**
+
+- cards / metrics:
+  - site address
+  - node typology
+  - 3-mile population
+  - 3-mile household income
+  - site flood zone
+- map:
+  - shared context map with default tract fill and rings on
+- tables:
+  - primary-ring headline table for a small metric set
+  - flags and caveats table for barrier and flood notes
+
+**Current insight question**
+
+- What is this site, broadly speaking?
+- How big and how affluent is the primary ring?
+- Is there an obvious flood or severance note that should frame the rest of the analysis?
+
+**Spec-aligned intended insight**
+
+From `SPEC.md`, the Overview tab should be the one-screen orientation layer: site card, primary-ring headline numbers, percentile and 5-year direction, barrier flag when triggered, flood zone, and the interactive context map directly beneath it.
+
+**Current gaps vs spec**
+
+- the top-line cards do not yet consistently expose percentile and 5-year direction the way the spec describes
+- the headline table is present, but the page still feels more like a data summary than a finished orientation narrative
+- the current map is technically reusable, but still heavier than a summary page should need
+
+### `pages/d_people.py`
+
+**Page job**
+
+Explain who lives near the site, who works near the site, and how that changes across distance bands.
+
+**Current visible sections**
+
+- ring gradient
+- benchmark companion
+- day and night divergence
+- workplace industry breakout
+
+**Current UI elements**
+
+- controls:
+  - metric selector for the ring-gradient section
+  - ring selector for workplace industry breakout
+- charts:
+  - ring-gradient bar chart for one selected D2 metric
+  - 5-year change bar chart for the selected metric when available
+  - jobs-to-workers ratio bar chart by ring
+  - workplace jobs by industry bar chart for one selected ring
+- tables:
+  - benchmark companion table with primary-ring value and CBSA percentile
+  - day/night divergence table with jobs, resident workers, ratio, and net change
+
+**Current insight question**
+
+- Who is in range of the site?
+- How does the catchment change from 1 to 3 to 5 miles?
+- Does the area gain people during the workday or lose them?
+
+**Spec-aligned intended insight**
+
+From `SPEC.md`, the People tab should combine residents and workers into one story: ring gradient, age distribution, income and education with percentile markers, day/night divergence, workplace jobs by industry, jobs-to-workers ratio, and 5-year direction attached to each panel.
+
+**Current gaps vs spec**
+
+- age distribution is not yet a dedicated section; only `median_age` is available through the generic ring-gradient selector
+- income and education exist as selectable metrics, but not yet as intentional, named panels
+- percentile context appears in the benchmark table, but not yet embedded cleanly into each substantive panel
+- the page is analytically useful already, but it still reads like a flexible diagnostic surface rather than a finished reader flow
+
+### `pages/d_place.py`
+
+**Page job**
+
+Explain the physical and commercial environment around the site: what is nearby, how the corridor works, what barriers matter, and what flood or hazard context should be noted.
+
+**Current visible sections**
+
+- context map
+- POI mix
+- road hierarchy and corridor traffic
+- barrier and severance detail
+- flood screening
+
+**Current UI elements**
+
+- map:
+  - shared context map with POIs, roads, flood, and severed-area layers on by default
+- controls:
+  - ring selector for POI counts
+- charts:
+  - POI class bar chart for the selected ring
+  - top 1-mile corridor segments by AADT bar chart
+  - frontage AADT trend line chart when trend rows are available
+  - flood-zone area-share bar chart by ring
+- tables:
+  - POI counts table
+  - frontage roadway table
+  - barrier/severance detail table
+  - ring-variants comparison table
+  - NFHL site-zone table
+  - NRI catchment scores table
+
+**Current insight question**
+
+- What kind of place is this site in?
+- Is the area commercially active, accessible, severed, or flood-exposed in ways that matter for the brief?
+
+**Spec-aligned intended insight**
+
+From `SPEC.md`, the Place tab should cover co-tenancy and POI density, competitive vs complementary breakdown, nearest anchors, road hierarchy, AADT corridor context, severance detail, and flood-zone shares, with the shared map defaulting to POIs plus roads plus flood.
+
+**Current gaps vs spec**
+
+- nearest-anchor logic is not surfaced as its own reader-facing panel
+- POI density and co-tenancy narrative are still represented mainly as counts by class
+- barrier detail is present and strong, but the page does not yet synthesize it into a concise “what this means for the site” read
+- NRI and NFHL are shown, but the distinction between catchment hazard context and parcel/site flood screening could still be clearer in the UX
+
+### `pages/d_market.py`
+
+**Page job**
+
+Give the reader just enough metro-level context to understand the site inside the broader Jacksonville market without overwhelming the site brief.
+
+**Current visible sections**
+
+- industry mix
+- housing market trend
+
+**Current UI elements**
+
+- controls:
+  - employment vs GDP basis radio toggle
+- charts:
+  - industry-share bar chart for the selected basis
+  - ZHVI trend line chart
+  - ZORI trend line chart
+- tables:
+  - top-sector market table
+  - housing context table
+
+**Current insight question**
+
+- What kind of metro is this site sitting in?
+- Is the surrounding market growing or expensive in ways that matter for site interpretation?
+
+**Spec-aligned intended insight**
+
+From `SPEC.md`, the Market tab should provide Jacksonville CBSA context: industry mix, GDP, employment, and housing market trend, using existing Gold data and staying intentionally compact.
+
+**Current gaps vs spec**
+
+- the tab is compact as intended, but still looks like a raw market-context utility more than a polished market one-pager
+- employment and GDP mix are present, but the narrative bridge back to site relevance is still thin
+- if this becomes a reusable Metro Deep Dive component, the output shape likely needs one clearer “market read” summary block
+
+### `pages/d_methods.py`
+
+**Page job**
+
+Make the brief inspectable and trustworthy by exposing method assumptions, diagnostics, source vintages, geocode provenance, and missing-data explanations.
+
+**Current visible sections**
+
+- apportionment and reliability
+- geocode provenance
+- unavailable metrics and skip reasons
+- source vintages
+- method notes
+
+**Current UI elements**
+
+- tables:
+  - coverage diagnostic table
+  - geocode provenance table
+  - D2 skip-reasons table
+  - source-vintages table
+- notes:
+  - short bullet list of core method caveats
+
+**Current insight question**
+
+- How were these numbers built?
+- Which parts are approximate, missing, or fail-soft?
+
+**Spec-aligned intended insight**
+
+From `SPEC.md`, the Methods tab should cover apportionment assumptions, weight-table diagnostics, per-ring reliability flags, source vintages, geocode match quality, and what was unavailable and why.
+
+**Current gaps vs spec**
+
+- reliability flags are present through coverage diagnostics, but not yet clearly framed as a reader-facing reliability interpretation
+- method notes are brief and useful, but could grow into a stronger appendix-style explanation block
+- this page is already aligned with the spec conceptually, but may need better copy structure more than new analytics
+
+### Build sequence recommendation
+
+For section-by-section work, the best current order is:
+
+1. `Overview`
+2. `People`
+3. `Place`
+4. `Market`
+5. `Methods`
+
+That order matches both the reader journey and the dependency risk:
+
+- `Overview` sets the summary contract and first-paint expectations
+- `People` clarifies the D2 presentation model
+- `Place` is the richest mixed-surface page and will benefit from having the first two pages settled
+- `Market` is comparatively compact
+- `Methods` should close by documenting the final shape honestly
+
+## 7.4 Page review: `pages/d_overview.py`
+
+### What the page renders
+
+The Overview page is the orientation page for one site. It renders:
+
+- five top-line metrics:
+  - site address
+  - node typology
+  - primary-ring population
+  - primary-ring median household income
+  - site flood zone
+- resolved site/geocode metadata
+- the shared context map
+- a small primary-ring headline table
+- a small flags/caveats table
+
+Architecturally, this page should be one of the lightest pages in the app. It is summary-first and does not need the full analytical surface to achieve first paint.
+
+### What the page loads today
+
+`pages/d_overview.py` now calls:
+
+- `load_overview_payload(site_config_path)`
+- `render_context_map(...)`
+
+The page code itself is thin. The summary path is now smaller and more explicit, and the main remaining performance question is the breadth of the shared context-map payload.
+
+### Required data contract
+
+The Overview page only needs the following data to render its summary correctly:
+
+- site identity:
+  - site address
+  - site id
+  - primary ring distance
+- resolved-site provenance:
+  - resolved latitude
+  - resolved longitude
+  - geocode source
+  - match type
+- site-card metrics:
+  - node typology label
+  - primary-ring population
+  - primary-ring population CBSA percentile
+  - primary-ring median household income
+  - primary-ring median household income 5-year change
+  - site flood zone
+- headline table rows:
+  - population
+  - households
+  - median household income
+  - BA+ share
+  - median home value
+  - for each row: primary-ring value, CBSA percentile, 5-year change, year, source table
+- site-card flags:
+  - any barrier rows where `site_card_flag = true`
+  - flood-zone panel date note when available
+
+Everything above now fits a compact Overview-specific artifact rather than requiring the full D1, D2, D3, and D5 payload bundles.
+
+### Where that data sits
+
+The required fields come from these existing upstream artifacts and prep outputs:
+
+- `site.json`
+  - site identity
+- `resolved_site.json`
+  - resolved coordinates and geocode provenance
+- `d2_metric_summary.csv`
+  - primary-ring values
+  - CBSA percentiles
+  - 5-year changes
+  - source/year metadata for headline rows
+- `d3_meta.json`
+  - node typology label
+- `d3_barrier_summary.csv`
+  - site-card barrier rows
+- `d5_nfhl_site_zone.csv`
+  - flood zone and panel date
+
+Those sources are now collapsed into:
+
+- `overview.json`
+
+That file is the intended app contract for the summary portion of the Overview page.
+
+#### Shared map payload
+
+`render_context_map()` calls `load_context_map_payload(site_config_path, fill_metric, include_flood_context)`.
+
+For Overview, the default layer state is:
+
+- tract fill on
+- rings on
+- POIs off
+- roads off
+- flood off
+- severed off
+
+Even with those defaults, `load_context_map_payload()` still reads:
+
+- `map/tract_fill_<metric>.geojson`
+- `map/rings.geojson`
+- `map/water_adjusted_rings.geojson`
+- `map/severed_area.geojson`
+- `map/poi_rows.csv`
+- `map/roads.geojson`
+- `map/meta.json`
+- `d3_barrier_summary.csv`
+
+And it conditionally skips only:
+
+- `map/flood.geojson`
+
+So the current shared map contract is convenient, but it is not layer-lazy. The Overview page loads POIs, roads, severed polygons, and barrier summary even when those layers are off on first paint.
+
+### Upstream builders behind the Overview page
+
+The Overview page is downstream of the following build path:
+
+- D1 base:
+  - `site_prep.build_site_base_payload()`
+  - written by `artifact_store.build_site_artifacts()`
+- D2 summary/profile:
+  - `site_prep.build_d2_profile_payload()`
+  - `site_prep._build_d2_metric_summary()`
+  - written by `artifact_store.build_site_artifacts()`
+- D3 node typology and barrier summary:
+  - `site_prep.get_d3_context_payload()`
+  - written by `artifact_store.build_site_artifacts()`
+- D5 site flood zone:
+  - `site_prep.get_d5_flood_payload()`
+  - written by `artifact_store.build_site_artifacts()`
+- shared map assets:
+  - `artifact_store._build_context_map_artifacts()`
+  - `site_prep.build_context_map_payload()`
+  - `site_prep.build_context_tract_fill()`
+
+This is a good read-only architecture. The problem is not that Overview computes too much on page load. The problem is that the artifact bundles are too coarse for a summary page.
+
+### Performance judgment for Overview
+
+The main bottlenecks visible from code review are:
+
+1. summary path overfetch was the first issue
+
+- this has now been reduced by collapsing the Overview summary contract into `overview.json`
+- the page no longer needs to read the full D1, D2, D3, and D5 bundles for its cards, caption, headline table, and flags
+
+2. map payload overfetch
+
+- the shared map loader eagerly reads multiple heavy layers even when they are turned off by default
+- `water_adjusted_rings_geojson` is loaded for Overview but not used in the render path
+
+3. file-shape inefficiency
+
+- the app contract is spread across many CSV and GeoJSON files
+- that is inspectable and easy to debug, but it increases read and deserialization overhead for a page that mostly wants compact summary records
+
+4. duplicated D2 access paths were another issue
+
+- this has now been reduced on the Overview page by relying on the summary artifact path instead of a `catchment_profile` fallback
+- the broader D2 transitional shape still exists for the other pages
+
+### Refactors recommended for Overview first
+
+These are the highest-value refactors for `d_overview.py`.
+
+#### 1. Add a compact overview payload
+
+Status: completed.
+
+The Overview page now has a purpose-built artifact:
+
+- `overview.json`
+
+It contains:
+
+- site metadata needed for the header
+- resolved coordinates and geocode note
+- node typology label
+- primary-ring population card
+- primary-ring income card
+- site flood zone
+- barrier/flood flag rows
+- headline table rows for the Overview metric set
+
+That lets the page avoid loading:
+
+- `base_weight_table.csv`
+- `base_coverage_diagnostic.csv`
+- `d2_metric_long.csv`
+- `d2_benchmark_table.csv`
+- most of the D3 bundle
+- most of the D5 bundle
+
+#### 2. Split the shared map payload into a minimal first-paint bundle plus optional layers
+
+For Overview, first paint only needs:
+
+- `map/meta.json`
+- one `map/tract_fill_<metric>.geojson`
+- `map/rings.geojson`
+- site point metadata
+
+Optional lazy layers should be read only when the corresponding checkbox is enabled:
+
+- `map/poi_rows.csv`
+- `map/roads.geojson`
+- `map/severed_area.geojson`
+- `map/flood.geojson`
+
+If we keep one shared map API, it should still support layer-lazy reads under the hood.
+
+#### 3. Remove the D2 fallback path once `metric_summary` is trusted
+
+Status: completed for Overview.
+
+Overview now relies on the Overview summary artifact path instead of reading `catchment_profile` directly.
+
+That reduces:
+
+- branching in the page
+- repeated formatting logic
+- the need to load `d2_catchment_profile.csv` for this page
+
+#### 4. Add page-level timing visibility
+
+The repo already has:
+
+- build-step timing in `manifest.json`
+- `profile_d6_pages.py`
+
+But there are no built manifests checked into the current repo snapshot, so page review cannot yet compare theory to observed timings from artifacts alone.
+
+The next performance pass should capture, for at least one real site:
+
+- artifact build timings by step
+- page load timings by payload loader
+- map layer toggle timings
+
+Without that, we can identify architecture debt confidently, but not rank every hotspot empirically.
+
+### Recommended target state for Overview
+
+The Overview page should eventually depend on:
+
+- one compact summary payload
+- one minimal map payload
+- optional layer-specific map loads triggered only when a layer is turned on
+
+That would make Overview a true summary page again and would also establish the pattern the other pages can follow.
+
 ## 8. How data becomes analysis
 
 There are two distinct transformations happening in the system.

@@ -4,24 +4,40 @@ This note describes the concrete data products the Place Intelligence build now 
 
 ## Build entrypoints
 
-- Artifact build CLI: `metro-deep-dive/metro-area-explorer/place_intelligence/build_site_artifacts.py`
-- Artifact writer/reader: `metro-deep-dive/metro-area-explorer/place_intelligence/artifact_store.py`
+- Product-scoped build scripts: `metro-deep-dive/metro-area-explorer/place_intelligence/data_builds/`
+- Full-build compatibility CLI: `metro-deep-dive/metro-area-explorer/place_intelligence/build_site_artifacts.py`
+- Artifact reader/contract module: `metro-deep-dive/metro-area-explorer/place_intelligence/artifact_store.py`
 - Prep/business logic: `metro-deep-dive/metro-area-explorer/place_intelligence/site_prep.py`
 - Default site configs:
   - `metro-deep-dive/metro-area-explorer/place_intelligence/site_jacksonville_v0.yaml`
   - `metro-deep-dive/metro-area-explorer/place_intelligence/site_jacksonville_downtown_v0.yaml`
 
-Run one site:
+Run one smaller build step:
+
+```bash
+.venv312/bin/python metro-deep-dive/metro-area-explorer/place_intelligence/data_builds/build_base.py \
+  metro-deep-dive/metro-area-explorer/place_intelligence/site_jacksonville_v0.yaml
+```
+
+Build one downstream product after its prerequisites exist:
+
+```bash
+.venv312/bin/python metro-deep-dive/metro-area-explorer/place_intelligence/data_builds/build_overview.py \
+  metro-deep-dive/metro-area-explorer/place_intelligence/site_jacksonville_v0.yaml
+```
+
+Run the full app-facing bundle for one site:
+
+```bash
+.venv312/bin/python metro-deep-dive/metro-area-explorer/place_intelligence/data_builds/build_all.py \
+  metro-deep-dive/metro-area-explorer/place_intelligence/site_jacksonville_v0.yaml
+```
+
+The legacy wrapper still works:
 
 ```bash
 .venv312/bin/python metro-deep-dive/metro-area-explorer/place_intelligence/build_site_artifacts.py \
   metro-deep-dive/metro-area-explorer/place_intelligence/site_jacksonville_v0.yaml
-```
-
-Run every discovered site config:
-
-```bash
-.venv312/bin/python metro-deep-dive/metro-area-explorer/place_intelligence/build_site_artifacts.py --all-sites
 ```
 
 ## Materialized output layout
@@ -43,16 +59,21 @@ Files:
 - `manifest.json`
 - `site.json`
 - `resolved_site.json`
+- `overview.json`
 
 What they hold:
 
 - site id, market id, source config filename, UTC build timestamp
+- completed product steps in `completed_steps`
 - per-step build timings in `step_timings_seconds`
 - authored site config and resolved geocode/tract metadata
+- compact Overview-page contract in `overview.json`
 
 Materialized by:
 
-- `artifact_store.build_site_artifacts()`
+- `data_builds/build_base.py`
+- `data_builds/build_overview.py`
+- `data_builds/common.py` manifest helpers
 
 ### 2. D1 base catchment products
 
@@ -68,6 +89,7 @@ What they hold:
 
 Materialized by:
 
+- `data_builds/build_base.py`
 - `site_prep.build_site_base_payload()`
 - `apportion.apportion_weights()`
 - `apportion.coverage_diagnostic()`
@@ -88,6 +110,7 @@ What they hold:
 
 Materialized by:
 
+- `data_builds/build_d2.py`
 - `site_prep.build_d2_profile_payload()`
 
 Primary upstream tables:
@@ -118,6 +141,7 @@ What they hold:
 
 Materialized by:
 
+- `data_builds/build_d3.py`
 - `site_prep.get_d3_context_payload()`
 
 Primary upstream products:
@@ -145,6 +169,7 @@ What they hold:
 
 Materialized by:
 
+- `data_builds/build_d4.py`
 - `site_prep.get_d4_traffic_payload()`
 
 Primary upstream products:
@@ -174,6 +199,7 @@ What they hold:
 
 Materialized by:
 
+- `data_builds/build_d5.py`
 - `site_prep.get_d5_flood_payload()`
 
 Primary upstream products:
@@ -196,6 +222,7 @@ What they hold:
 
 Materialized by:
 
+- `data_builds/build_market.py`
 - `site_prep.build_market_context_payload()`
 
 ### 8. Shared D6 map products
@@ -221,7 +248,7 @@ What they hold:
 
 Materialized by:
 
-- `artifact_store._build_context_map_artifacts()`
+- `data_builds/build_context_map.py`
 - `site_prep.build_context_map_payload()`
 - `site_prep.build_context_tract_fill()`
 
@@ -230,6 +257,24 @@ Materialized by:
 ### Site-scoped, not global
 
 The current product boundary is one artifact folder per site config. We are not materializing a global Place Intelligence warehouse layer yet; we are materializing app-facing products for a specific site/market run.
+
+### Product-scoped, not monolithic
+
+The build architecture is now intentionally decomposed.
+
+Each major product has its own script under `data_builds/`:
+
+- `build_base.py`
+- `build_d2.py`
+- `build_d3.py`
+- `build_d4.py`
+- `build_d5.py`
+- `build_overview.py`
+- `build_market.py`
+- `build_context_map.py`
+- `build_all.py`
+
+That means debugging can happen one product at a time instead of forcing every edit through one large site-wide build path.
 
 ### Derived products versus raw caches
 

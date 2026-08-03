@@ -1,4 +1,4 @@
-"""Build all app-facing artifacts for one or more Place Intelligence sites."""
+"""Compatibility wrapper that builds the full app-facing artifact bundle."""
 
 from __future__ import annotations
 
@@ -11,14 +11,14 @@ SECTION_ROOT = Path(__file__).resolve().parent
 if str(SECTION_ROOT) not in sys.path:
     sys.path.insert(0, str(SECTION_ROOT))
 
-from artifact_store import build_site_artifacts
+from data_builds.build_all import build_all_for_site
 from site_prep import get_default_site_config_path, list_site_configs
 
 
 def parse_args() -> argparse.Namespace:
     """Parse the small CLI surface for artifact builds."""
 
-    parser = argparse.ArgumentParser(description="Build Place Intelligence site artifacts.")
+    parser = argparse.ArgumentParser(description="Build the full Place Intelligence artifact bundle.")
     parser.add_argument(
         "site_configs",
         nargs="*",
@@ -44,7 +44,7 @@ def main() -> int:
         site_configs = [str(get_default_site_config_path())]
 
     for site_config in site_configs:
-        artifact_dir = build_site_artifacts(site_config)
+        artifact_dir = build_all_for_site(site_config)
         print(f"Built artifacts for {Path(site_config).name} -> {artifact_dir}")
     return 0
 

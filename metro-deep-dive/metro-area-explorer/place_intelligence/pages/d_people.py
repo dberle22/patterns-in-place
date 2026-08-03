@@ -17,30 +17,74 @@ from shared_ui import (
     build_simple_bar_chart,
     render_chart_result,
     format_count_cell,
-    format_percent_cell,
     format_ratio_cell,
-    load_d2_payload,
-    load_d3_payload,
-    load_site_base_payload,
+    load_people_payload,
     render_html_table,
+    source_label,
 )
 
 
 def render_page(site_config_path: str) -> None:
     """Render the people and daytime-population view."""
 
-    base = load_site_base_payload(site_config_path)
-    d2_payload = load_d2_payload(site_config_path)
-    d3_payload = load_d3_payload(site_config_path)
-    site = base["site"]
-    summary = d2_payload.get("metric_summary", pd.DataFrame())
-    profile = d2_payload["catchment_profile"]
-    daytime = d3_payload["daytime_population"]
+    payload = load_people_payload(site_config_path)
+    site = _payload_site(payload)
+    summary = pd.DataFrame(payload.get("metric_summary", []))
+    profile = pd.DataFrame(payload.get("catchment_profile", []))
+    daytime = pd.DataFrame(payload.get("daytime_population", []))
+    has_profile_schema = {"metric", "ring_mi", "metric_label", "value"}.issubset(profile.columns)
 
     st.header("2. People")
 
+    st.subheader("Benchmark companion")
+    primary_rows = profile.loc[profile["ring_mi"] == site.primary_ring_mi].copy() if has_profile_schema and not profile.empty else pd.DataFrame()
+    if not summary.empty:
+        display = summary[
+            [
+                "metric_label",
+                "primary_value",
+                "primary_cbsa_percentile",
+                "primary_cbsa_percentile_denominator",
+                "source_table",
+                "primary_year",
+            ]
+        ].copy()
+        display = display.rename(
+            columns={
+                "metric_label": "Metric",
+                "primary_value": f"{site.primary_ring_mi}-mile value",
+                "primary_cbsa_percentile": "CBSA percentile",
+                "primary_cbsa_percentile_denominator": "Tract denominator",
+                "source_table": "Source",
+                "primary_year": "Year",
+            }
+        )
+        value_column = f"{site.primary_ring_mi}-mile value"
+        display[value_column] = display[value_column].map(lambda value: f"{float(value):,.1f}" if pd.notna(value) else "—")
+        display["CBSA percentile"] = display["CBSA percentile"].map(lambda value: "—" if pd.isna(value) else f"{float(value):.0f}th")
+        display["Source"] = display["Source"].map(source_label)
+        render_html_table(display)
+    elif primary_rows.empty:
+        st.info("Primary-ring benchmark rows are unavailable for this site.")
+    else:
+        display = primary_rows[["metric_label", "value", "cbsa_percentile", "cbsa_percentile_denominator", "source_table", "year"]].copy()
+        display = display.rename(
+            columns={
+                "metric_label": "Metric",
+                "value": f"{site.primary_ring_mi}-mile value",
+                "cbsa_percentile": "CBSA percentile",
+                "cbsa_percentile_denominator": "Tract denominator",
+                "source_table": "Source",
+                "year": "Year",
+            }
+        )
+        value_column = f"{site.primary_ring_mi}-mile value"
+        display[value_column] = display[value_column].map(lambda value: f"{float(value):,.1f}" if pd.notna(value) else "—")
+        display["CBSA percentile"] = display["CBSA percentile"].map(lambda value: "—" if pd.isna(value) else f"{float(value):.0f}th")
+        display["Source"] = display["Source"].map(source_label)
+        render_html_table(display)
+
     st.subheader("Ring gradient")
-    has_profile_schema = {"metric", "ring_mi", "metric_label", "value"}.issubset(profile.columns)
     selected_metrics = profile.loc[
         profile["metric"].isin(["pop_total", "households", "median_hh_income", "pct_ba_plus", "median_age"])
     ].copy() if has_profile_schema and not profile.empty else pd.DataFrame()
@@ -58,7 +102,7 @@ def render_page(site_config_path: str) -> None:
             entity_col="ring_mi",
             value_col="value",
             title=f"{metric_rows['metric_label'].iloc[0]} by ring",
-            subtitle=f"Apportioned catchment read | source {metric_rows['source_table'].iloc[0]} | {int(metric_rows['year'].iloc[0])}",
+            subtitle=f"Apportioned catchment read | source {source_label(metric_rows['source_table'].iloc[0])} | {int(metric_rows['year'].iloc[0])}",
             unit="percent" if "pct_" in selected_metric_label else "currency" if "income" in selected_metric_label else "count",
             decimals=1 if "pct_" in selected_metric_label else 0,
         )
@@ -79,51 +123,8 @@ def render_page(site_config_path: str) -> None:
             )
             render_chart_result(change_chart)
 
-    st.subheader("Benchmark companion")
-    primary_rows = profile.loc[profile["ring_mi"] == site.primary_ring_mi].copy() if has_profile_schema and not profile.empty else pd.DataFrame()
-    if not summary.empty:
-        display = summary[
-            [
-                "metric_label",
-                "primary_value",
-                "primary_cbsa_percentile",
-                "primary_cbsa_percentile_denominator",
-                "source_table",
-                "primary_year",
-            ]
-        ].copy()
-        display = display.rename(
-            columns={
-                "metric_label": "Metric",
-                "primary_value": "3-mile value",
-                "primary_cbsa_percentile": "CBSA percentile",
-                "primary_cbsa_percentile_denominator": "Tract denominator",
-                "source_table": "Source",
-                "primary_year": "Year",
-            }
-        )
-        display["3-mile value"] = display["3-mile value"].map(lambda value: f"{float(value):,.1f}" if pd.notna(value) else "—")
-        display["CBSA percentile"] = display["CBSA percentile"].map(lambda value: "—" if pd.isna(value) else f"{float(value):.0f}th")
-        render_html_table(display)
-    elif primary_rows.empty:
-        st.info("Primary-ring benchmark rows are unavailable for this site.")
-    else:
-        display = primary_rows[["metric_label", "value", "cbsa_percentile", "cbsa_percentile_denominator", "source_table", "year"]].copy()
-        display = display.rename(
-            columns={
-                "metric_label": "Metric",
-                "value": "3-mile value",
-                "cbsa_percentile": "CBSA percentile",
-                "cbsa_percentile_denominator": "Tract denominator",
-                "source_table": "Source",
-                "year": "Year",
-            }
-        )
-        display["3-mile value"] = display["3-mile value"].map(lambda value: f"{float(value):,.1f}" if pd.notna(value) else "—")
-        display["CBSA percentile"] = display["CBSA percentile"].map(lambda value: "—" if pd.isna(value) else f"{float(value):.0f}th")
-        render_html_table(display)
-
     st.subheader("Day and night divergence")
+    st.caption("Jobs are LEHD workplace jobs located in the ring. Resident workers are ring residents who report working. A ratio above 1.0 suggests the area draws in more workers than it sends out.")
     if daytime.empty:
         st.info("Daytime population rows are unavailable for this site.")
     else:
@@ -180,3 +181,13 @@ def render_page(site_config_path: str) -> None:
                 decimals=0,
             )
         )
+
+
+def _payload_site(payload: dict) -> object:
+    """Provide attribute-style access for the small site metadata used on the People page."""
+
+    class _Site:
+        def __init__(self, data: dict) -> None:
+            self.primary_ring_mi = int(data.get("primary_ring_mi", 3))
+
+    return _Site(payload.get("site", {}))

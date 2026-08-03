@@ -26,6 +26,7 @@ VALID_ASSET_TYPES = {"retail", "residential", "mixed"}
 DEFAULT_RINGS_MI = [1, 3, 5]
 DEFAULT_PRIMARY_RING_MI = 3
 DEFAULT_SITE_CONFIG_PATH = Path(__file__).resolve().parent / "site_jacksonville_v0.yaml"
+CLOUD_BUNDLE_SITE_CONFIG_DIR = Path(__file__).resolve().parent / "cloud_bundle" / "site_configs"
 REPO_ROOT = Path(__file__).resolve().parents[3]
 SECTION_ROOT = Path(__file__).resolve().parent
 DB_PATH = REPO_ROOT / "foundations" / "etl" / "data" / "duckdb" / "patterns_in_place.duckdb"
@@ -249,12 +250,20 @@ def load_site(path: str) -> Site:
 def list_site_configs() -> list[Path]:
     """Discover site YAML files so the D6 app can stay config-driven."""
 
-    return sorted(SECTION_ROOT.glob("site*.yaml"))
+    section_configs = sorted(SECTION_ROOT.glob("site*.yaml"))
+    if section_configs:
+        return section_configs
+    return sorted(CLOUD_BUNDLE_SITE_CONFIG_DIR.glob("site*.yaml"))
 
 
 def get_default_site_config_path() -> Path:
     """Return the default spotlight site config path for the D6 app shell."""
 
+    if DEFAULT_SITE_CONFIG_PATH.exists():
+        return DEFAULT_SITE_CONFIG_PATH
+    discovered = list_site_configs()
+    if discovered:
+        return discovered[0]
     return DEFAULT_SITE_CONFIG_PATH
 
 
@@ -298,7 +307,7 @@ def build_site_base_payload(site: Site) -> dict[str, Any]:
     resolved_site = resolve_site(site)
     weight_table = build_site_weight_table(site)
     coverage = coverage_diagnostic(weight_table)
-    cumulative_rings = _build_cumulative_rings(resolved_site.lat, resolved_site.lon, site.rings_mi)
+    cumulative_rings = build_cumulative_rings_for_site(site, resolved_site=resolved_site)
     return {
         "site": site,
         "resolved_site": resolved_site,
@@ -308,181 +317,46 @@ def build_site_base_payload(site: Site) -> dict[str, Any]:
     }
 
 
+def build_cumulative_rings_for_site(site: Site, resolved_site: ResolvedSite | None = None) -> gpd.GeoDataFrame:
+    """Build cumulative ring geometry for one configured site without the full base payload."""
+
+    resolved = resolved_site or resolve_site(site)
+    return _build_cumulative_rings(resolved.lat, resolved.lon, site.rings_mi)
+
+
 def build_catchment_profile(site: Site, weight_table: pd.DataFrame) -> pd.DataFrame:
     """Build the long-format D2 catchment surface from tract metrics plus weights."""
 
-    payload = build_d2_profile_payload(site, weight_table)
-    return payload["catchment_profile"]
+    from data_builds.d2.shared import build_catchment_profile_frame, build_metric_long_frame
+
+    metric_long = build_metric_long_frame(site, weight_table)
+    return build_catchment_profile_frame(metric_long)
 
 
 def build_benchmark_table(site: Site) -> pd.DataFrame:
     """Build current-year benchmark rows for the site's primary ring from Gold tables."""
 
-    benchmark_rows: list[dict[str, Any]] = []
-    county_geoid, state_fips = _get_site_county_and_state(site)
-    for metric in METRIC_DEFINITIONS:
-        metric_surface = _query_metric_surface(metric, site.market_id)
-        benchmark_rows.extend(
-            _build_metric_benchmark_rows(
-                site,
-                metric,
-                metric_surface,
-                county_geoid=county_geoid,
-                state_fips=state_fips,
-            )
-        )
+    from data_builds.d2.shared import build_benchmark_table_frame, build_metric_long_frame
 
-    return pd.DataFrame(benchmark_rows).sort_values(
-        ["metric", "benchmark_level"],
-        kind="mergesort",
-    ).reset_index(drop=True) if benchmark_rows else pd.DataFrame(
-        columns=[
-            "site_id",
-            "ring_mi",
-            "benchmark_level",
-            "benchmark_geo_id",
-            "benchmark_geo_name",
-            "metric",
-            "metric_label",
-            "topic",
-            "value",
-            "year",
-            "source_table",
-        ]
-    )
+    weight_table = build_site_weight_table(site)
+    metric_long = build_metric_long_frame(site, weight_table)
+    return build_benchmark_table_frame(metric_long)
 
 
 def compute_percentile(metric: str, ring_value: float, market_id: str) -> tuple[float, int]:
     """Return the percentile position of a ring value against the market tract distribution."""
 
-    metric_def = _get_metric_definition(metric)
-    metric_surface = _query_metric_surface(metric_def, market_id)
-    tract_frame = metric_surface.loc[metric_surface["geo_level_normalized"] == "tract"].copy()
-    if tract_frame.empty:
-        raise ValueError(f"No tract rows available for metric '{metric}'.")
+    from data_builds.d2.shared import compute_percentile as compute_d2_percentile
 
-    latest_year = int(tract_frame["year"].max())
-    latest_values = tract_frame.loc[tract_frame["year"] == latest_year, "metric_value"].dropna()
-    denominator = int(len(latest_values))
-    if denominator == 0:
-        raise ValueError(f"No non-null tract values available for metric '{metric}'.")
-
-    percentile = float((latest_values <= float(ring_value)).sum() / denominator * 100.0)
-    return percentile, denominator
+    return compute_d2_percentile(metric, ring_value, market_id)
 
 
 def build_d2_profile_payload(site: Site, weight_table: pd.DataFrame) -> dict[str, Any]:
     """Assemble D2 as one canonical long table plus app-facing aggregated views."""
 
-    metric_long_rows: list[dict[str, Any]] = []
-    skip_reasons: list[MetricSkipReason] = []
-    county_geoid, state_fips = _get_site_county_and_state(site)
-    for metric in METRIC_DEFINITIONS:
-        metric_surface = _query_metric_surface(metric, site.market_id)
-        metric_rows = _build_metric_catchment_rows(
-            site,
-            weight_table,
-            metric,
-            metric_surface=metric_surface,
-        )
-        if metric_rows.empty:
-            skip_reasons.append(
-                MetricSkipReason(
-                    metric=metric.metric_id,
-                    reason="No tract-grain values available for the configured market/rings.",
-                    table_name=metric.table_name,
-                )
-            )
-            continue
+    from data_builds.d2.shared import build_d2_payload
 
-        for row in metric_rows.to_dict("records"):
-            metric_long_rows.append(
-                {
-                    "site_id": row["site_id"],
-                    "market_id": site.market_id,
-                    "record_type": "catchment",
-                    "metric": row["metric"],
-                    "metric_label": row["metric_label"],
-                    "topic": row["topic"],
-                    "ring_mi": row["ring_mi"],
-                    "benchmark_level": None,
-                    "benchmark_geo_id": None,
-                    "benchmark_geo_name": None,
-                    "value": row["value"],
-                    "year": row["year"],
-                    "source_table": row["source_table"],
-                    "change_5yr": row["change_5yr"],
-                    "change_5yr_period": row["change_5yr_period"],
-                    "cbsa_percentile": row["cbsa_percentile"],
-                    "cbsa_percentile_denominator": row["cbsa_percentile_denominator"],
-                }
-            )
-
-        for row in _build_metric_benchmark_rows(
-            site,
-            metric,
-            metric_surface,
-            county_geoid=county_geoid,
-            state_fips=state_fips,
-        ):
-            metric_long_rows.append(
-                {
-                    "site_id": row["site_id"],
-                    "market_id": site.market_id,
-                    "record_type": "benchmark",
-                    "metric": row["metric"],
-                    "metric_label": row["metric_label"],
-                    "topic": row["topic"],
-                    "ring_mi": row["ring_mi"],
-                    "benchmark_level": row["benchmark_level"],
-                    "benchmark_geo_id": row["benchmark_geo_id"],
-                    "benchmark_geo_name": row["benchmark_geo_name"],
-                    "value": row["value"],
-                    "year": row["year"],
-                    "source_table": row["source_table"],
-                    "change_5yr": None,
-                    "change_5yr_period": None,
-                    "cbsa_percentile": None,
-                    "cbsa_percentile_denominator": None,
-                }
-            )
-
-    metric_long = pd.DataFrame(metric_long_rows).sort_values(
-        ["metric", "record_type", "ring_mi", "benchmark_level"],
-        kind="mergesort",
-        na_position="last",
-    ).reset_index(drop=True) if metric_long_rows else _empty_d2_metric_long()
-    catchment_profile = (
-        metric_long.loc[metric_long["record_type"] == "catchment"]
-        .drop(columns=["record_type", "market_id"])
-        .reset_index(drop=True)
-        if not metric_long.empty
-        else pd.DataFrame()
-    )
-    benchmark_table = (
-        metric_long.loc[metric_long["record_type"] == "benchmark"]
-        .drop(
-            columns=[
-                "record_type",
-                "market_id",
-                "change_5yr",
-                "change_5yr_period",
-                "cbsa_percentile",
-                "cbsa_percentile_denominator",
-            ]
-        )
-        .reset_index(drop=True)
-        if not metric_long.empty
-        else _empty_benchmark_table()
-    )
-
-    return {
-        "metric_long": metric_long,
-        "metric_summary": _build_d2_metric_summary(metric_long, site),
-        "catchment_profile": catchment_profile,
-        "benchmark_table": benchmark_table,
-        "skip_reasons": pd.DataFrame([reason.__dict__ for reason in skip_reasons]),
-    }
+    return build_d2_payload(site, weight_table)
 
 
 def classify_poi(row: pd.Series) -> str | None:
@@ -2691,7 +2565,7 @@ def _query_market_tract_geometries(market_id: str) -> gpd.GeoDataFrame:
             )
             SELECT
                 tract_geoid,
-                county_name,
+                NAMELSADCO AS county_name,
                 ST_AsWKB(geom) AS geom_wkb
             FROM patterns_in_place.geo.tracts_all_us
             WHERE county_geoid IN (SELECT county_geoid FROM market_counties)

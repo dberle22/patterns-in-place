@@ -53,3 +53,41 @@
 - **Turns / iterations:** validation hardening
 - **Key decisions made:** added `site_jacksonville_downtown_v0.yaml` as a second manual-override Jacksonville config using Census geocoder coordinates for `1 E Independent Dr, Jacksonville, FL 32202`; extended the site-config tests so the D6 shell cannot silently stop discovering multi-site configs
 - **Notes:** this makes the app and artifact builder concretely multi-site at the config layer, which is the precondition for the final live downtown run. The remaining unchecked piece is still the full end-to-end artifact/Streamlit validation for the downtown config against live inputs.
+
+## 2026-08-03 — Baymeadows integrated UI QA review
+- **Agent / model:** Codex GPT-5
+- **Turns / iterations:** manual reviewer feedback capture after the page-contract refactor
+- **Key decisions made:** recorded the first integrated UI review directly in the repo before another implementation pass so design, data, and performance issues can be triaged separately instead of getting mixed together during QA.
+- **Notes:** reviewer feedback grouped by page:
+  - Overview:
+    - top metric row is visually cramped and should use smaller typography and/or a two-line layout
+    - node typology needs a clear definition because it is heuristic, not parcel-assessor land use
+    - population percentile benchmark is misleading because a multi-tract ring total is being compared to tract rows
+    - homepage map should likely suppress tract fill, flood, and severed-area overlays by default
+    - POIs should move closer to reader-facing Overture categories rather than only internal competitive/complementary/anchor groupings
+    - roads need clearer taxonomy and AADT context
+    - county boundaries would help map readability
+    - headline-table sources should show actual source systems rather than internal table names
+    - flood interpretation can likely be folded into plain-language copy rather than a separate flags/caveats section
+  - People:
+    - benchmark table should move to the top
+    - KPI source labels should use actual source systems
+    - jobs/workers divergence section needs clearer explanatory copy
+  - Place:
+    - shared map currently exceeds Streamlit message limits when too many layers/features are included
+    - POI mix should move closer to reader-facing Overture categories
+    - frontage trend chart is empty and needs either a fix or removal
+    - barrier/severance table is too long and should be removed until the severance story is redesigned
+    - flood section reads as broader environmental risk and should be renamed accordingly
+  - Market:
+    - employment shares are mis-scaled in the UI
+    - housing and rent trend visuals are empty despite underlying CBSA data being present
+    - GDP mix is unavailable and needs investigation before it can be trusted on-page
+  - Methods:
+    - no major issues flagged in the first review pass
+
+## 2026-08-03 — Streamlit Cloud publish bundle for Baymeadows v0
+- **Agent / model:** Codex GPT-5
+- **Turns / iterations:** deployment-prep refactor
+- **Key decisions made:** kept the app on a file-artifact contract rather than packaging a publish DuckDB because the page-contract JSONs and slim map assets are already small and easier to debug on Streamlit Cloud; added a read-side auto-detect path so the app prefers `cloud_bundle/site_artifacts/<site_id>/` when present; added `build_cloud_bundle.py` to materialize a slim deployment bundle and intentionally excluded `map/flood.geojson` because it drove nearly all artifact size without adding value to the current UI.
+- **Notes:** the Baymeadows `cloud_bundle/` is about 12 MB versus roughly 166 MB for the full local artifact tree. The cloud bundle keeps page JSONs, small map assets, and copied site config metadata while leaving the heavier intermediate build products behind.

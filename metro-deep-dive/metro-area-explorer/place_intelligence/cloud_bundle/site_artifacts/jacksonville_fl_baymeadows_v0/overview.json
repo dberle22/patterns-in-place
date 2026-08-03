@@ -1,0 +1,92 @@
+{
+  "site": {
+    "site_id": "jacksonville_fl_baymeadows_v0",
+    "address": "3832 Baymeadows Road, Jacksonville, FL 32217",
+    "primary_ring_mi": 3
+  },
+  "resolved_site": {
+    "lat": 30.217618577902,
+    "lon": -81.616679103522,
+    "tract_geoid": "12031016603",
+    "matched_address": "3832 Baymeadows Road, Jacksonville, FL 32217",
+    "match_type": "manual_override",
+    "geocode_source": "manual_override"
+  },
+  "page_meta": {
+    "primary_ring_mi": 3,
+    "node_typology_label": "Institutional",
+    "summary_note": "Primary-ring summary metrics are apportioned from tract-grain data unless noted otherwise."
+  },
+  "site_cards": {
+    "population": {
+      "metric": "pop_total",
+      "metric_label": "Population",
+      "value": 48777.98291527896,
+      "delta": 100.0
+    },
+    "income": {
+      "metric": "median_hh_income",
+      "metric_label": "Median household income",
+      "value": 81451.25598780722,
+      "delta": 17463.548608750403
+    },
+    "flood_zone": {
+      "site_id": "jacksonville_fl_baymeadows_v0",
+      "flood_zone": "X",
+      "zone_subtype": "AREA OF MINIMAL FLOOD HAZARD",
+      "sfha_flag": false,
+      "static_bfe": null,
+      "depth": null,
+      "source_citation": "12031C_FIRM1",
+      "firm_panel": "12031C0553J",
+      "panel_effective_date": "2018-11-02",
+      "panel_number": 553,
+      "panel_suffix": "J",
+      "dfirm_id": "12031C"
+    }
+  },
+  "headline_table": [
+    {
+      "metric": "pop_total",
+      "metric_label": "Population",
+      "primary_value": 48777.98291527896,
+      "primary_cbsa_percentile": 100.0,
+      "primary_change_5yr": 19059.211941748115,
+      "primary_year": 2024,
+      "source_table": "population_demographics"
+    },
+    {
+      "metric": "median_hh_income",
+      "metric_label": "Median household income",
+      "primary_value": 81451.25598780722,
+      "primary_cbsa_percentile": 55.45722713864307,
+      "primary_change_5yr": 17463.548608750403,
+      "primary_year": 2024,
+      "source_table": "economics_income_wide"
+    },
+    {
+      "metric": "pct_ba_plus",
+      "metric_label": "BA+ share",
+      "primary_value": 0.3824350733638899,
+      "primary_cbsa_percentile": 63.12684365781711,
+      "primary_change_5yr": -0.0024407785461261,
+      "primary_year": 2024,
+      "source_table": "population_demographics"
+    },
+    {
+      "metric": "median_home_value",
+      "metric_label": "Median home value",
+      "primary_value": 305739.7018113768,
+      "primary_cbsa_percentile": 50.74183976261127,
+      "primary_change_5yr": 93923.65797592644,
+      "primary_year": 2024,
+      "source_table": "housing_core_wide"
+    }
+  ],
+  "flags": [
+    {
+      "flag": "Flood zone",
+      "detail": "Zone X | AREA OF MINIMAL FLOOD HAZARD | panel date 2018-11-02"
+    }
+  ]
+}
