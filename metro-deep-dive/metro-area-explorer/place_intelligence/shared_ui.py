@@ -495,12 +495,21 @@ def _prepare_flood_geojson(flood_geojson: dict[str, Any]) -> dict[str, Any]:
 
 
 def render_chart_result(chart_result) -> None:
-    """Render one chart-engine result through the appropriate Streamlit element."""
+    """Render either chart-engine results or direct chart objects in Streamlit."""
 
-    if chart_result is None or chart_result.chart is None:
+    if chart_result is None:
         st.info("Chart unavailable for this selection.")
         return
-    chart = chart_result.chart
+
+    # Some helpers still return chart-engine result objects with a `.chart`
+    # attribute, while our simpler page-level trend charts now return the raw
+    # Matplotlib figure directly. Support both paths without forcing callers to
+    # care about the wrapper shape.
+    chart = getattr(chart_result, "chart", chart_result)
+    if chart is None:
+        st.info("Chart unavailable for this selection.")
+        return
+
     if hasattr(chart, "to_dict"):
         st.altair_chart(chart, use_container_width=True)
         return
