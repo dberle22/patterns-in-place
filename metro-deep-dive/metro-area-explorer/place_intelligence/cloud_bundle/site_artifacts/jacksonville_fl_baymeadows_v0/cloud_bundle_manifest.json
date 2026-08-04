@@ -1,0 +1,31 @@
+{
+  "built_at_utc": "2026-08-03T22:54:51.557578+00:00",
+  "site_id": "jacksonville_fl_baymeadows_v0",
+  "market_id": "27260",
+  "source_site_config": "site_jacksonville_v0.yaml",
+  "source_artifact_dir": "outputs/jacksonville_fl/site_artifacts/jacksonville_fl_baymeadows_v0",
+  "copied_files": [
+    "manifest.json",
+    "overview.json",
+    "people.json",
+    "place.json",
+    "market_page.json",
+    "methods.json",
+    "site.json",
+    "resolved_site.json",
+    "map/meta.json",
+    "map/rings.geojson",
+    "map/roads.geojson",
+    "map/poi_rows.csv",
+    "map/severed_area.geojson",
+    "map/water_adjusted_rings.geojson",
+    "map/tract_fill_pop_total.geojson",
+    "map/tract_fill_median_hh_income.geojson",
+    "map/tract_fill_median_home_value.geojson",
+    "map/tract_fill_pct_ba_plus.geojson"
+  ],
+  "excluded_files": [
+    "map/flood.geojson",
+    "intermediate build CSVs not required by the Streamlit app"
+  ]
+}

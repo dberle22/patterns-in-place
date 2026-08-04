@@ -1,0 +1,19 @@
+{
+  "sample_name": "richmond_core",
+  "bbox": {
+    "west": -77.62,
+    "south": 37.43,
+    "east": -77.22,
+    "north": 37.67
+  },
+  "extract_date": "2026-07-29T01:53:50+00:00",
+  "line_rows": 3548,
+  "polygon_rows": 0,
+  "point_rows": 0,
+  "line_layer_counts": {
+    "major_roads": 2212,
+    "highways": 1336
+  },
+  "polygon_layer_counts": {},
+  "point_layer_counts": {}
+}

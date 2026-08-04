@@ -1,0 +1,54 @@
+{
+  "market_id": "richmond_sample_downtown_pilot",
+  "bbox": {
+    "west": -77.5,
+    "south": 37.5,
+    "east": -77.39,
+    "north": 37.59
+  },
+  "extract_date": "2026-07-29T01:57:25+00:00",
+  "layers": [
+    {
+      "source": "osm",
+      "layer_name": "highways",
+      "geometry_type": "point",
+      "row_count": 0,
+      "query_config": {
+        "selectors": [
+          "way[\"highway\"~\"motorway|motorway_link|trunk|trunk_link\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 1: <urlopen error [Errno 54] Connection reset by peer>; tile 2: <urlopen error [Errno 54] Connection reset by peer>; tile 3: <urlopen error [Errno 54] Connection reset by peer>; tile 4: <urlopen error [Errno 54] Connection reset by peer>; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>"
+    },
+    {
+      "source": "osm",
+      "layer_name": "highways",
+      "geometry_type": "linestring",
+      "row_count": 0,
+      "query_config": {
+        "selectors": [
+          "way[\"highway\"~\"motorway|motorway_link|trunk|trunk_link\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 1: <urlopen error [Errno 54] Connection reset by peer>; tile 2: <urlopen error [Errno 54] Connection reset by peer>; tile 3: <urlopen error [Errno 54] Connection reset by peer>; tile 4: <urlopen error [Errno 54] Connection reset by peer>; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>"
+    },
+    {
+      "source": "osm",
+      "layer_name": "highways",
+      "geometry_type": "polygon",
+      "row_count": 0,
+      "query_config": {
+        "selectors": [
+          "way[\"highway\"~\"motorway|motorway_link|trunk|trunk_link\"]({bbox});"
+        ],
+        "tile_count": 9
+      },
+      "notes_on_sparse_or_missing_layers": "tile 1: <urlopen error [Errno 54] Connection reset by peer>; tile 2: <urlopen error [Errno 54] Connection reset by peer>; tile 3: <urlopen error [Errno 54] Connection reset by peer>; tile 4: <urlopen error [Errno 54] Connection reset by peer>; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>"
+    }
+  ],
+  "notes": [
+    "OSM layer highways failed across tiled requests: tile 1: <urlopen error [Errno 54] Connection reset by peer>; tile 2: <urlopen error [Errno 54] Connection reset by peer>; tile 3: <urlopen error [Errno 54] Connection reset by peer>; tile 4: <urlopen error [Errno 54] Connection reset by peer>; tile 5: <urlopen error [Errno 54] Connection reset by peer>; tile 6: <urlopen error [Errno 54] Connection reset by peer>; tile 7: <urlopen error [Errno 54] Connection reset by peer>; tile 8: <urlopen error [Errno 54] Connection reset by peer>; tile 9: <urlopen error [Errno 54] Connection reset by peer>."
+  ]
+}

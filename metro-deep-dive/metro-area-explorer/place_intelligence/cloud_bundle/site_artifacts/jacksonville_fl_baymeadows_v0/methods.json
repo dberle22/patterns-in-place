@@ -1,0 +1,171 @@
+{
+  "site": {
+    "site_id": "jacksonville_fl_baymeadows_v0",
+    "address": "3832 Baymeadows Road, Jacksonville, FL 32217",
+    "lat": 30.217618577902,
+    "lon": -81.616679103522,
+    "geocode_source": "manual_override",
+    "market_id": "27260",
+    "asset_type": "retail",
+    "rings_mi": [
+      1,
+      3,
+      5
+    ],
+    "primary_ring_mi": 3
+  },
+  "resolved_site": {
+    "lat": 30.217618577902,
+    "lon": -81.616679103522,
+    "tract_geoid": "12031016603",
+    "matched_address": "3832 Baymeadows Road, Jacksonville, FL 32217",
+    "match_type": "manual_override",
+    "geocode_source": "manual_override"
+  },
+  "coverage_diagnostic": [
+    {
+      "ring_mi": 1,
+      "intersecting_tract_count": 8,
+      "total_weight_captured": 1.8682431937946544,
+      "whole_tract_count": 0,
+      "fragment_share": 1.0,
+      "reliability_flag": "fragment_only"
+    },
+    {
+      "ring_mi": 3,
+      "intersecting_tract_count": 22,
+      "total_weight_captured": 10.819908792686816,
+      "whole_tract_count": 0,
+      "fragment_share": 1.0,
+      "reliability_flag": "fragment_only"
+    },
+    {
+      "ring_mi": 5,
+      "intersecting_tract_count": 45,
+      "total_weight_captured": 23.19417790311404,
+      "whole_tract_count": 5,
+      "fragment_share": 0.7844286604644564,
+      "reliability_flag": "fragment_heavy"
+    }
+  ],
+  "skip_reasons": [
+    {
+      "metric": "households",
+      "reason": "No tract-grain values available for the configured market.",
+      "table_name": "housing_core_wide"
+    }
+  ],
+  "source_vintages": [
+    {
+      "metric_label": "Median household income",
+      "year": 2024,
+      "source_table": "economics_income_wide"
+    },
+    {
+      "metric_label": "Per-capita income",
+      "year": 2024,
+      "source_table": "economics_income_wide"
+    },
+    {
+      "metric_label": "Poverty rate",
+      "year": 2024,
+      "source_table": "economics_income_wide"
+    },
+    {
+      "metric_label": "Median gross rent",
+      "year": 2024,
+      "source_table": "housing_core_wide"
+    },
+    {
+      "metric_label": "Median home value",
+      "year": 2024,
+      "source_table": "housing_core_wide"
+    },
+    {
+      "metric_label": "Multifamily share",
+      "year": 2024,
+      "source_table": "housing_core_wide"
+    },
+    {
+      "metric_label": "Owner-occupied share",
+      "year": 2024,
+      "source_table": "housing_core_wide"
+    },
+    {
+      "metric_label": "Renter-occupied share",
+      "year": 2024,
+      "source_table": "housing_core_wide"
+    },
+    {
+      "metric_label": "Vacancy rate",
+      "year": 2024,
+      "source_table": "housing_core_wide"
+    },
+    {
+      "metric_label": "BA+ share",
+      "year": 2024,
+      "source_table": "population_demographics"
+    },
+    {
+      "metric_label": "Black non-Hispanic share",
+      "year": 2024,
+      "source_table": "population_demographics"
+    },
+    {
+      "metric_label": "Hispanic share",
+      "year": 2024,
+      "source_table": "population_demographics"
+    },
+    {
+      "metric_label": "Median age",
+      "year": 2024,
+      "source_table": "population_demographics"
+    },
+    {
+      "metric_label": "Population",
+      "year": 2024,
+      "source_table": "population_demographics"
+    },
+    {
+      "metric_label": "Share 65+",
+      "year": 2024,
+      "source_table": "population_demographics"
+    },
+    {
+      "metric_label": "Share under 18",
+      "year": 2024,
+      "source_table": "population_demographics"
+    },
+    {
+      "metric_label": "White non-Hispanic share",
+      "year": 2024,
+      "source_table": "population_demographics"
+    },
+    {
+      "metric_label": "Drive-alone share",
+      "year": 2024,
+      "source_table": "transport_built_form_wide"
+    },
+    {
+      "metric_label": "Mean travel time",
+      "year": 2024,
+      "source_table": "transport_built_form_wide"
+    },
+    {
+      "metric_label": "Work-from-home share",
+      "year": 2024,
+      "source_table": "transport_built_form_wide"
+    },
+    {
+      "metric_label": "Zero-vehicle household share",
+      "year": 2024,
+      "source_table": "transport_built_form_wide"
+    }
+  ],
+  "method_notes": [
+    "Catchment numbers are tract-apportioned using areal weights rather than centroid inclusion.",
+    "Straight-line rings remain the baseline context surface; the barrier screen is a heuristic, not a routing model.",
+    "D4 traffic counts and D5 FEMA layers stay fail-soft, so temporary source outages do not break the rest of the brief.",
+    "The Market tab is intentionally compact and is a candidate for a reusable Metro Deep Dive summary component."
+  ]
+}

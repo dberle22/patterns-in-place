@@ -1,0 +1,291 @@
+{
+  "employment_mix": [
+    {
+      "year": 2024,
+      "sector_id": "educ_health",
+      "sector_label": "Education and health",
+      "share_value": 0.2061453100768009,
+      "raw_value": 166820.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2024,
+      "sector_id": "professional",
+      "sector_label": "Professional services",
+      "share_value": 0.1350608908413501,
+      "raw_value": 109296.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2024,
+      "sector_id": "retail",
+      "sector_label": "Retail trade",
+      "share_value": 0.1214060192651084,
+      "raw_value": 98246.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2024,
+      "sector_id": "finance_real",
+      "sector_label": "Finance and real estate",
+      "share_value": 0.109238972609934,
+      "raw_value": 88400.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2024,
+      "sector_id": "arts_accomm_food",
+      "sector_label": "Arts, accommodation, and food",
+      "share_value": 0.0955939869135665,
+      "raw_value": 77358.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2024,
+      "sector_id": "construction",
+      "sector_label": "Construction",
+      "share_value": 0.0731604540090332,
+      "raw_value": 59204.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2024,
+      "sector_id": "transport_util",
+      "sector_label": "Transportation and utilities",
+      "share_value": 0.0711190198150104,
+      "raw_value": 57552.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2024,
+      "sector_id": "manufacturing",
+      "sector_label": "Manufacturing",
+      "share_value": 0.0532935426668396,
+      "raw_value": 43127.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2024,
+      "sector_id": "other_services",
+      "sector_label": "Other services",
+      "share_value": 0.0507751147688866,
+      "raw_value": 41089.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2024,
+      "sector_id": "public_admin",
+      "sector_label": "Public administration",
+      "share_value": 0.0439402645708601,
+      "raw_value": 35558.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2024,
+      "sector_id": "wholesale",
+      "sector_label": "Wholesale trade",
+      "share_value": 0.0225200343534325,
+      "raw_value": 18224.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2024,
+      "sector_id": "information",
+      "sector_label": "Information",
+      "share_value": 0.0143888981569012,
+      "raw_value": 11644.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2024,
+      "sector_id": "ag_mining",
+      "sector_label": "Agriculture and mining",
+      "share_value": 0.0033574919522759,
+      "raw_value": 2717.0,
+      "source": "gold.economics_industry_wide"
+    }
+  ],
+  "gdp_mix": [
+    {
+      "year": 2023,
+      "sector_id": "fire",
+      "sector_label": "Finance, insurance, and real estate",
+      "share_value": 0.2373005943222498,
+      "raw_value": 24845596000.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2023,
+      "sector_id": "professional",
+      "sector_label": "Professional services",
+      "share_value": 0.1390580407666433,
+      "raw_value": 14559508000.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2023,
+      "sector_id": "trade",
+      "sector_label": "Trade",
+      "share_value": 0.1176828178137803,
+      "raw_value": 12321502000.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2023,
+      "sector_id": "edu_health",
+      "sector_label": "Education and health",
+      "share_value": 0.1000161383455734,
+      "raw_value": 10471784000.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2023,
+      "sector_id": "gov",
+      "sector_label": "Government",
+      "share_value": 0.0954691974455282,
+      "raw_value": 9995715000.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2023,
+      "sector_id": "information",
+      "sector_label": "Information",
+      "share_value": 0.0668269243764117,
+      "raw_value": 6996842000.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2023,
+      "sector_id": "manufacturing",
+      "sector_label": "Manufacturing",
+      "share_value": 0.0588925927820917,
+      "raw_value": 6166110000.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2023,
+      "sector_id": "construction",
+      "sector_label": "Construction",
+      "share_value": 0.0491864433350901,
+      "raw_value": 5149867000.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2023,
+      "sector_id": "transportation",
+      "sector_label": "Transportation",
+      "share_value": 0.0479345443908752,
+      "raw_value": 5018792000.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2023,
+      "sector_id": "other",
+      "sector_label": "Other",
+      "share_value": 0.0449624603667609,
+      "raw_value": 104700943000.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2023,
+      "sector_id": "leisure",
+      "sector_label": "Leisure and hospitality",
+      "share_value": 0.0406945140885693,
+      "raw_value": 4260754000.0,
+      "source": "gold.economics_industry_wide"
+    },
+    {
+      "year": 2023,
+      "sector_id": "natural_resources",
+      "sector_label": "Natural resources",
+      "share_value": 0.0019757319664255,
+      "raw_value": 206861000.0,
+      "source": "gold.economics_industry_wide"
+    }
+  ],
+  "housing_context": [
+    {
+      "year": 2016,
+      "geo_name": "Jacksonville, FL",
+      "zhvi_annual_avg": 181009.11241894387,
+      "zori_annual_avg": 1075.62275331004,
+      "hpi_yoy_pct": 0.0820774663727563,
+      "zori_annual_avg_yoy_pct": NaN
+    },
+    {
+      "year": 2017,
+      "geo_name": "Jacksonville, FL",
+      "zhvi_annual_avg": 195533.55743944587,
+      "zori_annual_avg": 1122.06093433484,
+      "hpi_yoy_pct": 0.0782214646517139,
+      "zori_annual_avg_yoy_pct": 0.0431732974055211
+    },
+    {
+      "year": 2018,
+      "geo_name": "Jacksonville, FL",
+      "zhvi_annual_avg": 212454.3299993952,
+      "zori_annual_avg": 1181.702798096387,
+      "hpi_yoy_pct": 0.0868517447464815,
+      "zori_annual_avg_yoy_pct": 0.0531538546049665
+    },
+    {
+      "year": 2019,
+      "geo_name": "Jacksonville, FL",
+      "zhvi_annual_avg": 225759.6948396736,
+      "zori_annual_avg": 1233.4308302874454,
+      "hpi_yoy_pct": 0.0549711751662971,
+      "zori_annual_avg_yoy_pct": 0.0437741471666035
+    },
+    {
+      "year": 2020,
+      "geo_name": "Jacksonville, FL",
+      "zhvi_annual_avg": 239528.99910323217,
+      "zori_annual_avg": 1288.24307317667,
+      "hpi_yoy_pct": 0.0469448834784947,
+      "zori_annual_avg_yoy_pct": 0.0444388461381744
+    },
+    {
+      "year": 2021,
+      "geo_name": "Jacksonville, FL",
+      "zhvi_annual_avg": 280654.0000380917,
+      "zori_annual_avg": 1510.28685403278,
+      "hpi_yoy_pct": 0.1563935374040407,
+      "zori_annual_avg_yoy_pct": 0.1723617114498227
+    },
+    {
+      "year": 2022,
+      "geo_name": "Jacksonville, FL",
+      "zhvi_annual_avg": 350540.06697972835,
+      "zori_annual_avg": 1677.5364391266096,
+      "hpi_yoy_pct": 0.2171407144047553,
+      "zori_annual_avg_yoy_pct": 0.1107402773501196
+    },
+    {
+      "year": 2023,
+      "geo_name": "Jacksonville, FL",
+      "zhvi_annual_avg": 357315.19113412825,
+      "zori_annual_avg": 1718.5259956030975,
+      "hpi_yoy_pct": 0.0665000741678932,
+      "zori_annual_avg_yoy_pct": 0.0244343762200652
+    },
+    {
+      "year": 2024,
+      "geo_name": "Jacksonville, FL",
+      "zhvi_annual_avg": 359487.49897229066,
+      "zori_annual_avg": 1739.143897730701,
+      "hpi_yoy_pct": 0.0231311585907325,
+      "zori_annual_avg_yoy_pct": 0.0119974339523258
+    },
+    {
+      "year": 2025,
+      "geo_name": "Jacksonville, FL",
+      "zhvi_annual_avg": 350135.17335589963,
+      "zori_annual_avg": 1762.8776042569484,
+      "hpi_yoy_pct": 0.0053749385646613,
+      "zori_annual_avg_yoy_pct": 0.013646775610239
+    }
+  ],
+  "meta": {
+    "candidate_note": "The Market tab is intentionally compact and remains a candidate for a reusable Metro Deep Dive summary component."
+  }
+}

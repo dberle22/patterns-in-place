@@ -1,0 +1,15 @@
+Draft Felten crosswalk review notes
+
+Method:
+- Start from the currently unmatched Richmond D6 NAICS and SOC rows.
+- Keep the coarse code family fixed first: NAICS 2-digit prefix, SOC major-group 2-digit prefix.
+- Rank Felten title candidates by normalized string similarity.
+- Treat this as a review aid, not a governed concordance.
+
+Why this exists:
+- Official BLS SOC and Census NAICS concordances are the preferred primary sources for a governed crosswalk.
+- This draft creates a one-time human-review appendix surface while those concordances are still outside the current repo.
+
+Outputs:
+- draft_felten_naics_name_review_richmond_2024.csv
+- draft_felten_soc_name_review_richmond_2025.csv

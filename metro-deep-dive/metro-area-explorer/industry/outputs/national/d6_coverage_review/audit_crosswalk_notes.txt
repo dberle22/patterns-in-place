@@ -1,0 +1,20 @@
+Felten audit crosswalk notes
+
+These audit CSVs are review artifacts, not final governed concordances.
+They use national employment weights, not Richmond-only weights.
+Each row shows our code/name, the currently matched Felten code/name when one exists, and audit status.
+
+Audit statuses:
+- matched: current D6 join already links the pair
+- unmatched_our_code: our code has no current Felten match; candidate columns suggest review targets
+- unmatched_felten_code: a Felten code appears as a review candidate but is not currently used by the D6 join
+
+Use:
+- Confirm existing matches
+- Fill in manual one-time overrides for unmatched rows
+- Preserve the review trail for an appendix or methods note
+
+Post-recommendation scenario files assume every current `recommend_match = True` row is accepted.
+Remaining gap files show the unresolved unmatched-our-code rows after that scenario is applied.
+Review queue files classify those remaining gaps into likely manual accepts, needs-user-choice rows, and leave-unmatched-for-now rows.
+Final crosswalk files are the app-facing resolved shape built from current matched rows plus locked manual overrides.

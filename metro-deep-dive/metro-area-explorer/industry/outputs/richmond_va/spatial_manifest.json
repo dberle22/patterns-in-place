@@ -1,0 +1,115 @@
+{
+  "market_id": "40060",
+  "bbox": {
+    "west": -78.290703,
+    "south": 36.657218,
+    "east": -76.59564400000001,
+    "north": 38.058167999999995
+  },
+  "extract_date": "2026-07-29T02:21:53+00:00",
+  "layers": [
+    {
+      "source": "overture",
+      "layer_name": "overture_pois",
+      "geometry_type": "mixed",
+      "row_count": 76913,
+      "query_config": {
+        "path": "s3://overturemaps-us-west-2/release/2026-06-17.0/theme=places/*/*"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "osm",
+      "layer_name": "major_roads",
+      "geometry_type": "line",
+      "row_count": 16572,
+      "query_config": {
+        "method": "osmextract",
+        "provider": "openstreetmap_fr"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "osm",
+      "layer_name": "highways",
+      "geometry_type": "line",
+      "row_count": 5300,
+      "query_config": {
+        "method": "osmextract",
+        "provider": "openstreetmap_fr"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "osm",
+      "layer_name": "rail",
+      "geometry_type": "line",
+      "row_count": 1374,
+      "query_config": {
+        "method": "osmextract",
+        "provider": "openstreetmap_fr"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "osm",
+      "layer_name": "airports",
+      "geometry_type": "point",
+      "row_count": 51,
+      "query_config": {
+        "method": "osmextract",
+        "provider": "openstreetmap_fr"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "osm",
+      "layer_name": "ports",
+      "geometry_type": "point",
+      "row_count": 6,
+      "query_config": {
+        "method": "osmextract",
+        "provider": "openstreetmap_fr"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "osm",
+      "layer_name": "warehouses_logistics",
+      "geometry_type": "polygon",
+      "row_count": 114,
+      "query_config": {
+        "method": "osmextract",
+        "provider": "openstreetmap_fr"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "osm",
+      "layer_name": "airports",
+      "geometry_type": "polygon",
+      "row_count": 64,
+      "query_config": {
+        "method": "osmextract",
+        "provider": "openstreetmap_fr"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "osm",
+      "layer_name": "ports",
+      "geometry_type": "polygon",
+      "row_count": 1,
+      "query_config": {
+        "method": "osmextract",
+        "provider": "openstreetmap_fr"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    }
+  ],
+  "notes": [
+    "OSM infrastructure promoted from the Richmond osmextract run.",
+    "OSM source path: openstreetmap_fr Richmond provider extract.",
+    "Promoted from: /Users/danberle/Documents/projects/patterns_in_place/metro-deep-dive/metro-area-explorer/industry/outputs/richmond_va_osmextract"
+  ]
+}

@@ -1,0 +1,12 @@
+site_id: jacksonville_fl_baymeadows_v0
+address: 3832 Baymeadows Road, Jacksonville, FL 32217
+lat: 30.217618577902
+lon: -81.616679103522
+geocode_source: manual_override
+market_id: "27260"
+asset_type: retail
+rings_mi:
+  - 1
+  - 3
+  - 5
+primary_ring_mi: 3

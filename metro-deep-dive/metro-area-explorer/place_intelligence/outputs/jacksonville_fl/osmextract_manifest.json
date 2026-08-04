@@ -1,0 +1,76 @@
+{
+  "market_id": "jacksonville_fl",
+  "source": "osmextract",
+  "provider": "openstreetmap_fr",
+  "place": "Jacksonville, Florida",
+  "extract_date": "2026-08-01T02:48:37Z",
+  "layers": [
+    {
+      "source": "osm",
+      "layer_name": "major_roads",
+      "geometry_type": "line",
+      "row_count": 15926
+    },
+    {
+      "source": "osm",
+      "layer_name": "highways",
+      "geometry_type": "line",
+      "row_count": 7227
+    },
+    {
+      "source": "osm",
+      "layer_name": "rail",
+      "geometry_type": "line",
+      "row_count": 1632
+    },
+    {
+      "source": "osm",
+      "layer_name": "water",
+      "geometry_type": "line",
+      "row_count": 646
+    },
+    {
+      "source": "osm",
+      "layer_name": "airports",
+      "geometry_type": "point",
+      "row_count": 27
+    },
+    {
+      "source": "osm",
+      "layer_name": "ports",
+      "geometry_type": "point",
+      "row_count": 7
+    },
+    {
+      "source": "osm",
+      "layer_name": "warehouses_logistics",
+      "geometry_type": "point",
+      "row_count": 2
+    },
+    {
+      "source": "osm",
+      "layer_name": "water",
+      "geometry_type": "polygon",
+      "row_count": 19892
+    },
+    {
+      "source": "osm",
+      "layer_name": "warehouses_logistics",
+      "geometry_type": "polygon",
+      "row_count": 202
+    },
+    {
+      "source": "osm",
+      "layer_name": "airports",
+      "geometry_type": "polygon",
+      "row_count": 81
+    },
+    {
+      "source": "osm",
+      "layer_name": "ports",
+      "geometry_type": "polygon",
+      "row_count": 26
+    }
+  ],
+  "notes": ["Matched provider openstreetmap_fr extract: http://download.openstreetmap.fr/extracts/north-america/us-south/florida/northeast-latest.osm.pbf", "Reported source file size: 64886477 bytes", "Cached GeoPackage path: /Users/danberle/Documents/projects/patterns_in_place/metro-deep-dive/metro-area-explorer/place_intelligence/outputs/jacksonville_fl/raw/openstreetmap_fr_northeast-latest.gpkg"]
+}

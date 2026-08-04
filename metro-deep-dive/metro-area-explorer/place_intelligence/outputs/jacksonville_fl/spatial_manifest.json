@@ -1,0 +1,148 @@
+{
+  "market_id": "27260",
+  "bbox": {
+    "west": -82.5097918101678,
+    "south": 29.572432,
+    "east": -81.1628778426699,
+    "north": 30.879922
+  },
+  "extract_date": "2026-08-01T02:52:08+00:00",
+  "layers": [
+    {
+      "source": "overture",
+      "layer_name": "overture_pois",
+      "geometry_type": "mixed",
+      "row_count": 107489,
+      "query_config": {
+        "path": "s3://overturemaps-us-west-2/release/2026-06-17.0/theme=places/*/*"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "osm",
+      "layer_name": "major_roads",
+      "geometry_type": "line",
+      "row_count": 15926,
+      "query_config": {
+        "method": "osmextract",
+        "provider": "openstreetmap_fr"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "osm",
+      "layer_name": "highways",
+      "geometry_type": "line",
+      "row_count": 7227,
+      "query_config": {
+        "method": "osmextract",
+        "provider": "openstreetmap_fr"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "osm",
+      "layer_name": "rail",
+      "geometry_type": "line",
+      "row_count": 1632,
+      "query_config": {
+        "method": "osmextract",
+        "provider": "openstreetmap_fr"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "osm",
+      "layer_name": "water",
+      "geometry_type": "line",
+      "row_count": 646,
+      "query_config": {
+        "method": "osmextract",
+        "provider": "openstreetmap_fr"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "osm",
+      "layer_name": "airports",
+      "geometry_type": "point",
+      "row_count": 27,
+      "query_config": {
+        "method": "osmextract",
+        "provider": "openstreetmap_fr"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "osm",
+      "layer_name": "ports",
+      "geometry_type": "point",
+      "row_count": 7,
+      "query_config": {
+        "method": "osmextract",
+        "provider": "openstreetmap_fr"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "osm",
+      "layer_name": "warehouses_logistics",
+      "geometry_type": "point",
+      "row_count": 2,
+      "query_config": {
+        "method": "osmextract",
+        "provider": "openstreetmap_fr"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "osm",
+      "layer_name": "water",
+      "geometry_type": "polygon",
+      "row_count": 19892,
+      "query_config": {
+        "method": "osmextract",
+        "provider": "openstreetmap_fr"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "osm",
+      "layer_name": "warehouses_logistics",
+      "geometry_type": "polygon",
+      "row_count": 202,
+      "query_config": {
+        "method": "osmextract",
+        "provider": "openstreetmap_fr"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "osm",
+      "layer_name": "airports",
+      "geometry_type": "polygon",
+      "row_count": 81,
+      "query_config": {
+        "method": "osmextract",
+        "provider": "openstreetmap_fr"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    },
+    {
+      "source": "osm",
+      "layer_name": "ports",
+      "geometry_type": "polygon",
+      "row_count": 26,
+      "query_config": {
+        "method": "osmextract",
+        "provider": "openstreetmap_fr"
+      },
+      "notes_on_sparse_or_missing_layers": ""
+    }
+  ],
+  "notes": [
+    "OSM infrastructure normalized from the Jacksonville osmextract GeoPackage.",
+    "OSM source path: /Users/danberle/Documents/projects/patterns_in_place/metro-deep-dive/metro-area-explorer/place_intelligence/outputs/jacksonville_fl/raw/openstreetmap_fr_northeast-latest.gpkg",
+    "Source footprint matched the Northeast Florida provider extract; review remains scoped to Jacksonville rings at analysis time."
+  ]
+}

@@ -1,0 +1,14 @@
+Felten audit crosswalk notes
+
+These audit CSVs are review artifacts, not final governed concordances.
+Each row shows our code/name, the currently matched Felten code/name when one exists, and audit status.
+
+Audit statuses:
+- matched: current D6 join already links the pair
+- unmatched_our_code: our Richmond code has no current Felten match; candidate columns suggest review targets
+- unmatched_felten_code: a Felten code appears as a review candidate but is not currently used by the D6 join
+
+Use:
+- Confirm existing matches
+- Fill in manual one-time overrides for unmatched rows
+- Preserve the review trail for an appendix or methods note
