@@ -13,7 +13,7 @@ National-weighted audit surface for the Industry D6 Felten joins.
 ## Current National NAICS Audit Status
 
 - `matched`: 255 rows, 96.8% of national detailed NAICS employment
-- `unmatched_felten_code`: 14 rows, 0.0% of national detailed NAICS employment
+- `unmatched_felten_code`: 15 rows, 0.0% of national detailed NAICS employment
 - `unmatched_our_code`: 46 rows, 3.2% of national detailed NAICS employment
 
 ## Current National SOC Audit Status
@@ -42,7 +42,7 @@ Assumption: accept every current `recommend_match = True` row as a one-time revi
 
 - `matched`: 255 rows, 96.8% of national detailed NAICS employment
 - `matched_via_recommendation`: 16 rows, 0.9% of national detailed NAICS employment
-- `unmatched_felten_code`: 14 rows, 0.0% of national detailed NAICS employment
+- `unmatched_felten_code`: 15 rows, 0.0% of national detailed NAICS employment
 - `unmatched_our_code`: 30 rows, 2.4% of national detailed NAICS employment
 
 ### SOC After Applying Recommendations

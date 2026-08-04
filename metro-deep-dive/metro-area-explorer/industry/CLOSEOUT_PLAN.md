@@ -205,6 +205,8 @@ Expected total: roughly `9–16` working days depending on how clean the first-p
 
 ### Phase 5 — Validation and closeout
 
+**Status:** Complete on 2026-08-02
+
 **Goal:** Close the section cleanly once the remaining analytical work lands.
 
 **Build tasks**
@@ -221,6 +223,12 @@ Expected total: roughly `9–16` working days depending on how clean the first-p
 - Programmatic validation passes for the changed pages and prep logic.
 - Visual review confirms the pages read as one coherent section rather than isolated widgets.
 - The remaining open decisions in `SPEC.md` match reality.
+
+**Closeout notes**
+
+- D6 now reads through final reviewed Felten NAICS/SOC crosswalk CSVs rather than a raw first-pass join path.
+- Locked manual override files and final app-facing crosswalk outputs live in `industry/outputs/national/d6_coverage_review/`.
+- Targeted validation passed on 2026-08-02 via `.venv312/bin/python -m pytest metro-deep-dive/tests/test_industry_d6.py`.
 
 ## Suggested task breakdown for separate agent turns
 

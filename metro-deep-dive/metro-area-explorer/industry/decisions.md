@@ -156,3 +156,12 @@
 - **Key decisions made:** kept the occupation companion on `silver.bls_oews` detailed `2025` SOC rows, added the requested ranked table plus bubble-scatter companion, and treated the remaining unmatched share as a transparent SOC-vintage limitation rather than inventing a synthetic crosswalk
 - **Key decisions made:** shipped D6 as one dedicated page with a sector/occupation toggle and a dropdown explanation companion that exposes the underlying 4-digit industry rows and coverage notes
 - **Notes:** targeted validation passed on Thursday, July 30, 2026 via `.venv312/bin/python -m pytest metro-deep-dive/tests/test_industry_d6.py metro-deep-dive/tests/test_industry_d1.py metro-deep-dive/tests/test_industry_d4.py metro-deep-dive/tests/test_industry_d5.py`; first-pass Richmond coverage now lands around `85%` for the sector join after the NAICS fallback map and about `77%` for the occupation join with explicit SOC-vintage notes in the UI
+
+## 2026-08-02 — Finalize D6 reviewed Felten crosswalk workflow
+- **Agent / model:** Codex GPT-5
+- **Turns / iterations:** 1 implementation pass to lock reviewed NAICS/SOC decisions into runtime crosswalks
+- **Key decisions made:** preserved the raw Felten appendix inputs as the canonical score source, but promoted reviewed final NAICS and SOC crosswalk CSVs into the app-facing runtime join shape
+- **Key decisions made:** locked section-owned manual override artifacts for both code systems and generated final resolved crosswalk tables in `industry/outputs/national/d6_coverage_review/`
+- **Key decisions made:** updated D6 runtime prep to join `our_code -> final_felten_code -> Felten score` rather than relying on the earlier first-pass audit join logic
+- **Key decisions made:** tightened the NAICS audit candidate logic so structurally missing Felten concepts stay transparent instead of surfacing unrelated global title-similarity matches
+- **Notes:** targeted validation passed on Sunday, August 2, 2026 via `.venv312/bin/python -m pytest metro-deep-dive/tests/test_industry_d6.py`; D6 now uses the reviewed final crosswalk shape for both the sector scorecard and the occupation companion while preserving the full audit trail beside it

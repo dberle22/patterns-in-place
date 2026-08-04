@@ -29,6 +29,8 @@ OUTPUT_DIR = SECTION_ROOT / "outputs" / "national" / "d6_coverage_review"
 NAICS_YEAR = 2024
 SOC_YEAR = 2025
 SOC_CROSSWALK_PATH = OUTPUT_DIR / "soc_2010_to_2018_crosswalk.xlsx"
+FINAL_NAICS_CROSSWALK_PATH = OUTPUT_DIR / "felten_naics_crosswalk_final.csv"
+FINAL_SOC_CROSSWALK_PATH = OUTPUT_DIR / "felten_soc_crosswalk_final.csv"
 
 
 def _load_data_prep():
@@ -162,6 +164,131 @@ def _top_title_candidates(
             }
         )
     return out
+
+
+def _top_title_candidates_from_scope(
+    source_title: str,
+    candidates: pd.DataFrame,
+    code_column: str,
+    title_column: str,
+    score_column: str | None,
+    score_floor: float = 0.20,
+    top_n: int = 3,
+) -> list[dict[str, object]]:
+    """Rank candidates from an already-scoped subset without global fallback."""
+    if candidates.empty:
+        return []
+
+    normalized_source = _normalize_title(source_title)
+    scoped = candidates.copy()
+    scoped["normalized_title"] = scoped[title_column].map(_normalize_title)
+    scoped["match_score"] = scoped["normalized_title"].map(lambda value: _score_titles(normalized_source, value))
+    scoped = scoped.sort_values(["match_score", code_column], ascending=[False, True], kind="mergesort")
+    scoped = scoped[scoped["match_score"] >= score_floor].head(top_n)
+
+    out: list[dict[str, object]] = []
+    for _, row in scoped.iterrows():
+        out.append(
+            {
+                "candidate_code": row[code_column],
+                "candidate_title": row[title_column],
+                "candidate_score": float(row["match_score"]),
+                "candidate_felten_score": row[score_column] if score_column else pd.NA,
+            }
+        )
+    return out
+
+
+def _naics_override_candidate_codes(source_code: str) -> list[str]:
+    """Return transparent NAICS proxy candidates for appendix families Felten does not carry directly."""
+    code = str(source_code)
+    if code in {"4572", "8141", "9999"}:
+        return []
+    if code.startswith("111"):
+        return ["1151"]
+    if code.startswith("112"):
+        return ["1152"]
+    if code in {"1131", "1132"}:
+        return ["1133", "1151"]
+    if code in {"1141", "1142"}:
+        return []
+    if code == "5162":
+        return ["5152", "5191"]
+    return []
+
+
+def _naics_unmatched_candidates(source_code: str, source_title: str, felten_rows: pd.DataFrame) -> list[dict[str, object]]:
+    """Build NAICS review candidates without falling back to unrelated global title matches."""
+    code = str(source_code)
+    if code in {"4572", "8141", "9999", "1141", "1142"}:
+        return []
+    three_digit_scope = felten_rows[felten_rows["felten_code"].astype(str).str.startswith(code[:3])].copy()
+    three_digit = _top_title_candidates_from_scope(
+        source_title=source_title,
+        candidates=three_digit_scope,
+        code_column="felten_code",
+        title_column="felten_name",
+        score_column="felten_score",
+        score_floor=0.20,
+    )
+    if three_digit:
+        return three_digit
+
+    if code[:2] in {"44", "45"}:
+        retail_scope = felten_rows[felten_rows["felten_code"].astype(str).str[:2].isin(["44", "45"])].copy()
+        retail_candidates = _top_title_candidates_from_scope(
+            source_title=source_title,
+            candidates=retail_scope,
+            code_column="felten_code",
+            title_column="felten_name",
+            score_column="felten_score",
+            score_floor=0.35,
+        )
+        if retail_candidates:
+            return retail_candidates
+
+    override_codes = _naics_override_candidate_codes(code)
+    if override_codes:
+        override_scope = felten_rows[felten_rows["felten_code"].astype(str).isin(override_codes)].copy()
+        if not override_scope.empty:
+            override_scope["override_rank"] = override_scope["felten_code"].astype(str).map(
+                {code: idx for idx, code in enumerate(override_codes)}
+            )
+            override_scope["normalized_title"] = override_scope["felten_name"].map(_normalize_title)
+            override_scope["match_score"] = override_scope["normalized_title"].map(
+                lambda value: _score_titles(_normalize_title(source_title), value)
+            )
+            override_scope = override_scope.sort_values(
+                ["override_rank", "match_score", "felten_code"],
+                ascending=[True, False, True],
+                kind="mergesort",
+            ).head(3)
+            override_candidates = [
+                {
+                    "candidate_code": row["felten_code"],
+                    "candidate_title": row["felten_name"],
+                    "candidate_score": float(row["match_score"]),
+                    "candidate_felten_score": row["felten_score"],
+                }
+                for _, row in override_scope.iterrows()
+            ]
+        else:
+            override_candidates = []
+        if override_candidates:
+            return override_candidates
+
+    two_digit_scope = felten_rows[felten_rows["felten_code"].astype(str).str.startswith(code[:2])].copy()
+    if not two_digit_scope.empty and code[:2] not in {"11", "44", "45"}:
+        return _top_title_candidates_from_scope(
+            source_title=source_title,
+            candidates=two_digit_scope,
+            code_column="felten_code",
+            title_column="felten_name",
+            score_column="felten_score",
+            score_floor=0.35,
+        )
+
+    return []
 
 
 def _candidate_columns(record: dict[str, object], candidates: list[dict[str, object]]) -> dict[str, object]:
@@ -333,14 +460,10 @@ def _build_naics_audit(mod) -> pd.DataFrame:
             used_felten_codes.add(str(row["felten_code"]))
             record = _candidate_columns(record, [])
         else:
-            candidates = _top_title_candidates(
+            candidates = _naics_unmatched_candidates(
                 source_code=row["our_code"],
                 source_title=row["our_name"],
-                candidates=felten_rows,
-                code_prefix_len=3,
-                code_column="felten_code",
-                title_column="felten_name",
-                score_column="felten_score",
+                felten_rows=felten_rows,
             )
             unmatched_candidate_codes.update(str(candidate["candidate_code"]) for candidate in candidates)
             record = _candidate_columns(record, candidates)
@@ -705,6 +828,72 @@ def _build_remaining_review_queue(rows: pd.DataFrame, kind: str) -> pd.DataFrame
     )
 
 
+def _build_final_crosswalk(
+    audit_rows: pd.DataFrame,
+    locked_overrides_path: Path,
+    kind: str,
+) -> pd.DataFrame:
+    """Build the app-facing final crosswalk from direct matches plus locked overrides."""
+    if kind == "soc":
+        our_code_col = "our_soc_code"
+        felten_code_col = "felten_soc_code"
+        felten_name_col = "felten_soc_name"
+    else:
+        our_code_col = "our_naics_code"
+        felten_code_col = "felten_naics_code"
+        felten_name_col = "felten_naics_name"
+
+    base_rows = audit_rows[audit_rows["audit_status"] == "matched"].copy()
+    base_rows = base_rows[
+        ["our_code", "our_name", "felten_code", "felten_name", "felten_score"]
+    ].copy()
+    base_rows["match_basis"] = "direct_or_fallback_map"
+    base_rows["manual_notes"] = pd.NA
+    base_rows["review_source"] = pd.NA
+
+    override_rows = pd.DataFrame(
+        columns=[
+            "our_code",
+            "our_name",
+            "felten_code",
+            "felten_name",
+            "felten_score",
+            "match_basis",
+            "manual_notes",
+            "review_source",
+        ]
+    )
+    if locked_overrides_path.exists():
+        override_rows = pd.read_csv(locked_overrides_path, dtype=str).fillna(pd.NA)
+        if not override_rows.empty:
+            override_rows = override_rows.rename(
+                columns={
+                    "selected_felten_code": "felten_code",
+                    "selected_felten_name": "felten_name",
+                    "selected_felten_score": "felten_score",
+                }
+            )
+            override_rows = override_rows[["our_code", "our_name", "felten_code", "felten_name", "felten_score", "manual_notes"]].copy()
+            override_rows["match_basis"] = "manual_override"
+            override_rows["review_source"] = f"felten_d6_manual_review_{kind}_{'2025' if kind == 'soc' else '2024'}"
+
+    combined = pd.concat([base_rows, override_rows], ignore_index=True)
+    combined["our_code"] = combined["our_code"].astype(str).str.strip()
+    combined["felten_code"] = combined["felten_code"].astype(str).str.strip()
+    combined = combined[combined["our_code"] != ""].copy()
+    combined = combined.drop_duplicates(subset=["our_code"], keep="last").copy()
+    combined = combined.rename(
+        columns={
+            "our_code": our_code_col,
+            "our_name": "our_name",
+            "felten_code": felten_code_col,
+            "felten_name": felten_name_col,
+            "felten_score": "felten_score",
+        }
+    )
+    return combined.sort_values(our_code_col, kind="mergesort").reset_index(drop=True)
+
+
 def _write_markdown_summary(
     naics_audit: pd.DataFrame,
     soc_audit: pd.DataFrame,
@@ -849,6 +1038,8 @@ def main() -> None:
     soc_remaining_path = OUTPUT_DIR / "remaining_felten_soc_gaps_national_2025.csv"
     naics_review_path = OUTPUT_DIR / "remaining_felten_naics_review_queue_national_2024.csv"
     soc_review_path = OUTPUT_DIR / "remaining_felten_soc_review_queue_national_2025.csv"
+    locked_naics_path = OUTPUT_DIR / "locked_felten_naics_manual_overrides_national_2024.csv"
+    locked_soc_path = OUTPUT_DIR / "locked_felten_soc_manual_overrides_national_2025.csv"
     notes_path = OUTPUT_DIR / "audit_crosswalk_notes.txt"
     naics_recs = _recommend_from_candidates(naics_audit, kind="naics")
     soc_recs = _recommend_from_candidates(soc_audit, kind="soc")
@@ -858,6 +1049,8 @@ def main() -> None:
     soc_remaining = soc_post[soc_post["post_review_status"] == "unmatched_our_code"].copy()
     naics_review = _build_remaining_review_queue(naics_remaining, kind="naics")
     soc_review = _build_remaining_review_queue(soc_remaining, kind="soc")
+    final_naics_crosswalk = _build_final_crosswalk(naics_audit, locked_naics_path, kind="naics")
+    final_soc_crosswalk = _build_final_crosswalk(soc_audit, locked_soc_path, kind="soc")
 
     naics_audit.to_csv(naics_path, index=False)
     soc_audit.to_csv(soc_path, index=False)
@@ -869,6 +1062,8 @@ def main() -> None:
     soc_remaining.to_csv(soc_remaining_path, index=False)
     naics_review.to_csv(naics_review_path, index=False)
     soc_review.to_csv(soc_review_path, index=False)
+    final_naics_crosswalk.to_csv(FINAL_NAICS_CROSSWALK_PATH, index=False)
+    final_soc_crosswalk.to_csv(FINAL_SOC_CROSSWALK_PATH, index=False)
     notes_path.write_text(
         "\n".join(
             [
@@ -891,6 +1086,7 @@ def main() -> None:
                 "Post-recommendation scenario files assume every current `recommend_match = True` row is accepted.",
                 "Remaining gap files show the unresolved unmatched-our-code rows after that scenario is applied.",
                 "Review queue files classify those remaining gaps into likely manual accepts, needs-user-choice rows, and leave-unmatched-for-now rows.",
+                "Final crosswalk files are the app-facing resolved shape built from current matched rows plus locked manual overrides.",
             ]
         )
         + "\n",
@@ -908,6 +1104,8 @@ def main() -> None:
     print(soc_remaining_path)
     print(naics_review_path)
     print(soc_review_path)
+    print(FINAL_NAICS_CROSSWALK_PATH)
+    print(FINAL_SOC_CROSSWALK_PATH)
     print(notes_path)
     print(OUTPUT_DIR / "audit_crosswalk_analysis.md")
 

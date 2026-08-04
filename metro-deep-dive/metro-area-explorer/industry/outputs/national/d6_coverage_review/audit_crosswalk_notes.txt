@@ -17,3 +17,4 @@ Use:
 Post-recommendation scenario files assume every current `recommend_match = True` row is accepted.
 Remaining gap files show the unresolved unmatched-our-code rows after that scenario is applied.
 Review queue files classify those remaining gaps into likely manual accepts, needs-user-choice rows, and leave-unmatched-for-now rows.
+Final crosswalk files are the app-facing resolved shape built from current matched rows plus locked manual overrides.

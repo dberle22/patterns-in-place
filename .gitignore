@@ -68,6 +68,8 @@ foundations/visual_library/charts/**/sample_output/
 foundations/data_dictionary/artifacts/
 exploration/**/outputs/
 exploration/**/cache/
+metro-deep-dive/metro-area-explorer/place_intelligence/outputs/jacksonville_fl/site_artifacts/
+metro-deep-dive/metro-area-explorer/place_intelligence/outputs/jacksonville_fl/market_artifacts/
 
 # ── Chart engine local artifacts ─────────────────────────────────────────────
 foundations/visual_library/chart_engine_py/chart_engine.egg-info/

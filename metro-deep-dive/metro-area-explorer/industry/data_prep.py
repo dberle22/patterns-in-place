@@ -41,6 +41,9 @@ D6_OCCUPATION_TARGET_YEAR = 2025
 FELTEN_REFERENCE_ROOT = Path(__file__).resolve().parent / "reference_data"
 FELTEN_WORKBOOK_PATH = FELTEN_REFERENCE_ROOT / "AIOE_DataAppendix.xlsx"
 FELTEN_WORKBOOK_URL = "https://github.com/AIOE-Data/AIOE/blob/main/AIOE_DataAppendix.xlsx"
+FELTEN_COVERAGE_REVIEW_ROOT = Path(__file__).resolve().parent / "outputs" / "national" / "d6_coverage_review"
+FELTEN_NAICS_FINAL_CROSSWALK_PATH = FELTEN_COVERAGE_REVIEW_ROOT / "felten_naics_crosswalk_final.csv"
+FELTEN_SOC_FINAL_CROSSWALK_PATH = FELTEN_COVERAGE_REVIEW_ROOT / "felten_soc_crosswalk_final.csv"
 
 EMPLOYMENT_SECTORS = [
     ("ag_mining", "Agriculture & Mining"),
@@ -524,6 +527,58 @@ def get_felten_appendix_b() -> pd.DataFrame:
             aiie_score=("aiie_score", "mean"),
         )
     )
+    return rows
+
+
+@lru_cache(maxsize=None)
+def get_felten_naics_crosswalk_final() -> pd.DataFrame:
+    """Return the final app-facing NAICS crosswalk built from audit outputs."""
+    if not FELTEN_NAICS_FINAL_CROSSWALK_PATH.exists():
+        return pd.DataFrame(
+            columns=[
+                "our_naics_code",
+                "our_name",
+                "felten_naics_code",
+                "felten_naics_name",
+                "felten_score",
+                "match_basis",
+                "manual_notes",
+                "review_source",
+            ]
+        )
+
+    rows = pd.read_csv(FELTEN_NAICS_FINAL_CROSSWALK_PATH, dtype=str).copy()
+    if rows.empty:
+        return rows
+    rows["our_naics_code"] = rows["our_naics_code"].astype(str).str.strip()
+    rows["felten_naics_code"] = rows["felten_naics_code"].astype(str).str.strip()
+    rows["felten_score"] = pd.to_numeric(rows["felten_score"], errors="coerce")
+    return rows
+
+
+@lru_cache(maxsize=None)
+def get_felten_soc_crosswalk_final() -> pd.DataFrame:
+    """Return the final app-facing SOC crosswalk built from audit outputs."""
+    if not FELTEN_SOC_FINAL_CROSSWALK_PATH.exists():
+        return pd.DataFrame(
+            columns=[
+                "our_soc_code",
+                "our_name",
+                "felten_soc_code",
+                "felten_soc_name",
+                "felten_score",
+                "match_basis",
+                "manual_notes",
+                "review_source",
+            ]
+        )
+
+    rows = pd.read_csv(FELTEN_SOC_FINAL_CROSSWALK_PATH, dtype=str).copy()
+    if rows.empty:
+        return rows
+    rows["our_soc_code"] = rows["our_soc_code"].astype(str).str.strip()
+    rows["felten_soc_code"] = rows["felten_soc_code"].astype(str).str.strip()
+    rows["felten_score"] = pd.to_numeric(rows["felten_score"], errors="coerce")
     return rows
 
 
@@ -3378,6 +3433,7 @@ def get_d6_sector_scorecard_payload(
     right 4-digit grain without forcing a wider platform contract first.
     """
     appendix_b = get_felten_appendix_b()
+    final_crosswalk = get_felten_naics_crosswalk_final()
     if appendix_b.empty:
         return {
             "selected_year": int(year),
@@ -3431,12 +3487,30 @@ def get_d6_sector_scorecard_payload(
             "summary": None,
         }
 
-    detail_rows["felten_industry_code"] = detail_rows["industry_code"].map(_get_felten_industry_join_code)
-    detail_rows = detail_rows.merge(
-        appendix_b.rename(columns={"industry_code": "felten_industry_code"}),
-        on="felten_industry_code",
-        how="left",
-    )
+    if final_crosswalk.empty:
+        detail_rows["felten_industry_code"] = detail_rows["industry_code"].map(_get_felten_industry_join_code)
+        detail_rows = detail_rows.merge(
+            appendix_b.rename(columns={"industry_code": "felten_industry_code"}),
+            on="felten_industry_code",
+            how="left",
+        )
+        detail_rows["match_basis"] = pd.NA
+        detail_rows["manual_notes"] = pd.NA
+        coverage_note_suffix = "after a small NAICS-vintage fallback map for known code revisions and aggregate appendix rows."
+    else:
+        detail_rows = detail_rows.merge(
+            final_crosswalk.rename(
+                columns={
+                    "our_naics_code": "industry_code",
+                    "felten_naics_code": "felten_industry_code",
+                    "felten_naics_name": "industry_title_felten",
+                    "felten_score": "aiie_score",
+                }
+            ),
+            on="industry_code",
+            how="left",
+        )
+        coverage_note_suffix = "after applying the final reviewed NAICS crosswalk."
     detail_rows["sector_id"] = detail_rows["industry_code"].map(_map_naics4_to_d1_sector)
     detail_rows["sector_label"] = detail_rows["sector_id"].map(_sector_label_lookup())
     detail_rows["employment_share_of_detail"] = detail_rows["annual_avg_emplvl"] / detail_rows["annual_avg_emplvl"].sum()
@@ -3529,7 +3603,7 @@ def get_d6_sector_scorecard_payload(
     notes = [
         f"Sector exposure uses Felten Appendix B joined to section-owned `AIOE_DataAppendix.xlsx` at 4-digit NAICS.",
         f"Detailed industry employment comes from `staging.bls_qcew_county`, rolled to CBSA via `silver.xwalk_cbsa_county`, then paired back to the broad D1 sector taxonomy.",
-        f"Coverage check: {_safe_pct(coverage.get('matched_share_total'))} of {year} detailed private employment matched a Felten industry score after a small NAICS-vintage fallback map for known code revisions and aggregate appendix rows.",
+        f"Coverage check: {_safe_pct(coverage.get('matched_share_total'))} of {year} detailed private employment matched a Felten industry score {coverage_note_suffix}",
         "Sector rows show broad D1 sectors for comparability, while the explanation panel preserves the underlying 4-digit detail.",
         "These scores are structural exposure signals, not displacement forecasts.",
     ]
@@ -3551,6 +3625,7 @@ def get_d6_occupation_companion_payload(
 ) -> dict[str, object]:
     """Build the D6 occupation companion from detailed OEWS rows plus Felten Appendix A."""
     appendix_a = get_felten_appendix_a()
+    final_crosswalk = get_felten_soc_crosswalk_final()
     if appendix_a.empty:
         return {
             "selected_year": int(year),
@@ -3627,7 +3702,25 @@ def get_d6_occupation_companion_payload(
         }
 
     total_employment = pd.to_numeric(total_row.iloc[0]["employment"], errors="coerce")
-    detail_rows = detail_rows.merge(appendix_a, on="soc_code", how="left")
+    if final_crosswalk.empty:
+        detail_rows = detail_rows.merge(appendix_a, on="soc_code", how="left")
+        detail_rows["match_basis"] = pd.NA
+        detail_rows["manual_notes"] = pd.NA
+        occupation_note = "The unmatched remainder is mostly a SOC-vintage issue: OEWS 2025 uses newer detailed codes than the static Felten appendix, and D6 does not invent a synthetic SOC crosswalk in this first pass."
+    else:
+        detail_rows = detail_rows.merge(
+            final_crosswalk.rename(
+                columns={
+                    "our_soc_code": "soc_code",
+                    "felten_soc_code": "felten_soc_code",
+                    "felten_soc_name": "soc_title_felten",
+                    "felten_score": "aioe_score",
+                }
+            ),
+            on="soc_code",
+            how="left",
+        )
+        occupation_note = "The unmatched remainder reflects the reviewed final SOC crosswalk; D6 now uses the locked section-owned mapping rather than a raw first-pass join."
     detail_rows["employment_share"] = detail_rows["employment"] / total_employment
     detail_rows["matched_flag"] = detail_rows["aioe_score"].notna()
     detail_rows["occupation_bucket_label"] = detail_rows["occupation_bucket"].map(OCCUPATION_BUCKET_LABELS).fillna("Other")
@@ -3705,7 +3798,7 @@ def get_d6_occupation_companion_payload(
     notes = [
         f"Occupation exposure uses Felten Appendix A joined directly to `silver.bls_oews` detailed SOC rows for {year}.",
         f"Coverage check: {_safe_pct(coverage.get('matched_share_total'))} of detailed OEWS employment matched a Felten occupation score.",
-        "The unmatched remainder is mostly a SOC-vintage issue: OEWS 2025 uses newer detailed codes than the static Felten appendix, and D6 does not invent a synthetic SOC crosswalk in this first pass.",
+        occupation_note,
         f"Broad occupation-family summary uses the {year} `gold.economics_occupation_wide` surface where available for compact share and LQ context.",
         "Sector exposure and occupation exposure are complementary: one is a NAICS-based industry structure read, the other is a SOC-based worker-task read.",
     ]
