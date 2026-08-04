@@ -32,6 +32,7 @@ stoop/data/
 *.parquet
 *.xlsx
 *.zip
+!metro-deep-dive/metro-area-explorer/place_intelligence/cloud_bundle/site_artifacts/**/*.csv
 
 # ── DuckDB ───────────────────────────────────────────────────────────────────
 *.duckdb
