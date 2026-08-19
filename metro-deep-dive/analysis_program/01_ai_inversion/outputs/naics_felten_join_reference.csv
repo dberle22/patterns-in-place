@@ -1,0 +1,333 @@
+our_naics_code,our_name,felten_naics_code,felten_naics_name,felten_score,match_basis,manual_notes,review_source
+1111,Oilseed and grain farming,1151,Support Activities for Crop Production,-2.165304,manual_override,Notebook lock: use crop-support activities as the closest reviewed proxy for crop production.,notebook_locked_naics_manual_review
+1112,Vegetable and melon farming,1151,Support Activities for Crop Production,-2.165304,manual_override,Notebook lock: use crop-support activities as the closest reviewed proxy for crop production.,notebook_locked_naics_manual_review
+1113,Fruit and tree nut farming,1151,Support Activities for Crop Production,-2.165304,manual_override,Notebook lock: use crop-support activities as the closest reviewed proxy for crop production.,notebook_locked_naics_manual_review
+1114,Greenhouse and nursery production,1151,Support Activities for Crop Production,-2.165304,manual_override,Notebook lock: use crop-support activities as the closest reviewed proxy for crop production.,notebook_locked_naics_manual_review
+1119,Other crop farming,1151,Support Activities for Crop Production,-2.165304,manual_override,Notebook lock: use crop-support activities as the closest reviewed proxy for crop production.,notebook_locked_naics_manual_review
+1121,Cattle ranching and farming,1152,Support Activities for Animal Production,-1.149307,manual_override,Notebook lock: use animal-support activities as the closest reviewed proxy for animal production.,notebook_locked_naics_manual_review
+1122,Hog and pig farming,1152,Support Activities for Animal Production,-1.149307,manual_override,Notebook lock: use animal-support activities as the closest reviewed proxy for animal production.,notebook_locked_naics_manual_review
+1123,Poultry and egg production,1152,Support Activities for Animal Production,-1.149307,manual_override,Notebook lock: use animal-support activities as the closest reviewed proxy for animal production.,notebook_locked_naics_manual_review
+1124,Sheep and goat farming,1152,Support Activities for Animal Production,-1.149307,manual_override,Notebook lock: use animal-support activities as the closest reviewed proxy for animal production.,notebook_locked_naics_manual_review
+1125,Aquaculture,1152,Support Activities for Animal Production,-1.149307,manual_override,Notebook lock: use animal-support activities as the closest reviewed proxy for animal production.,notebook_locked_naics_manual_review
+1129,Other animal production,1152,Support Activities for Animal Production,-1.149307,manual_override,Notebook lock: use animal-support activities as the closest reviewed proxy for animal production.,notebook_locked_naics_manual_review
+1131,Timber tract operations,1133,Logging,-1.360161,manual_override,Notebook lock: use logging as the closest reviewed forestry proxy.,notebook_locked_naics_manual_review
+1132,Forest nursery and gathering forest products,1133,Logging,-1.360161,manual_override,Notebook lock: use logging as the closest reviewed forestry proxy.,notebook_locked_naics_manual_review
+1133,Logging,1133,Logging,-1.360161,raw_exact_match,,notebook_raw_appendix_b
+1141,Fishing,1152,Support Activities for Animal Production,-1.149307,manual_override,Notebook lock: use animal-support activities as the closest available reviewed proxy for fishing.,notebook_locked_naics_manual_review
+1142,Hunting and trapping,,,,,,
+1151,Support activities for crop production,1151,Support Activities for Crop Production,-2.165304,raw_exact_match,,notebook_raw_appendix_b
+1152,Support activities for animal production,1152,Support Activities for Animal Production,-1.149307,raw_exact_match,,notebook_raw_appendix_b
+1153,Support activities for forestry,1151,Support Activities for Crop Production,-2.165304,accepted_suggested_join,Same 3-digit NAICS family with strong title alignment.,recommended_felten_naics_overrides_initial
+2111,Oil and gas extraction,2111,Oil and Gas Extraction,0.6686154,raw_exact_match,,notebook_raw_appendix_b
+2121,Coal mining,2121,Coal Mining,-1.146242,raw_exact_match,,notebook_raw_appendix_b
+2122,Metal ore mining,2122,Metal Ore Mining,-0.8924032,raw_exact_match,,notebook_raw_appendix_b
+2123,Nonmetallic mineral mining and quarrying,2123,Nonmetallic Mineral Mining and Quarrying,-1.037903,raw_exact_match,,notebook_raw_appendix_b
+2131,Support activities for mining,2131,Support Activities for Mining,-0.9810408,raw_exact_match,,notebook_raw_appendix_b
+2211,Power generation and supply,2211,"Electric Power Generation, Transmission and Distribution",0.2096187,raw_exact_match,,notebook_raw_appendix_b
+2212,Natural gas distribution,2212,Natural Gas Distribution,0.3453538,raw_exact_match,,notebook_raw_appendix_b
+2213,"Water, sewage and other systems",2213,"Water, Sewage and Other Systems",-0.1564226,raw_exact_match,,notebook_raw_appendix_b
+2361,Residential building construction,2361,Residential Building Construction,-0.7602519,raw_exact_match,,notebook_raw_appendix_b
+2362,Nonresidential building construction,2362,Nonresidential Building Construction,-0.6632232,raw_exact_match,,notebook_raw_appendix_b
+2371,Utility system construction,2371,Utility System Construction,-1.176381,raw_exact_match,,notebook_raw_appendix_b
+2372,Land subdivision,2372,Land Subdivision,0.5814018,raw_exact_match,,notebook_raw_appendix_b
+2373,"Highway, street, and bridge construction",2373,"Highway, Street, and Bridge Construction",-1.296256,raw_exact_match,,notebook_raw_appendix_b
+2379,Other heavy construction,2379,Other Heavy and Civil Engineering Construction,-1.104619,raw_exact_match,,notebook_raw_appendix_b
+2381,Building foundation and exterior contractors,2381,"Foundation, Structure, and Building Exterior Contractors",-1.757023,raw_exact_match,,notebook_raw_appendix_b
+2382,Building equipment contractors,2382,Building Equipment Contractors,-0.8320791,raw_exact_match,,notebook_raw_appendix_b
+2383,Building finishing contractors,2383,Building Finishing Contractors,-1.602616,raw_exact_match,,notebook_raw_appendix_b
+2389,Other specialty trade contractors,2389,Other Specialty Trade Contractors,-1.358564,raw_exact_match,,notebook_raw_appendix_b
+3111,Animal food manufacturing,3111,Animal Food Manufacturing,-0.78914,raw_exact_match,,notebook_raw_appendix_b
+3112,Grain and oilseed milling,3112,Grain and Oilseed Milling,-0.7206286,raw_exact_match,,notebook_raw_appendix_b
+3113,Sugar and confectionery product manufacturing,3113,Sugar and Confectionery Product Manufacturing,-0.7729946,raw_exact_match,,notebook_raw_appendix_b
+3114,Fruit and vegetable preserving and specialty,3114,Fruit and Vegetable Preserving and Specialty Food Manufacturing,-0.980808,raw_exact_match,,notebook_raw_appendix_b
+3115,Dairy product manufacturing,3115,Dairy Product Manufacturing,-0.8435335,raw_exact_match,,notebook_raw_appendix_b
+3116,Animal slaughtering and processing,3116,Animal Slaughtering and Processing,-1.662866,raw_exact_match,,notebook_raw_appendix_b
+3117,Seafood product preparation and packaging,3117,Seafood Product Preparation and Packaging,-1.258223,raw_exact_match,,notebook_raw_appendix_b
+3118,Bakeries and tortilla manufacturing,3118,Bakeries and Tortilla Manufacturing,-0.8015609,raw_exact_match,,notebook_raw_appendix_b
+3119,Other food manufacturing,3119,Other Food Manufacturing,-0.8538909,raw_exact_match,,notebook_raw_appendix_b
+3121,Beverage manufacturing,3121,Beverage Manufacturing,-0.6586424,raw_exact_match,,notebook_raw_appendix_b
+3122,Tobacco manufacturing,3122,Tobacco Manufacturing,-0.8843057,raw_exact_match,,notebook_raw_appendix_b
+3131,"Fiber, yarn, and thread mills",3131,"Fiber, Yarn, and Thread Mills",-1.587852,raw_exact_match,,notebook_raw_appendix_b
+3132,Fabric mills,3132,Fabric Mills,-1.114104,raw_exact_match,,notebook_raw_appendix_b
+3133,Textile and fabric finishing mills,3133,Textile and Fabric Finishing and Fabric Coating Mills,-0.4358472,raw_exact_match,,notebook_raw_appendix_b
+3141,Textile furnishings mills,3141,Textile Furnishings Mills,-1.067818,raw_exact_match,,notebook_raw_appendix_b
+3149,Other textile product mills,3149,Other Textile Product Mills,-0.561571,raw_exact_match,,notebook_raw_appendix_b
+3151,Apparel knitting mills,3151,Apparel Knitting Mills,-1.272213,raw_exact_match,,notebook_raw_appendix_b
+3152,Cut and sew apparel manufacturing,3152,Cut and Sew Apparel Manufacturing,-0.6520287,raw_exact_match,,notebook_raw_appendix_b
+3159,Accessories and other apparel manufacturing,3159,Apparel Accessories and Other Apparel Manufacturing,-0.7916203,raw_exact_match,,notebook_raw_appendix_b
+3161,Leather and hide tanning and finishing,3161,Leather and Hide Tanning and Finishing,-1.103977,raw_exact_match,,notebook_raw_appendix_b
+3162,Footwear manufacturing,3162,Footwear Manufacturing,-0.5300771,raw_exact_match,,notebook_raw_appendix_b
+3169,Other leather product manufacturing,3169,Other Leather and Allied Product Manufacturing,-0.6799067,raw_exact_match,,notebook_raw_appendix_b
+3211,Sawmills and wood preservation,3211,Sawmills and Wood Preservation,-1.421037,raw_exact_match,,notebook_raw_appendix_b
+3212,Plywood and engineered wood product mfg.,3212,"Veneer, Plywood, and Engineered Wood Product Manufacturing",-1.13457,raw_exact_match,,notebook_raw_appendix_b
+3219,Other wood product manufacturing,3219,Other Wood Product Manufacturing,-1.146,raw_exact_match,,notebook_raw_appendix_b
+3221,"Pulp, paper, and paperboard mills",3221,"Pulp, Paper, and Paperboard Mills",-0.9502621,raw_exact_match,,notebook_raw_appendix_b
+3222,Converted paper product manufacturing,3222,Converted Paper Product Manufacturing,-0.8241846,raw_exact_match,,notebook_raw_appendix_b
+3231,Printing and related support activities,3231,Printing and Related Support Activities,-0.2099964,raw_exact_match,,notebook_raw_appendix_b
+3241,Petroleum and coal products manufacturing,3241,Petroleum and Coal Products Manufacturing,-0.1959436,raw_exact_match,,notebook_raw_appendix_b
+3251,Basic chemical manufacturing,3254,Pharmaceutical and Medicine Manufacturing,0.4637086,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial
+3252,"Resin, rubber, and artificial fibers mfg.",3254,Pharmaceutical and Medicine Manufacturing,0.4637086,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial
+3253,Agricultural chemical manufacturing,3254,Pharmaceutical and Medicine Manufacturing,0.4637086,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial
+3254,Pharmaceutical and medicine manufacturing,3254,Pharmaceutical and Medicine Manufacturing,0.4637086,raw_exact_match,,notebook_raw_appendix_b
+3255,"Paint, coating, and adhesive manufacturing",3254,Pharmaceutical and Medicine Manufacturing,0.4637086,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial
+3256,"Soap, cleaning compound, and toiletry mfg.",3254,Pharmaceutical and Medicine Manufacturing,0.4637086,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial
+3259,Other chemical product and preparation mfg.,3254,Pharmaceutical and Medicine Manufacturing,0.4637086,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial
+3261,Plastics product manufacturing,3261,Plastics Product Manufacturing,-0.8657592,raw_exact_match,,notebook_raw_appendix_b
+3262,Rubber product manufacturing,3262,Rubber Product Manufacturing,-1.077709,raw_exact_match,,notebook_raw_appendix_b
+3271,Clay product and refractory manufacturing,3270,Nonmetallic Mineral Product Manufacturing,-0.9656745,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial
+3272,Glass and glass product manufacturing,3270,Nonmetallic Mineral Product Manufacturing,-0.9656745,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial
+3273,Cement and concrete product manufacturing,3270,Nonmetallic Mineral Product Manufacturing,-0.9656745,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial
+3274,Lime and gypsum product manufacturing,3270,Nonmetallic Mineral Product Manufacturing,-0.9656745,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial
+3279,Other nonmetallic mineral products,3270,Nonmetallic Mineral Product Manufacturing,-0.9656745,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial
+3311,Iron and steel mills and ferroalloy mfg.,3311,Iron and Steel Mills and Ferroalloy Manufacturing,-0.9913391,raw_exact_match,,notebook_raw_appendix_b
+3312,Steel product mfg. from purchased steel,3312,Steel Product Manufacturing from Purchased Steel,-0.9156145,raw_exact_match,,notebook_raw_appendix_b
+3313,Alumina and aluminum production,3313,Alumina and Aluminum Production and Processing,-1.022397,raw_exact_match,,notebook_raw_appendix_b
+3314,Other nonferrous metal production,3314,Nonferrous Metal (except Aluminum) Production and Processing,-0.7421725,raw_exact_match,,notebook_raw_appendix_b
+3315,Foundries,3315,Foundries,-1.078051,raw_exact_match,,notebook_raw_appendix_b
+3321,Forging and stamping,,,,,,
+3322,Cutlery and handtool manufacturing,3320,"Fabricated Metal Product Manufacturing (3321, 3322, 3325, 3326, and 3329 only)",-0.740151,manual_override,Notebook lock: roll current fabricated-metals code into Felten's aggregate 3320 family.,notebook_locked_naics_manual_review
+3323,Architectural and structural metals mfg.,3320,"Fabricated Metal Product Manufacturing (3321, 3322, 3325, 3326, and 3329 only)",-0.740151,manual_override,Notebook lock: roll current fabricated-metals code into Felten's aggregate 3320 family.,notebook_locked_naics_manual_review
+3324,"Boiler, tank, and shipping container mfg.",3320,"Fabricated Metal Product Manufacturing (3321, 3322, 3325, 3326, and 3329 only)",-0.740151,manual_override,Notebook lock: roll current fabricated-metals code into Felten's aggregate 3320 family.,notebook_locked_naics_manual_review
+3325,Hardware manufacturing,3320,"Fabricated Metal Product Manufacturing (3321, 3322, 3325, 3326, and 3329 only)",-0.740151,manual_override,Notebook lock: roll current fabricated-metals code into Felten's aggregate 3320 family.,notebook_locked_naics_manual_review
+3326,Spring and wire product manufacturing,3320,"Fabricated Metal Product Manufacturing (3321, 3322, 3325, 3326, and 3329 only)",-0.740151,manual_override,Notebook lock: roll current fabricated-metals code into Felten's aggregate 3320 family.,notebook_locked_naics_manual_review
+3327,Machine shops and threaded product mfg.,3327,"Machine Shops; Turned Product; and Screw, Nut, and Bolt Manufacturing",-0.6099281,raw_exact_match,,notebook_raw_appendix_b
+3328,"Coating, engraving, and heat treating metals",3328,"Coating, Engraving, Heat Treating, and Allied Activities",-0.7753809,raw_exact_match,,notebook_raw_appendix_b
+3329,Other fabricated metal product manufacturing,3320,"Fabricated Metal Product Manufacturing (3321, 3322, 3325, 3326, and 3329 only)",-0.740151,manual_override,Notebook lock: roll current fabricated-metals code into Felten's aggregate 3320 family.,notebook_locked_naics_manual_review
+3331,"Ag., construction, and mining machinery mfg.",3330,"Machinery Manufacturing (3331, 3332, 3334, and 3339 only)",-0.0746392,manual_override,Notebook lock: roll machinery manufacturing into Felten's aggregate 3330 family.,notebook_locked_naics_manual_review
+3332,Industrial machinery manufacturing,3330,"Machinery Manufacturing (3331, 3332, 3334, and 3339 only)",-0.0746392,manual_override,Notebook lock: roll machinery manufacturing into Felten's aggregate 3330 family.,notebook_locked_naics_manual_review
+3333,Commercial and service industry machinery,3333,Commercial and Service Industry Machinery Manufacturing,0.3308995,raw_exact_match,,notebook_raw_appendix_b
+3334,Hvac and commercial refrigeration equipment,3330,"Machinery Manufacturing (3331, 3332, 3334, and 3339 only)",-0.0746392,manual_override,Notebook lock: roll machinery manufacturing into Felten's aggregate 3330 family.,notebook_locked_naics_manual_review
+3335,Metalworking machinery manufacturing,3335,Metalworking Machinery Manufacturing,-0.346932,raw_exact_match,,notebook_raw_appendix_b
+3336,Turbine and power transmission equipment mfg.,3336,"Engine, Turbine, and Power Transmission Equipment Manufacturing",0.1307197,raw_exact_match,,notebook_raw_appendix_b
+3339,Other general purpose machinery manufacturing,3330,"Machinery Manufacturing (3331, 3332, 3334, and 3339 only)",-0.0746392,manual_override,Notebook lock: roll machinery manufacturing into Felten's aggregate 3330 family.,notebook_locked_naics_manual_review
+3341,Computer and peripheral equipment mfg.,3341,Computer and Peripheral Equipment Manufacturing,1.596084,raw_exact_match,,notebook_raw_appendix_b
+3342,Communications equipment manufacturing,3342,Communications Equipment Manufacturing,1.181725,raw_exact_match,,notebook_raw_appendix_b
+3343,Audio and video equipment manufacturing,3343,Audio and Video Equipment Manufacturing,1.161132,raw_exact_match,,notebook_raw_appendix_b
+3344,Semiconductor and electronic component mfg.,3344,Semiconductor and Other Electronic Component Manufacturing,0.6828295,raw_exact_match,,notebook_raw_appendix_b
+3345,Electronic instrument manufacturing,3345,"Navigational, Measuring, Electromedical, and Control Instruments Manufacturing",1.113945,raw_exact_match,,notebook_raw_appendix_b
+3346,Magnetic media manufacturing and reproducing,3346,Manufacturing and Reproducing Magnetic and Optical Media,0.1490236,raw_exact_match,,notebook_raw_appendix_b
+3351,Electric lighting equipment manufacturing,3351,Electric Lighting Equipment Manufacturing,0.5806971,raw_exact_match,,notebook_raw_appendix_b
+3352,Household appliance manufacturing,3352,Household Appliance Manufacturing,0.0281708,raw_exact_match,,notebook_raw_appendix_b
+3353,Electrical equipment manufacturing,3353,Electrical Equipment Manufacturing,0.332973,raw_exact_match,,notebook_raw_appendix_b
+3359,Other electrical equipment and component mfg.,3359,Other Electrical Equipment and Component Manufacturing,-0.0384073,raw_exact_match,,notebook_raw_appendix_b
+3361,Motor vehicle manufacturing,3361,Motor Vehicle Manufacturing,-0.3023474,raw_exact_match,,notebook_raw_appendix_b
+3362,Motor vehicle body and trailer manufacturing,3362,Motor Vehicle Body and Trailer Manufacturing,-0.8058288,raw_exact_match,,notebook_raw_appendix_b
+3363,Motor vehicle parts manufacturing,3363,Motor Vehicle Parts Manufacturing,-0.5860924,raw_exact_match,,notebook_raw_appendix_b
+3364,Aerospace product and parts manufacturing,3364,Aerospace Product and Parts Manufacturing,0.5189539,raw_exact_match,,notebook_raw_appendix_b
+3365,Railroad rolling stock manufacturing,3365,Railroad Rolling Stock Manufacturing,-0.6623871,raw_exact_match,,notebook_raw_appendix_b
+3366,Ship and boat building,3366,Ship and Boat Building,-0.6675431,raw_exact_match,,notebook_raw_appendix_b
+3369,Other transportation equipment manufacturing,3369,Other Transportation Equipment Manufacturing,-0.1676746,raw_exact_match,,notebook_raw_appendix_b
+3371,Household and institutional furniture mfg.,3379,Other Furniture Related Product Manufacturing,-0.5724769,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial
+3372,Office furniture and fixtures manufacturing,3379,Other Furniture Related Product Manufacturing,-0.5724769,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial
+3379,Other furniture related product manufacturing,3379,Other Furniture Related Product Manufacturing,-0.5724769,raw_exact_match,,notebook_raw_appendix_b
+3391,Medical equipment and supplies manufacturing,3391,Medical Equipment and Supplies Manufacturing,0.2301883,raw_exact_match,,notebook_raw_appendix_b
+3399,Other miscellaneous manufacturing,3399,Other Miscellaneous Manufacturing,-0.068744,raw_exact_match,,notebook_raw_appendix_b
+4231,Motor vehicle and parts merchant wholesalers,4231,Motor Vehicle and Motor Vehicle Parts and Supplies Merchant Wholesalers,-0.1601646,raw_exact_match,,notebook_raw_appendix_b
+4232,Furniture and furnishing merchant wholesalers,4230,"Merchant Wholesalers, Durable Goods (4232, 4233, 4235, 4236, 4237, and 4239 only)",0.2424777,manual_override,Notebook lock: roll durable-goods wholesaling into Felten's aggregate durable merchant wholesaler family.,notebook_locked_naics_manual_review
+4233,Lumber and const. supply merchant wholesalers,4230,"Merchant Wholesalers, Durable Goods (4232, 4233, 4235, 4236, 4237, and 4239 only)",0.2424777,manual_override,Notebook lock: roll durable-goods wholesaling into Felten's aggregate durable merchant wholesaler family.,notebook_locked_naics_manual_review
+4234,Commercial equip. merchant wholesalers,4234,Professional and Commercial Equipment and Supplies Merchant Wholesalers,1.041147,raw_exact_match,,notebook_raw_appendix_b
+4235,Metal and mineral merchant wholesalers,4230,"Merchant Wholesalers, Durable Goods (4232, 4233, 4235, 4236, 4237, and 4239 only)",0.2424777,manual_override,Notebook lock: roll durable-goods wholesaling into Felten's aggregate durable merchant wholesaler family.,notebook_locked_naics_manual_review
+4236,Electric goods merchant wholesalers,4230,"Merchant Wholesalers, Durable Goods (4232, 4233, 4235, 4236, 4237, and 4239 only)",0.2424777,manual_override,Notebook lock: roll durable-goods wholesaling into Felten's aggregate durable merchant wholesaler family.,notebook_locked_naics_manual_review
+4237,Hardware and plumbing merchant wholesalers,4230,"Merchant Wholesalers, Durable Goods (4232, 4233, 4235, 4236, 4237, and 4239 only)",0.2424777,manual_override,Notebook lock: roll durable-goods wholesaling into Felten's aggregate durable merchant wholesaler family.,notebook_locked_naics_manual_review
+4238,Machinery and supply merchant wholesalers,4238,"Machinery, Equipment, and Supplies Merchant Wholesalers",0.2607571,raw_exact_match,,notebook_raw_appendix_b
+4239,Misc. durable goods merchant wholesalers,4230,"Merchant Wholesalers, Durable Goods (4232, 4233, 4235, 4236, 4237, and 4239 only)",0.2424777,manual_override,Notebook lock: roll durable-goods wholesaling into Felten's aggregate durable merchant wholesaler family.,notebook_locked_naics_manual_review
+4241,Paper and paper product merchant wholesalers,4240,"Merchant Wholesalers, Nondurable Goods (4241, 4247, and 4249 only)",0.6838242,manual_override,Notebook lock: roll nondurable-goods wholesaling into Felten's aggregate nondurable merchant wholesaler family.,notebook_locked_naics_manual_review
+4242,Druggists' goods merchant wholesalers,4240,"Merchant Wholesalers, Nondurable Goods (4241, 4247, and 4249 only)",0.6838242,manual_override,Notebook lock: roll nondurable-goods wholesaling into Felten's aggregate nondurable merchant wholesaler family.,notebook_locked_naics_manual_review
+4243,Apparel and piece goods merchant wholesalers,4243,"Apparel, Piece Goods, and Notions Merchant Wholesalers",0.6573116,raw_exact_match,,notebook_raw_appendix_b
+4244,Grocery and related product wholesalers,4240,"Merchant Wholesalers, Nondurable Goods (4241, 4247, and 4249 only)",0.6838242,manual_override,Notebook lock: roll grocery-related wholesaling into Felten's aggregate nondurable merchant wholesaler family.,notebook_locked_naics_manual_review
+4245,Farm product raw material merch. whls.,4245,Farm Product Raw Material Merchant Wholesalers,-0.7109669,raw_exact_match,,notebook_raw_appendix_b
+4246,Chemical merchant wholesalers,4240,"Merchant Wholesalers, Nondurable Goods (4241, 4247, and 4249 only)",0.6838242,manual_override,Notebook lock: roll nondurable-goods wholesaling into Felten's aggregate nondurable merchant wholesaler family.,notebook_locked_naics_manual_review
+4247,Petroleum merchant wholesalers,4240,"Merchant Wholesalers, Nondurable Goods (4241, 4247, and 4249 only)",0.6838242,manual_override,Notebook lock: roll nondurable-goods wholesaling into Felten's aggregate nondurable merchant wholesaler family.,notebook_locked_naics_manual_review
+4248,Alcoholic beverage merchant wholesalers,4240,"Merchant Wholesalers, Nondurable Goods (4241, 4247, and 4249 only)",0.6838242,manual_override,Notebook lock: roll nondurable-goods wholesaling into Felten's aggregate nondurable merchant wholesaler family.,notebook_locked_naics_manual_review
+4249,Misc. nondurable goods merchant wholesalers,4240,"Merchant Wholesalers, Nondurable Goods (4241, 4247, and 4249 only)",0.6838242,manual_override,Notebook lock: roll nondurable-goods wholesaling into Felten's aggregate nondurable merchant wholesaler family.,notebook_locked_naics_manual_review
+4251,Electronic markets and agents and brokers,4251,Wholesale Electronic Markets and Agents and Brokers,0.9876717,raw_exact_match,,notebook_raw_appendix_b
+4411,Automobile dealers,4411,Automobile Dealers,-0.1668894,raw_exact_match,,notebook_raw_appendix_b
+4412,Other motor vehicle dealers,4412,Other Motor Vehicle Dealers,-0.1300993,raw_exact_match,,notebook_raw_appendix_b
+4413,"Auto parts, accessories, and tire stores",4413,"Automotive Parts, Accessories, and Tire Stores",-0.6871853,raw_exact_match,,notebook_raw_appendix_b
+4421,Furniture stores,4421,Furniture Stores,-0.0112289,raw_exact_match,,notebook_raw_appendix_b
+4422,Home furnishings stores,4422,Home Furnishings Stores,0.049807,raw_exact_match,,notebook_raw_appendix_b
+4431,Electronics and appliance stores,4431,Electronics and Appliance Stores,0.3619018,raw_exact_match,,notebook_raw_appendix_b
+4441,Building material and supplies dealers,4441,Building Material and Supplies Dealers,0.1045359,raw_exact_match,,notebook_raw_appendix_b
+4442,Lawn and garden equipment and supplies stores,4442,Lawn and Garden Equipment and Supplies Stores,-0.4641636,raw_exact_match,,notebook_raw_appendix_b
+4451,Grocery stores,4450,Food and Beverage Stores (4451 and 4452 only),-0.4066956,raw_normalized_match,,notebook_raw_appendix_b
+4452,Specialty food stores,4450,Food and Beverage Stores (4451 and 4452 only),-0.4066956,raw_normalized_match,,notebook_raw_appendix_b
+4453,"Beer, wine, and liquor stores",4453,"Beer, Wine, and Liquor Stores",-0.0185797,raw_exact_match,,notebook_raw_appendix_b
+4461,Health and personal care stores,4461,Health and Personal Care Stores,0.3257251,raw_exact_match,,notebook_raw_appendix_b
+4471,Gasoline stations,4471,Gasoline Stations,-0.3108229,raw_exact_match,,notebook_raw_appendix_b
+4481,Clothing stores,4481,Clothing Stores,0.2268381,raw_exact_match,,notebook_raw_appendix_b
+4482,Shoe stores,4482,Shoe Stores,0.2810808,raw_exact_match,,notebook_raw_appendix_b
+4483,"Jewelry, luggage, and leather goods stores",4483,"Jewelry, Luggage, and Leather Goods Stores",0.3828857,raw_exact_match,,notebook_raw_appendix_b
+4491,NAICS 4491 Furniture and home furnishings retailers,4422,Home Furnishings Stores,0.049807,manual_override,Notebook lock: reviewed retail proxy to the closest furniture and home-furnishings concept in Felten.,notebook_locked_naics_manual_review
+4492,NAICS 4492 Electronics and appliance retailers,4431,Electronics and Appliance Stores,0.3619018,raw_normalized_match,,notebook_raw_appendix_b
+4511,Sporting goods and musical instrument stores,4511,"Sporting Goods, Hobby, and Musical Instrument Stores",0.2090943,raw_exact_match,,notebook_raw_appendix_b
+4512,"Book, periodical, and music stores",4512,Book Stores and News Dealers,0.2499871,raw_exact_match,,notebook_raw_appendix_b
+4521,Department stores,4520,General Merchandise Stores,-0.007219,manual_override,Notebook lock: back-map historical department-store code into Felten's aggregate general merchandise family.,notebook_locked_naics_manual_review
+4522,NAICS 4522 Department stores,4520,General Merchandise Stores,-0.007219,manual_override,Notebook lock: back-map historical department-store code into Felten's aggregate general merchandise family.,notebook_locked_naics_manual_review
+4523,"NAICS 4523 General merchandise stores, including warehouse clubs and supercenters",4520,General Merchandise Stores,-0.007219,manual_override,Notebook lock: back-map historical general-merchandise code into Felten's aggregate general merchandise family.,notebook_locked_naics_manual_review
+4529,Other general merchandise stores,4520,General Merchandise Stores,-0.007219,manual_override,Notebook lock: back-map historical general-merchandise code into Felten's aggregate general merchandise family.,notebook_locked_naics_manual_review
+4531,Florists,4531,Florists,-0.3690017,raw_exact_match,,notebook_raw_appendix_b
+4532,"Office supplies, stationery, and gift stores",4530,Miscellaneous Store Retailers (4532 and 4533 only),0.1663383,manual_override,Notebook lock: back-map historical specialty-retail code into Felten's aggregate 4530 family.,notebook_locked_naics_manual_review
+4533,Used merchandise stores,4530,Miscellaneous Store Retailers (4532 and 4533 only),0.1663383,manual_override,Notebook lock: back-map historical specialty-retail code into Felten's aggregate 4530 family.,notebook_locked_naics_manual_review
+4539,Other miscellaneous store retailers,4539,Other Miscellaneous Store Retailers,0.00781,raw_exact_match,,notebook_raw_appendix_b
+4541,Electronic shopping and mail-order houses,4541,Electronic Shopping and Mail-Order Houses,0.6046838,raw_exact_match,,notebook_raw_appendix_b
+4542,Vending machine operators,4542,Vending Machine Operators,-0.6646855,raw_exact_match,,notebook_raw_appendix_b
+4543,Direct selling establishments,4543,Direct Selling Establishments,-0.0433316,raw_exact_match,,notebook_raw_appendix_b
+4551,NAICS 4551 Department stores,4520,General Merchandise Stores,-0.007219,raw_normalized_match,,notebook_raw_appendix_b
+4552,"NAICS 4552 Warehouse clubs, supercenters, and other general merchandise retailers",4520,General Merchandise Stores,-0.007219,raw_normalized_match,,notebook_raw_appendix_b
+4561,NAICS 4561 Health and personal care retailers,4461,Health and Personal Care Stores,0.3257251,raw_normalized_match,,notebook_raw_appendix_b
+4571,NAICS 4571 Gasoline stations,4471,Gasoline Stations,-0.3108229,raw_normalized_match,,notebook_raw_appendix_b
+4572,NAICS 4572 Fuel dealers,,,,,,
+4581,NAICS 4581 Clothing and clothing accessories retailers,4481,Clothing Stores,0.2268381,raw_normalized_match,,notebook_raw_appendix_b
+4582,NAICS 4582 Shoe retailers,4482,Shoe Stores,0.2810808,raw_normalized_match,,notebook_raw_appendix_b
+4583,"NAICS 4583 Jewelry, luggage, and leather goods retailers",4483,"Jewelry, Luggage, and Leather Goods Stores",0.3828857,raw_normalized_match,,notebook_raw_appendix_b
+4591,"NAICS 4591 Sporting goods, hobby, and musical instrument retailers",4511,"Sporting Goods, Hobby, and Musical Instrument Stores",0.2090943,raw_normalized_match,,notebook_raw_appendix_b
+4592,NAICS 4592 Book retailers and news dealers,4512,Book Stores and News Dealers,0.2499871,raw_normalized_match,,notebook_raw_appendix_b
+4593,NAICS 4593 Florists,4531,Florists,-0.3690017,raw_normalized_match,,notebook_raw_appendix_b
+4594,"NAICS 4594 Office supplies, stationery, and gift retailers",4539,Other Miscellaneous Store Retailers,0.00781,manual_override,Notebook lock: reviewed retail proxy to Felten's other miscellaneous store retailers concept.,notebook_locked_naics_manual_review
+4595,NAICS 4595 Used merchandise retailers,4520,General Merchandise Stores,-0.007219,manual_override,Notebook lock: reviewed retail proxy to Felten's general merchandise stores concept.,notebook_locked_naics_manual_review
+4599,NAICS 4599 Other miscellaneous retailers,4539,Other Miscellaneous Store Retailers,0.00781,raw_normalized_match,,notebook_raw_appendix_b
+4811,Scheduled air transportation,4811,Scheduled Air Transportation,-0.4555449,raw_exact_match,,notebook_raw_appendix_b
+4812,Nonscheduled air transportation,4812,Nonscheduled Air Transportation,0.1134526,raw_exact_match,,notebook_raw_appendix_b
+4821,Rail transportation,4821,Rail Transportation,-0.5922358,raw_exact_match,,notebook_raw_appendix_b
+4831,"Sea, coastal, and great lakes transportation",4831,"Deep Sea, Coastal, and Great Lakes Water Transportation",-0.3280049,raw_exact_match,,notebook_raw_appendix_b
+4832,Inland water transportation,4832,Inland Water Transportation,-0.8718479,raw_exact_match,,notebook_raw_appendix_b
+4841,General freight trucking,4840,Truck Transportation,-1.282191,manual_override,Notebook lock: roll current trucking code into Felten's aggregate truck transportation family.,notebook_locked_naics_manual_review
+4842,Specialized freight trucking,4840,Truck Transportation,-1.282191,manual_override,Notebook lock: roll current trucking code into Felten's aggregate truck transportation family.,notebook_locked_naics_manual_review
+4851,Urban transit systems,4851,Urban Transit Systems,-0.1201694,raw_exact_match,,notebook_raw_appendix_b
+4852,Interurban and rural bus transportation,4852,Interurban and Rural Bus Transportation,-0.0462207,raw_exact_match,,notebook_raw_appendix_b
+4853,Taxi and limousine service,4853,Taxi and Limousine Service,1.369857,raw_exact_match,,notebook_raw_appendix_b
+4854,School and employee bus transportation,4854,School and Employee Bus Transportation,0.076602,raw_exact_match,,notebook_raw_appendix_b
+4855,Charter bus industry,4855,Charter Bus Industry,0.0093568,raw_exact_match,,notebook_raw_appendix_b
+4859,Other ground passenger transportation,4859,Other Transit and Ground Passenger Transportation,0.9623069,raw_exact_match,,notebook_raw_appendix_b
+4861,Pipeline transportation of crude oil,4861,Pipeline Transportation of Crude Oil,-0.1340503,raw_exact_match,,notebook_raw_appendix_b
+4862,Pipeline transportation of natural gas,4862,Pipeline Transportation of Natural Gas,-0.0901119,raw_exact_match,,notebook_raw_appendix_b
+4869,Other pipeline transportation,4869,Other Pipeline Transportation,-0.0393555,raw_exact_match,,notebook_raw_appendix_b
+4871,"Scenic and sightseeing transportation, land",4871,"Scenic and Sightseeing Transportation, Land",0.4042215,raw_exact_match,,notebook_raw_appendix_b
+4872,"Scenic and sightseeing transportation, water",4872,"Scenic and Sightseeing Transportation, Water",-0.6679308,raw_exact_match,,notebook_raw_appendix_b
+4879,"Scenic and sightseeing transportation, other",4879,"Scenic and Sightseeing Transportation, Other",0.1866125,raw_exact_match,,notebook_raw_appendix_b
+4881,Support activities for air transportation,4881,Support Activities for Air Transportation,-0.3353398,raw_exact_match,,notebook_raw_appendix_b
+4882,Support activities for rail transportation,4882,Support Activities for Rail Transportation,-1.474989,raw_exact_match,,notebook_raw_appendix_b
+4883,Support activities for water transportation,4883,Support Activities for Water Transportation,-1.411064,raw_exact_match,,notebook_raw_appendix_b
+4884,Support activities for road transportation,4884,Support Activities for Road Transportation,-0.9504591,raw_exact_match,,notebook_raw_appendix_b
+4885,Freight transportation arrangement,4885,Freight Transportation Arrangement,1.024609,raw_exact_match,,notebook_raw_appendix_b
+4889,Other support activities for transportation,4889,Other Support Activities for Transportation,-1.105623,raw_exact_match,,notebook_raw_appendix_b
+4911,Postal service,4911,Postal Service (federal government),-1.314742,raw_exact_match,,notebook_raw_appendix_b
+4921,Couriers and express delivery services,4921,Couriers and Express Delivery Services,-1.150431,raw_exact_match,,notebook_raw_appendix_b
+4922,Local messengers and local delivery,4922,Local Messengers and Local Delivery,-1.182829,raw_exact_match,,notebook_raw_appendix_b
+4931,Warehousing and storage,4931,Warehousing and Storage,-1.59126,raw_exact_match,,notebook_raw_appendix_b
+5111,"Newspaper, book, and directory publishers",5111,"Newspaper, Periodical, Book, and Directory Publishers",1.337831,raw_exact_match,,notebook_raw_appendix_b
+5112,Software publishers,5112,Software Publishers,1.966309,raw_exact_match,,notebook_raw_appendix_b
+5121,Motion picture and video industries,5121,Motion Picture and Video Industries,0.4026041,raw_exact_match,,notebook_raw_appendix_b
+5122,Sound recording industries,5122,Sound Recording Industries,1.43428,raw_exact_match,,notebook_raw_appendix_b
+5131,"NAICS 5131 Newspaper, periodical, book, and directory publishers",5111,"Newspaper, Periodical, Book, and Directory Publishers",1.337831,manual_override,Notebook lock: reviewed media-vintage back-map from current 5131 publishing to Felten 5111 publishing.,notebook_locked_naics_manual_review
+5132,NAICS 5132 Software publishers,5112,Software Publishers,1.966309,raw_normalized_match,,notebook_raw_appendix_b
+5151,Radio and television broadcasting,5151,Radio and Television Broadcasting,1.429625,raw_exact_match,,notebook_raw_appendix_b
+5152,Cable and other subscription programming,5152,Cable and Other Subscription Programming,1.098212,raw_exact_match,,notebook_raw_appendix_b
+5161,NAICS 5161 Radio and television broadcasting stations,5151,Radio and Television Broadcasting,1.429625,manual_override,Notebook lock: reviewed media-vintage back-map from current 5161 broadcasting to Felten 5151 broadcasting.,notebook_locked_naics_manual_review
+5162,"NAICS 5162 Media streaming distribution services, social networks, and other media networks and content providers",5152,Cable and Other Subscription Programming,1.098212,raw_normalized_match,,notebook_raw_appendix_b
+5171,Wired telecommunications carriers,5170,Telecommunications,0.2466103,raw_normalized_match,,notebook_raw_appendix_b
+5172,Wireless telecommunications carriers,5170,Telecommunications,0.2466103,manual_override,Notebook lock: back-map historical telecommunications subtype into Felten's aggregate telecommunications family.,notebook_locked_naics_manual_review
+5173,NAICS 5173 Wired and wireless telecommunications carriers,5170,Telecommunications,0.2466103,manual_override,Notebook lock: back-map historical telecommunications subtype into Felten's aggregate telecommunications family.,notebook_locked_naics_manual_review
+5174,Satellite telecommunications,5170,Telecommunications,0.2466103,manual_override,Notebook lock: roll telecommunications subtype into Felten's aggregate telecommunications family.,notebook_locked_naics_manual_review
+5178,NAICS 5178 All other telecommunications,5170,Telecommunications,0.2466103,manual_override,Notebook lock: roll telecommunications subtype into Felten's aggregate telecommunications family.,notebook_locked_naics_manual_review
+5179,Other telecommunications,5170,Telecommunications,0.2466103,manual_override,Notebook lock: back-map historical telecommunications subtype into Felten's aggregate telecommunications family.,notebook_locked_naics_manual_review
+5182,"Data processing, hosting and related services",5182,"Data Processing, Hosting, and Related Services",1.74286,raw_exact_match,,notebook_raw_appendix_b
+5191,Other information services,5191,Other Information Services,1.749664,raw_exact_match,,notebook_raw_appendix_b
+5192,"NAICS 5192 Web search portals, libraries, archives, and other information services",5191,Other Information Services,1.749664,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial
+5211,Monetary authorities - central bank,5211,Monetary Authorities-Central Bank,1.770347,raw_exact_match,,notebook_raw_appendix_b
+5221,Depository credit intermediation,5220,Credit Intermediation and Related Activities (5221 And 5223 only),1.888684,raw_normalized_match,,notebook_raw_appendix_b
+5222,Nondepository credit intermediation,5220,Credit Intermediation and Related Activities (5221 And 5223 only),1.888684,raw_exact_match,,notebook_raw_appendix_b
+5223,Activities related to credit intermediation,5220,Credit Intermediation and Related Activities (5221 And 5223 only),1.888684,raw_normalized_match,,notebook_raw_appendix_b
+5231,Securities and commodity contracts brokerage,5230,"Securities, Commodity Contracts, and Other Financial Investments and Related Activities",2.218665,manual_override,Notebook lock: roll brokerage into Felten's aggregate securities and other financial investment family.,notebook_locked_naics_manual_review
+5232,Securities and commodity exchanges,5230,"Securities, Commodity Contracts, and Other Financial Investments and Related Activities",2.218665,manual_override,Notebook lock: roll exchange activity into Felten's aggregate securities and other financial investment family.,notebook_locked_naics_manual_review
+5239,Other financial investment activities,5230,"Securities, Commodity Contracts, and Other Financial Investments and Related Activities",2.218665,raw_normalized_match,,notebook_raw_appendix_b
+5241,Insurance carriers,5241,Insurance Carriers,2.058794,raw_exact_match,,notebook_raw_appendix_b
+5242,Insurance agencies and brokerages,5242,"Agencies, Brokerages, and Other Insurance Related Activities",2.120996,raw_exact_match,,notebook_raw_appendix_b
+5251,Insurance and employee benefit funds,5251,Insurance and Employee Benefit Funds,2.180309,raw_exact_match,,notebook_raw_appendix_b
+5259,Other investment pools and funds,5259,Other Investment Pools and Funds,2.07022,raw_exact_match,,notebook_raw_appendix_b
+5311,Lessors of real estate,5310,Real Estate,0.5238351,raw_normalized_match,,notebook_raw_appendix_b
+5312,Offices of real estate agents and brokers,5310,Real Estate,0.5238351,manual_override,Notebook lock: roll real-estate brokerage into Felten's aggregate real-estate family.,notebook_locked_naics_manual_review
+5313,Activities related to real estate,5310,Real Estate,0.5238351,raw_normalized_match,,notebook_raw_appendix_b
+5321,Automotive equipment rental and leasing,5321,Automotive Equipment Rental and Leasing,-0.1278947,raw_exact_match,,notebook_raw_appendix_b
+5322,Consumer goods rental,5320,"Rental and Leasing Services (5322, 5323, and 5324 only)",-0.2705971,manual_override,Notebook lock: roll consumer-goods rental into Felten's aggregate rental and leasing family.,notebook_locked_naics_manual_review
+5323,General rental centers,5320,"Rental and Leasing Services (5322, 5323, and 5324 only)",-0.2705971,manual_override,Notebook lock: roll general rental centers into Felten's aggregate rental and leasing family.,notebook_locked_naics_manual_review
+5324,Machinery and equipment rental and leasing,5321,Automotive Equipment Rental and Leasing,-0.1278947,accepted_suggested_join,Same 3-digit NAICS family with strong title alignment.,recommended_felten_naics_overrides_initial
+5331,Lessors of nonfinancial intangible assets,5331,Lessors of Nonfinancial Intangible Assets (except Copyrighted Works),1.911472,raw_exact_match,,notebook_raw_appendix_b
+5411,Legal services,5411,Legal Services,2.156741,raw_exact_match,,notebook_raw_appendix_b
+5412,Accounting and bookkeeping services,5412,"Accounting, Tax Preparation, Bookkeeping, and Payroll Services",2.215628,raw_exact_match,,notebook_raw_appendix_b
+5413,Architectural and engineering services,5413,"Architectural, Engineering, and Related Services",1.492814,raw_exact_match,,notebook_raw_appendix_b
+5414,Specialized design services,5414,Specialized Design Services,1.280983,raw_exact_match,,notebook_raw_appendix_b
+5415,Computer systems design and related services,5415,Computer Systems Design and Related Services,1.860226,raw_exact_match,,notebook_raw_appendix_b
+5416,Management and technical consulting services,5416,"Management, Scientific, and Technical Consulting Services",1.8047,raw_exact_match,,notebook_raw_appendix_b
+5417,Scientific research and development services,5417,Scientific Research and Development Services,1.635407,raw_exact_match,,notebook_raw_appendix_b
+5418,"Advertising, pr, and related services",5418,"Advertising, Public Relations, and Related Services",1.305607,raw_exact_match,,notebook_raw_appendix_b
+5419,Other professional and technical services,5419,"Other Professional, Scientific, and Technical Services",0.6022445,raw_exact_match,,notebook_raw_appendix_b
+5511,Management of companies and enterprises,5511,Management of Companies and Enterprises,1.69871,raw_exact_match,,notebook_raw_appendix_b
+5611,Office administrative services,5611,Office Administrative Services,1.753769,raw_exact_match,,notebook_raw_appendix_b
+5612,Facilities support services,5612,Facilities Support Services,-1.008228,raw_exact_match,,notebook_raw_appendix_b
+5613,Employment services,5613,Employment Services,-0.7234654,raw_exact_match,,notebook_raw_appendix_b
+5614,Business support services,5614,Business Support Services,1.704965,raw_exact_match,,notebook_raw_appendix_b
+5615,Travel arrangement and reservation services,5615,Travel Arrangement and Reservation Services,1.68347,raw_exact_match,,notebook_raw_appendix_b
+5616,Investigation and security services,5616,Investigation and Security Services,-0.3442498,raw_exact_match,,notebook_raw_appendix_b
+5617,Services to buildings and dwellings,5617,Services to Buildings and Dwellings,-1.998597,raw_exact_match,,notebook_raw_appendix_b
+5619,Other support services,5619,Other Support Services,-0.4762704,raw_exact_match,,notebook_raw_appendix_b
+5621,Waste collection,5621,Waste Collection,-1.332496,raw_exact_match,,notebook_raw_appendix_b
+5622,Waste treatment and disposal,5622,Waste Treatment and Disposal,-0.7965308,raw_exact_match,,notebook_raw_appendix_b
+5629,Remediation and other waste services,5629,Remediation and Other Waste Management Services,-0.7835333,raw_exact_match,,notebook_raw_appendix_b
+6111,Elementary and secondary schools,6111,Elementary and Secondary Schools,1.315956,raw_exact_match,,notebook_raw_appendix_b
+6112,Junior colleges,6112,Junior Colleges,1.530079,raw_exact_match,,notebook_raw_appendix_b
+6113,Colleges and universities,6113,"Colleges, Universities, and Professional Schools",1.456562,raw_exact_match,,notebook_raw_appendix_b
+6114,"Business, computer and management training",6114,Business Schools and Computer and Management Training,1.741192,raw_exact_match,,notebook_raw_appendix_b
+6115,Technical and trade schools,6115,Technical and Trade Schools,0.947026,raw_exact_match,,notebook_raw_appendix_b
+6116,Other schools and instruction,6116,Other Schools and Instruction,0.6729133,raw_exact_match,,notebook_raw_appendix_b
+6117,Educational support services,6117,Educational Support Services,1.605398,raw_exact_match,,notebook_raw_appendix_b
+6211,Offices of physicians,6211,Offices of Physicians,1.009907,raw_exact_match,,notebook_raw_appendix_b
+6212,Offices of dentists,6212,Offices of Dentists,0.4154884,raw_exact_match,,notebook_raw_appendix_b
+6213,Offices of other health practitioners,6213,Offices of Other Health Practitioners,0.7008373,raw_exact_match,,notebook_raw_appendix_b
+6214,Outpatient care centers,6214,Outpatient Care Centers,0.9686477,raw_exact_match,,notebook_raw_appendix_b
+6215,Medical and diagnostic laboratories,6215,Medical and Diagnostic Laboratories,0.6741955,raw_exact_match,,notebook_raw_appendix_b
+6216,Home health care services,6216,Home Health Care Services,0.6927072,raw_exact_match,,notebook_raw_appendix_b
+6219,Other ambulatory health care services,6219,Other Ambulatory Health Care Services,0.7869348,raw_exact_match,,notebook_raw_appendix_b
+6221,General medical and surgical hospitals,6221,General Medical and Surgical Hospitals,0.5274962,raw_exact_match,,notebook_raw_appendix_b
+6222,Psychiatric and substance abuse hospitals,6222,Psychiatric and Substance Abuse Hospitals,0.5211326,raw_exact_match,,notebook_raw_appendix_b
+6223,Other hospitals,6223,Specialty (except Psychiatric and Substance Abuse) Hospitals,0.5900623,raw_exact_match,,notebook_raw_appendix_b
+6231,Nursing care facilities,6231,Nursing Care Facilities (Skilled Nursing Facilities),-0.2430007,raw_exact_match,,notebook_raw_appendix_b
+6232,Residential mental health facilities,6232,"Residential Intellectual and Developmental Disability, Mental Health, and Substance Abuse Facilities",0.8572415,raw_exact_match,,notebook_raw_appendix_b
+6233,Community care facilities for the elderly,6233,Continuing Care Retirement Communities and Assisted Living Facilities for the Elderly,-0.4843864,raw_exact_match,,notebook_raw_appendix_b
+6239,Other residential care facilities,6239,Other Residential Care Facilities,0.7190148,raw_exact_match,,notebook_raw_appendix_b
+6241,Individual and family services,6241,Individual and Family Services,1.163092,raw_exact_match,,notebook_raw_appendix_b
+6242,Emergency and other relief services,6242,"Community Food and Housing, and Emergency and Other Relief Services",0.8514432,raw_exact_match,,notebook_raw_appendix_b
+6243,Vocational rehabilitation services,6243,Vocational Rehabilitation Services,0.2863293,raw_exact_match,,notebook_raw_appendix_b
+6244,Child day care services,6244,Child Day Care Services,0.0572718,raw_exact_match,,notebook_raw_appendix_b
+7111,Performing arts companies,7111,Performing Arts Companies,0.1677087,raw_exact_match,,notebook_raw_appendix_b
+7112,Spectator sports,7112,Spectator Sports,-0.2576417,raw_exact_match,,notebook_raw_appendix_b
+7113,Promoters of performing arts and sports,7113,"Promoters of Performing Arts, Sports, and Similar Events",-0.1931654,raw_exact_match,,notebook_raw_appendix_b
+7114,Agents and managers for public figures,7114,"Agents and Managers for Artists, Athletes, Entertainers, and Other Public Figures",1.910984,raw_exact_match,,notebook_raw_appendix_b
+7115,"Independent artists, writers, and performers",7115,"Independent Artists, Writers, and Performers",0.6088023,raw_exact_match,,notebook_raw_appendix_b
+7121,"Museums, historical sites, zoos, and parks",7121,"Museums, Historical Sites, and Similar Institutions",0.380777,raw_exact_match,,notebook_raw_appendix_b
+7131,Amusement parks and arcades,7131,Amusement Parks and Arcades,-0.533819,raw_exact_match,,notebook_raw_appendix_b
+7132,Gambling industries,7132,Gambling Industries,-0.1355364,raw_exact_match,,notebook_raw_appendix_b
+7139,Other amusement and recreation industries,7139,Other Amusement and Recreation Industries,-1.085068,raw_exact_match,,notebook_raw_appendix_b
+7211,Traveler accommodation,7211,Traveler Accommodation,-0.902616,raw_exact_match,,notebook_raw_appendix_b
+7212,Rv parks and recreational camps,7212,RV (Recreational Vehicle) Parks and Recreational Camps,-0.404939,raw_exact_match,,notebook_raw_appendix_b
+7213,Rooming and boarding houses,7213,Rooming and Boarding Houses,-1.051392,raw_exact_match,,notebook_raw_appendix_b
+7221,Full-service restaurants,7225,Restaurants and Other Eating Places,-1.171986,manual_override,Notebook lock: back-map historical restaurant subtype into Felten's aggregate restaurants family.,notebook_locked_naics_manual_review
+7222,Limited-service eating places,7225,Restaurants and Other Eating Places,-1.171986,manual_override,Notebook lock: back-map historical restaurant subtype into Felten's aggregate restaurants family.,notebook_locked_naics_manual_review
+7223,Special food services,7223,Special Food Services,-1.060899,raw_exact_match,,notebook_raw_appendix_b
+7224,"Drinking places, alcoholic beverages",7224,Drinking Places (Alcoholic Beverages),-0.99913,raw_exact_match,,notebook_raw_appendix_b
+7225,Restaurants,7225,Restaurants and Other Eating Places,-1.171986,raw_exact_match,,notebook_raw_appendix_b
+8111,Automotive repair and maintenance,8111,Automotive Repair and Maintenance,-1.094294,raw_exact_match,,notebook_raw_appendix_b
+8112,Electronic equipment repair and maintenance,8112,Electronic and Precision Equipment Repair and Maintenance,0.1066877,raw_exact_match,,notebook_raw_appendix_b
+8113,Commercial machinery repair and maintenance,8113,Commercial and Industrial Machinery and Equipment (except Automotive and Electronic) Repair and Maintenance,-0.7797639,raw_exact_match,,notebook_raw_appendix_b
+8114,Household goods repair and maintenance,8114,Personal and Household Goods Repair and Maintenance,-0.7464604,raw_exact_match,,notebook_raw_appendix_b
+8121,Personal care services,8121,Personal Care Services,-0.4751154,raw_exact_match,,notebook_raw_appendix_b
+8122,Death care services,8122,Death Care Services,-0.3155441,raw_exact_match,,notebook_raw_appendix_b
+8123,Drycleaning and laundry services,8123,Drycleaning and Laundry Services,-1.148211,raw_exact_match,,notebook_raw_appendix_b
+8129,Other personal services,8129,Other Personal Services,-0.7702041,raw_exact_match,,notebook_raw_appendix_b
+8131,Religious organizations,8131,Religious Organizations,0.9662193,raw_exact_match,,notebook_raw_appendix_b
+8132,Grantmaking and giving services,8132,Grantmaking and Giving Services,1.721215,raw_exact_match,,notebook_raw_appendix_b
+8133,Social advocacy organizations,8133,Social Advocacy Organizations,1.194087,raw_exact_match,,notebook_raw_appendix_b
+8134,Civic and social organizations,8134,Civic and Social Organizations,-0.3505448,raw_exact_match,,notebook_raw_appendix_b
+8139,Professional and similar organizations,8139,"Business, Professional, Labor, Political, and Similar Organizations",1.360341,raw_exact_match,,notebook_raw_appendix_b
+8141,Private households,,,,,,
+9999,Unclassified,,,,,,

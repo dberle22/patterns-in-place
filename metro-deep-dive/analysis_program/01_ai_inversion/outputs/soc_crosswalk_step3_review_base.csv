@@ -1,0 +1,825 @@
+soc_code,soc_title_ours,selected_felten_code,selected_felten_name,aioe_score,match_basis,manual_notes,review_source,latest_year_employment,latest_year_weight,step3_match_flag
+31-1120,Home Health and Personal Care Aides,31-1011,Home Health Aides,-0.644942,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,3887140.0,0.02980551128297715,True
+41-2031,Retail Salespersons,41-2031,Retail Salespersons,0.0873069,raw_crosswalk_single_match,,notebook_raw_soc_bridge,3439720.0,0.02637481883088393,True
+35-3023,Fast Food and Counter Workers,35-3023,Fast Food and Counter Workers (##),-0.4850956,raw_crosswalk_deduplicated,,notebook_raw_soc_bridge,3408200.0,0.026133132214080975,True
+29-1141,Registered Nurses,29-1141,Registered Nurses,0.2294097,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2985110.0,0.022888995453193846,True
+11-1021,General and Operations Managers,11-1021,General and Operations Managers,0.5748773,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2949930.0,0.022619244971622526,True
+41-2011,Cashiers,41-2011,Cashiers,-0.2480887,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2615670.0,0.020056232010564282,True
+53-7062,"Laborers and Freight, Stock, and Material Movers, Hand",53-7062,"Laborers and Freight, Stock, and Material Movers, Hand",-1.709183,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2565600.0,0.01967230913926593,True
+53-7065,Stockers and Order Fillers,53-7065,Stockers and Order Fillers,-0.7892948,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2458870.0,0.018853933104640952,True
+43-4051,Customer Service Representatives,43-4051,Customer Service Representatives,0.9562519,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2195480.0,0.01683433164525864,True
+43-9061,"Office Clerks, General",43-9061,"Office Clerks, General",0.9888986,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2086330.0,0.015997399721907037,True
+35-3031,Waiters and Waitresses,35-3031,Waiters and Waitresses,-0.9481003,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2038530.0,0.015630882580943164,True
+37-2011,"Janitors and Cleaners, Except Maids and Housekeeping Cleaners",37-2011,"Janitors and Cleaners, Except Maids and Housekeeping Cleaners",-1.436201,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1937020.0,0.014852532058364865,True
+53-3032,Heavy and Tractor-Trailer Truck Drivers,53-3032,Heavy and Tractor-Trailer Truck Drivers,-1.149057,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1682000.0,0.012897109437264303,True
+43-6014,"Secretaries and Administrative Assistants, Except Legal, Medical, and Executive",43-6014,"Secretaries and Administrative Assistants, Except Legal, Medical, and Executive",1.099056,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1442720.0,0.011062376770112934,True
+15-1252,Software Developers,15-1132,"Software Developers, Applications (#)",,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,1441640.0,0.011054095629689483,False
+49-9071,"Maintenance and Repair Workers, General",49-9071,"Maintenance and Repair Workers, General",-1.014408,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1293980.0,0.009921879708460918,True
+13-2011,Accountants and Auditors,13-2011,Accountants and Auditors,1.481956,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1276060.0,0.009784474119212537,True
+35-2014,"Cooks, Restaurant",35-2014,"Cooks, Restaurant",-0.7418264,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1259230.0,0.00965542634761375,True
+43-1011,First-Line Supervisors of Office and Administrative Support Workers,43-1011,First-Line Supervisors of Office and Administrative Support Workers,1.038688,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1249400.0,0.009580052634315113,True
+31-1131,Nursing Assistants,31-1014,Nursing Assistants,,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,1217690.0,0.00933690915021544,False
+33-9032,Security Guards,33-9032,Security Guards,-0.3908421,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1207190.0,0.009256398062765217,True
+25-9045,"Teaching Assistants, Except Postsecondary",25-1112,"Law Teachers, Postsecondary",1.35645,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,1200370.0,0.009204104194535644,True
+25-2021,"Elementary School Teachers, Except Special Education",25-2021,"Elementary School Teachers, Except Special Education",0.8869491,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1170560.0,0.008975529383403152,True
+43-3031,"Bookkeeping, Accounting, and Auditing Clerks",43-3031,"Bookkeeping, Accounting, and Auditing Clerks",1.039749,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1135970.0,0.008710302858174276,True
+51-2090,Miscellaneous Assemblers and Fabricators,51-2091,Fiberglass Laminators and Fabricators,-1.216496,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,1121110.0,0.008596360500125674,True
+41-3091,"Sales Representatives of Services, Except Advertising, Insurance, Financial Services, and Travel",41-3091,"Sales Representatives of Services, Except Advertising, Insurance, Financial Services, and Travel",1.302674,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1080080.0,0.00828175384126066,True
+35-1012,First-Line Supervisors of Food Preparation and Serving Workers,35-1012,First-Line Supervisors of Food Preparation and Serving Workers,-0.2575492,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1074900.0,0.00824203503811855,True
+41-4012,"Sales Representatives, Wholesale and Manufacturing, Except Technical and Scientific Products",41-4012,"Sales Representatives, Wholesale and Manufacturing, Except Technical and Scientific Products",0.8224681,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1019630.0,0.007818240009225803,True
+13-1199,"Business Operations Specialists, All Other",13-1199,"Business Operations Specialists, All Other",1.047687,raw_crosswalk_single_match,,notebook_raw_soc_bridge,963560.0,0.007388310802241613,True
+41-1011,First-Line Supervisors of Retail Sales Workers,41-1011,First-Line Supervisors of Retail Sales Workers,0.0191826,raw_crosswalk_single_match,,notebook_raw_soc_bridge,956720.0,0.007335863579559753,True
+13-1082,Project Management Specialists,13-1082,Project Management Specialists (##),1.232705,raw_crosswalk_deduplicated,,notebook_raw_soc_bridge,936080.0,0.007177601784800458,True
+47-2061,Construction Laborers,47-2061,Construction Laborers,-1.622988,raw_crosswalk_single_match,,notebook_raw_soc_bridge,921060.0,0.007062432591133567,True
+25-2031,"Secondary School Teachers, Except Special and Career/Technical Education",25-2031,"Secondary School Teachers, Except Special and Career/Technical Education",1.191325,raw_crosswalk_single_match,,notebook_raw_soc_bridge,898410.0,0.006888758673919514,True
+53-3033,Light Truck Drivers,53-3033,Light Truck Drivers,-1.120501,raw_crosswalk_single_match,,notebook_raw_soc_bridge,875900.0,0.0067161582378714646,True
+43-6013,Medical Secretaries and Administrative Assistants,43-6013,Medical Secretaries and Administrative Assistants,1.217982,raw_crosswalk_single_match,,notebook_raw_soc_bridge,849350.0,0.006512580202461615,True
+37-3011,Landscaping and Groundskeeping Workers,37-3011,Landscaping and Groundskeeping Workers,-1.824293,raw_crosswalk_single_match,,notebook_raw_soc_bridge,822100.0,0.00630363476122175,True
+43-4171,Receptionists and Information Clerks,43-4171,Receptionists and Information Clerks,1.013186,raw_crosswalk_single_match,,notebook_raw_soc_bridge,804760.0,0.006170676451089668,True
+35-2021,Food Preparation Workers,35-2021,Food Preparation Workers,-1.226416,raw_crosswalk_single_match,,notebook_raw_soc_bridge,789300.0,0.006052133459472482,True
+13-1071,Human Resources Specialists,13-1071,Human Resources Specialists,1.36005,raw_crosswalk_single_match,,notebook_raw_soc_bridge,787010.0,0.006034574374685719,True
+13-1111,Management Analysts,13-1111,Management Analysts,1.432417,raw_crosswalk_single_match,,notebook_raw_soc_bridge,772750.0,0.005925232650205702,True
+11-3031,Financial Managers,11-3031,Financial Managers,1.446232,raw_crosswalk_single_match,,notebook_raw_soc_bridge,746320.0,0.005722574741509569,True
+13-1161,Market Research Analysts and Marketing Specialists,13-1161,Market Research Analysts and Marketing Specialists,1.426757,raw_crosswalk_single_match,,notebook_raw_soc_bridge,744280.0,0.005706932587376383,True
+31-9092,Medical Assistants,31-9092,Medical Assistants,0.1497917,raw_crosswalk_single_match,,notebook_raw_soc_bridge,728920.0,0.005589156368020628,True
+37-2012,Maids and Housekeeping Cleaners,37-2012,Maids and Housekeeping Cleaners,-1.480657,raw_crosswalk_single_match,,notebook_raw_soc_bridge,721980.0,0.0055359423730773375,True
+43-5071,"Shipping, Receiving, and Inventory Clerks",43-5071,"Shipping, Receiving, and Inventory Clerks",-0.7463213,raw_crosswalk_single_match,,notebook_raw_soc_bridge,711140.0,0.00545282425993825,True
+23-1011,Lawyers,23-1011,Lawyers,1.328783,raw_crosswalk_single_match,,notebook_raw_soc_bridge,705070.0,0.005406281183669407,True
+47-1011,First-Line Supervisors of Construction Trades and Extraction Workers,47-1011,First-Line Supervisors of Construction Trades and Extraction Workers,-0.3054048,raw_crosswalk_single_match,,notebook_raw_soc_bridge,690660.0,0.005295789300797243,True
+35-3011,Bartenders,35-3011,Bartenders,-0.6159883,raw_crosswalk_single_match,,notebook_raw_soc_bridge,661140.0,0.005069438129222902,True
+53-7051,Industrial Truck and Tractor Operators,53-7051,Industrial Truck and Tractor Operators,-1.39869,raw_crosswalk_single_match,,notebook_raw_soc_bridge,657040.0,0.005038000466504244,True
+47-2111,Electricians,47-2111,Electricians,-0.7796905,raw_crosswalk_single_match,,notebook_raw_soc_bridge,650930.0,0.004991150681330828,True
+49-3023,Automotive Service Technicians and Mechanics,49-3023,Automotive Service Technicians and Mechanics,-0.9547055,raw_crosswalk_single_match,,notebook_raw_soc_bridge,606150.0,0.0046477900626621625,True
+15-1232,Computer User Support Specialists,15-1151,Computer User Support Specialists,,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,599640.0,0.004597873188443025,False
+11-3021,Computer and Information Systems Managers,11-3021,Computer and Information Systems Managers,1.059853,raw_crosswalk_single_match,,notebook_raw_soc_bridge,584110.0,0.004478793456242838,True
+33-3051,Police and Sheriff's Patrol Officers,33-3051,Police and Sheriff's Patrol Officers,-0.6681123,raw_crosswalk_single_match,,notebook_raw_soc_bridge,582190.0,0.004464071428823368,True
+47-2031,Carpenters,47-2031,Carpenters,-1.323631,raw_crosswalk_single_match,,notebook_raw_soc_bridge,581330.0,0.004457477187375064,True
+11-9199,"Managers, All Other",11-9199,"Managers, All Other",0.9646872,raw_crosswalk_single_match,,notebook_raw_soc_bridge,551020.0,0.00422506851493542,True
+53-1047,"First-Line Supervisors of Transportation and Material Moving Workers, Except Aircraft Cargo Handling Supervisors",53-1031,First-Line Supervisors/Managers of Transportation and Material-Moving Machine and Vehicle Operators,0.1466244999999999,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,545070.0,0.004179445565380293,True
+51-1011,First-Line Supervisors of Production and Operating Workers,51-1011,First-Line Supervisors of Production and Operating Workers,-0.0845282,raw_crosswalk_single_match,,notebook_raw_soc_bridge,537130.0,0.004118563847822696,True
+29-2061,Licensed Practical and Licensed Vocational Nurses,29-2061,Licensed Practical and Licensed Vocational Nurses,-0.5137373,raw_crosswalk_single_match,,notebook_raw_soc_bridge,537050.0,0.004117950430013552,True
+11-2022,Sales Managers,11-2022,Sales Managers,1.26628,raw_crosswalk_single_match,,notebook_raw_soc_bridge,536050.0,0.004110282707399245,True
+35-2011,"Cooks, Fast Food",35-2011,"Cooks, Fast Food",-0.7131837,raw_crosswalk_single_match,,notebook_raw_soc_bridge,526150.0,0.004034372253517606,True
+25-2022,"Middle School Teachers, Except Special and Career/Technical Education",25-2022,"Middle School Teachers, Except Special and Career/Technical Education",1.286445,raw_crosswalk_single_match,,notebook_raw_soc_bridge,525760.0,0.004031381841698026,True
+11-9111,Medical and Health Services Managers,11-9111,Medical and Health Services Managers,1.260259,raw_crosswalk_single_match,,notebook_raw_soc_bridge,522220.0,0.00400423810364338,True
+49-1011,"First-Line Supervisors of Mechanics, Installers, and Repairers",49-1011,"First-Line Supervisors of Mechanics, Installers, and Repairers",-0.0205169,raw_crosswalk_single_match,,notebook_raw_soc_bridge,515730.0,0.003954474583876527,True
+35-9011,Dining Room and Cafeteria Attendants and Bartender Helpers,35-9011,Dining Room and Cafeteria Attendants and Bartender Helpers,-1.927078,raw_crosswalk_single_match,,notebook_raw_soc_bridge,495920.0,0.003802576998887107,True
+51-9061,"Inspectors, Testers, Sorters, Samplers, and Weighers",51-9061,"Inspectors, Testers, Sorters, Samplers, and Weighers",-0.0293395,raw_crosswalk_single_match,,notebook_raw_soc_bridge,491610.0,0.0037695291144194437,True
+53-7064,"Packers and Packagers, Hand",53-7064,"Packers and Packagers, Hand",-1.51362,raw_crosswalk_single_match,,notebook_raw_soc_bridge,483610.0,0.003708187333504988,True
+39-9011,Childcare Workers,39-9011,Childcare Workers,-0.3834794,raw_crosswalk_single_match,,notebook_raw_soc_bridge,455700.0,0.003494181195339681,True
+15-1211,Computer Systems Analysts,15-1121,Computer Systems Analysts,,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,441640.0,0.003386373015382525,False
+41-3031,"Securities, Commodities, and Financial Services Sales Agents",41-3031,"Securities, Commodities, and Financial Services Sales Agents",1.256298,raw_crosswalk_single_match,,notebook_raw_soc_bridge,435770.0,0.003341363483636543,True
+13-1020,Buyers and Purchasing Agents,,,,,,,433030.0,0.003320353923673342,False
+25-3031,"Substitute Teachers, Short-Term",25-3031,"Substitute Teachers, Short-Term",1.32533,raw_crosswalk_single_match,,notebook_raw_soc_bridge,432920.0,0.0033195104741857683,True
+25-2011,"Preschool Teachers, Except Special Education",25-2011,"Preschool Teachers, Except Special Education",0.0306372,raw_crosswalk_single_match,,notebook_raw_soc_bridge,431130.0,0.003305785250706159,True
+21-1018,"Substance Abuse, Behavioral Disorder, and Mental Health Counselors",21-1011,Substance Abuse and Behavioral Disorder Counselors,1.030841,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,431040.0,0.0033050951556708712,True
+35-9021,Dishwashers,35-9021,Dishwashers,-1.738612,raw_crosswalk_single_match,,notebook_raw_soc_bridge,429740.0,0.0032951271162722723,True
+47-2152,"Plumbers, Pipefitters, and Steamfitters",47-2152,"Plumbers, Pipefitters, and Steamfitters",-1.121219,raw_crosswalk_single_match,,notebook_raw_soc_bridge,413380.0,0.00316968317430221,True
+43-6011,Executive Secretaries and Executive Administrative Assistants,43-6011,Executive Secretaries and Executive Administrative Assistants,1.079643,raw_crosswalk_single_match,,notebook_raw_soc_bridge,411640.0,0.0031563413369533164,True
+29-2052,Pharmacy Technicians,29-2052,Pharmacy Technicians,0.0070256,raw_crosswalk_single_match,,notebook_raw_soc_bridge,409400.0,0.0031391656382972685,True
+35-9031,"Hosts and Hostesses, Restaurant, Lounge, and Coffee Shop",35-9031,"Hosts and Hostesses, Restaurant, Lounge, and Coffee Shop",-0.0565477,raw_crosswalk_single_match,,notebook_raw_soc_bridge,389470.0,0.002986347926594131,True
+41-3021,Insurance Sales Agents,41-3021,Insurance Sales Agents,1.341258,raw_crosswalk_single_match,,notebook_raw_soc_bridge,385920.0,0.0029591275113133413,True
+13-1151,Training and Development Specialists,13-1151,Training and Development Specialists,1.198409,raw_crosswalk_single_match,,notebook_raw_soc_bridge,378390.0,0.00290138956002761,True
+21-1093,Social and Human Service Assistants,21-1093,Social and Human Service Assistants,0.4652255,raw_crosswalk_single_match,,notebook_raw_soc_bridge,376300.0,0.0028853640197637085,True
+47-2073,Operating Engineers and Other Construction Equipment Operators,47-2073,Operating Engineers and Other Construction Equipment Operators,-0.8815078,raw_crosswalk_single_match,,notebook_raw_soc_bridge,368110.0,0.0028225653715525344,True
+13-1041,Compliance Officers,13-1041,Compliance Officers,0.6981205,raw_crosswalk_single_match,,notebook_raw_soc_bridge,365490.0,0.0028024759383030503,True
+23-2011,Paralegals and Legal Assistants,23-2011,Paralegals and Legal Assistants,1.292055,raw_crosswalk_single_match,,notebook_raw_soc_bridge,364390.0,0.0027940414434273124,True
+49-9021,"Heating, Air Conditioning, and Refrigeration Mechanics and Installers",49-9021,"Heating, Air Conditioning, and Refrigeration Mechanics and Installers",-0.8491117,raw_crosswalk_single_match,,notebook_raw_soc_bridge,359050.0,0.0027530958046669135,True
+41-2021,Counter and Rental Clerks,41-2021,Counter and Rental Clerks,0.0784367,raw_crosswalk_single_match,,notebook_raw_soc_bridge,357660.0,0.0027424376702330265,True
+35-2012,"Cooks, Institution and Cafeteria",35-2012,"Cooks, Institution and Cafeteria",-0.6360813,raw_crosswalk_single_match,,notebook_raw_soc_bridge,356400.0,0.002732776339739,True
+39-3091,Amusement and Recreation Attendants,39-3091,Amusement and Recreation Attendants,-0.5246153,raw_crosswalk_single_match,,notebook_raw_soc_bridge,354950.0,0.002721658141948255,True
+53-3031,Driver/Sales Workers,53-3031,Driver/Sales Workers,-0.7293087,raw_crosswalk_single_match,,notebook_raw_soc_bridge,350360.0,0.0026864632951485857,True
+15-1299,"Computer Occupations, All Other",15-1199,"Computer Occupations, All Other (#)",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,350320.0,0.0026861565862440137,False
+31-9091,Dental Assistants,31-9091,Dental Assistants,-0.5268759,raw_crosswalk_single_match,,notebook_raw_soc_bridge,349720.0,0.0026815559526754294,True
+43-3021,Billing and Posting Clerks,43-3021,Billing and Posting Clerks,1.333455,raw_crosswalk_single_match,,notebook_raw_soc_bridge,347140.0,0.0026617732283305173,True
+49-9041,Industrial Machinery Mechanics,49-9041,Industrial Machinery Mechanics,-1.133177,raw_crosswalk_single_match,,notebook_raw_soc_bridge,346240.0,0.0026548722779776413,True
+43-5061,"Production, Planning, and Expediting Clerks",43-5061,"Production, Planning, and Expediting Clerks",0.6999103,raw_crosswalk_single_match,,notebook_raw_soc_bridge,340110.0,0.00260786913835194,True
+21-1021,"Child, Family, and School Social Workers",21-1021,"Child, Family, and School Social Workers",0.7761707,raw_crosswalk_single_match,,notebook_raw_soc_bridge,338960.0,0.0025990512573454867,True
+11-2021,Marketing Managers,11-2021,Marketing Managers,1.315032,raw_crosswalk_single_match,,notebook_raw_soc_bridge,336840.0,0.002582795685403156,True
+17-2051,Civil Engineers,17-2051,Civil Engineers,1.282867,raw_crosswalk_single_match,,notebook_raw_soc_bridge,330630.0,0.00253517912796831,True
+53-7061,Cleaners of Vehicles and Equipment,53-7061,Cleaners of Vehicles and Equipment,-1.629897,raw_crosswalk_single_match,,notebook_raw_soc_bridge,328040.0,0.0025153197263972546,True
+13-2051,Financial and Investment Analysts,13-2051,Financial and Investment Analysts,1.380615,raw_crosswalk_single_match,,notebook_raw_soc_bridge,326100.0,0.002500444344525499,True
+53-3051,"Bus Drivers, School",53-3022,"Bus Drivers, School or Special Client (#)",,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,322040.0,0.0024693133907114128,False
+11-9021,Construction Managers,11-9021,Construction Managers,1.029139,raw_crosswalk_single_match,,notebook_raw_soc_bridge,320840.0,0.0024601121235742446,True
+17-2112,Industrial Engineers,17-2112,Industrial Engineers,1.13787,raw_crosswalk_single_match,,notebook_raw_soc_bridge,316710.0,0.0024284444291771566,True
+51-4121,"Welders, Cutters, Solderers, and Brazers",51-4121,"Welders, Cutters, Solderers, and Brazers",-1.197596,raw_crosswalk_single_match,,notebook_raw_soc_bridge,315670.0,0.0024204699976582774,True
+21-1012,"Educational, Guidance, and Career Counselors and Advisors",21-1012,"Educational, Guidance, and Career Counselors and Advisors",0.9739287,raw_crosswalk_single_match,,notebook_raw_soc_bridge,305330.0,0.0023411857458263434,True
+51-9111,Packaging and Filling Machine Operators and Tenders,51-9111,Packaging and Filling Machine Operators and Tenders,-0.978608,raw_crosswalk_single_match,,notebook_raw_soc_bridge,305040.0,0.0023389621062681948,True
+25-3021,Self-Enrichment Teachers,25-3021,Self-Enrichment Teachers,0.526352,raw_crosswalk_single_match,,notebook_raw_soc_bridge,302720.0,0.0023211729898030024,True
+29-1229,"Physicians, All Other",29-1069,"Physicians and Surgeons, All Other (#)",,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,300910.0,0.0023072944118711068,False
+39-9031,Exercise Trainers and Group Fitness Instructors,39-9031,Exercise Trainers and Group Fitness Instructors,-2.111948,raw_crosswalk_single_match,,notebook_raw_soc_bridge,297360.0,0.0022800739965903173,True
+33-2011,Firefighters,33-2011,Firefighters,-1.320232,raw_crosswalk_single_match,,notebook_raw_soc_bridge,296470.0,0.002273249723463584,True
+29-2010,Clinical Laboratory Technologists and Technicians,29-2056,Veterinary Technologists and Technicians,-0.3623179,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,295320.0,0.002264431842457131,True
+39-9032,Recreation Workers,39-9032,Recreation Workers,-0.2441154,raw_crosswalk_single_match,,notebook_raw_soc_bridge,290860.0,0.002230233799597322,True
+39-5012,"Hairdressers, Hairstylists, and Cosmetologists",39-5012,"Hairdressers, Hairstylists, and Cosmetologists",-0.6824517,raw_crosswalk_single_match,,notebook_raw_soc_bridge,282190.0,0.0021637546445312807,True
+29-1051,Pharmacists,29-1051,Pharmacists,0.6058705,raw_crosswalk_single_match,,notebook_raw_soc_bridge,280810.0,0.002153173187323537,True
+11-9032,"Education Administrators, Kindergarten through Secondary",11-9032,"Education Administrators, Kindergarten through Secondary",1.048811,raw_crosswalk_single_match,,notebook_raw_soc_bridge,278670.0,0.00213676426092892,True
+43-5052,Postal Service Mail Carriers,43-5052,Postal Service Mail Carriers,-1.064715,raw_crosswalk_single_match,,notebook_raw_soc_bridge,275050.0,0.002109007105065129,True
+29-1171,Nurse Practitioners,29-1171,Nurse Practitioners,0.1900572,raw_crosswalk_single_match,,notebook_raw_soc_bridge,274650.0,0.002105940016019406,True
+11-9141,"Property, Real Estate, and Community Association Managers",11-9141,"Property, Real Estate, and Community Association Managers",1.215396,raw_crosswalk_single_match,,notebook_raw_soc_bridge,272300.0,0.0020879208678757847,True
+15-1244,Network and Computer Systems Administrators,15-1142,Network and Computer Systems Administrators,,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,267080.0,0.0020478953558291024,False
+43-3071,Tellers,43-3071,Tellers,0.4727723,raw_crosswalk_single_match,,notebook_raw_soc_bridge,257810.0,0.001976815567194477,True
+35-3041,"Food Servers, Nonrestaurant",35-3041,"Food Servers, Nonrestaurant",-0.7270206,raw_crosswalk_single_match,,notebook_raw_soc_bridge,257350.0,0.001973288414791896,True
+17-2141,Mechanical Engineers,17-2141,Mechanical Engineers,1.004709,raw_crosswalk_single_match,,notebook_raw_soc_bridge,256100.0,0.001963703761524012,True
+13-1031,"Claims Adjusters, Examiners, and Investigators",13-1031,"Claims Adjusters, Examiners, and Investigators",1.274024,raw_crosswalk_single_match,,notebook_raw_soc_bridge,252970.0,0.0019397037897412313,True
+27-3031,Public Relations Specialists,27-3031,Public Relations Specialists,1.284927,raw_crosswalk_single_match,,notebook_raw_soc_bridge,250180.0,0.0019183108436473149,True
+49-3031,Bus and Truck Mechanics and Diesel Engine Specialists,49-3031,Bus and Truck Mechanics and Diesel Engine Specialists,-1.010472,raw_crosswalk_single_match,,notebook_raw_soc_bridge,239180.0,0.0018339658948899383,True
+45-2092,"Farmworkers and Laborers, Crop, Nursery, and Greenhouse",45-2092,"Farmworkers and Laborers, Crop, Nursery, and Greenhouse",-1.601349,raw_crosswalk_single_match,,notebook_raw_soc_bridge,238010.0,0.0018249946594311992,True
+39-2021,Animal Caretakers,39-2021,Animal Caretakers,-0.8890408,raw_crosswalk_single_match,,notebook_raw_soc_bridge,237300.0,0.0018195505763750413,True
+33-3012,Correctional Officers and Jailers,33-3012,Correctional Officers and Jailers,-0.8875365,raw_crosswalk_single_match,,notebook_raw_soc_bridge,236240.0,0.0018114227904038758,True
+29-1123,Physical Therapists,29-1123,Physical Therapists,-0.3581922,raw_crosswalk_single_match,,notebook_raw_soc_bridge,235290.0,0.0018041384539202842,True
+51-4041,Machinists,51-4041,Machinists,-0.8675535,raw_crosswalk_single_match,,notebook_raw_soc_bridge,230540.0,0.0017677167715023261,True
+41-2022,Parts Salespersons,41-2022,Parts Salespersons,-0.1184909,raw_crosswalk_single_match,,notebook_raw_soc_bridge,226090.0,0.0017335954058686602,True
+13-1081,Logisticians,13-1081,Logisticians,1.297303,raw_crosswalk_single_match,,notebook_raw_soc_bridge,223290.0,0.0017121257825486007,True
+15-2051,Data Scientists,,,,,,,222920.0,0.0017092887251813071,False
+25-2052,"Special Education Teachers, Kindergarten and Elementary School",,,,,,,222630.0,0.001707065085623158,False
+13-2072,Loan Officers,13-2072,Loan Officers,1.385739,raw_crosswalk_single_match,,notebook_raw_soc_bridge,220430.0,0.0016901960958716827,True
+11-3012,Administrative Services Managers,11-3011,Administrative Services Managers (#),,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,220090.0,0.0016875890701828185,False
+13-2052,Personal Financial Advisors,13-2052,Personal Financial Advisors,1.400749,raw_crosswalk_single_match,,notebook_raw_soc_bridge,219780.0,0.0016852120761723832,True
+53-3053,Shuttle Drivers and Chauffeurs,53-3041,Taxi Drivers and Chauffeurs (#),,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,217650.0,0.0016688798270039094,False
+27-2022,Coaches and Scouts,27-2022,Coaches and Scouts,0.1168668,raw_crosswalk_single_match,,notebook_raw_soc_bridge,217180.0,0.0016652759973751852,True
+51-3011,Bakers,51-3011,Bakers,-0.3852989,raw_crosswalk_single_match,,notebook_raw_soc_bridge,212860.0,0.001632151435681379,True
+43-4081,"Hotel, Motel, and Resort Desk Clerks",43-4081,"Hotel, Motel, and Resort Desk Clerks",0.6063127,raw_crosswalk_single_match,,notebook_raw_soc_bridge,208710.0,0.0016003303868320053,True
+11-9051,Food Service Managers,11-9051,Food Service Managers,-0.1213112,raw_crosswalk_single_match,,notebook_raw_soc_bridge,207160.0,0.0015884454167798296,True
+41-4011,"Sales Representatives, Wholesale and Manufacturing, Technical and Scientific Products",41-4011,"Sales Representatives, Wholesale and Manufacturing, Technical and Scientific Products",0.8911985,raw_crosswalk_single_match,,notebook_raw_soc_bridge,205580.0,0.0015763304150492245,True
+51-2028,"Electrical, Electronic, and Electromechanical Assemblers, Except Coil Winders, Tapers, and Finishers",,,,,,,204080.0,0.0015648288311277641,False
+47-2141,"Painters, Construction and Maintenance",47-2141,"Painters, Construction and Maintenance",-1.58799,raw_crosswalk_single_match,,notebook_raw_soc_bridge,201860.0,0.0015478064869240025,True
+25-9031,Instructional Coordinators,25-9031,Instructional Coordinators,1.301855,raw_crosswalk_single_match,,notebook_raw_soc_bridge,198950.0,0.0015254934141163694,True
+13-1051,Cost Estimators,13-1051,Cost Estimators,1.367669,raw_crosswalk_single_match,,notebook_raw_soc_bridge,198870.0,0.0015248799963072247,True
+29-2034,Radiologic Technologists and Technicians,29-2034,Radiologic Technologists and Technicians,-0.5559037,raw_crosswalk_single_match,,notebook_raw_soc_bridge,198170.0,0.0015195125904772099,True
+11-3051,Industrial Production Managers,11-3051,Industrial Production Managers,0.5086878,raw_crosswalk_single_match,,notebook_raw_soc_bridge,197480.0,0.0015142218618733382,True
+29-1292,Dental Hygienists,29-2021,Dental Hygienists,,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,197140.0,0.0015116148361844738,False
+11-3121,Human Resources Managers,11-3121,Human Resources Managers,1.320417,raw_crosswalk_single_match,,notebook_raw_soc_bridge,195340.0,0.0014978129354787212,True
+51-9199,"Production Workers, All Other",51-9199,"Production Workers, All Other",-1.290964,raw_crosswalk_single_match,,notebook_raw_soc_bridge,194170.0,0.0014888417000199822,True
+11-9041,Architectural and Engineering Managers,11-9041,Architectural and Engineering Managers,0.8370105,raw_crosswalk_single_match,,notebook_raw_soc_bridge,191870.0,0.001471205938007076,True
+41-1012,First-Line Supervisors of Non-Retail Sales Workers,41-1012,First-Line Supervisors of Non-Retail Sales Workers,1.316195,raw_crosswalk_single_match,,notebook_raw_soc_bridge,183660.0,0.0014082539353436159,True
+11-3071,"Transportation, Storage, and Distribution Managers",11-3071,"Transportation, Storage, and Distribution Managers",0.8907923,raw_crosswalk_single_match,,notebook_raw_soc_bridge,183640.0,0.0014081005808913298,True
+35-1011,Chefs and Head Cooks,35-1011,Chefs and Head Cooks,-0.2676433,raw_crosswalk_single_match,,notebook_raw_soc_bridge,182360.0,0.001398285895945017,True
+11-9151,Social and Community Service Managers,11-9151,Social and Community Service Managers,1.156153,raw_crosswalk_single_match,,notebook_raw_soc_bridge,179910.0,0.001379499975539965,True
+47-2051,Cement Masons and Concrete Finishers,47-2051,Cement Masons and Concrete Finishers,-1.777407,raw_crosswalk_single_match,,notebook_raw_soc_bridge,176640.0,0.0013544265225911812,True
+17-2071,Electrical Engineers,17-2071,Electrical Engineers,1.126725,raw_crosswalk_single_match,,notebook_raw_soc_bridge,173280.0,0.0013286629746071096,True
+27-1024,Graphic Designers,27-1024,Graphic Designers,0.7156958,raw_crosswalk_single_match,,notebook_raw_soc_bridge,170700.0,0.0013088802502621978,True
+51-6011,Laundry and Dry-Cleaning Workers,51-6011,Laundry and Dry-Cleaning Workers,-1.054399,raw_crosswalk_single_match,,notebook_raw_soc_bridge,170150.0,0.001304663002824329,True
+43-5032,"Dispatchers, Except Police, Fire, and Ambulance",43-5032,"Dispatchers, Except Police, Fire, and Ambulance",1.234523,raw_crosswalk_single_match,,notebook_raw_soc_bridge,167230.0,0.0012822732527905526,True
+43-9041,Insurance Claims and Policy Processing Clerks,43-9041,Insurance Claims and Policy Processing Clerks,1.240201,raw_crosswalk_single_match,,notebook_raw_soc_bridge,165400.0,0.001268241320406371,True
+21-1022,Healthcare Social Workers,21-1022,Healthcare Social Workers,0.9339648,raw_crosswalk_single_match,,notebook_raw_soc_bridge,163150.0,0.0012509889445241802,True
+41-9022,Real Estate Sales Agents,41-9022,Real Estate Sales Agents,0.8649445,raw_crosswalk_single_match,,notebook_raw_soc_bridge,162530.0,0.0012462349565033099,True
+29-2099,"Health Technologists and Technicians, All Other",29-2099,"Health Technologists and Technicians, All Other (##)",-0.1060473,raw_crosswalk_deduplicated,,notebook_raw_soc_bridge,160540.0,0.001230976188500839,True
+29-1127,Speech-Language Pathologists,29-1127,Speech-Language Pathologists,1.146267,raw_crosswalk_single_match,,notebook_raw_soc_bridge,160340.0,0.0012294426439779778,True
+29-2072,Medical Records Specialists,29-2072,Medical Records Specialists,0.5738765,raw_crosswalk_single_match,,notebook_raw_soc_bridge,159390.0,0.0012221583074943862,True
+15-1212,Information Security Analysts,15-1122,Information Security Analysts,,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,158790.0,0.0012175576739258019,False
+43-9199,"Office and Administrative Support Workers, All Other",43-9199,"Office and Administrative Support Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,154540.0,0.0011849698528149973,False
+15-1253,Software Quality Assurance Analysts and Testers,15-1253,Software Quality Assurance Analysts and Testers (##),1.283308,raw_crosswalk_deduplicated,,notebook_raw_soc_bridge,154020.0,0.0011809826370555577,True
+37-1011,First-Line Supervisors of Housekeeping and Janitorial Workers,37-1011,First-Line Supervisors of Housekeeping and Janitorial Workers,-0.5854128,raw_crosswalk_single_match,,notebook_raw_soc_bridge,153840.0,0.0011796024469849825,True
+25-1071,"Health Specialties Teachers, Postsecondary",25-1071,"Health Specialties Teachers, Postsecondary",0.924754,raw_crosswalk_single_match,,notebook_raw_soc_bridge,153410.0,0.0011763053262608305,True
+25-3041,Tutors,25-3041,Tutors,1.32533,raw_crosswalk_single_match,,notebook_raw_soc_bridge,153350.0,0.001175845262903972,True
+49-9099,"Installation, Maintenance, and Repair Workers, All Other",49-9099,"Installation, Maintenance, and Repair Workers, All Other (##)",-0.5900791,raw_crosswalk_deduplicated,,notebook_raw_soc_bridge,151790.0,0.0011638836156256532,True
+15-1241,Computer Network Architects,15-1143,Computer Network Architects,,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,150060.0,0.001150618455502902,False
+29-1071,Physician Assistants,29-1071,Physician Assistants,0.1059147,raw_crosswalk_single_match,,notebook_raw_soc_bridge,144390.0,0.0011071424682797817,True
+49-3042,"Mobile Heavy Equipment Mechanics, Except Engines",49-3042,"Mobile Heavy Equipment Mechanics, Except Engines",-1.169815,raw_crosswalk_single_match,,notebook_raw_soc_bridge,143560.0,0.001100778258509907,True
+29-1122,Occupational Therapists,29-1122,Occupational Therapists,0.1151615,raw_crosswalk_single_match,,notebook_raw_soc_bridge,142660.0,0.0010938773081570308,True
+19-1042,"Medical Scientists, Except Epidemiologists",19-1042,"Medical Scientists, Except Epidemiologists",1.279928,raw_crosswalk_single_match,,notebook_raw_soc_bridge,139520.0,0.0010698006591481068,True
+43-3011,Bill and Account Collectors,43-3011,Bill and Account Collectors,1.271991,raw_crosswalk_single_match,,notebook_raw_soc_bridge,138480.0,0.0010618262276292276,True
+39-5092,Manicurists and Pedicurists,39-5092,Manicurists and Pedicurists,0.0335124,raw_crosswalk_single_match,,notebook_raw_soc_bridge,138370.0,0.0010609827781416538,True
+29-2042,Emergency Medical Technicians,29-2041,Emergency Medical Technicians and Paramedics (#),,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,137770.0,0.0010563821445730697,False
+25-2058,"Special Education Teachers, Secondary School",25-2054,"Special Education Teachers, Secondary School",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,136840.0,0.001049251162541764,False
+43-6012,Legal Secretaries and Administrative Assistants,43-6012,Legal Secretaries and Administrative Assistants,1.014541,raw_crosswalk_single_match,,notebook_raw_soc_bridge,136440.0,0.0010461840734960414,True
+43-4031,"Court, Municipal, and License Clerks",43-4031,"Court, Municipal, and License Clerks",1.166267,raw_crosswalk_single_match,,notebook_raw_soc_bridge,135860.0,0.0010417367943797433,True
+17-2199,"Engineers, All Other",17-2199,"Engineers, All Other",0.787566,raw_crosswalk_single_match,,notebook_raw_soc_bridge,135340.0,0.0010377495786203037,True
+11-1011,Chief Executives,11-1011,Chief Executives,1.334246,raw_crosswalk_single_match,,notebook_raw_soc_bridge,135150.0,0.0010362927113235854,True
+43-4061,"Eligibility Interviewers, Government Programs",43-4061,"Eligibility Interviewers, Government Programs",1.226286,raw_crosswalk_single_match,,notebook_raw_soc_bridge,135070.0,0.001035679293514441,True
+51-9161,Computer Numerically Controlled Tool Operators,51-4011,"Computer-Controlled Machine Tool Operators, Metal and Plastic",,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,133740.0,0.0010254812224374126,False
+33-9092,"Lifeguards, Ski Patrol, and Other Recreational Protective Service Workers",33-9092,"Lifeguards, Ski Patrol, and Other Recreational Protective Service Workers",-0.4718385,raw_crosswalk_single_match,,notebook_raw_soc_bridge,132880.0,0.0010188869809891086,True
+51-3092,Food Batchmakers,51-3092,Food Batchmakers,-0.3791114,raw_crosswalk_single_match,,notebook_raw_soc_bridge,132220.0,0.001013826284063666,True
+33-1012,First-Line Supervisors of Police and Detectives,33-1012,First-Line Supervisors of Police and Detectives,-0.1923298,raw_crosswalk_single_match,,notebook_raw_soc_bridge,132080.0,0.001012752802897663,True
+51-4031,"Cutting, Punching, and Press Machine Setters, Operators, and Tenders, Metal and Plastic",51-4031,"Cutting, Punching, and Press Machine Setters, Operators, and Tenders, Metal and Plastic",-1.036569,raw_crosswalk_single_match,,notebook_raw_soc_bridge,132010.0,0.0010122160623146615,True
+11-3013,Facilities Managers,11-3011,Administrative Services Managers (#),,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,131960.0,0.0010118326761839461,False
+53-3052,"Bus Drivers, Transit and Intercity",53-3021,"Bus Drivers, Transit and Intercity",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,131690.0,0.0010097623910780833,False
+43-4131,Loan Interviewers and Clerks,43-4131,Loan Interviewers and Clerks,1.364395,raw_crosswalk_single_match,,notebook_raw_soc_bridge,131290.0,0.0010066953020323607,True
+27-1026,Merchandise Displayers and Window Trimmers,27-1026,Merchandise Displayers and Window Trimmers,-1.001413,raw_crosswalk_single_match,,notebook_raw_soc_bridge,131260.0,0.0010064652703539313,True
+43-3051,Payroll and Timekeeping Clerks,43-3051,Payroll and Timekeeping Clerks,1.257632,raw_crosswalk_single_match,,notebook_raw_soc_bridge,129760.0,0.000994963686432471,True
+49-3021,Automotive Body and Related Repairers,49-3021,Automotive Body and Related Repairers,-1.180589,raw_crosswalk_single_match,,notebook_raw_soc_bridge,129690.0,0.0009944269458494694,True
+51-9198,Helpers--Production Workers,51-9198,Helpers--Production Workers,-1.411304,raw_crosswalk_single_match,,notebook_raw_soc_bridge,128680.0,0.0009866825460090195,True
+47-4011,Construction and Building Inspectors,47-4011,Construction and Building Inspectors,0.2860245,raw_crosswalk_single_match,,notebook_raw_soc_bridge,128320.0,0.0009839221658678688,True
+29-2053,Psychiatric Technicians,29-2053,Psychiatric Technicians,-0.2203484,raw_crosswalk_single_match,,notebook_raw_soc_bridge,128150.0,0.0009826186530234367,True
+53-6021,Parking Attendants,53-6021,Parking Attendants,-0.8353891,raw_crosswalk_single_match,,notebook_raw_soc_bridge,128060.0,0.0009819285579881491,True
+27-2012,Producers and Directors,27-2012,Producers and Directors,0.9388108,raw_crosswalk_single_match,,notebook_raw_soc_bridge,125620.0,0.0009632193148092401,True
+25-9044,"Teaching Assistants, Postsecondary",25-1191,Graduate Teaching Assistants,,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,125300.0,0.0009607656435726619,False
+51-9124,"Coating, Painting, and Spraying Machine Setters, Operators, and Tenders",51-9121,"Coating, Painting, and Spraying Machine Setters, Operators, and Tenders",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,124620.0,0.0009555515921949332,False
+13-1121,"Meeting, Convention, and Event Planners",13-1121,"Meeting, Convention, and Event Planners",0.3740207,raw_crosswalk_single_match,,notebook_raw_soc_bridge,124280.0,0.0009529445665060688,True
+51-5112,Printing Press Operators,51-5112,Printing Press Operators,-0.7093881,raw_crosswalk_single_match,,notebook_raw_soc_bridge,123810.0,0.0009493407368773445,True
+11-9033,"Education Administrators, Postsecondary",11-9033,"Education Administrators, Postsecondary",1.461149,raw_crosswalk_single_match,,notebook_raw_soc_bridge,123600.0,0.0009477305151283401,True
+31-9097,Phlebotomists,31-9097,Phlebotomists,-0.2778475,raw_crosswalk_single_match,,notebook_raw_soc_bridge,123240.0,0.0009449701349871896,True
+43-4111,"Interviewers, Except Eligibility and Loan",43-4111,"Interviewers, Except Eligibility and Loan",1.297031,raw_crosswalk_single_match,,notebook_raw_soc_bridge,120960.0,0.0009274877274265697,True
+53-7081,Refuse and Recyclable Material Collectors,53-7081,Refuse and Recyclable Material Collectors,-1.283373,raw_crosswalk_single_match,,notebook_raw_soc_bridge,119930.0,0.0009195899731338335,True
+15-1231,Computer Network Support Specialists,15-1152,Computer Network Support Specialists,,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,119880.0,0.0009192065870031182,False
+19-5011,Occupational Health and Safety Specialists,19-5011,Occupational Health and Safety Specialists,0.8349371,raw_crosswalk_single_match,,notebook_raw_soc_bridge,118790.0,0.0009108487693535236,True
+47-2181,Roofers,47-2181,Roofers,-1.752941,raw_crosswalk_single_match,,notebook_raw_soc_bridge,118240.0,0.0009066315219156548,True
+43-4199,"Information and Record Clerks, All Other",43-4199,"Information and Record Clerks, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,118140.0,0.000905864749654224,False
+29-1126,Respiratory Therapists,29-1126,Respiratory Therapists,-0.1880507,raw_crosswalk_single_match,,notebook_raw_soc_bridge,117770.0,0.0009030276922869305,True
+49-3011,Aircraft Mechanics and Service Technicians,49-3011,Aircraft Mechanics and Service Technicians,-0.6551197,raw_crosswalk_single_match,,notebook_raw_soc_bridge,115650.0,0.0008867721203445997,True
+51-3021,Butchers and Meat Cutters,51-3021,Butchers and Meat Cutters,-0.9709924,raw_crosswalk_single_match,,notebook_raw_soc_bridge,114510.0,0.0008780309165642898,True
+25-4022,Librarians and Media Collections Specialists,25-9011,Audio-Visual and Multimedia Collections Specialists,,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,113580.0,0.0008708999345329843,False
+49-2022,"Telecommunications Equipment Installers and Repairers, Except Line Installers",49-2022,"Telecommunications Equipment Installers and Repairers, Except Line Installers",-0.853048,raw_crosswalk_single_match,,notebook_raw_soc_bridge,113220.0,0.0008681395543918338,True
+21-1023,Mental Health and Substance Abuse Social Workers,21-1023,Mental Health and Substance Abuse Social Workers,1.119216,raw_crosswalk_single_match,,notebook_raw_soc_bridge,111770.0,0.0008570213566010887,True
+13-2099,"Financial Specialists, All Other",13-2099,"Financial Specialists, All Other",1.361362,raw_crosswalk_single_match,,notebook_raw_soc_bridge,110390.0,0.0008464398993933451,True
+51-4072,"Molding, Coremaking, and Casting Machine Setters, Operators, and Tenders, Metal and Plastic",51-4072,"Molding, Coremaking, and Casting Machine Setters, Operators, and Tenders, Metal and Plastic",-1.146139,raw_crosswalk_single_match,,notebook_raw_soc_bridge,110090.0,0.0008441395826090531,True
+29-2056,Veterinary Technologists and Technicians,29-2056,Veterinary Technologists and Technicians,-0.3623179,raw_crosswalk_single_match,,notebook_raw_soc_bridge,109570.0,0.0008401523668496134,True
+29-1021,"Dentists, General",29-1021,"Dentists, General",-0.1813301,raw_crosswalk_single_match,,notebook_raw_soc_bridge,109300.0,0.0008380820817437505,True
+25-1199,"Postsecondary Teachers, All Other",25-1199,"Postsecondary Teachers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,105900.0,0.0008120118248551069,False
+43-4181,Reservation and Transportation Ticket Agents and Travel Clerks,43-4181,Reservation and Transportation Ticket Agents and Travel Clerks,0.227312,raw_crosswalk_single_match,,notebook_raw_soc_bridge,105090.0,0.0008058009695375183,True
+51-9011,Chemical Equipment Operators and Tenders,51-9011,Chemical Equipment Operators and Tenders,-0.511521,raw_crosswalk_single_match,,notebook_raw_soc_bridge,105060.0,0.000805570937859089,True
+31-9096,Veterinary Assistants and Laboratory Animal Caretakers,31-9096,Veterinary Assistants and Laboratory Animal Caretakers,-0.7735824,raw_crosswalk_single_match,,notebook_raw_soc_bridge,104650.0,0.0008024271715872231,True
+43-9021,Data Entry Keyers,43-9021,Data Entry Keyers,0.3108081,raw_crosswalk_single_match,,notebook_raw_soc_bridge,104620.0,0.000802197139908794,True
+37-1012,"First-Line Supervisors of Landscaping, Lawn Service, and Groundskeeping Workers",37-1012,"First-Line Supervisors of Landscaping, Lawn Service, and Groundskeeping Workers",-0.5548871,raw_crosswalk_single_match,,notebook_raw_soc_bridge,104560.0,0.0008017370765519355,True
+39-3031,"Ushers, Lobby Attendants, and Ticket Takers",39-3031,"Ushers, Lobby Attendants, and Ticket Takers",-0.2420959,raw_crosswalk_single_match,,notebook_raw_soc_bridge,103900.0,0.000796676379626493,True
+43-5053,"Postal Service Mail Sorters, Processors, and Processing Machine Operators",43-5053,"Postal Service Mail Sorters, Processors, and Processing Machine Operators",-1.185001,raw_crosswalk_single_match,,notebook_raw_soc_bridge,102000.0,0.0007821077066593097,True
+47-2211,Sheet Metal Workers,47-2211,Sheet Metal Workers,-1.174972,raw_crosswalk_single_match,,notebook_raw_soc_bridge,101920.0,0.0007814942888501652,True
+29-2055,Surgical Technologists,29-2055,Surgical Technologists,-0.4830476,raw_crosswalk_single_match,,notebook_raw_soc_bridge,101230.0,0.0007762035602462934,True
+35-2015,"Cooks, Short Order",35-2015,"Cooks, Short Order",-0.5933817,raw_crosswalk_single_match,,notebook_raw_soc_bridge,100970.0,0.0007742099523665736,True
+39-1022,First-Line Supervisors of Personal Service Workers,39-1021,First-Line Supervisors of Personal Service Workers (#),,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,100150.0,0.0007679224198228418,False
+25-3099,"Teachers and Instructors, All Other",25-3099,"Teachers and Instructors, All Other",1.32533,raw_crosswalk_single_match,,notebook_raw_soc_bridge,98620.0,0.0007561908042229522,True
+17-1011,"Architects, Except Landscape and Naval",17-1011,"Architects, Except Landscape and Naval",1.047142,raw_crosswalk_single_match,,notebook_raw_soc_bridge,98440.0,0.0007548106141523769,True
+47-4051,Highway Maintenance Workers,47-4051,Highway Maintenance Workers,-1.27909,raw_crosswalk_single_match,,notebook_raw_soc_bridge,97990.0,0.0007513601389759388,True
+33-3021,Detectives and Criminal Investigators,33-3021,Detectives and Criminal Investigators,0.2257696,raw_crosswalk_single_match,,notebook_raw_soc_bridge,97970.0,0.0007512067845236527,True
+51-8031,Water and Wastewater Treatment Plant and System Operators,51-8031,Water and Wastewater Treatment Plant and System Operators,-0.44501,raw_crosswalk_single_match,,notebook_raw_soc_bridge,96000.0,0.000736101370973468,True
+25-9099,"Educational Instruction and Library Workers, All Other",25-9099,"Education, Training, and Library Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,95390.0,0.0007314240601787407,False
+13-1131,Fundraisers,13-1131,Fundraisers,1.242567,raw_crosswalk_single_match,,notebook_raw_soc_bridge,95130.0,0.0007294304522990209,True
+53-2031,Flight Attendants,53-2031,Flight Attendants,-0.7621183,raw_crosswalk_single_match,,notebook_raw_soc_bridge,94600.0,0.0007253665593134383,True
+31-9099,"Healthcare Support Workers, All Other",31-9099,"Healthcare Support Workers, All Other",0.1660077,raw_crosswalk_single_match,,notebook_raw_soc_bridge,94530.0,0.0007248298187304367,True
+31-2021,Physical Therapist Assistants,31-2021,Physical Therapist Assistants,-0.5308535,raw_crosswalk_single_match,,notebook_raw_soc_bridge,94000.0,0.0007207659257448541,True
+15-1255,Web and Digital Interface Designers,15-1255,Web and Digital Interface Designers (##),1.232705,raw_crosswalk_deduplicated,,notebook_raw_soc_bridge,93590.0,0.0007176221594729882,True
+25-2012,"Kindergarten Teachers, Except Special Education",25-2012,"Kindergarten Teachers, Except Special Education",0.3644047,raw_crosswalk_single_match,,notebook_raw_soc_bridge,91740.0,0.0007034368726365203,True
+15-2031,Operations Research Analysts,15-2031,Operations Research Analysts,1.40002,raw_crosswalk_single_match,,notebook_raw_soc_bridge,91170.0,0.0006990662707463654,True
+21-1099,"Community and Social Service Specialists, All Other",21-1099,"Community and Social Service Specialists, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,91100.0,0.0006985295301633639,False
+25-1194,"Career/Technical Education Teachers, Postsecondary",25-1194,"Career/Technical Education Teachers, Postsecondary",0.1622185,raw_crosswalk_single_match,,notebook_raw_soc_bridge,90220.0,0.0006917819342627737,True
+17-3011,Architectural and Civil Drafters,17-3011,Architectural and Civil Drafters,0.9233925,raw_crosswalk_single_match,,notebook_raw_soc_bridge,90060.0,0.0006905550986444846,True
+49-3093,Tire Repairers and Changers,49-3093,Tire Repairers and Changers,-1.550724,raw_crosswalk_single_match,,notebook_raw_soc_bridge,89730.0,0.0006880247501817634,True
+11-9121,Natural Sciences Managers,11-9121,Natural Sciences Managers,1.327906,raw_crosswalk_single_match,,notebook_raw_soc_bridge,89440.0,0.0006858011106236143,True
+49-9051,Electrical Power-Line Installers and Repairers,49-9051,Electrical Power-Line Installers and Repairers,-1.081398,raw_crosswalk_single_match,,notebook_raw_soc_bridge,89370.0,0.0006852643700406128,True
+51-4081,"Multiple Machine Tool Setters, Operators, and Tenders, Metal and Plastic",51-4081,"Multiple Machine Tool Setters, Operators, and Tenders, Metal and Plastic",-0.74266,raw_crosswalk_single_match,,notebook_raw_soc_bridge,89240.0,0.000684267566100753,True
+39-1014,"First-Line Supervisors of Entertainment and Recreation Workers, Except Gambling Services",39-1021,First-Line Supervisors of Personal Service Workers (#),,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,89000.0,0.0006824273126733193,False
+31-9011,Massage Therapists,31-9011,Massage Therapists,-1.410233,raw_crosswalk_single_match,,notebook_raw_soc_bridge,88270.0,0.0006768298751648752,True
+53-2011,"Airline Pilots, Copilots, and Flight Engineers",53-2011,"Airline Pilots, Copilots, and Flight Engineers",-0.2070626,raw_crosswalk_single_match,,notebook_raw_soc_bridge,87710.0,0.0006725359505008633,True
+33-1021,First-Line Supervisors of Firefighting and Prevention Workers,33-1021,First-Line Supervisors of Fire Fighting and Prevention Workers,-0.593021,raw_crosswalk_single_match,,notebook_raw_soc_bridge,86110.0,0.0006602675943179722,True
+51-6031,Sewing Machine Operators,51-6031,Sewing Machine Operators,-0.9639661,raw_crosswalk_single_match,,notebook_raw_soc_bridge,85780.0,0.0006577372458552509,True
+43-5011,Cargo and Freight Agents,43-5011,Cargo and Freight Agents,1.405415,raw_crosswalk_single_match,,notebook_raw_soc_bridge,84960.0,0.0006514497133115191,True
+53-6031,Automotive and Watercraft Service Attendants,53-6031,Automotive and Watercraft Service Attendants,-1.221489,raw_crosswalk_single_match,,notebook_raw_soc_bridge,84700.0,0.0006494561054317993,True
+25-2032,"Career/Technical Education Teachers, Secondary School",25-2032,"Career/Technical Education Teachers, Secondary School",0.3734505,raw_crosswalk_single_match,,notebook_raw_soc_bridge,84600.0,0.0006486893331703687,True
+13-1141,"Compensation, Benefits, and Job Analysis Specialists",13-1141,"Compensation, Benefits, and Job Analysis Specialists",1.440985,raw_crosswalk_single_match,,notebook_raw_soc_bridge,84230.0,0.0006458522758030751,True
+17-2072,"Electronics Engineers, Except Computer",17-2072,"Electronics Engineers, Except Computer",0.6654578,raw_crosswalk_single_match,,notebook_raw_soc_bridge,84170.0,0.0006453922124462167,True
+49-9098,"Helpers--Installation, Maintenance, and Repair Workers",49-9098,"Helpers--Installation, Maintenance, and Repair Workers",-1.346555,raw_crosswalk_single_match,,notebook_raw_soc_bridge,81310.0,0.0006234625257692987,True
+17-3023,Electrical and Electronic Engineering Technologists and Technicians,17-3023,Electrical and Electronic Engineering Technologists and Technicians,0.3515252,raw_crosswalk_single_match,,notebook_raw_soc_bridge,80770.0,0.000619321955557573,True
+37-2021,Pest Control Workers,37-2021,Pest Control Workers,-0.7255374,raw_crosswalk_single_match,,notebook_raw_soc_bridge,80740.0,0.0006190919238791438,True
+13-2053,Insurance Underwriters,13-2053,Insurance Underwriters,1.326652,raw_crosswalk_single_match,,notebook_raw_soc_bridge,80330.0,0.000615948157607278,True
+41-9099,"Sales and Related Workers, All Other",41-9099,"Sales and Related Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,78040.0,0.000598389072820515,False
+43-5031,Public Safety Telecommunicators,43-5031,Public Safety Telecommunicators,0.9074452,raw_crosswalk_single_match,,notebook_raw_soc_bridge,77980.0,0.0005979290094636566,True
+25-2057,"Special Education Teachers, Middle School",25-2053,"Special Education Teachers, Middle School",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,77510.0,0.0005943251798349324,False
+43-4161,"Human Resources Assistants, Except Payroll and Timekeeping",43-4161,"Human Resources Assistants, Except Payroll and Timekeeping",1.353098,raw_crosswalk_single_match,,notebook_raw_soc_bridge,76920.0,0.0005898012234924913,True
+29-2032,Diagnostic Medical Sonographers,29-2032,Diagnostic Medical Sonographers,-0.264054,raw_crosswalk_single_match,,notebook_raw_soc_bridge,76860.0,0.0005893411601356328,True
+33-9091,Crossing Guards and Flaggers,33-9091,Crossing Guards and Flaggers,-0.5699511,raw_crosswalk_single_match,,notebook_raw_soc_bridge,76600.0,0.000587347552255913,True
+21-1015,Rehabilitation Counselors,21-1015,Rehabilitation Counselors,0.5025014,raw_crosswalk_single_match,,notebook_raw_soc_bridge,76200.0,0.0005842804632101902,True
+19-2041,"Environmental Scientists and Specialists, Including Health",19-2041,"Environmental Scientists and Specialists, Including Health",1.014113,raw_crosswalk_single_match,,notebook_raw_soc_bridge,75770.0,0.0005809833424860382,True
+29-2043,Paramedics,29-2043,Paramedics,-0.6863446,raw_crosswalk_single_match,,notebook_raw_soc_bridge,74390.0,0.0005704018852782946,True
+27-3041,Editors,27-3041,Editors,1.128221,raw_crosswalk_single_match,,notebook_raw_soc_bridge,74190.0,0.0005688683407554332,True
+49-9052,Telecommunications Line Installers and Repairers,49-9052,Telecommunications Line Installers and Repairers,-1.083883,raw_crosswalk_single_match,,notebook_raw_soc_bridge,73930.0,0.0005668747328757134,True
+29-1215,Family Medicine Physicians,29-1215,Family Medicine Physicians,1.031925,raw_crosswalk_single_match,,notebook_raw_soc_bridge,73860.0,0.000566337992292712,True
+49-2098,Security and Fire Alarm Systems Installers,49-2098,Security and Fire Alarm Systems Installers,-0.6926484,raw_crosswalk_single_match,,notebook_raw_soc_bridge,73710.0,0.0005651878339005659,True
+11-3061,Purchasing Managers,11-3061,Purchasing Managers,1.423426,raw_crosswalk_single_match,,notebook_raw_soc_bridge,72860.0,0.000558670269678405,True
+41-3011,Advertising Sales Agents,41-3011,Advertising Sales Agents,1.162588,raw_crosswalk_single_match,,notebook_raw_soc_bridge,72850.0,0.0005585935924522619,True
+33-1091,First-Line Supervisors of Security Workers,33-1099,"First-Line Supervisors of Protective Service Workers, All Other (#)",,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,72230.0,0.0005538396044313916,False
+47-2081,Drywall and Ceiling Tile Installers,47-2081,Drywall and Ceiling Tile Installers,-1.647971,raw_crosswalk_single_match,,notebook_raw_soc_bridge,71740.0,0.0005500824203503812,True
+19-2031,Chemists,19-2031,Chemists,0.5011251,raw_crosswalk_single_match,,notebook_raw_soc_bridge,71030.0,0.0005446383372942232,True
+15-1251,Computer Programmers,15-1131,Computer Programmers,,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,70460.0,0.0005402677354040682,False
+51-9023,"Mixing and Blending Machine Setters, Operators, and Tenders",51-9023,"Mixing and Blending Machine Setters, Operators, and Tenders",-0.819664,raw_crosswalk_single_match,,notebook_raw_soc_bridge,70090.0,0.0005374306780367747,True
+35-9099,"Food Preparation and Serving Related Workers, All Other",35-9099,"Food Preparation and Serving Related Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,69960.0,0.0005364338740969148,False
+43-4121,"Library Assistants, Clerical",43-4121,"Library Assistants, Clerical",0.2038919,raw_crosswalk_single_match,,notebook_raw_soc_bridge,69710.0,0.0005345169434433381,True
+29-1131,Veterinarians,29-1131,Veterinarians,-0.0749958,raw_crosswalk_single_match,,notebook_raw_soc_bridge,69580.0,0.0005335201395034781,True
+25-1121,"Art, Drama, and Music Teachers, Postsecondary",25-1121,"Art, Drama, and Music Teachers, Postsecondary",0.7582769,raw_crosswalk_single_match,,notebook_raw_soc_bridge,69270.0,0.000531143145493043,True
+39-9041,Residential Advisors,39-9041,Residential Advisors,0.4746119,raw_crosswalk_single_match,,notebook_raw_soc_bridge,69050.0,0.0005294562465178955,True
+33-9099,"Protective Service Workers, All Other",33-9099,"Protective Service Workers, All Other",0.0764088,raw_crosswalk_single_match,,notebook_raw_soc_bridge,67210.0,0.0005153476369075706,True
+31-9093,Medical Equipment Preparers,31-9093,Medical Equipment Preparers,-0.7308648,raw_crosswalk_single_match,,notebook_raw_soc_bridge,65990.0,0.0005059930153181162,True
+29-1031,Dietitians and Nutritionists,29-1031,Dietitians and Nutritionists,1.342809,raw_crosswalk_single_match,,notebook_raw_soc_bridge,65750.0,0.0005041527618906825,True
+21-1092,Probation Officers and Correctional Treatment Specialists,21-1092,Probation Officers and Correctional Treatment Specialists,0.5272448,raw_crosswalk_single_match,,notebook_raw_soc_bridge,65560.0,0.0005026958945939642,True
+29-2081,"Opticians, Dispensing",29-2081,"Opticians, Dispensing",0.1013966,raw_crosswalk_single_match,,notebook_raw_soc_bridge,63820.0,0.0004893540572450701,True
+11-2032,Public Relations Managers,11-2031,Public Relations and Fundraising Managers (#),,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,63720.0,0.0004885872849836394,False
+19-3033,Clinical and Counseling Psychologists,19-3031,"Clinical, Counseling, and School Psychologists (#)",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,63280.0,0.00048521348703334434,False
+39-5094,Skincare Specialists,39-5094,Skincare Specialists,-0.2628396,raw_crosswalk_single_match,,notebook_raw_soc_bridge,62690.0,0.0004806895306909032,True
+11-9031,"Education and Childcare Administrators, Preschool and Daycare",11-9031,"Education and Childcare Administrators, Preschool and Daycare",0.838007,raw_crosswalk_single_match,,notebook_raw_soc_bridge,62600.0,0.0004799994356556156,True
+33-9094,School Bus Monitors,33-9094,School Bus Monitors,0.0764088,raw_crosswalk_single_match,,notebook_raw_soc_bridge,62150.0,0.00047654896047917745,True
+27-1025,Interior Designers,27-1025,Interior Designers,1.12168,raw_crosswalk_single_match,,notebook_raw_soc_bridge,62080.0,0.00047601221989617597,True
+25-1011,"Business Teachers, Postsecondary",25-1011,"Business Teachers, Postsecondary",1.349314,raw_crosswalk_single_match,,notebook_raw_soc_bridge,61440.0,0.0004711048774230195,True
+43-4071,File Clerks,43-4071,File Clerks,0.2839743,raw_crosswalk_single_match,,notebook_raw_soc_bridge,61310.0,0.0004701080734831596,True
+43-5021,Couriers and Messengers,43-5021,Couriers and Messengers,-0.9591126,raw_crosswalk_single_match,,notebook_raw_soc_bridge,61260.0,0.00046972468735244425,True
+17-3026,Industrial Engineering Technologists and Technicians,17-3026,Industrial Engineering Technologists and Technicians,0.6106679,raw_crosswalk_single_match,,notebook_raw_soc_bridge,60540.0,0.00046420392707014326,True
+27-4011,Audio and Video Technicians,27-4011,Audio and Video Technicians,-0.0117747,raw_crosswalk_single_match,,notebook_raw_soc_bridge,58870.0,0.00045139883030425064,True
+51-9196,"Paper Goods Machine Setters, Operators, and Tenders",51-9196,"Paper Goods Machine Setters, Operators, and Tenders",-0.8740445,raw_crosswalk_single_match,,notebook_raw_soc_bridge,58390.0,0.00044771832344938327,True
+43-4151,Order Clerks,43-4151,Order Clerks,0.8388861,raw_crosswalk_single_match,,notebook_raw_soc_bridge,58060.0,0.000445187974986662,True
+13-2061,Financial Examiners,13-2061,Financial Examiners,1.526064,raw_crosswalk_single_match,,notebook_raw_soc_bridge,57040.0,0.0004373668979200689,True
+15-1242,Database Administrators,15-1141,Database Administrators (#),,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,56950.0,0.0004366768028847813,False
+29-2057,Ophthalmic Medical Technicians,29-2057,Ophthalmic Medical Technicians,0.078734,raw_crosswalk_single_match,,notebook_raw_soc_bridge,56720.0,0.00043491322668349065,True
+51-3022,"Meat, Poultry, and Fish Cutters and Trimmers",51-3022,"Meat, Poultry, and Fish Cutters and Trimmers",-1.10563,raw_crosswalk_single_match,,notebook_raw_soc_bridge,56430.0,0.00043268958712534166,True
+13-1075,Labor Relations Specialists,13-1075,Labor Relations Specialists,1.334834,raw_crosswalk_single_match,,notebook_raw_soc_bridge,56320.0,0.0004318461376377679,True
+25-1072,"Nursing Instructors and Teachers, Postsecondary",25-1072,"Nursing Instructors and Teachers, Postsecondary",0.5170682,raw_crosswalk_single_match,,notebook_raw_soc_bridge,56290.0,0.0004316161059593387,True
+25-4031,Library Technicians,25-4031,Library Technicians,0.037965,raw_crosswalk_single_match,,notebook_raw_soc_bridge,56040.0,0.00042969917530576195,True
+51-7011,Cabinetmakers and Bench Carpenters,51-7011,Cabinetmakers and Bench Carpenters,-1.327489,raw_crosswalk_single_match,,notebook_raw_soc_bridge,55470.0,0.000425328573415607,True
+17-3022,Civil Engineering Technologists and Technicians,17-3022,Civil Engineering Technologists and Technicians,0.9323219,raw_crosswalk_single_match,,notebook_raw_soc_bridge,55180.0,0.00042310493385745794,True
+15-1243,Database Architects,15-1141,Database Administrators (#),,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,55120.0,0.0004226448705005995,False
+19-3034,School Psychologists,19-3031,"Clinical, Counseling, and School Psychologists (#)",,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,54660.0,0.0004191177180980183,False
+17-2011,Aerospace Engineers,17-2011,Aerospace Engineers,1.338738,raw_crosswalk_single_match,,notebook_raw_soc_bridge,53310.0,0.00040876629256870393,True
+19-4021,Biological Technicians,19-4021,Biological Technicians,0.3012355,raw_crosswalk_single_match,,notebook_raw_soc_bridge,53290.0,0.0004086129381164178,True
+17-2061,Computer Hardware Engineers,17-2061,Computer Hardware Engineers,1.141812,raw_crosswalk_single_match,,notebook_raw_soc_bridge,53190.0,0.0004078461658549871,True
+49-2011,"Computer, Automated Teller, and Office Machine Repairers",49-2011,"Computer, Automated Teller, and Office Machine Repairers",-0.3458247,raw_crosswalk_single_match,,notebook_raw_soc_bridge,52660.0,0.0004037822728694044,True
+13-2082,Tax Preparers,13-2082,Tax Preparers,1.29371,raw_crosswalk_single_match,,notebook_raw_soc_bridge,52450.0,0.00040217205112039997,True
+13-2041,Credit Analysts,13-2041,Credit Analysts,1.345268,raw_crosswalk_single_match,,notebook_raw_soc_bridge,52050.0,0.0003991049620746772,True
+21-1091,Health Education Specialists,21-1091,Health Education Specialists,0.691658,raw_crosswalk_single_match,,notebook_raw_soc_bridge,52000.0,0.00039872157594396184,True
+13-2054,Financial Risk Specialists,13-2099,"Financial Specialists, All Other (#)",,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,51320.0,0.0003935075245662331,False
+21-1029,"Social Workers, All Other",21-1029,"Social Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,51180.0,0.0003924340434002301,False
+43-5051,Postal Service Clerks,43-5051,Postal Service Clerks,-0.5186997,raw_crosswalk_single_match,,notebook_raw_soc_bridge,51160.0,0.000392280688947944,True
+15-1254,Web Developers,15-1134,Web Developers (#),,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,51140.0,0.0003921273344956578,False
+47-2221,Structural Iron and Steel Workers,47-2221,Structural Iron and Steel Workers,-1.780065,raw_crosswalk_single_match,,notebook_raw_soc_bridge,51100.0,0.0003918206255910856,True
+29-2031,Cardiovascular Technologists and Technicians,29-2031,Cardiovascular Technologists and Technicians,-0.0909526,raw_crosswalk_single_match,,notebook_raw_soc_bridge,51020.0,0.00039120720778194104,True
+49-2094,"Electrical and Electronics Repairers, Commercial and Industrial Equipment",49-2094,"Electrical and Electronics Repairers, Commercial and Industrial Equipment",-0.4632031,raw_crosswalk_single_match,,notebook_raw_soc_bridge,50790.0,0.0003894436315806504,True
+49-9062,Medical Equipment Repairers,49-9062,Medical Equipment Repairers,-0.2768838,raw_crosswalk_single_match,,notebook_raw_soc_bridge,50510.0,0.0003872966692486445,True
+21-1094,Community Health Workers,21-1094,Community Health Workers,0.0371229,raw_crosswalk_single_match,,notebook_raw_soc_bridge,50390.0,0.00038637654253492764,True
+51-4033,"Grinding, Lapping, Polishing, and Buffing Machine Tool Setters, Operators, and Tenders, Metal and Plastic",51-4033,"Grinding, Lapping, Polishing, and Buffing Machine Tool Setters, Operators, and Tenders, Metal and Plastic",-0.9901662,raw_crosswalk_single_match,,notebook_raw_soc_bridge,50380.0,0.0003862998653087846,True
+47-3013,Helpers--Electricians,47-3013,Helpers--Electricians,-1.506896,raw_crosswalk_single_match,,notebook_raw_soc_bridge,49810.0,0.0003819292634186296,True
+41-9011,Demonstrators and Product Promoters,41-9011,Demonstrators and Product Promoters,0.1235652,raw_crosswalk_single_match,,notebook_raw_soc_bridge,49440.0,0.000379092206051336,True
+39-3011,Gambling Dealers,39-3011,Gambling Dealers,0.0605832,raw_crosswalk_single_match,,notebook_raw_soc_bridge,49380.0,0.0003786321426944776,True
+19-4099,"Life, Physical, and Social Science Technicians, All Other",19-4099,"Life, Physical, and Social Science Technicians, All Other",0.4501044,raw_crosswalk_single_match,,notebook_raw_soc_bridge,49010.0,0.000375795085327184,True
+39-9099,"Personal Care and Service Workers, All Other",39-9099,"Personal Care and Service Workers, All Other (#)",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,48400.0,0.0003711177745324568,False
+17-3031,Surveying and Mapping Technicians,17-3031,Surveying and Mapping Technicians,0.0852324,raw_crosswalk_single_match,,notebook_raw_soc_bridge,46500.0,0.00035654910156527356,True
+13-2081,"Tax Examiners and Collectors, and Revenue Agents",13-2081,"Tax Examiners and Collectors, and Revenue Agents",1.36682,raw_crosswalk_single_match,,notebook_raw_soc_bridge,46270.0,0.00035478552536398293,True
+43-9051,"Mail Clerks and Mail Machine Operators, Except Postal Service",43-9051,"Mail Clerks and Mail Machine Operators, Except Postal Service",-0.8184676,raw_crosswalk_single_match,,notebook_raw_soc_bridge,45730.0,0.0003506449551522572,True
+19-1029,"Biological Scientists, All Other",19-1029,"Biological Scientists, All Other",1.010193,raw_crosswalk_single_match,,notebook_raw_soc_bridge,45240.0,0.00034688777107124677,True
+47-2121,Glaziers,47-2121,Glaziers,-1.388901,raw_crosswalk_single_match,,notebook_raw_soc_bridge,44780.0,0.0003433606186686656,True
+21-2011,Clergy,21-2011,Clergy,1.282559,raw_crosswalk_single_match,,notebook_raw_soc_bridge,44750.0,0.0003431305869902364,True
+19-4031,Chemical Technicians,19-4031,Chemical Technicians,0.0628057,raw_crosswalk_single_match,,notebook_raw_soc_bridge,44630.0,0.00034221046027651955,True
+29-1216,General Internal Medicine Physicians,29-1216,General Internal Medicine Physicians,1.046167,raw_crosswalk_single_match,,notebook_raw_soc_bridge,44390.0,0.00034037020684908587,True
+17-3029,"Engineering Technologists and Technicians, Except Drafters, All Other",17-3029,"Engineering Technologists and Technicians, Except Drafters, All Other (##)",0.1941278,raw_crosswalk_single_match,,notebook_raw_soc_bridge,44040.0,0.00033768650393407846,True
+27-2011,Actors,27-2011,Actors,0.1590935,raw_crosswalk_single_match,,notebook_raw_soc_bridge,44030.0,0.0003376098267079354,True
+33-9093,Transportation Security Screeners,33-9093,Transportation Security Screeners,-0.5068558,raw_crosswalk_single_match,,notebook_raw_soc_bridge,43900.0,0.00033661302276807544,True
+43-3061,Procurement Clerks,43-3061,Procurement Clerks,1.487838,raw_crosswalk_single_match,,notebook_raw_soc_bridge,43880.0,0.0003364596683157893,True
+49-9043,"Maintenance Workers, Machinery",49-9043,"Maintenance Workers, Machinery",-0.9735492,raw_crosswalk_single_match,,notebook_raw_soc_bridge,43780.0,0.00033569289605435865,True
+27-1011,Art Directors,27-1011,Art Directors,1.02251,raw_crosswalk_single_match,,notebook_raw_soc_bridge,43110.0,0.00033055552190277296,True
+25-1081,"Education Teachers, Postsecondary",25-1081,"Education Teachers, Postsecondary",1.192988,raw_crosswalk_single_match,,notebook_raw_soc_bridge,42860.0,0.0003286385912491962,True
+51-4111,Tool and Die Makers,51-4111,Tool and Die Makers,-0.5317897,raw_crosswalk_single_match,,notebook_raw_soc_bridge,42540.0,0.000326184920012618,True
+27-4021,Photographers,27-4021,Photographers,-0.1680973,raw_crosswalk_single_match,,notebook_raw_soc_bridge,42370.0,0.00032488140716818584,True
+21-1013,Marriage and Family Therapists,21-1013,Marriage and Family Therapists,1.367434,raw_crosswalk_single_match,,notebook_raw_soc_bridge,41950.0,0.0003216609636701769,True
+27-3091,Interpreters and Translators,27-3091,Interpreters and Translators,1.111319,raw_crosswalk_single_match,,notebook_raw_soc_bridge,41680.0,0.000319590678564314,True
+25-1123,"English Language and Literature Teachers, Postsecondary",25-1123,"English Language and Literature Teachers, Postsecondary",1.417833,raw_crosswalk_single_match,,notebook_raw_soc_bridge,41550.0,0.0003185938746244541,True
+47-2021,Brickmasons and Blockmasons,47-2021,Brickmasons and Blockmasons,-1.75434,raw_crosswalk_single_match,,notebook_raw_soc_bridge,41350.0,0.00031706033010159274,True
+11-9039,"Education Administrators, All Other",11-9039,"Education Administrators, All Other",0.3541265,raw_crosswalk_single_match,,notebook_raw_soc_bridge,41160.0,0.0003156034628048744,True
+47-4041,Hazardous Materials Removal Workers,47-4041,Hazardous Materials Removal Workers,-0.6887439,raw_crosswalk_single_match,,notebook_raw_soc_bridge,40880.0,0.00031345650047286843,True
+39-7010,Tour and Travel Guides,39-7012,Travel Guides,0.6083829,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,40610.0,0.00031138621536700556,True
+51-9012,"Separating, Filtering, Clarifying, Precipitating, and Still Machine Setters, Operators, and Tenders",51-9012,"Separating, Filtering, Clarifying, Precipitating, and Still Machine Setters, Operators, and Tenders",-0.9379141,raw_crosswalk_single_match,,notebook_raw_soc_bridge,40610.0,0.00031138621536700556,True
+41-9031,Sales Engineers,41-9031,Sales Engineers,1.145416,raw_crosswalk_single_match,,notebook_raw_soc_bridge,40550.0,0.00031092615201014714,True
+41-3041,Travel Agents,41-3041,Travel Agents,1.133598,raw_crosswalk_single_match,,notebook_raw_soc_bridge,40410.0,0.0003098526708441442,True
+31-2011,Occupational Therapy Assistants,31-2011,Occupational Therapy Assistants,-0.3153762,raw_crosswalk_single_match,,notebook_raw_soc_bridge,40290.0,0.00030893254413042734,True
+31-1132,Orderlies,31-1015,Orderlies,,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,40060.0,0.00030716896792913677,False
+13-2031,Budget Analysts,13-2031,Budget Analysts,1.502988,raw_crosswalk_single_match,,notebook_raw_soc_bridge,39970.0,0.0003064788728938491,True
+43-5111,"Weighers, Measurers, Checkers, and Samplers, Recordkeeping",43-5111,"Weighers, Measurers, Checkers, and Samplers, Recordkeeping",-0.1860789,raw_crosswalk_single_match,,notebook_raw_soc_bridge,39930.0,0.00030617216398927687,True
+13-2020,Property Appraisers and Assessors,13-2021,Appraisers and Assessors of Real Estate,0.8413203,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,39590.0,0.00030356513830041246,True
+39-6012,Concierges,39-6012,Concierges,0.855832,raw_crosswalk_single_match,,notebook_raw_soc_bridge,39430.0,0.0003023383026821234,True
+17-1022,Surveyors,17-1022,Surveyors,0.1460606,raw_crosswalk_single_match,,notebook_raw_soc_bridge,39410.0,0.0003021849482298372,True
+51-4021,"Extruding and Drawing Machine Setters, Operators, and Tenders, Metal and Plastic",51-4021,"Extruding and Drawing Machine Setters, Operators, and Tenders, Metal and Plastic",-1.234352,raw_crosswalk_single_match,,notebook_raw_soc_bridge,39220.0,0.00030072808093311893,True
+31-2022,Physical Therapist Aides,31-2022,Physical Therapist Aides,-0.8823265,raw_crosswalk_single_match,,notebook_raw_soc_bridge,38830.0,0.00029773766911353916,True
+11-3131,Training and Development Managers,11-3131,Training and Development Managers,1.284423,raw_crosswalk_single_match,,notebook_raw_soc_bridge,37620.0,0.0002884597247502278,True
+51-2041,Structural Metal Fabricators and Fitters,51-2041,Structural Metal Fabricators and Fitters,-1.076307,raw_crosswalk_single_match,,notebook_raw_soc_bridge,37060.0,0.0002841658000862159,True
+19-3051,Urban and Regional Planners,19-3051,Urban and Regional Planners,1.227516,raw_crosswalk_single_match,,notebook_raw_soc_bridge,36420.0,0.0002792584576130594,True
+53-3099,"Motor Vehicle Operators, All Other",53-3099,"Motor Vehicle Operators, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,36420.0,0.0002792584576130594,False
+49-9012,"Control and Valve Installers and Repairers, Except Mechanical Door",49-9012,"Control and Valve Installers and Repairers, Except Mechanical Door",-0.7606913,raw_crosswalk_single_match,,notebook_raw_soc_bridge,35510.0,0.0002722808300340401,True
+53-2012,Commercial Pilots,53-2012,Commercial Pilots,-0.1817332,raw_crosswalk_single_match,,notebook_raw_soc_bridge,35230.0,0.0002701338677020341,True
+27-3042,Technical Writers,27-3042,Technical Writers,1.184001,raw_crosswalk_single_match,,notebook_raw_soc_bridge,35130.0,0.00026936709544060346,True
+29-2035,Magnetic Resonance Imaging Technologists,29-2035,Magnetic Resonance Imaging Technologists,-0.0727627,raw_crosswalk_single_match,,notebook_raw_soc_bridge,34610.0,0.00026537987968116384,True
+29-1041,Optometrists,29-1041,Optometrists,0.5040194,raw_crosswalk_single_match,,notebook_raw_soc_bridge,34580.0,0.0002651498480027346,True
+27-3043,Writers and Authors,27-3043,Writers and Authors,0.9879274,raw_crosswalk_single_match,,notebook_raw_soc_bridge,34460.0,0.00026422972128901776,True
+41-9041,Telemarketers,41-9041,Telemarketers,1.118129,raw_crosswalk_single_match,,notebook_raw_soc_bridge,34240.0,0.00026254282231387026,True
+25-1022,"Mathematical Science Teachers, Postsecondary",25-1022,"Mathematical Science Teachers, Postsecondary",1.338676,raw_crosswalk_single_match,,notebook_raw_soc_bridge,34050.0,0.00026108595501715193,True
+23-2093,"Title Examiners, Abstractors, and Searchers",23-2093,"Title Examiners, Abstractors, and Searchers",1.279954,raw_crosswalk_single_match,,notebook_raw_soc_bridge,33550.0,0.00025725209370999844,True
+51-3099,"Food Processing Workers, All Other",51-3099,"Food Processing Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,33520.0,0.00025702206203156926,False
+51-7042,"Woodworking Machine Setters, Operators, and Tenders, Except Sawing",51-7042,"Woodworking Machine Setters, Operators, and Tenders, Except Sawing",-1.130357,raw_crosswalk_single_match,,notebook_raw_soc_bridge,33420.0,0.00025625528977013854,True
+29-1151,Nurse Anesthetists,29-1151,Nurse Anesthetists,0.2413191,raw_crosswalk_single_match,,notebook_raw_soc_bridge,33360.0,0.0002557952264132801,True
+25-1042,"Biological Science Teachers, Postsecondary",25-1042,"Biological Science Teachers, Postsecondary",1.227677,raw_crosswalk_single_match,,notebook_raw_soc_bridge,32720.0,0.00025088788394012366,True
+47-3015,"Helpers--Pipelayers, Plumbers, Pipefitters, and Steamfitters",47-3015,"Helpers--Pipelayers, Plumbers, Pipefitters, and Steamfitters",-1.678876,raw_crosswalk_single_match,,notebook_raw_soc_bridge,32630.0,0.00025019778890483606,True
+23-2099,"Legal Support Workers, All Other",23-2099,"Legal Support Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,32160.0,0.00024659395927611175,False
+11-2033,Fundraising Managers,11-2031,Public Relations and Fundraising Managers (#),,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,31920.0,0.0002447537058486781,False
+31-9095,Pharmacy Aides,31-9095,Pharmacy Aides,-0.1552654,raw_crosswalk_single_match,,notebook_raw_soc_bridge,31720.0,0.0002432201613258167,True
+27-1023,Floral Designers,27-1023,Floral Designers,-0.2718452,raw_crosswalk_single_match,,notebook_raw_soc_bridge,31190.0,0.00023915626834023404,True
+51-9041,"Extruding, Forming, Pressing, and Compacting Machine Setters, Operators, and Tenders",51-9041,"Extruding, Forming, Pressing, and Compacting Machine Setters, Operators, and Tenders",-1.042151,raw_crosswalk_single_match,,notebook_raw_soc_bridge,31140.0,0.00023877288220951868,True
+51-9032,"Cutting and Slicing Machine Setters, Operators, and Tenders",51-9032,"Cutting and Slicing Machine Setters, Operators, and Tenders",-1.079282,raw_crosswalk_single_match,,notebook_raw_soc_bridge,31110.0,0.00023854285053108947,True
+17-2081,Environmental Engineers,17-2081,Environmental Engineers,1.343561,raw_crosswalk_single_match,,notebook_raw_soc_bridge,31020.0,0.00023785275549580184,True
+17-3013,Mechanical Drafters,17-3013,Mechanical Drafters,0.8410071,raw_crosswalk_single_match,,notebook_raw_soc_bridge,30840.0,0.0002364725654252266,True
+43-9022,Word Processors and Typists,43-9022,Word Processors and Typists,0.6219606,raw_crosswalk_single_match,,notebook_raw_soc_bridge,30770.0,0.00023593582484222512,True
+11-9072,"Entertainment and Recreation Managers, Except Gambling",11-9072,"Entertainment and Recreation Managers, Except Gambling",0.9646872,raw_crosswalk_single_match,,notebook_raw_soc_bridge,30730.0,0.00023562911593765282,True
+53-7021,Crane and Tower Operators,53-7021,Crane and Tower Operators,-1.030619,raw_crosswalk_single_match,,notebook_raw_soc_bridge,30600.0,0.00023463231199779292,True
+37-3013,Tree Trimmers and Pruners,37-3013,Tree Trimmers and Pruners,-1.727035,raw_crosswalk_single_match,,notebook_raw_soc_bridge,30400.0,0.00023309876747493153,True
+27-3023,"News Analysts, Reporters, and Journalists",27-3022,Reporters and Correspondents,,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,30180.0,0.000231411868499784,False
+19-3099,"Social Scientists and Related Workers, All Other",19-3099,"Social Scientists and Related Workers, All Other",1.328048,raw_crosswalk_single_match,,notebook_raw_soc_bridge,30150.0,0.00023118183682135479,True
+25-1066,"Psychology Teachers, Postsecondary",25-1066,"Psychology Teachers, Postsecondary",1.33366,raw_crosswalk_single_match,,notebook_raw_soc_bridge,30150.0,0.00023118183682135479,True
+29-1221,"Pediatricians, General",29-1065,"Pediatricians, General",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,29900.0,0.00022926490616777804,False
+47-2131,"Insulation Workers, Floor, Ceiling, and Wall",47-2131,"Insulation Workers, Floor, Ceiling, and Wall",-1.618772,raw_crosswalk_single_match,,notebook_raw_soc_bridge,29430.0,0.0002256610765390538,True
+11-9081,Lodging Managers,11-9081,Lodging Managers,0.4021726,raw_crosswalk_single_match,,notebook_raw_soc_bridge,28940.0,0.00022190389245804336,True
+47-2071,"Paving, Surfacing, and Tamping Equipment Operators",47-2071,"Paving, Surfacing, and Tamping Equipment Operators",-1.184739,raw_crosswalk_single_match,,notebook_raw_soc_bridge,28840.0,0.00022113712019661267,True
+27-2042,Musicians and Singers,27-2042,Musicians and Singers,-0.0040058,raw_crosswalk_single_match,,notebook_raw_soc_bridge,28790.0,0.00022075373406589733,True
+29-1011,Chiropractors,29-1011,Chiropractors,-0.1911757,raw_crosswalk_single_match,,notebook_raw_soc_bridge,28750.0,0.00022044702516132506,True
+15-1221,Computer and Information Research Scientists,15-1111,Computer and Information Research Scientists,,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,28680.0,0.00021991028457832355,False
+53-5021,"Captains, Mates, and Pilots of Water Vessels",53-5021,"Captains, Mates, and Pilots of Water Vessels",-0.4281868,raw_crosswalk_single_match,,notebook_raw_soc_bridge,28530.0,0.00021876012618617753,True
+19-1021,Biochemists and Biophysicists,19-1021,Biochemists and Biophysicists,0.9060509,raw_crosswalk_single_match,,notebook_raw_soc_bridge,28110.0,0.0002155396826881686,True
+29-9021,Health Information Technologists and Medical Registrars,29-9021,Health Information Technologists and Medical Registrars (##),0.5738765,raw_crosswalk_deduplicated,,notebook_raw_soc_bridge,28060.0,0.00021515629655745325,True
+17-3027,Mechanical Engineering Technologists and Technicians,17-3027,Mechanical Engineering Technologists and Technicians,-0.1192367,raw_crosswalk_single_match,,notebook_raw_soc_bridge,27770.0,0.00021293265699930423,True
+47-2044,Tile and Stone Setters,47-2044,Tile and Stone Setters,-1.22543,raw_crosswalk_single_match,,notebook_raw_soc_bridge,27740.0,0.00021270262532087502,True
+29-9099,"Healthcare Practitioners and Technical Workers, All Other",29-9099,"Healthcare Practitioners and Technical Workers, All Other",0.2295568,raw_crosswalk_single_match,,notebook_raw_soc_bridge,27710.0,0.0002124725936424458,True
+31-9094,Medical Transcriptionists,31-9094,Medical Transcriptionists,1.06259,raw_crosswalk_single_match,,notebook_raw_soc_bridge,27670.0,0.00021216588473787354,True
+43-4011,Brokerage Clerks,43-4011,Brokerage Clerks,1.144877,raw_crosswalk_single_match,,notebook_raw_soc_bridge,27660.0,0.00021208920751173048,True
+25-3011,"Adult Basic Education, Adult Secondary Education, and English as a Second Language Instructors",25-3011,"Adult Basic Education, Adult Secondary Education, and English as a Second Language Instructors",1.348951,raw_crosswalk_single_match,,notebook_raw_soc_bridge,27090.0,0.0002077186056215755,True
+33-9021,Private Detectives and Investigators,33-9021,Private Detectives and Investigators,0.7483108,raw_crosswalk_single_match,,notebook_raw_soc_bridge,26890.0,0.00020618506109871412,True
+25-2059,"Special Education Teachers, All Other",25-2059,"Special Education Teachers, All Other",-0.6632917,raw_crosswalk_single_match,,notebook_raw_soc_bridge,26510.0,0.00020327132650527747,True
+33-1011,First-Line Supervisors of Correctional Officers,33-1011,First-Line Supervisors of Correctional Officers,-0.5584278,raw_crosswalk_single_match,,notebook_raw_soc_bridge,26510.0,0.00020327132650527747,True
+51-9081,Dental Laboratory Technicians,51-9081,Dental Laboratory Technicians,0.0013206,raw_crosswalk_single_match,,notebook_raw_soc_bridge,26300.0,0.000201661104756273,True
+43-2011,"Switchboard Operators, Including Answering Service",43-2011,"Switchboard Operators, Including Answering Service",0.9832644,raw_crosswalk_single_match,,notebook_raw_soc_bridge,25930.0,0.00019882404738897944,True
+51-5113,Print Binding and Finishing Workers,51-5113,Print Binding and Finishing Workers,-0.9062089,raw_crosswalk_single_match,,notebook_raw_soc_bridge,25690.0,0.00019698379396154575,True
+53-7063,Machine Feeders and Offbearers,53-7063,Machine Feeders and Offbearers,-1.037413,raw_crosswalk_single_match,,notebook_raw_soc_bridge,25580.0,0.000196140344473972,True
+49-3053,Outdoor Power Equipment and Other Small Engine Mechanics,49-3053,Outdoor Power Equipment and Other Small Engine Mechanics,-0.8941408,raw_crosswalk_single_match,,notebook_raw_soc_bridge,25310.0,0.0001940700593681091,True
+19-4042,"Environmental Science and Protection Technicians, Including Health",19-4091,"Environmental Science and Protection Technicians, Including Health",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,25280.0,0.0001938400276896799,False
+53-5011,Sailors and Marine Oilers,53-5011,Sailors and Marine Oilers,-1.150001,raw_crosswalk_single_match,,notebook_raw_soc_bridge,25210.0,0.0001933032871066784,True
+25-1021,"Computer Science Teachers, Postsecondary",25-1021,"Computer Science Teachers, Postsecondary",1.277778,raw_crosswalk_single_match,,notebook_raw_soc_bridge,24940.0,0.00019123300200081555,True
+51-4193,"Plating Machine Setters, Operators, and Tenders, Metal and Plastic",51-4193,"Plating Machine Setters, Operators, and Tenders, Metal and Plastic",-0.8999876,raw_crosswalk_single_match,,notebook_raw_soc_bridge,24720.0,0.000189546103025668,True
+43-3099,"Financial Clerks, All Other",43-3099,"Financial Clerks, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,24340.0,0.00018663236843223136,False
+47-5013,"Service Unit Operators, Oil and Gas",47-5013,"Service Unit Operators, Oil and Gas",-0.971916,raw_crosswalk_single_match,,notebook_raw_soc_bridge,24250.0,0.00018594227339694373,True
+27-1021,Commercial and Industrial Designers,27-1021,Commercial and Industrial Designers,0.867039,raw_crosswalk_single_match,,notebook_raw_soc_bridge,24190.0,0.0001854822100400853,True
+47-5071,"Roustabouts, Oil and Gas",47-5071,"Roustabouts, Oil and Gas",-1.518977,raw_crosswalk_single_match,,notebook_raw_soc_bridge,24070.0,0.0001845620833263685,True
+15-2041,Statisticians,15-2041,Statisticians,1.382724,raw_crosswalk_single_match,,notebook_raw_soc_bridge,23580.0,0.00018080489924535807,True
+25-1032,"Engineering Teachers, Postsecondary",25-1032,"Engineering Teachers, Postsecondary",1.351133,raw_crosswalk_single_match,,notebook_raw_soc_bridge,23560.0,0.00018065154479307194,True
+47-2151,Pipelayers,47-2151,Pipelayers,-1.225611,raw_crosswalk_single_match,,notebook_raw_soc_bridge,23530.0,0.00018042151311464273,True
+39-6011,Baggage Porters and Bellhops,39-6011,Baggage Porters and Bellhops,-1.272015,raw_crosswalk_single_match,,notebook_raw_soc_bridge,23400.0,0.00017942470917478283,True
+43-4141,New Accounts Clerks,43-4141,New Accounts Clerks,1.174998,raw_crosswalk_single_match,,notebook_raw_soc_bridge,23310.0,0.0001787346141394952,True
+29-9091,Athletic Trainers,29-9091,Athletic Trainers,-0.3311363,raw_crosswalk_single_match,,notebook_raw_soc_bridge,23030.0,0.00017658765180748924,True
+29-2051,Dietetic Technicians,29-2051,Dietetic Technicians,-0.1260282,raw_crosswalk_single_match,,notebook_raw_soc_bridge,22950.0,0.0001759742339983447,True
+49-9044,Millwrights,49-9044,Millwrights,-1.266085,raw_crosswalk_single_match,,notebook_raw_soc_bridge,22700.0,0.00017405730334476796,True
+49-9031,Home Appliance Repairers,49-9031,Home Appliance Repairers,-0.9703799,raw_crosswalk_single_match,,notebook_raw_soc_bridge,22590.0,0.00017321385385719417,True
+51-2011,"Aircraft Structure, Surfaces, Rigging, and Systems Assemblers",51-2011,"Aircraft Structure, Surfaces, Rigging, and Systems Assemblers",-0.8684706,raw_crosswalk_single_match,,notebook_raw_soc_bridge,22530.0,0.00017275379050033578,True
+29-1211,Anesthesiologists,29-1061,Anesthesiologists,,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,22470.0,0.00017229372714347736,False
+19-5012,Occupational Health and Safety Technicians,19-5012,Occupational Health and Safety Technicians,0.3996866,raw_crosswalk_single_match,,notebook_raw_soc_bridge,21940.0,0.00016822983415789466,True
+51-9195,"Molders, Shapers, and Casters, Except Metal and Plastic",51-9195,"Molders, Shapers, and Casters, Except Metal and Plastic",-1.183408,raw_crosswalk_single_match,,notebook_raw_soc_bridge,21830.0,0.0001673863846703209,True
+51-3023,Slaughterers and Meat Packers,51-3023,Slaughterers and Meat Packers,-1.834668,raw_crosswalk_single_match,,notebook_raw_soc_bridge,21460.0,0.00016454932730302732,True
+29-1299,"Healthcare Diagnosing or Treating Practitioners, All Other",29-1199,"Health Diagnosing and Treating Practitioners, All Other (#)",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,21410.0,0.00016416594117231199,False
+51-8093,"Petroleum Pump System Operators, Refinery Operators, and Gaugers",51-8093,"Petroleum Pump System Operators, Refinery Operators, and Gaugers",-0.370036,raw_crosswalk_single_match,,notebook_raw_soc_bridge,21290.0,0.00016324581445859514,True
+51-8021,Stationary Engineers and Boiler Operators,51-8021,Stationary Engineers and Boiler Operators,-0.5032496,raw_crosswalk_single_match,,notebook_raw_soc_bridge,21260.0,0.00016301578278016593,True
+21-1019,"Counselors, All Other",21-1019,"Counselors, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,21100.0,0.00016178894716187682,False
+31-1133,Psychiatric Aides,31-1013,Psychiatric Aides,,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,20740.0,0.00015902856702072632,False
+51-9162,Computer Numerically Controlled Tool Programmers,51-4012,"Computer Numerically Controlled Machine Tool Programmers, Metal and Plastic",,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,20730.0,0.00015895188979458323,False
+19-4061,Social Science Research Assistants,19-4061,Social Science Research Assistants,1.204652,raw_crosswalk_single_match,,notebook_raw_soc_bridge,20700.0,0.00015872185811615405,True
+29-1223,Psychiatrists,29-1066,Psychiatrists,,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,20550.0,0.000157571699724008,False
+51-4122,"Welding, Soldering, and Brazing Machine Setters, Operators, and Tenders",51-4122,"Welding, Soldering, and Brazing Machine Setters, Operators, and Tenders",-1.002411,raw_crosswalk_single_match,,notebook_raw_soc_bridge,20310.0,0.0001557314462965743,True
+25-1122,"Communications Teachers, Postsecondary",25-1122,"Communications Teachers, Postsecondary",1.347435,raw_crosswalk_single_match,,notebook_raw_soc_bridge,20090.0,0.00015404454732142678,True
+27-4032,Film and Video Editors,27-4032,Film and Video Editors,0.985707,raw_crosswalk_single_match,,notebook_raw_soc_bridge,20080.0,0.00015396787009528372,True
+47-2231,Solar Photovoltaic Installers,47-2231,Solar Photovoltaic Installers,-0.9441692,raw_crosswalk_single_match,,notebook_raw_soc_bridge,19900.0,0.00015258768002470848,True
+25-2051,"Special Education Teachers, Preschool",25-2051,"Special Education Teachers, Preschool",0.3750564,raw_crosswalk_single_match,,notebook_raw_soc_bridge,19790.0,0.0001517442305371347,True
+47-4071,Septic Tank Servicers and Sewer Pipe Cleaners,47-4071,Septic Tank Servicers and Sewer Pipe Cleaners,-1.210591,raw_crosswalk_single_match,,notebook_raw_soc_bridge,19790.0,0.0001517442305371347,True
+13-2071,Credit Counselors,13-2071,Credit Counselors,1.385381,raw_crosswalk_single_match,,notebook_raw_soc_bridge,19710.0,0.00015113081272799016,True
+53-6032,Aircraft Service Attendants,,,,,,,19580.0,0.00015013400878813025,False
+51-6021,"Pressers, Textile, Garment, and Related Materials",51-6021,"Pressers, Textile, Garment, and Related Materials",-1.950063,raw_crosswalk_single_match,,notebook_raw_soc_bridge,19560.0,0.0001499806543358441,True
+15-2011,Actuaries,15-2011,Actuaries,1.516474,raw_crosswalk_single_match,,notebook_raw_soc_bridge,19440.0,0.00014906052762212726,True
+47-4090,Miscellaneous Construction and Related Workers,47-4099,"Construction and Related Workers, All Other",-0.8728439,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,18980.0,0.00014553337521954607,True
+47-3019,"Helpers, Construction Trades, All Other",47-3019,"Helpers, Construction Trades, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,18920.0,0.00014507331186268765,False
+51-5111,Prepress Technicians and Workers,51-5111,Prepress Technicians and Workers,0.4107973,raw_crosswalk_single_match,,notebook_raw_soc_bridge,18670.0,0.0001431563812091109,True
+51-9141,Semiconductor Processing Technicians,51-9141,Semiconductor Processing Technicians,-0.6372312,raw_crosswalk_single_match,,notebook_raw_soc_bridge,18170.0,0.00013932251990195744,True
+49-9091,"Coin, Vending, and Amusement Machine Servicers and Repairers",49-9091,"Coin, Vending, and Amusement Machine Servicers and Repairers",-0.7233995,raw_crosswalk_single_match,,notebook_raw_soc_bridge,17810.0,0.00013656213976080692,True
+45-1011,"First-Line Supervisors of Farming, Fishing, and Forestry Workers",45-1011,"First-Line Supervisors of Farming, Fishing, and Forestry Workers",-0.4791843,raw_crosswalk_single_match,,notebook_raw_soc_bridge,17720.0,0.0001358720447255193,True
+11-3111,Compensation and Benefits Managers,11-3111,Compensation and Benefits Managers,1.298235,raw_crosswalk_single_match,,notebook_raw_soc_bridge,17660.0,0.0001354119813686609,True
+17-2031,Bioengineers and Biomedical Engineers,17-2031,Bioengineers and Biomedical Engineers,0.9874239,raw_crosswalk_single_match,,notebook_raw_soc_bridge,17650.0,0.0001353353041425178,True
+39-4021,Funeral Attendants,39-4021,Funeral Attendants,-0.5445412,raw_crosswalk_single_match,,notebook_raw_soc_bridge,17570.0,0.00013472188633337326,True
+49-3041,Farm Equipment Mechanics and Service Technicians,49-3041,Farm Equipment Mechanics and Service Technicians,-1.20703,raw_crosswalk_single_match,,notebook_raw_soc_bridge,17410.0,0.00013349505071508415,True
+19-2042,"Geoscientists, Except Hydrologists and Geographers",19-2042,"Geoscientists, Except Hydrologists and Geographers",0.7143481,raw_crosswalk_single_match,,notebook_raw_soc_bridge,17120.0,0.00013127141115693513,True
+51-3093,Food Cooking Machine Operators and Tenders,51-3093,Food Cooking Machine Operators and Tenders,-0.5559894,raw_crosswalk_single_match,,notebook_raw_soc_bridge,17030.0,0.0001305813161216475,True
+51-7041,"Sawing Machine Setters, Operators, and Tenders, Wood",51-7041,"Sawing Machine Setters, Operators, and Tenders, Wood",-1.165031,raw_crosswalk_single_match,,notebook_raw_soc_bridge,16930.0,0.0001298145438602168,True
+17-2131,Materials Engineers,17-2131,Materials Engineers,1.037278,raw_crosswalk_single_match,,notebook_raw_soc_bridge,16580.0,0.00012713084094520937,True
+51-9071,Jewelers and Precious Stone and Metal Workers,51-9071,Jewelers and Precious Stone and Metal Workers,-0.1560197,raw_crosswalk_single_match,,notebook_raw_soc_bridge,16500.0,0.00012651742313606482,True
+47-5022,"Excavating and Loading Machine and Dragline Operators, Surface Mining",47-5022,"Excavating and Loading Machine and Dragline Operators, Surface Mining",-1.144356,raw_crosswalk_single_match,,notebook_raw_soc_bridge,16210.0,0.0001242937835779158,True
+27-3099,"Media and Communication Workers, All Other",27-3099,"Media and Communication Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,16200.0,0.00012421710635177272,False
+53-6051,Transportation Inspectors,53-6051,Transportation Inspectors,-0.18376,raw_crosswalk_single_match,,notebook_raw_soc_bridge,16120.0,0.00012360368854262818,True
+27-4031,"Camera Operators, Television, Video, and Film",27-4031,"Camera Operators, Television, Video, and Film",-0.4470009,raw_crosswalk_single_match,,notebook_raw_soc_bridge,16020.0,0.00012283691628119748,True
+47-2132,"Insulation Workers, Mechanical",47-2132,"Insulation Workers, Mechanical",-1.268615,raw_crosswalk_single_match,,notebook_raw_soc_bridge,15880.0,0.00012176343511519449,True
+27-4012,Broadcast Technicians,27-4012,Broadcast Technicians,0.1222249,raw_crosswalk_single_match,,notebook_raw_soc_bridge,15860.0,0.00012161008066290836,True
+53-7199,"Material Moving Workers, All Other",53-7199,"Material Moving Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,15860.0,0.00012161008066290836,False
+21-2021,"Directors, Religious Activities and Education",21-2021,"Directors, Religious Activities and Education",1.210922,raw_crosswalk_single_match,,notebook_raw_soc_bridge,15820.0,0.00012130337175833608,True
+43-9071,"Office Machine Operators, Except Computer",43-9071,"Office Machine Operators, Except Computer",-0.5171404,raw_crosswalk_single_match,,notebook_raw_soc_bridge,15820.0,0.00012130337175833608,True
+19-2099,"Physical Scientists, All Other",19-2099,"Physical Scientists, All Other",1.140157,raw_crosswalk_single_match,,notebook_raw_soc_bridge,15800.0,0.00012115001730604993,True
+53-6061,Passenger Attendants,53-6061,Passenger Attendants,-0.3752249,raw_crosswalk_single_match,,notebook_raw_soc_bridge,15800.0,0.00012115001730604993,True
+47-2161,Plasterers and Stucco Masons,47-2161,Plasterers and Stucco Masons,-1.755588,raw_crosswalk_single_match,,notebook_raw_soc_bridge,15430.0,0.00011831295993875636,True
+47-4021,Elevator and Escalator Installers and Repairers,47-4021,Elevator and Escalator Installers and Repairers,-0.8604742,raw_crosswalk_single_match,,notebook_raw_soc_bridge,15430.0,0.00011831295993875636,True
+45-2093,"Farmworkers, Farm, Ranch, and Aquacultural Animals",45-2093,"Farmworkers, Farm, Ranch, and Aquacultural Animals",-1.108432,raw_crosswalk_single_match,,notebook_raw_soc_bridge,15390.0,0.00011800625103418409,True
+39-1013,First-Line Supervisors of Gambling Services Workers,39-1013,First-line Supervisors of Gambling Services Workers (##),1.128203,raw_crosswalk_deduplicated,,notebook_raw_soc_bridge,15370.0,0.00011785289658189795,True
+51-8013,Power Plant Operators,51-8013,Power Plant Operators,-0.3482779,raw_crosswalk_single_match,,notebook_raw_soc_bridge,15370.0,0.00011785289658189795,True
+49-9096,Riggers,49-9096,Riggers,-1.221519,raw_crosswalk_single_match,,notebook_raw_soc_bridge,15280.0,0.00011716280154661032,True
+19-1022,Microbiologists,19-1022,Microbiologists,0.6955647,raw_crosswalk_single_match,,notebook_raw_soc_bridge,15220.0,0.0001167027381897519,True
+23-1023,"Judges, Magistrate Judges, and Magistrates",23-1023,"Judges, Magistrate Judges, and Magistrates",1.496494,raw_crosswalk_single_match,,notebook_raw_soc_bridge,15200.0,0.00011654938373746577,True
+39-4031,"Morticians, Undertakers, and Funeral Arrangers",39-4031,"Morticians, Undertakers, and Funeral Arrangers",-0.1903759,raw_crosswalk_single_match,,notebook_raw_soc_bridge,15080.0,0.00011562925702374894,True
+47-2042,"Floor Layers, Except Carpet, Wood, and Hard Tiles",47-2042,"Floor Layers, Except Carpet, Wood, and Hard Tiles",-1.301024,raw_crosswalk_single_match,,notebook_raw_soc_bridge,14910.0,0.00011432574417931675,True
+11-2011,Advertising and Promotions Managers,11-2011,Advertising and Promotions Managers,1.294387,raw_crosswalk_single_match,,notebook_raw_soc_bridge,14900.0,0.00011424906695317367,True
+49-9011,Mechanical Door Repairers,49-9011,Mechanical Door Repairers,-1.383152,raw_crosswalk_single_match,,notebook_raw_soc_bridge,14830.0,0.00011371232637017219,True
+17-2111,"Health and Safety Engineers, Except Mining Safety Engineers and Inspectors",17-2111,"Health and Safety Engineers, Except Mining Safety Engineers and Inspectors",0.9948935,raw_crosswalk_single_match,,notebook_raw_soc_bridge,14780.0,0.00011332894023945685,True
+29-1214,Emergency Medicine Physicians,29-1214,Emergency Medicine Physicians,0.7086123,raw_crosswalk_single_match,,notebook_raw_soc_bridge,14740.0,0.00011302223133488456,True
+27-1022,Fashion Designers,27-1022,Fashion Designers,0.5801539,raw_crosswalk_single_match,,notebook_raw_soc_bridge,14620.0,0.00011210210462116773,True
+19-1031,Conservation Scientists,19-1031,Conservation Scientists,0.0690313,raw_crosswalk_single_match,,notebook_raw_soc_bridge,14590.0,0.00011187207294273852,True
+47-3012,Helpers--Carpenters,47-3012,Helpers--Carpenters,-1.425282,raw_crosswalk_single_match,,notebook_raw_soc_bridge,14570.0,0.00011171871849045239,True
+49-3051,Motorboat Mechanics and Service Technicians,49-3051,Motorboat Mechanics and Service Technicians,-0.8863602,raw_crosswalk_single_match,,notebook_raw_soc_bridge,14500.0,0.00011118197790745089,True
+17-2041,Chemical Engineers,17-2041,Chemical Engineers,1.341336,raw_crosswalk_single_match,,notebook_raw_soc_bridge,14420.0,0.00011056856009830633,True
+19-4092,Forensic Science Technicians,19-4092,Forensic Science Technicians,0.2400518,raw_crosswalk_single_match,,notebook_raw_soc_bridge,14420.0,0.00011056856009830633,True
+27-1014,Special Effects Artists and Animators,27-1014,Special Effects Artists and Animators,0.7058651,raw_crosswalk_single_match,,notebook_raw_soc_bridge,14310.0,0.00010972511061073257,True
+33-1099,"First-Line Supervisors of Protective Service Workers, All Other",33-1099,"First-Line Supervisors of Protective Service Workers, All Other (#)",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,14280.0,0.00010949507893230337,False
+17-1012,Landscape Architects,17-1012,Landscape Architects,1.034388,raw_crosswalk_single_match,,notebook_raw_soc_bridge,14060.0,0.00010780817995715583,True
+29-1249,"Surgeons, All Other",29-1067,Surgeons (#),,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,13980.0,0.00010719476214801128,False
+25-1126,"Philosophy and Religion Teachers, Postsecondary",25-1126,"Philosophy and Religion Teachers, Postsecondary",1.363522,raw_crosswalk_single_match,,notebook_raw_soc_bridge,13960.0,0.00010704140769572514,True
+51-9021,"Crushing, Grinding, and Polishing Machine Setters, Operators, and Tenders",51-9021,"Crushing, Grinding, and Polishing Machine Setters, Operators, and Tenders",-1.043476,raw_crosswalk_single_match,,notebook_raw_soc_bridge,13820.0,0.00010596792652972216,True
+27-3011,Broadcast Announcers and Radio Disc Jockeys,27-3011,Broadcast Announcers and Radio Disc Jockeys,0.8493547,raw_crosswalk_single_match,,notebook_raw_soc_bridge,13040.0,9.998710289056273e-05,True
+17-3012,Electrical and Electronics Drafters,17-3012,Electrical and Electronics Drafters,0.910166,raw_crosswalk_single_match,,notebook_raw_soc_bridge,13010.0,9.975707121213352e-05,True
+51-4023,"Rolling Machine Setters, Operators, and Tenders, Metal and Plastic",51-4023,"Rolling Machine Setters, Operators, and Tenders, Metal and Plastic",-1.08921,raw_crosswalk_single_match,,notebook_raw_soc_bridge,12930.0,9.914365340298896e-05,True
+53-2021,Air Traffic Controllers,53-2021,Air Traffic Controllers,1.152798,raw_crosswalk_single_match,,notebook_raw_soc_bridge,12820.0,9.830020391541521e-05,True
+39-2011,Animal Trainers,39-2011,Animal Trainers,-0.9167759,raw_crosswalk_single_match,,notebook_raw_soc_bridge,12790.0,9.8070172236986e-05,True
+51-9083,Ophthalmic Laboratory Technicians,51-9083,Ophthalmic Laboratory Technicians,-0.5966759,raw_crosswalk_single_match,,notebook_raw_soc_bridge,12780.0,9.799349501084293e-05,True
+25-1052,"Chemistry Teachers, Postsecondary",25-1052,"Chemistry Teachers, Postsecondary",1.333947,raw_crosswalk_single_match,,notebook_raw_soc_bridge,12740.0,9.768678610627065e-05,True
+27-2099,"Entertainers and Performers, Sports and Related Workers, All Other",27-2099,"Entertainers and Performers, Sports and Related Workers, All Other (#)",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,12600.0,9.661330494026768e-05,False
+35-2019,"Cooks, All Other",35-2019,"Cooks, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,12380.0,9.492640596512014e-05,False
+49-2095,"Electrical and Electronics Repairers, Powerhouse, Substation, and Relay",49-2095,"Electrical and Electronics Repairers, Powerhouse, Substation, and Relay",-0.5522636,raw_crosswalk_single_match,,notebook_raw_soc_bridge,12380.0,9.492640596512014e-05,True
+19-3039,"Psychologists, All Other",19-3039,"Psychologists, All Other",1.389854,raw_crosswalk_single_match,,notebook_raw_soc_bridge,12290.0,9.423631092983252e-05,True
+29-1218,Obstetricians and Gynecologists,29-1064,Obstetricians and Gynecologists,,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,12150.0,9.316282976382955e-05,False
+17-3028,Calibration Technologists and Technicians,17-3028,Calibration Technologists and Technicians,0.1941278,raw_crosswalk_single_match,,notebook_raw_soc_bridge,12140.0,9.308615253768647e-05,True
+17-2171,Petroleum Engineers,17-2171,Petroleum Engineers,1.247779,raw_crosswalk_single_match,,notebook_raw_soc_bridge,12120.0,9.293279808540034e-05,True
+39-3093,"Locker Room, Coatroom, and Dressing Room Attendants",39-3093,"Locker Room, Coatroom, and Dressing Room Attendants",-0.3454376,raw_crosswalk_single_match,,notebook_raw_soc_bridge,12120.0,9.293279808540034e-05,True
+29-9093,Surgical Assistants,29-9093,Surgical Assistants,0.2295568,raw_crosswalk_single_match,,notebook_raw_soc_bridge,11920.0,9.139925356253894e-05,True
+33-3011,Bailiffs,33-3011,Bailiffs,-0.5103183,raw_crosswalk_single_match,,notebook_raw_soc_bridge,11850.0,9.086251297953745e-05,True
+25-1125,"History Teachers, Postsecondary",25-1125,"History Teachers, Postsecondary",1.43749,raw_crosswalk_single_match,,notebook_raw_soc_bridge,11780.0,9.032577239653597e-05,True
+29-2033,Nuclear Medicine Technologists,29-2033,Nuclear Medicine Technologists,0.0855276,raw_crosswalk_single_match,,notebook_raw_soc_bridge,11770.0,9.02490951703929e-05,True
+37-3012,"Pesticide Handlers, Sprayers, and Applicators, Vegetation",37-3012,"Pesticide Handlers, Sprayers, and Applicators, Vegetation",-0.8847935,raw_crosswalk_single_match,,notebook_raw_soc_bridge,11730.0,8.994238626582063e-05,True
+49-2097,Audiovisual Equipment Installers and Repairers,49-2097,Audiovisual Equipment Installers and Repairers,-0.571284,raw_crosswalk_single_match,,notebook_raw_soc_bridge,11730.0,8.994238626582063e-05,True
+49-2091,Avionics Technicians,49-2091,Avionics Technicians,-0.1728535,raw_crosswalk_single_match,,notebook_raw_soc_bridge,11620.0,8.909893677824686e-05,True
+19-2012,Physicists,19-2012,Physicists,1.345736,raw_crosswalk_single_match,,notebook_raw_soc_bridge,11610.0,8.902225955210378e-05,True
+25-1124,"Foreign Language and Literature Teachers, Postsecondary",25-1124,"Foreign Language and Literature Teachers, Postsecondary",1.33412,raw_crosswalk_single_match,,notebook_raw_soc_bridge,11570.0,8.871555064753151e-05,True
+45-2091,Agricultural Equipment Operators,45-2091,Agricultural Equipment Operators,-1.145156,raw_crosswalk_single_match,,notebook_raw_soc_bridge,11470.0,8.79487783861008e-05,True
+41-2012,Gambling Change Persons and Booth Cashiers,41-2012,Gambling Change Persons and Booth Cashiers,-0.0500926,raw_crosswalk_single_match,,notebook_raw_soc_bridge,11440.0,8.771874670767161e-05,True
+19-3011,Economists,19-3011,Economists,1.403764,raw_crosswalk_single_match,,notebook_raw_soc_bridge,11380.0,8.725868335081319e-05,True
+41-9021,Real Estate Brokers,41-9021,Real Estate Brokers,1.149681,raw_crosswalk_single_match,,notebook_raw_soc_bridge,11330.0,8.687529722009784e-05,True
+43-5041,"Meter Readers, Utilities",43-5041,"Meter Readers, Utilities",-0.9723772,raw_crosswalk_single_match,,notebook_raw_soc_bridge,11310.0,8.672194276781169e-05,True
+51-6093,Upholsterers,51-6093,Upholsterers,-1.313735,raw_crosswalk_single_match,,notebook_raw_soc_bridge,11250.0,8.626187941095329e-05,True
+19-4071,Forest and Conservation Technicians,19-4093,Forest and Conservation Technicians,,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,11190.0,8.580181605409486e-05,False
+25-1065,"Political Science Teachers, Postsecondary",25-1065,"Political Science Teachers, Postsecondary",1.368397,raw_crosswalk_single_match,,notebook_raw_soc_bridge,11000.0,8.434494875737654e-05,True
+53-7011,Conveyor Operators and Tenders,53-7011,Conveyor Operators and Tenders,-0.7554432,raw_crosswalk_single_match,,notebook_raw_soc_bridge,10880.0,8.342482204365971e-05,True
+49-9094,Locksmiths and Safe Repairers,49-9094,Locksmiths and Safe Repairers,-0.8657498,raw_crosswalk_single_match,,notebook_raw_soc_bridge,10580.0,8.112450525936762e-05,True
+51-2031,Engine and Other Machine Assemblers,51-2031,Engine and Other Machine Assemblers,-0.9561453,raw_crosswalk_single_match,,notebook_raw_soc_bridge,10480.0,8.035773299793693e-05,True
+25-1112,"Law Teachers, Postsecondary",25-1112,"Law Teachers, Postsecondary",1.35645,raw_crosswalk_single_match,,notebook_raw_soc_bridge,10460.0,8.020437854565078e-05,True
+51-4034,"Lathe and Turning Machine Tool Setters, Operators, and Tenders, Metal and Plastic",51-4034,"Lathe and Turning Machine Tool Setters, Operators, and Tenders, Metal and Plastic",-1.06734,raw_crosswalk_single_match,,notebook_raw_soc_bridge,10440.0,8.005102409336464e-05,True
+25-2023,"Career/Technical Education Teachers, Middle School",25-2023,"Career/Technical Education Teachers, Middle School",0.5199191,raw_crosswalk_single_match,,notebook_raw_soc_bridge,10360.0,7.943760628422009e-05,True
+25-1069,"Social Sciences Teachers, Postsecondary, All Other",25-1069,"Social Sciences Teachers, Postsecondary, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,10330.0,7.920757460579088e-05,False
+17-3019,"Drafters, All Other",17-3019,"Drafters, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,10280.0,7.882418847507553e-05,False
+51-6064,"Textile Winding, Twisting, and Drawing Out Machine Setters, Operators, and Tenders",51-6064,"Textile Winding, Twisting, and Drawing Out Machine Setters, Operators, and Tenders",-1.392929,raw_crosswalk_single_match,,notebook_raw_soc_bridge,10110.0,7.752067563064335e-05,True
+27-4014,Sound Engineering Technicians,27-4014,Sound Engineering Technicians,0.4715462,raw_crosswalk_single_match,,notebook_raw_soc_bridge,10030.0,7.69072578214988e-05,True
+23-1021,"Administrative Law Judges, Adjudicators, and Hearing Officers",23-1021,"Administrative Law Judges, Adjudicators, and Hearing Officers",1.374714,raw_crosswalk_single_match,,notebook_raw_soc_bridge,9980.0,7.652387169078344e-05,True
+45-2041,"Graders and Sorters, Agricultural Products",45-2041,"Graders and Sorters, Agricultural Products",-1.370968,raw_crosswalk_single_match,,notebook_raw_soc_bridge,9970.0,7.644719446464038e-05,True
+29-1129,"Therapists, All Other",29-1129,"Therapists, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,9940.0,7.621716278621117e-05,False
+51-3091,"Food and Tobacco Roasting, Baking, and Drying Machine Operators and Tenders",51-3091,"Food and Tobacco Roasting, Baking, and Drying Machine Operators and Tenders",-0.758859,raw_crosswalk_single_match,,notebook_raw_soc_bridge,9890.0,7.583377665549582e-05,True
+19-1023,Zoologists and Wildlife Biologists,19-1023,Zoologists and Wildlife Biologists,0.3175953,raw_crosswalk_single_match,,notebook_raw_soc_bridge,9880.0,7.575709942935274e-05,True
+29-1125,Recreational Therapists,29-1125,Recreational Therapists,0.2190109,raw_crosswalk_single_match,,notebook_raw_soc_bridge,9820.0,7.529703607249432e-05,True
+51-4199,"Metal Workers and Plastic Workers, All Other",51-4199,"Metal Workers and Plastic Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,9810.0,7.522035884635126e-05,False
+27-2023,"Umpires, Referees, and Other Sports Officials",27-2023,"Umpires, Referees, and Other Sports Officials",-0.0325617,raw_crosswalk_single_match,,notebook_raw_soc_bridge,9720.0,7.453026381106363e-05,True
+29-1212,Cardiologists,29-1212,Cardiologists,0.7086123,raw_crosswalk_single_match,,notebook_raw_soc_bridge,9710.0,7.445358658492057e-05,True
+19-4013,Food Science Technicians,19-4011,Agricultural and Food Science Technicians (#),,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,9690.0,7.430023213263442e-05,False
+47-2082,Tapers,47-2082,Tapers,-1.540774,raw_crosswalk_single_match,,notebook_raw_soc_bridge,9620.0,7.376349154963294e-05,True
+29-1224,Radiologists,29-1224,Radiologists,0.7086123,raw_crosswalk_single_match,,notebook_raw_soc_bridge,9600.0,7.36101370973468e-05,True
+33-2021,Fire Inspectors and Investigators,33-2021,Fire Inspectors and Investigators,0.062793,raw_crosswalk_single_match,,notebook_raw_soc_bridge,9480.0,7.269001038362996e-05,True
+53-2022,Airfield Operations Specialists,53-2022,Airfield Operations Specialists,0.4845738,raw_crosswalk_single_match,,notebook_raw_soc_bridge,9400.0,7.20765925744854e-05,True
+47-5023,"Earth Drillers, Except Oil and Gas",47-5021,"Earth Drillers, Except Oil and Gas (#)",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,9350.0,7.169320644377006e-05,False
+49-3022,Automotive Glass Installers and Repairers,49-3022,Automotive Glass Installers and Repairers,-1.202285,raw_crosswalk_single_match,,notebook_raw_soc_bridge,9350.0,7.169320644377006e-05,True
+13-1011,"Agents and Business Managers of Artists, Performers, and Athletes",13-1011,"Agents and Business Managers of Artists, Performers, and Athletes",1.068559,raw_crosswalk_single_match,,notebook_raw_soc_bridge,9290.0,7.123314308691164e-05,True
+29-1124,Radiation Therapists,29-1124,Radiation Therapists,-0.2189393,raw_crosswalk_single_match,,notebook_raw_soc_bridge,9140.0,7.00829846947656e-05,True
+47-4031,Fence Erectors,47-4031,Fence Erectors,-1.902113,raw_crosswalk_single_match,,notebook_raw_soc_bridge,9110.0,6.985295301633639e-05,True
+53-7073,Wellhead Pumpers,53-7073,Wellhead Pumpers,-1.091197,raw_crosswalk_single_match,,notebook_raw_soc_bridge,9110.0,6.985295301633639e-05,True
+27-4099,"Media and Communication Equipment Workers, All Other",27-4099,"Media and Communication Equipment Workers, All Other (#)",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,8970.0,6.877947185033341e-05,False
+17-1021,Cartographers and Photogrammetrists,17-1021,Cartographers and Photogrammetrists,0.8169979,raw_crosswalk_single_match,,notebook_raw_soc_bridge,8920.0,6.839608571961806e-05,True
+51-9192,"Cleaning, Washing, and Metal Pickling Equipment Operators and Tenders",51-9192,"Cleaning, Washing, and Metal Pickling Equipment Operators and Tenders",-1.141885,raw_crosswalk_single_match,,notebook_raw_soc_bridge,8730.0,6.693921842289974e-05,True
+27-2041,Music Directors and Composers,27-2041,Music Directors and Composers,0.8829641,raw_crosswalk_single_match,,notebook_raw_soc_bridge,8690.0,6.663250951832747e-05,True
+19-1012,Food Scientists and Technologists,19-1012,Food Scientists and Technologists,0.7943575,raw_crosswalk_single_match,,notebook_raw_soc_bridge,8610.0,6.601909170918291e-05,True
+17-3024,Electro-Mechanical and Mechatronics Technologists and Technicians,17-3024,Electro-Mechanical and Mechatronics Technologists and Technicians,-0.3040507,raw_crosswalk_single_match,,notebook_raw_soc_bridge,8600.0,6.594241448303984e-05,True
+19-1041,Epidemiologists,19-1041,Epidemiologists,1.436287,raw_crosswalk_single_match,,notebook_raw_soc_bridge,8580.0,6.57890600307537e-05,True
+19-1013,Soil and Plant Scientists,19-1013,Soil and Plant Scientists,0.6320696,raw_crosswalk_single_match,,notebook_raw_soc_bridge,8550.0,6.555902835232449e-05,True
+51-6099,"Textile, Apparel, and Furnishings Workers, All Other",51-6099,"Textile, Apparel, and Furnishings Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,8550.0,6.555902835232449e-05,False
+51-6052,"Tailors, Dressmakers, and Custom Sewers",51-6052,"Tailors, Dressmakers, and Custom Sewers",-0.4305268,raw_crosswalk_single_match,,notebook_raw_soc_bridge,8450.0,6.47922560908938e-05,True
+51-4051,Metal-Refining Furnace Operators and Tenders,51-4051,Metal-Refining Furnace Operators and Tenders,-1.167465,raw_crosswalk_single_match,,notebook_raw_soc_bridge,8430.0,6.463890163860766e-05,True
+51-7021,Furniture Finishers,51-7021,Furniture Finishers,-1.197727,raw_crosswalk_single_match,,notebook_raw_soc_bridge,8320.0,6.37954521510339e-05,True
+51-4191,"Heat Treating Equipment Setters, Operators, and Tenders, Metal and Plastic",51-4191,"Heat Treating Equipment Setters, Operators, and Tenders, Metal and Plastic",-1.092486,raw_crosswalk_single_match,,notebook_raw_soc_bridge,8290.0,6.356542047260468e-05,True
+51-8099,"Plant and System Operators, All Other",51-8099,"Plant and System Operators, All Other",-0.6702387,raw_crosswalk_single_match,,notebook_raw_soc_bridge,8240.0,6.318203434188934e-05,True
+25-4013,Museum Technicians and Conservators,25-4013,Museum Technicians and Conservators,-0.0912107,raw_crosswalk_single_match,,notebook_raw_soc_bridge,8160.0,6.256861653274478e-05,True
+27-3092,Court Reporters and Simultaneous Captioners,27-3092,Court Reporters and Simultaneous Captioners,0.835246,raw_crosswalk_single_match,,notebook_raw_soc_bridge,8050.0,6.172516704517101e-05,True
+27-1027,Set and Exhibit Designers,27-1027,Set and Exhibit Designers,-0.0519323,raw_crosswalk_single_match,,notebook_raw_soc_bridge,8030.0,6.157181259288488e-05,True
+25-4012,Curators,25-4012,Curators,0.7366658,raw_crosswalk_single_match,,notebook_raw_soc_bridge,8010.0,6.141845814059874e-05,True
+51-2051,Fiberglass Laminators and Fabricators,51-2091,Fiberglass Laminators and Fabricators,,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,7900.0,6.057500865302497e-05,False
+51-8091,Chemical Plant and System Operators,51-8091,Chemical Plant and System Operators,-0.3831282,raw_crosswalk_single_match,,notebook_raw_soc_bridge,7890.0,6.04983314268819e-05,True
+25-1054,"Physics Teachers, Postsecondary",25-1054,"Physics Teachers, Postsecondary",1.044191,raw_crosswalk_single_match,,notebook_raw_soc_bridge,7820.0,5.996159084388041e-05,True
+49-3092,Recreational Vehicle Service Technicians,49-3092,Recreational Vehicle Service Technicians,-0.9244052,raw_crosswalk_single_match,,notebook_raw_soc_bridge,7780.0,5.965488193930813e-05,True
+29-1181,Audiologists,29-1181,Audiologists,0.6329063,raw_crosswalk_single_match,,notebook_raw_soc_bridge,7700.0,5.9041464130163575e-05,True
+43-4041,"Credit Authorizers, Checkers, and Clerks",43-4041,"Credit Authorizers, Checkers, and Clerks",1.440296,raw_crosswalk_single_match,,notebook_raw_soc_bridge,7610.0,5.835136909487595e-05,True
+17-3025,Environmental Engineering Technologists and Technicians,17-3025,Environmental Engineering Technologists and Technicians,0.0438054,raw_crosswalk_single_match,,notebook_raw_soc_bridge,7600.0,5.827469186873288e-05,True
+25-1111,"Criminal Justice and Law Enforcement Teachers, Postsecondary",25-1111,"Criminal Justice and Law Enforcement Teachers, Postsecondary",1.389999,raw_crosswalk_single_match,,notebook_raw_soc_bridge,7590.0,5.8198014642589815e-05,True
+43-3041,Gambling Cage Workers,43-3041,Gambling Cage Workers,0.4026518,raw_crosswalk_single_match,,notebook_raw_soc_bridge,7520.0,5.7661274059588326e-05,True
+47-3011,"Helpers--Brickmasons, Blockmasons, Stonemasons, and Tile and Marble Setters",47-3011,"Helpers--Brickmasons, Blockmasons, Stonemasons, and Tile and Marble Setters",-1.94229,raw_crosswalk_single_match,,notebook_raw_soc_bridge,7500.0,5.750791960730219e-05,True
+21-2099,"Religious Workers, All Other",21-2099,"Religious Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,7470.0,5.727788792887298e-05,False
+47-2171,Reinforcing Iron and Rebar Workers,47-2171,Reinforcing Iron and Rebar Workers,-1.970997,raw_crosswalk_single_match,,notebook_raw_soc_bridge,7460.0,5.720121070272991e-05,True
+51-8092,Gas Plant Operators,51-8092,Gas Plant Operators,-0.2982082,raw_crosswalk_single_match,,notebook_raw_soc_bridge,7380.0,5.6587792893585355e-05,True
+23-1012,Judicial Law Clerks,23-1012,Judicial Law Clerks,1.462973,raw_crosswalk_single_match,,notebook_raw_soc_bridge,7330.0,5.620440676287e-05,True
+25-1067,"Sociology Teachers, Postsecondary",25-1067,"Sociology Teachers, Postsecondary",1.349229,raw_crosswalk_single_match,,notebook_raw_soc_bridge,7110.0,5.4517507787722474e-05,True
+53-1041,Aircraft Cargo Handling Supervisors,53-1011,Aircraft Cargo Handling Supervisors,,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,7060.0,5.413412165700713e-05,False
+39-3019,"Gambling Service Workers, All Other",39-3019,"Gaming Service Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,6960.0,5.336734939557643e-05,False
+17-3021,Aerospace Engineering and Operations Technologists and Technicians,17-3021,Aerospace Engineering and Operations Technologists and Technicians,0.3909402,raw_crosswalk_single_match,,notebook_raw_soc_bridge,6940.0,5.321399494329029e-05,True
+27-2021,Athletes and Sports Competitors,27-2021,Athletes and Sports Competitors,-1.814336,raw_crosswalk_single_match,,notebook_raw_soc_bridge,6870.0,5.2677254360288804e-05,True
+11-9161,Emergency Management Directors,11-9161,Emergency Management Directors,1.030768,raw_crosswalk_single_match,,notebook_raw_soc_bridge,6740.0,5.16804504204289e-05,True
+49-2092,"Electric Motor, Power Tool, and Related Repairers",49-2092,"Electric Motor, Power Tool, and Related Repairers",-0.8106341,raw_crosswalk_single_match,,notebook_raw_soc_bridge,6720.0,5.152709596814276e-05,True
+25-1193,"Recreation and Fitness Studies Teachers, Postsecondary",25-1193,"Recreation and Fitness Studies Teachers, Postsecondary",1.16489,raw_crosswalk_single_match,,notebook_raw_soc_bridge,6680.0,5.122038706357048e-05,True
+11-9171,Funeral Home Managers,11-9061,Funeral Service Managers,,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,6660.0,5.1067032611284344e-05,False
+51-6063,"Textile Knitting and Weaving Machine Setters, Operators, and Tenders",51-6063,"Textile Knitting and Weaving Machine Setters, Operators, and Tenders",-1.241662,raw_crosswalk_single_match,,notebook_raw_soc_bridge,6660.0,5.1067032611284344e-05,True
+51-9051,"Furnace, Kiln, Oven, Drier, and Kettle Operators and Tenders",51-9051,"Furnace, Kiln, Oven, Drier, and Kettle Operators and Tenders",-0.9582346,raw_crosswalk_single_match,,notebook_raw_soc_bridge,6630.0,5.083700093285513e-05,True
+45-2011,Agricultural Inspectors,45-2011,Agricultural Inspectors,0.1704867,raw_crosswalk_single_match,,notebook_raw_soc_bridge,6610.0,5.0683646480569e-05,True
+25-1113,"Social Work Teachers, Postsecondary",25-1113,"Social Work Teachers, Postsecondary",1.347327,raw_crosswalk_single_match,,notebook_raw_soc_bridge,6570.0,5.037693757599672e-05,True
+49-3091,Bicycle Repairers,49-3091,Bicycle Repairers,-0.9226068,raw_crosswalk_single_match,,notebook_raw_soc_bridge,6450.0,4.9456810862279884e-05,True
+39-5011,Barbers,39-5011,Barbers,-0.7294621,raw_crosswalk_single_match,,notebook_raw_soc_bridge,6440.0,4.938013363613681e-05,True
+25-1063,"Economics Teachers, Postsecondary",25-1063,"Economics Teachers, Postsecondary",1.319012,raw_crosswalk_single_match,,notebook_raw_soc_bridge,6430.0,4.930345640999374e-05,True
+27-1029,"Designers, All Other",27-1029,"Designers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,6390.0,4.899674750542146e-05,False
+51-9082,Medical Appliance Technicians,51-9082,Medical Appliance Technicians,-0.4949538,raw_crosswalk_single_match,,notebook_raw_soc_bridge,6390.0,4.899674750542146e-05,True
+37-3019,"Grounds Maintenance Workers, All Other",37-3019,"Grounds Maintenance Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,6260.0,4.799994356556156e-05,False
+17-2161,Nuclear Engineers,17-2161,Nuclear Engineers,1.303009,raw_crosswalk_single_match,,notebook_raw_soc_bridge,6130.0,4.7003139625701657e-05,True
+51-9022,"Grinding and Polishing Workers, Hand",51-9022,"Grinding and Polishing Workers, Hand",-1.146524,raw_crosswalk_single_match,,notebook_raw_soc_bridge,6080.0,4.6619753494986303e-05,True
+29-1081,Podiatrists,29-1081,Podiatrists,0.6279185,raw_crosswalk_single_match,,notebook_raw_soc_bridge,6070.0,4.6543076268843236e-05,True
+29-2092,Hearing Aid Specialists,29-2092,Hearing Aid Specialists,0.5648953,raw_crosswalk_single_match,,notebook_raw_soc_bridge,6060.0,4.646639904270017e-05,True
+33-9011,Animal Control Workers,33-9011,Animal Control Workers,-0.5946321,raw_crosswalk_single_match,,notebook_raw_soc_bridge,6020.0,4.615969013812789e-05,True
+53-6099,"Transportation Workers, All Other",53-6099,"Transportation Workers, All Other (#)",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,5940.0,4.554627232898333e-05,False
+19-2021,Atmospheric and Space Scientists,19-2021,Atmospheric and Space Scientists,1.373917,raw_crosswalk_single_match,,notebook_raw_soc_bridge,5850.0,4.485617729369571e-05,True
+47-2041,Carpet Installers,47-2041,Carpet Installers,-1.564577,raw_crosswalk_single_match,,notebook_raw_soc_bridge,5850.0,4.485617729369571e-05,True
+47-5012,"Rotary Drill Operators, Oil and Gas",47-5012,"Rotary Drill Operators, Oil and Gas",-0.7737326,raw_crosswalk_single_match,,notebook_raw_soc_bridge,5700.0,4.370601890154966e-05,True
+49-3052,Motorcycle Mechanics,49-3052,Motorcycle Mechanics,-0.763721,raw_crosswalk_single_match,,notebook_raw_soc_bridge,5690.0,4.3629341675406594e-05,True
+27-4015,Lighting Technicians,,,,,,,5610.0,4.301592386626204e-05,False
+37-2019,"Building Cleaning Workers, All Other",37-2019,"Building Cleaning Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,5580.0,4.278589218783283e-05,False
+19-2032,Materials Scientists,19-2032,Materials Scientists,1.032757,raw_crosswalk_single_match,,notebook_raw_soc_bridge,5570.0,4.270921496168976e-05,True
+53-5031,Ship Engineers,53-5031,Ship Engineers,-0.5264951,raw_crosswalk_single_match,,notebook_raw_soc_bridge,5520.0,4.232582883097441e-05,True
+51-2021,"Coil Winders, Tapers, and Finishers",51-2021,"Coil Winders, Tapers, and Finishers",-0.8289722,raw_crosswalk_single_match,,notebook_raw_soc_bridge,5410.0,4.1482379343400645e-05,True
+53-3011,"Ambulance Drivers and Attendants, Except Emergency Medical Technicians",53-3011,"Ambulance Drivers and Attendants, Except Emergency Medical Technicians",-0.8298703,raw_crosswalk_single_match,,notebook_raw_soc_bridge,5400.0,4.140570211725758e-05,True
+25-1062,"Area, Ethnic, and Cultural Studies Teachers, Postsecondary",25-1062,"Area, Ethnic, and Cultural Studies Teachers, Postsecondary",1.308699,raw_crosswalk_single_match,,notebook_raw_soc_bridge,5390.0,4.13290248911145e-05,True
+49-2021,"Radio, Cellular, and Tower Equipment Installers and Repairers",49-2021,"Radio, Cellular, and Tower Equipment Installers and Repairers",-0.6335382,raw_crosswalk_single_match,,notebook_raw_soc_bridge,5390.0,4.13290248911145e-05,True
+25-4011,Archivists,25-4011,Archivists,0.6765602,raw_crosswalk_single_match,,notebook_raw_soc_bridge,5310.0,4.0715607081969946e-05,True
+25-1051,"Atmospheric, Earth, Marine, and Space Sciences Teachers, Postsecondary",25-1051,"Atmospheric, Earth, Marine, and Space Sciences Teachers, Postsecondary",1.306156,raw_crosswalk_single_match,,notebook_raw_soc_bridge,5260.0,4.03322209512546e-05,True
+27-1013,"Fine Artists, Including Painters, Sculptors, and Illustrators",27-1013,"Fine Artists, Including Painters, Sculptors, and Illustrators",-0.5690498,raw_crosswalk_single_match,,notebook_raw_soc_bridge,5250.0,4.025554372511153e-05,True
+29-1242,"Orthopedic Surgeons, Except Pediatric",29-1242,"Orthopedic Surgeons, Except Pediatric",-0.0504534,raw_crosswalk_single_match,,notebook_raw_soc_bridge,5220.0,4.002551204668232e-05,True
+51-9191,Adhesive Bonding Machine Operators and Tenders,51-9191,Adhesive Bonding Machine Operators and Tenders,-1.311418,raw_crosswalk_single_match,,notebook_raw_soc_bridge,5170.0,3.9642125915966975e-05,True
+53-4041,Subway and Streetcar Operators,53-4041,Subway and Streetcar Operators,-0.6155429,raw_crosswalk_single_match,,notebook_raw_soc_bridge,5130.0,3.9335417011394697e-05,True
+19-4012,Agricultural Technicians,19-4011,Agricultural and Food Science Technicians (#),,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,5070.0,3.8875353654536276e-05,False
+13-1032,"Insurance Appraisers, Auto Damage",13-1032,"Insurance Appraisers, Auto Damage",0.6634955,raw_crosswalk_single_match,,notebook_raw_soc_bridge,5020.0,3.849196752382093e-05,True
+19-3091,Anthropologists and Archeologists,19-3091,Anthropologists and Archeologists,0.6965665,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4930.0,3.7801872488533305e-05,True
+51-4035,"Milling and Planing Machine Setters, Operators, and Tenders, Metal and Plastic",51-4035,"Milling and Planing Machine Setters, Operators, and Tenders, Metal and Plastic",-0.8703219,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4900.0,3.7571840810104094e-05,True
+33-3041,Parking Enforcement Workers,33-3041,Parking Enforcement Workers,-0.6239931,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4890.0,3.7495163583961026e-05,True
+39-3092,Costume Attendants,39-3092,Costume Attendants,-0.4533608,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4860.0,3.7265131905531816e-05,True
+51-6062,"Textile Cutting Machine Setters, Operators, and Tenders",51-6062,"Textile Cutting Machine Setters, Operators, and Tenders",-1.022949,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4850.0,3.718845467938875e-05,True
+51-6091,"Extruding and Forming Machine Setters, Operators, and Tenders, Synthetic and Glass Fibers",51-6091,"Extruding and Forming Machine Setters, Operators, and Tenders, Synthetic and Glass Fibers",-0.8596925,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4800.0,3.68050685486734e-05,True
+29-1222,"Physicians, Pathologists",29-1222,"Physicians, Pathologists",0.7086123,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4780.0,3.665171409638726e-05,True
+27-2031,Dancers,27-2031,Dancers,-2.669758,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4770.0,3.657503687024419e-05,True
+29-2091,Orthotists and Prosthetists,29-2091,Orthotists and Prosthetists,0.066577,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4690.0,3.5961619061099634e-05,True
+29-1128,Exercise Physiologists,29-1128,Exercise Physiologists,-0.0331901,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4570.0,3.50414923473828e-05,True
+53-6041,Traffic Technicians,53-6041,Traffic Technicians,0.3995872,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4570.0,3.50414923473828e-05,True
+33-9031,Gambling Surveillance Officers and Gambling Investigators,33-9031,Gambling Surveillance Officers and Gambling Investigators,0.7283933,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4460.0,3.419804285980903e-05,True
+11-9131,Postmasters and Mail Superintendents,11-9131,Postmasters and Mail Superintendents,0.8233757,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4390.0,3.366130227680755e-05,True
+49-3043,Rail Car Repairers,49-3043,Rail Car Repairers,-1.448102,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4350.0,3.335459337223527e-05,True
+53-4031,Railroad Conductors and Yardmasters,53-4031,Railroad Conductors and Yardmasters,-0.4662731,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4350.0,3.335459337223527e-05,True
+51-4071,Foundry Mold and Coremakers,51-4071,Foundry Mold and Coremakers,-1.740349,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4280.0,3.281785278923378e-05,True
+53-7121,"Tank Car, Truck, and Ship Loaders",53-7121,"Tank Car, Truck, and Ship Loaders",-1.38776,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4280.0,3.281785278923378e-05,True
+45-4022,Logging Equipment Operators,45-4022,Logging Equipment Operators,-1.003702,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4270.0,3.2741175563090714e-05,True
+19-3094,Political Scientists,19-3094,Political Scientists,1.418863,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4260.0,3.266449833694764e-05,True
+39-5093,Shampooers,39-5093,Shampooers,-0.905371,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4210.0,3.228111220623229e-05,True
+53-7072,"Pump Operators, Except Wellhead Pumpers",53-7072,"Pump Operators, Except Wellhead Pumpers",-0.8422927,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4200.0,3.2204434980089225e-05,True
+47-4061,Rail-Track Laying and Maintenance Equipment Operators,47-4061,Rail-Track Laying and Maintenance Equipment Operators,-1.39906,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4130.0,3.1667694397087736e-05,True
+49-9069,"Precision Instrument and Equipment Repairers, All Other",49-9069,"Precision Instrument and Equipment Repairers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,4120.0,3.159101717094467e-05,False
+53-3054,Taxi Drivers,53-3041,Taxi Drivers and Chauffeurs (#),,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,4080.0,3.128430826637239e-05,False
+19-3022,Survey Researchers,19-3022,Survey Researchers,1.42653,raw_crosswalk_single_match,,notebook_raw_soc_bridge,4010.0,3.07475676833709e-05,True
+29-1213,Dermatologists,29-1213,Dermatologists,0.7086123,raw_crosswalk_single_match,,notebook_raw_soc_bridge,3980.0,3.0517536004941694e-05,True
+51-9194,Etchers and Engravers,51-9194,Etchers and Engravers,-0.6395226,raw_crosswalk_single_match,,notebook_raw_soc_bridge,3970.0,3.0440858778798623e-05,True
+27-1019,"Artists and Related Workers, All Other",27-1019,"Artists and Related Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,3940.0,3.0210827100369416e-05,False
+29-1161,Nurse Midwives,29-1161,Nurse Midwives,0.1966265,raw_crosswalk_single_match,,notebook_raw_soc_bridge,3920.0,3.0057472648083277e-05,True
+47-2011,Boilermakers,47-2011,Boilermakers,-1.097532,raw_crosswalk_single_match,,notebook_raw_soc_bridge,3900.0,2.9904118195797137e-05,True
+51-8012,Power Distributors and Dispatchers,51-8012,Power Distributors and Dispatchers,0.5012214,raw_crosswalk_single_match,,notebook_raw_soc_bridge,3820.0,2.929070038665258e-05,True
+39-3099,"Entertainment Attendants and Related Workers, All Other",39-3099,"Entertainment Attendants and Related Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,3680.0,2.8217219220649606e-05,False
+19-1099,"Life Scientists, All Other",19-1099,"Life Scientists, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,3660.0,2.8063864768363467e-05,False
+25-1031,"Architecture Teachers, Postsecondary",25-1031,"Architecture Teachers, Postsecondary",1.222022,raw_crosswalk_single_match,,notebook_raw_soc_bridge,3650.0,2.79871875422204e-05,True
+47-5011,"Derrick Operators, Oil and Gas",47-5011,"Derrick Operators, Oil and Gas",-1.415002,raw_crosswalk_single_match,,notebook_raw_soc_bridge,3600.0,2.760380141150505e-05,True
+49-2096,"Electronic Equipment Installers and Repairers, Motor Vehicles",49-2096,"Electronic Equipment Installers and Repairers, Motor Vehicles",-0.7915968,raw_crosswalk_single_match,,notebook_raw_soc_bridge,3490.0,2.6760351923931285e-05,True
+27-2091,"Disc Jockeys, Except Radio",,,,,,,3420.0,2.6223611340929797e-05,False
+29-1291,Acupuncturists,29-1291,Acupuncturists,0.7109566,raw_crosswalk_single_match,,notebook_raw_soc_bridge,3380.0,2.5916902436357518e-05,True
+51-4022,"Forging Machine Setters, Operators, and Tenders, Metal and Plastic",51-4022,"Forging Machine Setters, Operators, and Tenders, Metal and Plastic",-0.8046677,raw_crosswalk_single_match,,notebook_raw_soc_bridge,3350.0,2.568687075792831e-05,True
+39-3012,Gambling and Sports Book Writers and Runners,39-3012,Gambling and Sports Book Writers and Runners,0.4652752,raw_crosswalk_single_match,,notebook_raw_soc_bridge,3340.0,2.561019353178524e-05,True
+51-9031,"Cutters and Trimmers, Hand",51-9031,"Cutters and Trimmers, Hand",-0.9479839,raw_crosswalk_single_match,,notebook_raw_soc_bridge,3320.0,2.54568390794991e-05,True
+11-9179,"Personal Service Managers, All Other",11-9199,"Managers, All Other (#)",,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,3300.0,2.530348462721296e-05,False
+19-1032,Foresters,19-1032,Foresters,-0.184381,raw_crosswalk_single_match,,notebook_raw_soc_bridge,3270.0,2.5073452948783754e-05,True
+25-9021,Farm and Home Management Educators,25-9021,Farm and Home Management Educators,0.8604031,raw_crosswalk_single_match,,notebook_raw_soc_bridge,3120.0,2.392329455663771e-05,True
+47-3014,"Helpers--Painters, Paperhangers, Plasterers, and Stucco Masons",47-3014,"Helpers--Painters, Paperhangers, Plasterers, and Stucco Masons",-2.04484,raw_crosswalk_single_match,,notebook_raw_soc_bridge,3010.0,2.3079845069063945e-05,True
+23-1022,"Arbitrators, Mediators, and Conciliators",23-1022,"Arbitrators, Mediators, and Conciliators",1.431593,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2960.0,2.2696458938348595e-05,True
+47-2022,Stonemasons,47-2022,Stonemasons,-1.714759,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2940.0,2.2543104486062456e-05,True
+51-9123,"Painting, Coating, and Decorating Workers",51-9123,"Painting, Coating, and Decorating Workers",-0.9705587,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2910.0,2.231307280763325e-05,True
+25-1041,"Agricultural Sciences Teachers, Postsecondary",25-1041,"Agricultural Sciences Teachers, Postsecondary",0.7546685,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2850.0,2.185300945077483e-05,True
+19-2043,Hydrologists,19-2043,Hydrologists,0.6405071,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2770.0,2.1239591641630274e-05,True
+51-4192,"Layout Workers, Metal and Plastic",51-4192,"Layout Workers, Metal and Plastic",-0.7221353,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2770.0,2.1239591641630274e-05,True
+11-9071,Gambling Managers,11-9071,Gambling Managers,0.8299207,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2670.0,2.0472819380199578e-05,True
+29-1241,"Ophthalmologists, Except Pediatric",29-1241,"Ophthalmologists, Except Pediatric",0.7086123,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2630.0,2.01661104756273e-05,True
+47-5041,Continuous Mining Machine Operators,47-5041,Continuous Mining Machine Operators,-1.165492,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2620.0,2.0089433249484232e-05,True
+51-6061,Textile Bleaching and Dyeing Machine Operators and Tenders,51-6061,Textile Bleaching and Dyeing Machine Operators and Tenders,-0.8609312,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2580.0,1.9782724344911954e-05,True
+25-1053,"Environmental Science Teachers, Postsecondary",25-1053,"Environmental Science Teachers, Postsecondary",1.347519,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2480.0,1.9015952083481257e-05,True
+29-1217,Neurologists,29-1217,Neurologists,0.7086123,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2470.0,1.8939274857338186e-05,True
+51-9197,Tire Builders,51-9197,Tire Builders,-1.610915,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2460.0,1.8862597631195118e-05,True
+11-9013,"Farmers, Ranchers, and Other Agricultural Managers",11-9013,"Farmers, Ranchers, and Other Agricultural Managers",-0.1443684,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2440.0,1.870924317890898e-05,True
+43-9081,Proofreaders and Copy Markers,43-9081,Proofreaders and Copy Markers,1.288375,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2360.0,1.8095825369764422e-05,True
+49-9063,Musical Instrument Repairers and Tuners,49-9063,Musical Instrument Repairers and Tuners,-0.5306271,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2360.0,1.8095825369764422e-05,True
+19-4043,"Geological Technicians, Except Hydrologic Technicians",19-4043,"Geological Technicians, Except Hydrologic Technicians",0.0832659,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2340.0,1.7942470917478283e-05,True
+49-2093,"Electrical and Electronics Installers and Repairers, Transportation Equipment",49-2093,"Electrical and Electronics Installers and Repairers, Transportation Equipment",-0.8303875,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2280.0,1.7482407560619865e-05,True
+51-6041,Shoe and Leather Workers and Repairers,51-6041,Shoe and Leather Workers and Repairers,-0.990912,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2220.0,1.7022344203761448e-05,True
+17-2121,Marine Engineers and Naval Architects,17-2121,Marine Engineers and Naval Architects,0.5472173,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2190.0,1.6792312525332237e-05,True
+17-2151,"Mining and Geological Engineers, Including Mining Safety Engineers",17-2151,"Mining and Geological Engineers, Including Mining Safety Engineers",1.34695,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2180.0,1.671563529918917e-05,True
+25-1061,"Anthropology and Archeology Teachers, Postsecondary",25-1061,"Anthropology and Archeology Teachers, Postsecondary",1.321694,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2080.0,1.5948863037758473e-05,True
+49-9081,Wind Turbine Service Technicians,49-9081,Wind Turbine Service Technicians,-0.9709935,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2050.0,1.5718831359329263e-05,True
+45-4011,Forest and Conservation Workers,45-4011,Forest and Conservation Workers,-1.064205,raw_crosswalk_single_match,,notebook_raw_soc_bridge,2000.0,1.5335445228613917e-05,True
+51-4032,"Drilling and Boring Machine Tool Setters, Operators, and Tenders, Metal and Plastic",51-4032,"Drilling and Boring Machine Tool Setters, Operators, and Tenders, Metal and Plastic",-0.7598132,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1960.0,1.5028736324041638e-05,True
+43-9111,Statistical Assistants,43-9111,Statistical Assistants,1.389965,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1800.0,1.3801900705752525e-05,True
+51-9151,Photographic Process Workers and Processing Machine Operators,51-9151,Photographic Process Workers and Processing Machine Operators,-0.3615806,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1800.0,1.3801900705752525e-05,True
+29-9092,Genetic Counselors,29-9092,Genetic Counselors,1.527667,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1760.0,1.3495191801180246e-05,True
+51-6092,Fabric and Apparel Patternmakers,51-6092,Fabric and Apparel Patternmakers,-0.0831096,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1750.0,1.3418514575037177e-05,True
+47-3016,Helpers--Roofers,47-3016,Helpers--Roofers,-1.89822,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1660.0,1.272841953974955e-05,True
+43-4021,Correspondence Clerks,43-4021,Correspondence Clerks,1.149758,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1640.0,1.2575065087463411e-05,True
+15-2099,"Mathematical Science Occupations, All Other",15-2099,"Mathematical Science Occupations, All Other (#)",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,1630.0,1.2498387861320341e-05,False
+51-4194,"Tool Grinders, Filers, and Sharpeners",51-4194,"Tool Grinders, Filers, and Sharpeners",-0.8809238,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1530.0,1.1731615599889645e-05,True
+31-2012,Occupational Therapy Aides,31-2012,Occupational Therapy Aides,-0.7734322,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1490.0,1.1424906695317367e-05,True
+47-5099,"Extraction Workers, All Other",47-5099,"Extraction Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,1450.0,1.1118197790745089e-05,False
+29-1029,"Dentists, All Other Specialists",29-1029,"Dentists, All Other Specialists",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,1400.0,1.0734811660029742e-05,False
+43-9031,Desktop Publishers,43-9031,Desktop Publishers,0.3437743,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1400.0,1.0734811660029742e-05,True
+19-3093,Historians,19-3093,Historians,1.098921,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1330.0,1.0198071077028255e-05,True
+29-2036,Medical Dosimetrists,29-2036,Medical Dosimetrists,-0.283854,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1330.0,1.0198071077028255e-05,True
+39-4011,Embalmers,39-4011,Embalmers,-0.7311451,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1330.0,1.0198071077028255e-05,True
+39-5091,"Makeup Artists, Theatrical and Performance",39-5091,"Makeup Artists, Theatrical and Performance",-0.4596138,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1330.0,1.0198071077028255e-05,True
+51-4052,"Pourers and Casters, Metal",51-4052,"Pourers and Casters, Metal",-1.00914,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1320.0,1.0121393850885186e-05,True
+25-1082,"Library Science Teachers, Postsecondary",25-1082,"Library Science Teachers, Postsecondary",1.386292,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1290.0,9.891362172455977e-06,True
+47-5081,Helpers--Extraction Workers,47-5081,Helpers--Extraction Workers,-1.543154,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1290.0,9.891362172455977e-06,True
+49-9097,Signal and Track Switch Repairers,49-9097,Signal and Track Switch Repairers,-0.858221,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1250.0,9.584653267883698e-06,True
+19-4051,Nuclear Technicians,19-4051,Nuclear Technicians,0.1696743,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1180.0,9.047912684882211e-06,True
+51-7099,"Woodworkers, All Other",51-7099,"Woodworkers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,1120.0,8.587849328023794e-06,False
+51-9193,Cooling and Freezing Equipment Operators and Tenders,51-9193,Cooling and Freezing Equipment Operators and Tenders,-0.9604952,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1110.0,8.511172101880724e-06,True
+47-2072,Pile Driver Operators,47-2072,Pile Driver Operators,-1.220009,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1080.0,8.281140423451515e-06,True
+51-4061,"Model Makers, Metal and Plastic",51-4061,"Model Makers, Metal and Plastic",-0.7421977,raw_crosswalk_single_match,,notebook_raw_soc_bridge,1070.0,8.204463197308446e-06,True
+45-2099,"Agricultural Workers, All Other",45-2099,"Agricultural Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,1040.0,7.974431518879237e-06,False
+47-5032,"Explosives Workers, Ordnance Handling Experts, and Blasters",47-5031,"Explosives Workers, Ordnance Handling Experts, and Blasters",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,990.0,7.591045388163889e-06,False
+53-4022,"Railroad Brake, Signal, and Switch Operators and Locomotive Firers",53-4021,"Railroad Brake, Signal, and Switch Operators",,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,980.0,7.514368162020819e-06,False
+27-2032,Choreographers,27-2032,Choreographers,-1.575769,raw_crosswalk_single_match,,notebook_raw_soc_bridge,960.0,7.36101370973468e-06,True
+43-2021,Telephone Operators,43-2021,Telephone Operators,1.019712,raw_crosswalk_single_match,,notebook_raw_soc_bridge,950.0,7.28433648359161e-06,True
+25-1064,"Geography Teachers, Postsecondary",25-1064,"Geography Teachers, Postsecondary",1.318899,raw_crosswalk_single_match,,notebook_raw_soc_bridge,900.0,6.900950352876262e-06,True
+19-3041,Sociologists,19-3041,Sociologists,1.411125,raw_crosswalk_single_match,,notebook_raw_soc_bridge,800.0,6.134178091445566e-06,True
+53-7041,Hoist and Winch Operators,53-7041,Hoist and Winch Operators,-0.9781997,raw_crosswalk_single_match,,notebook_raw_soc_bridge,780.0,5.980823639159427e-06,True
+53-5022,Motorboat Operators,53-5022,Motorboat Operators,-0.8871186,raw_crosswalk_single_match,,notebook_raw_soc_bridge,750.0,5.750791960730218e-06,True
+27-1012,Craft Artists,27-1012,Craft Artists,-0.9295284,raw_crosswalk_single_match,,notebook_raw_soc_bridge,740.0,5.674114734587149e-06,True
+19-1011,Animal Scientists,19-1011,Animal Scientists,1.041358,raw_crosswalk_single_match,,notebook_raw_soc_bridge,730.0,5.597437508444079e-06,True
+15-2021,Mathematicians,15-2021,Mathematicians,1.472319,raw_crosswalk_single_match,,notebook_raw_soc_bridge,700.0,5.367405830014871e-06,True
+19-2011,Astronomers,19-2011,Astronomers,1.373737,raw_crosswalk_single_match,,notebook_raw_soc_bridge,700.0,5.367405830014871e-06,True
+53-6011,Bridge and Lock Tenders,53-6011,Bridge and Lock Tenders,-0.6322159,raw_crosswalk_single_match,,notebook_raw_soc_bridge,680.0,5.214051377728732e-06,True
+33-2022,Forest Fire Inspectors and Prevention Specialists,33-2022,Forest Fire Inspectors and Prevention Specialists,-0.2144127,raw_crosswalk_single_match,,notebook_raw_soc_bridge,650.0,4.984019699299523e-06,True
+49-9092,Commercial Divers,49-9092,Commercial Divers,-1.102728,raw_crosswalk_single_match,,notebook_raw_soc_bridge,650.0,4.984019699299523e-06,True
+33-3031,Fish and Game Wardens,33-3031,Fish and Game Wardens,-0.4585168,raw_crosswalk_single_match,,notebook_raw_soc_bridge,630.0,4.830665247013384e-06,True
+41-9091,"Door-to-Door Sales Workers, News and Street Vendors, and Related Workers",41-9091,"Door-to-Door Sales Workers, News and Street Vendors, and Related Workers",1.107101,raw_crosswalk_single_match,,notebook_raw_soc_bridge,580.0,4.447279116298036e-06,True
+41-9012,Models,41-9012,Models,-1.122021,raw_crosswalk_single_match,,notebook_raw_soc_bridge,570.0,4.370601890154966e-06,True
+19-4044,Hydrologic Technicians,19-4041,Geological and Petroleum Technicians (#),,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,560.0,4.293924664011897e-06,False
+47-5044,"Loading and Moving Machine Operators, Underground Mining",47-5044,"Loading and Moving Machine Operators, Underground Mining (##)",-1.262688,raw_crosswalk_deduplicated,,notebook_raw_soc_bridge,530.0,4.063892985582688e-06,True
+25-1192,"Family and Consumer Sciences Teachers, Postsecondary",25-1192,"Family and Consumer Sciences Teachers, Postsecondary",1.211652,raw_crosswalk_single_match,,notebook_raw_soc_bridge,510.0,3.910538533296549e-06,True
+19-3092,Geographers,19-3092,Geographers,1.436298,raw_crosswalk_single_match,,notebook_raw_soc_bridge,430.0,3.297120724151992e-06,True
+43-2099,"Communications Equipment Operators, All Other",43-2099,"Communications Equipment Operators, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,400.0,3.067089045722783e-06,False
+53-4011,Locomotive Engineers,53-4011,Locomotive Engineers,-0.4977403,raw_crosswalk_single_match,,notebook_raw_soc_bridge,390.0,2.9904118195797136e-06,True
+51-4062,"Patternmakers, Metal and Plastic",51-4062,"Patternmakers, Metal and Plastic",-0.6131331,raw_crosswalk_single_match,,notebook_raw_soc_bridge,370.0,2.8370573672935744e-06,True
+53-4099,"Rail Transportation Workers, All Other",53-4099,"Rail Transportation Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,340.0,2.607025688864366e-06,False
+39-3021,Motion Picture Projectionists,39-3021,Motion Picture Projectionists,-0.3786598,raw_crosswalk_single_match,,notebook_raw_soc_bridge,330.0,2.5303484627212964e-06,True
+29-1023,Orthodontists,29-1023,Orthodontists,0.1616631,raw_crosswalk_single_match,,notebook_raw_soc_bridge,310.0,2.376994010435157e-06,True
+47-5043,"Roof Bolters, Mining",47-5061,"Roof Bolters, Mining",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,310.0,2.376994010435157e-06,False
+17-2021,Agricultural Engineers,17-2021,Agricultural Engineers,0.9409636,raw_crosswalk_single_match,,notebook_raw_soc_bridge,290.0,2.223639558149018e-06,True
+39-4012,Crematory Operators,,,,,,,290.0,2.223639558149018e-06,False
+45-4029,"Logging Workers, All Other",45-4029,"Logging Workers, All Other",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,280.0,2.1469623320059484e-06,False
+47-2142,Paperhangers,47-2142,Paperhangers,-1.72753,raw_crosswalk_single_match,,notebook_raw_soc_bridge,250.0,1.9169306535767396e-06,True
+29-1022,Oral and Maxillofacial Surgeons,29-1022,Oral and Maxillofacial Surgeons,-0.2389668,raw_crosswalk_single_match,,notebook_raw_soc_bridge,240.0,1.84025342743367e-06,True
+51-6042,Shoe Machine Operators and Tenders,51-6042,Shoe Machine Operators and Tenders,-1.029855,raw_crosswalk_single_match,,notebook_raw_soc_bridge,240.0,1.84025342743367e-06,True
+53-7071,Gas Compressor and Gas Pumping Station Operators,53-7071,Gas Compressor and Gas Pumping Station Operators,-0.6909992,raw_crosswalk_single_match,,notebook_raw_soc_bridge,190.0,1.456867296718322e-06,True
+47-5051,"Rock Splitters, Quarry",47-5051,"Rock Splitters, Quarry",-1.763494,raw_crosswalk_single_match,,notebook_raw_soc_bridge,170.0,1.303512844432183e-06,True
+35-2013,"Cooks, Private Household",35-2013,"Cooks, Private Household",-0.7867444,raw_crosswalk_single_match,,notebook_raw_soc_bridge,150.0,1.1501583921460438e-06,True
+51-6051,"Sewers, Hand",51-6051,"Sewers, Hand",-0.5987218,raw_crosswalk_single_match,,notebook_raw_soc_bridge,140.0,1.0734811660029742e-06,True
+29-1243,Pediatric Surgeons,29-1067,Surgeons (#),,accepted_suggested_join,Same SOC major group with moderate title alignment.,recommended_felten_soc_overrides_initial,110.0,8.434494875737654e-07,False
+49-9045,"Refractory Materials Repairers, Except Brickmasons",49-9045,"Refractory Materials Repairers, Except Brickmasons",-1.237463,raw_crosswalk_single_match,,notebook_raw_soc_bridge,100.0,7.667722614306958e-07,True
+49-9061,Camera and Photographic Equipment Repairers,49-9061,Camera and Photographic Equipment Repairers,0.0546422,raw_crosswalk_single_match,,notebook_raw_soc_bridge,100.0,7.667722614306958e-07,True
+33-3052,Transit and Railroad Police,33-3052,Transit and Railroad Police,-0.8205515,raw_crosswalk_single_match,,notebook_raw_soc_bridge,80.0,6.134178091445567e-07,True
+45-4021,Fallers,45-4021,Fallers,-1.795407,raw_crosswalk_single_match,,notebook_raw_soc_bridge,70.0,5.367405830014871e-07,True
+25-1043,"Forestry and Conservation Science Teachers, Postsecondary",25-1043,"Forestry and Conservation Science Teachers, Postsecondary",1.260278,raw_crosswalk_single_match,,notebook_raw_soc_bridge,60.0,4.600633568584175e-07,True
+47-5049,"Underground Mining Machine Operators, All Other",47-5049,"Mining Machine Operators, All Other (#)",,accepted_suggested_join,Same SOC major group with strong title alignment.,recommended_felten_soc_overrides_initial,60.0,4.600633568584175e-07,False
+53-4013,"Rail Yard Engineers, Dinkey Operators, and Hostlers",53-4013,"Rail Yard Engineers, Dinkey Operators, and Hostlers",-0.8320907,raw_crosswalk_single_match,,notebook_raw_soc_bridge,60.0,4.600633568584175e-07,True
+45-2021,Animal Breeders,45-2021,Animal Breeders,-1.044292,raw_crosswalk_single_match,,notebook_raw_soc_bridge,50.0,3.833861307153479e-07,True
+49-9095,Manufactured Building and Mobile Home Installers,49-9095,Manufactured Building and Mobile Home Installers,-1.414062,raw_crosswalk_single_match,,notebook_raw_soc_bridge,50.0,3.833861307153479e-07,True
+49-9064,Watch and Clock Repairers,49-9064,Watch and Clock Repairers,-0.2123996,raw_crosswalk_single_match,,notebook_raw_soc_bridge,40.0,3.0670890457227835e-07,True
+53-7031,Dredge Operators,53-7031,Dredge Operators,-1.016648,raw_crosswalk_single_match,,notebook_raw_soc_bridge,40.0,3.0670890457227835e-07,True
+45-4023,Log Graders and Scalers,45-4023,Log Graders and Scalers,-0.4768305,raw_crosswalk_single_match,,notebook_raw_soc_bridge,30.0,2.3003167842920875e-07,True
+47-2043,Floor Sanders and Finishers,47-2043,Floor Sanders and Finishers,-1.748722,raw_crosswalk_single_match,,notebook_raw_soc_bridge,30.0,2.3003167842920875e-07,True
+47-2053,Terrazzo Workers and Finishers,47-2053,Terrazzo Workers and Finishers,-1.776065,raw_crosswalk_single_match,,notebook_raw_soc_bridge,,,True
+51-8011,Nuclear Power Reactor Operators,51-8011,Nuclear Power Reactor Operators,0.7705302,raw_crosswalk_single_match,,notebook_raw_soc_bridge,,,True
