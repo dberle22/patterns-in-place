@@ -19,6 +19,7 @@ from zipfile import ZipFile
 
 import duckdb
 import pandas as pd
+from shapely.geometry import shape
 
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -44,6 +45,13 @@ FELTEN_WORKBOOK_URL = "https://github.com/AIOE-Data/AIOE/blob/main/AIOE_DataAppe
 FELTEN_COVERAGE_REVIEW_ROOT = Path(__file__).resolve().parent / "outputs" / "national" / "d6_coverage_review"
 FELTEN_NAICS_FINAL_CROSSWALK_PATH = FELTEN_COVERAGE_REVIEW_ROOT / "felten_naics_crosswalk_final.csv"
 FELTEN_SOC_FINAL_CROSSWALK_PATH = FELTEN_COVERAGE_REVIEW_ROOT / "felten_soc_crosswalk_final.csv"
+RICHMOND_NEIGHBORHOOD_GEOJSON_PATH = (
+    Path(__file__).resolve().parent
+    / "reference_data"
+    / "richmond_neighborhoods"
+    / "richmond_neighborhoods.geojson"
+)
+RICHMOND_CITY_COUNTY_GEOID = "51760"
 
 EMPLOYMENT_SECTORS = [
     ("ag_mining", "Agriculture & Mining"),
@@ -418,6 +426,114 @@ def get_market_context(market_id: str) -> dict[str, str | None]:
     return row.iloc[0].to_dict()
 
 
+@lru_cache(maxsize=None)
+def _load_richmond_neighborhood_shapes() -> list[dict[str, object]]:
+    """Read the official Richmond neighborhood polygons once for overlap labeling."""
+    if not RICHMOND_NEIGHBORHOOD_GEOJSON_PATH.exists():
+        return []
+
+    payload = json.loads(RICHMOND_NEIGHBORHOOD_GEOJSON_PATH.read_text(encoding="utf-8"))
+    shapes: list[dict[str, object]] = []
+    for feature in payload.get("features", []):
+        properties = feature.get("properties", {})
+        geometry = feature.get("geometry")
+        if not geometry:
+            continue
+        shapes.append(
+            {
+                "name": properties.get("Name"),
+                "district": properties.get("District"),
+                "geometry": shape(geometry),
+            }
+        )
+    return shapes
+
+
+def _format_tract_short_name(tract_name: object) -> str:
+    """Shorten Census tract labels for more legible map and table copy."""
+    if tract_name is None or pd.isna(tract_name):
+        return "Tract"
+    return str(tract_name).replace("Census Tract ", "Tract ")
+
+
+def _build_tract_display_name(place_label: object, tract_name: object) -> str:
+    """Combine a readable place anchor with the tract identifier for uniqueness."""
+    tract_label = _format_tract_short_name(tract_name)
+    if place_label is None or pd.isna(place_label) or str(place_label).strip() == "":
+        return str(tract_name) if tract_name is not None else tract_label
+    return f"{str(place_label).strip()} ({tract_label})"
+
+
+def _match_richmond_neighborhood(geometry: dict[str, object]) -> dict[str, object] | None:
+    """Pick the Richmond neighborhood with the largest tract overlap area."""
+    neighborhoods = _load_richmond_neighborhood_shapes()
+    if not neighborhoods or not geometry:
+        return None
+
+    tract_geometry = shape(geometry)
+    tract_area = tract_geometry.area
+    if tract_area <= 0:
+        return None
+
+    best_match: dict[str, object] | None = None
+    for neighborhood in neighborhoods:
+        overlap = tract_geometry.intersection(neighborhood["geometry"])
+        if overlap.is_empty:
+            continue
+        overlap_area = overlap.area
+        if best_match is None or overlap_area > float(best_match["overlap_area"]):
+            best_match = {
+                "name": neighborhood.get("name"),
+                "district": neighborhood.get("district"),
+                "overlap_area": overlap_area,
+                "overlap_share": overlap_area / tract_area,
+            }
+    return best_match
+
+
+def _apply_market_tract_labels(rows: pd.DataFrame, market_id: str) -> pd.DataFrame:
+    """Attach readable tract labels without pretending a governed place crosswalk exists."""
+    if rows.empty:
+        return rows
+
+    enriched = rows.copy()
+    enriched["place_label"] = enriched["county_display_name"].fillna(enriched["tract_name"])
+    enriched["label_basis"] = "county_fallback"
+    enriched["label_basis_note"] = (
+        "No tract-to-place crosswalk is available yet, so this tract is labeled with its county or independent city."
+    )
+    enriched["neighborhood_name"] = None
+    enriched["neighborhood_district"] = None
+    enriched["label_overlap_share"] = None
+
+    if str(market_id) == DEFAULT_MARKET_ID and _load_richmond_neighborhood_shapes():
+        richmond_mask = enriched["county_geoid"] == RICHMOND_CITY_COUNTY_GEOID
+        for idx in enriched.index[richmond_mask]:
+            match = _match_richmond_neighborhood(enriched.at[idx, "geometry"])
+            if match is None:
+                enriched.at[idx, "label_basis"] = "county_fallback_unmatched"
+                enriched.at[idx, "label_basis_note"] = (
+                    "Richmond neighborhood overlap was unavailable for this tract, so the label falls back to Richmond city."
+                )
+                continue
+            enriched.at[idx, "place_label"] = match.get("name") or enriched.at[idx, "place_label"]
+            enriched.at[idx, "neighborhood_name"] = match.get("name")
+            enriched.at[idx, "neighborhood_district"] = match.get("district")
+            enriched.at[idx, "label_overlap_share"] = match.get("overlap_share")
+            enriched.at[idx, "label_basis"] = "richmond_neighborhood_overlap"
+            district = match.get("district") or "Richmond"
+            enriched.at[idx, "label_basis_note"] = (
+                f"Labeled by largest areal overlap with the official Richmond neighborhood polygons within the {district} planning district."
+            )
+
+    enriched["tract_display_name"] = enriched.apply(
+        lambda row: _build_tract_display_name(row.get("place_label"), row.get("tract_name")),
+        axis=1,
+    )
+    enriched["label_overlap_share_pct"] = enriched["label_overlap_share"].apply(_safe_pct)
+    return enriched
+
+
 def _load_xlsx_shared_strings(zip_file: ZipFile) -> list[str]:
     """Read workbook shared strings so we can parse the Felten workbook without extra deps."""
     if "xl/sharedStrings.xml" not in zip_file.namelist():
@@ -768,6 +884,13 @@ def _safe_count(value: float | int | None) -> str:
     return f"{int(round(float(value))):,}"
 
 
+def _safe_currency(value: float | int | None) -> str:
+    """Format dollar values for compact table and metric copy."""
+    if value is None or pd.isna(value):
+        return "—"
+    return f"${float(value):,.0f}"
+
+
 def _safe_miles(value: float | int | None) -> str:
     """Format straight-line distance values for D4 interpretation copy."""
     if value is None or pd.isna(value):
@@ -858,12 +981,19 @@ def _build_tract_map_rows(market_id: str = DEFAULT_MARKET_ID) -> pd.DataFrame:
                 w.jobs_ind_other_services,
                 w.jobs_ind_public_administration,
                 g.county_geoid,
+                cty.county_name,
+                COALESCE(d.display_name, cty.county_name) AS county_display_name,
                 {geometry_sql} AS geometry_json
             FROM patterns_in_place.silver.lehd_lodes_wac w
             INNER JOIN patterns_in_place.geo.tracts_all_us g
                 ON w.geo_id = g.tract_geoid
-            INNER JOIN market_counties c
-                ON g.county_geoid = c.county_geoid
+            INNER JOIN market_counties mc
+                ON g.county_geoid = mc.county_geoid
+            INNER JOIN patterns_in_place.geo.counties cty
+                ON g.county_geoid = cty.county_geoid
+            LEFT JOIN patterns_in_place.gold.dim_geo d
+                ON d.geo_level = 'county'
+               AND d.geo_id = cty.county_geoid
             LEFT JOIN patterns_in_place.gold.population_demographics p
                 ON w.geo_id = p.geo_id
                AND p.geo_level = 'tract'
@@ -916,7 +1046,7 @@ def _build_tract_map_rows(market_id: str = DEFAULT_MARKET_ID) -> pd.DataFrame:
     rows["jobs_per_resident"] = jobs_total_denominator / pop_denominator
     rows["jobs_per_sqmi"] = jobs_total_denominator / area_denominator
     rows["geometry"] = rows["geometry_json"].apply(json.loads)
-    return rows
+    return _apply_market_tract_labels(rows, market_id)
 
 
 def _build_county_gdp_rows(market_id: str = DEFAULT_MARKET_ID) -> pd.DataFrame:
@@ -977,6 +1107,64 @@ def _build_county_gdp_rows(market_id: str = DEFAULT_MARKET_ID) -> pd.DataFrame:
     return rows
 
 
+def _build_county_outline_rows(market_id: str = DEFAULT_MARKET_ID) -> pd.DataFrame:
+    """Return county polygons for map orientation even when tract fill is the main surface."""
+    con = get_connection()
+    try:
+        _load_spatial(con)
+        geometry_sql = _geometry_sql("g.geom", COUNTY_GEOMETRY_SIMPLIFY_TOLERANCE)
+        rows = con.execute(
+            f"""
+            WITH market_counties AS (
+                SELECT DISTINCT county_geoid
+                FROM patterns_in_place.silver.xwalk_cbsa_county
+                WHERE cbsa_code = ?
+            )
+            SELECT
+                g.county_geoid,
+                COALESCE(d.display_name, g.county_name) AS county_name,
+                {geometry_sql} AS geometry_json
+            FROM patterns_in_place.geo.counties g
+            INNER JOIN market_counties mc
+                ON g.county_geoid = mc.county_geoid
+            LEFT JOIN patterns_in_place.gold.dim_geo d
+                ON d.geo_level = 'county'
+               AND d.geo_id = g.county_geoid
+            ORDER BY g.county_geoid
+            """,
+            [str(market_id)],
+        ).fetchdf()
+    finally:
+        con.close()
+
+    if rows.empty:
+        return rows
+
+    rows["geometry"] = rows["geometry_json"].apply(json.loads)
+    return rows
+
+
+def _build_county_outline_features(market_id: str = DEFAULT_MARKET_ID) -> list[dict]:
+    """Build one lightweight county-boundary overlay shared across D2, D3, and D4."""
+    rows = _build_county_outline_rows(market_id)
+    if rows.empty:
+        return []
+
+    features: list[dict] = []
+    for _, row in rows.iterrows():
+        features.append(
+            {
+                "type": "Feature",
+                "geometry": row["geometry"],
+                "properties": {
+                    "county_geoid": row["county_geoid"],
+                    "county_name": row["county_name"],
+                },
+            }
+        )
+    return features
+
+
 def get_d2_tract_map_payload(
     market_id: str = DEFAULT_MARKET_ID,
     mode: str = "top_industry",
@@ -1006,6 +1194,11 @@ def get_d2_tract_map_payload(
             properties = {
                 "tract_geoid": row["tract_geoid"],
                 "tract_name": row["tract_name"],
+                "tract_display_name": row["tract_display_name"],
+                "place_label": row["place_label"],
+                "county_name": row["county_display_name"],
+                "label_basis_note": row["label_basis_note"],
+                "label_overlap_share_pct": row["label_overlap_share_pct"],
                 "jobs_total": _safe_count(row["jobs_total"]),
                 "dominant_sector_label": row["dominant_sector_label"],
                 "selected_jobs": _safe_count(row["dominant_sector_jobs"]),
@@ -1035,6 +1228,11 @@ def get_d2_tract_map_payload(
             properties = {
                 "tract_geoid": row["tract_geoid"],
                 "tract_name": row["tract_name"],
+                "tract_display_name": row["tract_display_name"],
+                "place_label": row["place_label"],
+                "county_name": row["county_display_name"],
+                "label_basis_note": row["label_basis_note"],
+                "label_overlap_share_pct": row["label_overlap_share_pct"],
                 "jobs_total": _safe_count(row["jobs_total"]),
                 "sector_label": sector_label,
                 "selected_jobs": _safe_count(row[jobs_column]),
@@ -1060,6 +1258,7 @@ def get_d2_tract_map_payload(
         "legend": pd.DataFrame(legend_rows),
         "view_state": _build_view_state(features),
         "rows": rows,
+        "county_outline_features": _build_county_outline_features(market_id),
         "title": map_title,
         "subtitle": map_subtitle,
         "year": int(rows["year"].iloc[0]),
@@ -1177,8 +1376,9 @@ def _build_d3_takeaway(
     pull_clause = ", ".join(positive)
     release_clause = f" while {negative[0]} looks more residence-heavy" if negative else ""
     return (
-        f"{summary['geo_name']} has {summary['jobs_to_workers_ratio_label']} jobs per resident worker in "
-        f"{int(summary['year'])}, with {top_job_center['tract_name']} standing out as its largest tract job center. "
+        f"In {int(summary['year'])}, {summary['geo_name']} supports {summary['jobs_total_label']} workplace jobs and "
+        f"{summary['jobs_minus_workers_label']} more workplace jobs than resident workers, with {top_job_center.get('tract_display_name', top_job_center['tract_name'])} "
+        "standing out as its largest tract job center. "
         f"The strongest workplace pull shows up in {pull_clause}{release_clause}."
     )
 
@@ -1455,6 +1655,11 @@ def get_d3_map_payload(
                 "properties": {
                     "tract_geoid": tract_geoid,
                     "tract_name": row["tract_name"],
+                    "tract_display_name": row["tract_display_name"],
+                    "place_label": row["place_label"],
+                    "county_name": row["county_display_name"],
+                    "label_basis_note": row["label_basis_note"],
+                    "label_overlap_share_pct": row["label_overlap_share_pct"],
                     "highlight_status": "Highlighted" if is_highlighted else "Other tract",
                     "dominant_sector_label": row["dominant_sector_label"],
                     "jobs_total": _safe_count(row["jobs_total"]),
@@ -1491,6 +1696,7 @@ def get_d3_map_payload(
         "view_state": _build_view_state(features),
         "rows": rows,
         "highlight_rows": highlighted_rows,
+        "county_outline_features": _build_county_outline_features(market_id),
         "legend": pd.DataFrame(
             [
                 {"Group": "Highlighted job centers", "Color": end_hex},
@@ -1599,18 +1805,20 @@ def _build_population_markers(rows: pd.DataFrame, top_n: int) -> pd.DataFrame:
     """Surface the largest tract population centers as overlay markers."""
     if rows.empty:
         return pd.DataFrame(
-            columns=["tract_geoid", "tract_name", "centroid_lat", "centroid_lon", "pop_total", "label", "metric"]
+            columns=["tract_geoid", "tract_name", "tract_display_name", "centroid_lat", "centroid_lon", "pop_total", "label", "metric"]
         )
 
     markers = rows.dropna(subset=["centroid_lat", "centroid_lon", "pop_total"]).copy()
     if markers.empty:
         return markers
+    if "tract_display_name" not in markers.columns:
+        markers["tract_display_name"] = markers["tract_name"]
 
     markers = markers.sort_values("pop_total", ascending=False, kind="mergesort").head(int(top_n))
-    markers["label"] = markers["tract_name"]
+    markers["label"] = markers["tract_display_name"]
     markers["metric"] = markers["pop_total"].map(_safe_count)
     return markers[
-        ["tract_geoid", "tract_name", "centroid_lat", "centroid_lon", "pop_total", "label", "metric"]
+        ["tract_geoid", "tract_name", "tract_display_name", "centroid_lat", "centroid_lon", "pop_total", "label", "metric"]
     ].reset_index(drop=True)
 
 
@@ -1632,6 +1840,7 @@ def _build_job_center_markers(
             columns=[
                 "tract_geoid",
                 "tract_name",
+                "tract_display_name",
                 "centroid_lat",
                 "centroid_lon",
                 "jobs_total",
@@ -1642,12 +1851,15 @@ def _build_job_center_markers(
         )
 
     rows = rows.dropna(subset=["centroid_lat", "centroid_lon"]).copy()
-    rows["label"] = rows["tract_name"]
+    if "tract_display_name" not in rows.columns:
+        rows["tract_display_name"] = rows["tract_name"]
+    rows["label"] = rows["tract_display_name"]
     rows["metric"] = rows["jobs_total"].map(_safe_count)
     return rows[
         [
             "tract_geoid",
             "tract_name",
+            "tract_display_name",
             "centroid_lat",
             "centroid_lon",
             "jobs_total",
@@ -1689,6 +1901,11 @@ def get_d4_base_map_payload(
         properties = {
             "tract_geoid": row["tract_geoid"],
             "tract_name": row["tract_name"],
+            "tract_display_name": row["tract_display_name"],
+            "place_label": row["place_label"],
+            "county_name": row["county_display_name"],
+            "label_basis_note": row["label_basis_note"],
+            "label_overlap_share_pct": row["label_overlap_share_pct"],
             "dominant_sector_label": row["dominant_sector_label"],
             "jobs_total": _safe_count(jobs_total),
             "label": "Total workplace jobs",
@@ -1713,6 +1930,7 @@ def get_d4_base_map_payload(
         ),
         "view_state": _build_view_state(features),
         "rows": rows,
+        "county_outline_features": _build_county_outline_features(market_id),
         "title": "Total workplace jobs by tract",
         "subtitle": f"Latest LODES tract workplace jobs ({int(rows['year'].iloc[0])})",
         "year": int(rows["year"].iloc[0]),
@@ -1727,49 +1945,83 @@ def _build_d4_feature_catalog(
     overture_pois: pd.DataFrame,
 ) -> dict[str, pd.DataFrame]:
     """Collect the D4 feature groups that feed the first-pass tract enrichment."""
-    empty = pd.DataFrame(columns=["feature_name", "centroid_lat", "centroid_lon", "source_system"])
+    empty = pd.DataFrame(columns=["feature_name", "centroid_lat", "centroid_lon", "source_system", "entity_key"])
     catalogs: dict[str, pd.DataFrame] = {}
 
-    def _with_required_columns(rows: pd.DataFrame) -> pd.DataFrame:
+    def _normalize_feature_name(value: object) -> str:
+        if value is None or pd.isna(value):
+            return ""
+        normalized = "".join(ch.lower() if ch.isalnum() else " " for ch in str(value)).split()
+        return " ".join(normalized)
+
+    def _build_entity_key(row: pd.Series, feature_key: str) -> str:
+        """Count distinct nearby facilities or corridors instead of raw geometry fragments."""
+        normalized_name = _normalize_feature_name(row.get("feature_name"))
+        lat = pd.to_numeric(row.get("centroid_lat"), errors="coerce")
+        lon = pd.to_numeric(row.get("centroid_lon"), errors="coerce")
+        coord_bucket = (
+            f"{round(float(lat), 2):.2f}:{round(float(lon), 2):.2f}"
+            if pd.notna(lat) and pd.notna(lon)
+            else "no-coords"
+        )
+        if feature_key in {"highways", "rail"}:
+            if normalized_name:
+                return f"{feature_key}:corridor:{normalized_name}"
+            return f"{feature_key}:corridor:{coord_bucket}"
+        if feature_key in {"hospitals", "universities", "schools", "groceries"}:
+            return f"{feature_key}:cluster:{coord_bucket}"
+        if normalized_name:
+            return f"{feature_key}:facility:{normalized_name}:{coord_bucket}"
+        return f"{feature_key}:facility:{coord_bucket}"
+
+    def _with_required_columns(rows: pd.DataFrame, feature_key: str) -> pd.DataFrame:
         if rows.empty:
             return empty.copy()
-        return rows.dropna(subset=["centroid_lat", "centroid_lon"]).copy()
+        prepared = rows.dropna(subset=["centroid_lat", "centroid_lon"]).copy()
+        if prepared.empty:
+            return empty.copy()
+        prepared["entity_key"] = prepared.apply(lambda row: _build_entity_key(row, feature_key), axis=1)
+        return prepared
 
-    catalogs["highways"] = _with_required_columns(osm_lines[osm_lines["layer_group"] == "highways"])
-    catalogs["rail"] = _with_required_columns(osm_lines[osm_lines["layer_group"] == "rail"])
+    catalogs["highways"] = _with_required_columns(osm_lines[osm_lines["layer_group"] == "highways"], "highways")
+    catalogs["rail"] = _with_required_columns(osm_lines[osm_lines["layer_group"] == "rail"], "rail")
     catalogs["airports"] = _with_required_columns(
         pd.concat(
             [
                 osm_polygons[osm_polygons["layer_group"] == "airports"],
                 osm_points[osm_points["layer_group"] == "airports"],
-                overture_pois[overture_pois["subcategory"] == "airport"],
             ],
             ignore_index=True,
-        )
+        ),
+        "airports",
     )
     catalogs["ports"] = _with_required_columns(
         pd.concat(
             [
                 osm_polygons[osm_polygons["layer_group"] == "ports"],
                 osm_points[osm_points["layer_group"] == "ports"],
-                overture_pois[overture_pois["subcategory"] == "port"],
             ],
             ignore_index=True,
-        )
+        ),
+        "ports",
     )
     catalogs["warehouses_logistics"] = _with_required_columns(
         pd.concat(
             [
                 osm_polygons[osm_polygons["layer_group"] == "warehouses_logistics"],
                 osm_points[osm_points["layer_group"] == "warehouses_logistics"],
-                overture_pois[overture_pois["subcategory"] == "warehouse_logistics"],
             ],
             ignore_index=True,
-        )
+        ),
+        "warehouses_logistics",
     )
-    catalogs["hospitals"] = _with_required_columns(overture_pois[overture_pois["subcategory"] == "hospital"])
+    catalogs["hospitals"] = _with_required_columns(
+        overture_pois[overture_pois["subcategory"] == "hospital"],
+        "hospitals",
+    )
     catalogs["universities"] = _with_required_columns(
-        overture_pois[overture_pois["subcategory"] == "college_university"]
+        overture_pois[overture_pois["subcategory"] == "college_university"],
+        "universities",
     )
     catalogs["schools"] = _with_required_columns(
         overture_pois[
@@ -1783,9 +2035,13 @@ def _build_d4_feature_catalog(
                     "place_of_learning",
                 ]
             )
-        ]
+        ],
+        "schools",
     )
-    catalogs["groceries"] = _with_required_columns(overture_pois[overture_pois["subcategory"] == "grocery"])
+    catalogs["groceries"] = _with_required_columns(
+        overture_pois[overture_pois["subcategory"] == "grocery"],
+        "groceries",
+    )
     return catalogs
 
 
@@ -1819,8 +2075,9 @@ def _summarize_nearby_features(
             continue
 
         nearby = distances[distances <= float(buffer_miles)]
-        summary[f"{feature_key}_count"] = int(len(nearby))
-        summary[f"{feature_key}_present"] = bool(len(nearby))
+        entity_count = 0 if nearby.empty else int(rows.loc[nearby.index, "entity_key"].nunique())
+        summary[f"{feature_key}_count"] = entity_count
+        summary[f"{feature_key}_present"] = bool(entity_count)
         summary[f"{feature_key}_nearest_miles"] = float(distances.min())
     return summary
 
@@ -1912,6 +2169,10 @@ def get_d4_job_center_interpretation(
         overture_pois=overture_pois,
     )
     enriched_rows = shortlist.copy()
+    if "tract_display_name" not in enriched_rows.columns:
+        enriched_rows["tract_display_name"] = enriched_rows["tract_name"]
+    if "label_overlap_share_pct" not in enriched_rows.columns:
+        enriched_rows["label_overlap_share_pct"] = "—"
     summaries = enriched_rows.apply(
         lambda row: _summarize_nearby_features(
             tract_row=row,
@@ -1934,6 +2195,7 @@ def get_d4_job_center_interpretation(
 
     display_columns = [
         "shortlist_rank",
+        "tract_display_name",
         "tract_name",
         "dominant_sector_label",
         "jobs_total_label",
@@ -1951,6 +2213,7 @@ def get_d4_job_center_interpretation(
     table = enriched_rows[display_columns].rename(
         columns={
             "shortlist_rank": "Rank",
+            "tract_display_name": "Area",
             "tract_name": "Tract",
             "dominant_sector_label": "Dominant sector",
             "jobs_total_label": "Workplace jobs",
@@ -2054,6 +2317,7 @@ def get_d4_overlay_payload(
         "selected_sector": selected_sector,
         "base_surface": base_surface,
         "base_payload": base_payload,
+        "county_outline_features": base_payload.get("county_outline_features", []),
         "view_state": base_payload.get("view_state", _build_view_state([])),
         "osm_lines": osm_lines,
         "osm_polygons": osm_polygons,
@@ -2944,10 +3208,381 @@ def build_d1_specialization_payload_from_market_rows(
     }
 
 
-def get_d1_specialization_payload(market_id: str = DEFAULT_MARKET_ID) -> dict[str, object]:
-    """Return the market-scoped D1 specialization companion payload."""
+def get_d1_specialization_payload(
+    market_id: str = DEFAULT_MARKET_ID,
+    basis: str = "employment_share",
+) -> dict[str, object]:
+    """Return the market-scoped D1 specialization companion payload for one basis."""
+    if basis == "gdp_share":
+        return get_d1_gdp_specialization_payload(market_id)
+
     market_rows = get_market_surface(market_id)
     return build_d1_specialization_payload_from_market_rows(market_rows, market_id=market_id)
+
+
+def _get_latest_comparable_basis_year_pair(basis_rows: pd.DataFrame) -> tuple[int, int] | None:
+    """Return the latest adjacent year pair with usable raw values for a basis."""
+    if basis_rows.empty:
+        return None
+
+    coverage = (
+        basis_rows.groupby("year", as_index=False)
+        .agg(
+            populated_sector_count=("raw_value", lambda values: int(pd.Series(values).notna().sum())),
+            total_raw=("raw_value", "sum"),
+        )
+        .sort_values("year", kind="mergesort")
+    )
+    usable_years = coverage.loc[
+        (coverage["populated_sector_count"] >= MIN_REQUIRED_SECTORS) & coverage["total_raw"].notna(),
+        "year",
+    ].tolist()
+    if len(usable_years) < 2:
+        return None
+    return int(usable_years[-2]), int(usable_years[-1])
+
+
+def get_d1_shift_share_payload(
+    market_id: str = DEFAULT_MARKET_ID,
+    start_year: int | None = None,
+    end_year: int | None = None,
+) -> dict[str, object]:
+    """Build a standard three-part shift-share decomposition for D1 employment."""
+    market_rows = get_market_surface(market_id)
+    if market_rows.empty:
+        return {
+            "rows": pd.DataFrame(),
+            "start_year": None,
+            "end_year": None,
+            "summary": None,
+            "note": "No QCEW market rows were available for shift-share.",
+        }
+
+    employment_key = _employment_basis_key(market_rows)
+    if employment_key != "employment_share":
+        return {
+            "rows": pd.DataFrame(),
+            "start_year": None,
+            "end_year": None,
+            "summary": None,
+            "note": "Shift-share requires QCEW employment coverage and is unavailable when D1 falls back to ACS.",
+        }
+
+    market_basis_rows = _build_basis_rows_for_market_and_basis(market_rows, market_id, "employment_share")
+    benchmark_rows = get_benchmark_basis_frames(market_id)["employment_share"]["us"].copy()
+    if market_basis_rows.empty or benchmark_rows.empty:
+        return {
+            "rows": pd.DataFrame(),
+            "start_year": None,
+            "end_year": None,
+            "summary": None,
+            "note": "Shift-share needs both market and U.S. benchmark employment rows.",
+        }
+
+    year_pair = (
+        (int(start_year), int(end_year))
+        if start_year is not None and end_year is not None
+        else _get_latest_comparable_basis_year_pair(market_basis_rows)
+    )
+    if year_pair is None:
+        return {
+            "rows": pd.DataFrame(),
+            "start_year": None,
+            "end_year": None,
+            "summary": None,
+            "note": "Shift-share needs at least two comparable QCEW employment years.",
+        }
+
+    start_year, end_year = year_pair
+    market_start = market_basis_rows[market_basis_rows["year"] == int(start_year)][["sector_id", "sector_label", "raw_value"]].rename(
+        columns={"raw_value": "market_start"}
+    )
+    market_end = market_basis_rows[market_basis_rows["year"] == int(end_year)][["sector_id", "raw_value"]].rename(
+        columns={"raw_value": "market_end"}
+    )
+    us_start = benchmark_rows[benchmark_rows["year"] == int(start_year)][["sector_id", "raw_value"]].rename(
+        columns={"raw_value": "us_start"}
+    )
+    us_end = benchmark_rows[benchmark_rows["year"] == int(end_year)][["sector_id", "raw_value"]].rename(
+        columns={"raw_value": "us_end"}
+    )
+    rows = market_start.merge(market_end, on="sector_id", how="inner").merge(us_start, on="sector_id", how="inner").merge(
+        us_end, on="sector_id", how="inner"
+    )
+    if rows.empty:
+        return {
+            "rows": pd.DataFrame(),
+            "start_year": start_year,
+            "end_year": end_year,
+            "summary": None,
+            "note": "Shift-share could not align market and U.S. sector rows for the selected period.",
+        }
+
+    market_total_start = pd.to_numeric(rows["market_start"], errors="coerce").sum()
+    market_total_end = pd.to_numeric(rows["market_end"], errors="coerce").sum()
+    us_total_start = pd.to_numeric(rows["us_start"], errors="coerce").sum()
+    us_total_end = pd.to_numeric(rows["us_end"], errors="coerce").sum()
+    national_growth_rate = ((us_total_end / us_total_start) - 1.0) if us_total_start else None
+
+    rows["local_change"] = rows["market_end"] - rows["market_start"]
+    rows["national_industry_growth_rate"] = (rows["us_end"] / rows["us_start"]) - 1.0
+    rows["national_growth_component"] = rows["market_start"] * national_growth_rate if national_growth_rate is not None else pd.NA
+    rows["industry_mix_component"] = rows["market_start"] * (
+        rows["national_industry_growth_rate"] - national_growth_rate
+    )
+    rows["competitive_effect_component"] = (
+        rows["local_change"] - rows["national_growth_component"] - rows["industry_mix_component"]
+    )
+    rows["market_growth_rate"] = (rows["market_end"] / rows["market_start"]) - 1.0
+    rows["component_balance_check"] = (
+        rows["national_growth_component"] + rows["industry_mix_component"] + rows["competitive_effect_component"]
+    )
+    rows["local_change_label"] = rows["local_change"].map(_safe_count)
+    rows["national_growth_component_label"] = rows["national_growth_component"].map(_safe_count)
+    rows["industry_mix_component_label"] = rows["industry_mix_component"].map(_safe_count)
+    rows["competitive_effect_component_label"] = rows["competitive_effect_component"].map(_safe_count)
+    rows = rows.sort_values(
+        ["competitive_effect_component", "sector_label"],
+        ascending=[False, True],
+        kind="mergesort",
+        na_position="last",
+    ).reset_index(drop=True)
+
+    lead = rows.iloc[0]
+    lag = rows.iloc[-1]
+    summary = (
+        f"From {start_year} to {end_year}, {lead['sector_label']} posted the strongest local competitive effect "
+        f"({lead['competitive_effect_component']:+,.0f} jobs beyond national and mix effects), while "
+        f"{lag['sector_label']} lagged most on the same measure ({lag['competitive_effect_component']:+,.0f})."
+    )
+    note = (
+        f"Shift-share uses QCEW private employment and decomposes change from {start_year} to {end_year} into national growth, "
+        "industry mix, and local competitive effect."
+    )
+    return {
+        "rows": rows,
+        "start_year": int(start_year),
+        "end_year": int(end_year),
+        "summary": summary,
+        "note": note,
+        "market_growth_total": float(market_total_end - market_total_start),
+        "national_growth_rate": None if national_growth_rate is None else float(national_growth_rate),
+    }
+
+
+def get_d1_wage_context_payload(
+    market_id: str = DEFAULT_MARKET_ID,
+    year: int | None = None,
+) -> dict[str, object]:
+    """Build a D1 wage companion from BEA earnings totals and QCEW employment."""
+    market_rows = get_market_surface(market_id)
+    if market_rows.empty:
+        return {"rows": pd.DataFrame(), "selected_year": None, "summary": None, "note": "No market rows were available for wage context."}
+
+    wage_ready = market_rows[
+        market_rows["bea_earnings_total"].notna() & market_rows["qcew_private_emp_total"].notna()
+    ].copy()
+    if wage_ready.empty:
+        return {
+            "rows": pd.DataFrame(),
+            "selected_year": None,
+            "summary": None,
+            "note": "Wage context needs overlapping BEA earnings and QCEW employment years.",
+        }
+
+    selected_year = int(year) if year is not None else int(wage_ready["year"].max())
+    selected_rows = wage_ready[wage_ready["year"] == selected_year]
+    if selected_rows.empty:
+        return {"rows": pd.DataFrame(), "selected_year": None, "summary": None, "note": "Requested wage-context year is unavailable."}
+    selected_row = selected_rows.iloc[0]
+
+    sector_rows: list[dict[str, object]] = []
+    for sector_id, sector_label in EMPLOYMENT_SECTORS:
+        employment = pd.to_numeric(
+            selected_row.get(f"{BASIS_CONFIG['employment_share'].raw_prefix}{sector_id}"),
+            errors="coerce",
+        )
+        earnings = pd.to_numeric(selected_row.get(f"bea_earnings_{sector_id}"), errors="coerce")
+        share = pd.to_numeric(selected_row.get(f"{BASIS_CONFIG['employment_share'].share_prefix}{sector_id}"), errors="coerce")
+        earnings_share = pd.to_numeric(selected_row.get(f"pct_bea_earnings_{sector_id}"), errors="coerce")
+        earnings_per_job = earnings / employment if pd.notna(earnings) and pd.notna(employment) and float(employment) > 0 else pd.NA
+        sector_rows.append(
+            {
+                "sector_id": sector_id,
+                "sector_label": sector_label,
+                "employment": employment,
+                "employment_share": share,
+                "earnings_total": earnings,
+                "earnings_share": earnings_share,
+                "earnings_per_job": earnings_per_job,
+            }
+        )
+
+    rows = pd.DataFrame(sector_rows).dropna(subset=["earnings_total", "employment"], how="all")
+    if rows.empty:
+        return {
+            "rows": rows,
+            "selected_year": selected_year,
+            "summary": None,
+            "note": "No sector-level wage rows survived the BEA/QCEW join.",
+        }
+
+    rows["employment_label"] = rows["employment"].map(_safe_count)
+    rows["earnings_total_label"] = rows["earnings_total"].map(_safe_currency)
+    rows["earnings_per_job_label"] = rows["earnings_per_job"].map(_safe_currency)
+    rows = rows.sort_values(
+        ["earnings_per_job", "earnings_total", "sector_label"],
+        ascending=[False, False, True],
+        kind="mergesort",
+        na_position="last",
+    ).reset_index(drop=True)
+    lead = rows.iloc[0]
+    summary = (
+        f"In {selected_year}, {lead['sector_label']} carried the highest estimated earnings per job "
+        f"at {lead['earnings_per_job_label']}, while accounting for { _safe_pct(lead['employment_share']) } of private employment."
+    )
+    note = (
+        f"Wage context uses BEA earnings totals in {selected_year} divided by the same-year QCEW private employment counts. "
+        "This is a broad sector earnings-per-job read, not an occupational wage schedule."
+    )
+    return {"rows": rows, "selected_year": selected_year, "summary": summary, "note": note}
+
+
+def get_d1_gdp_specialization_payload(market_id: str = DEFAULT_MARKET_ID) -> dict[str, object]:
+    """Build the GDP-basis specialization companion by deriving GDP LQ from U.S. shares."""
+    market_basis_rows = get_basis_rows_for_markets([market_id], "gdp_share")
+    benchmark_rows = get_benchmark_basis_frames(market_id)["gdp_share"]["us"].copy()
+    empty_rows = pd.DataFrame(
+        columns=[
+            "sector_id",
+            "sector_label",
+            "lq_value",
+            "latest_employment",
+            "latest_share",
+            "growth_value",
+            "specialization_label",
+            "growth_label",
+            "latest_employment_label",
+        ]
+    )
+    if market_basis_rows.empty or benchmark_rows.empty:
+        return {
+            "mode": "empty",
+            "rows": empty_rows,
+            "latest_lq_year": None,
+            "growth_year_start": None,
+            "growth_year_end": None,
+            "source_label": "BEA real GDP specialization",
+            "summary": None,
+            "note": "GDP specialization needs both market and U.S. GDP-share rows.",
+        }
+
+    selected_year = get_latest_year_for_basis_rows(market_basis_rows)
+    if selected_year is None:
+        return {
+            "mode": "empty",
+            "rows": empty_rows,
+            "latest_lq_year": None,
+            "growth_year_start": None,
+            "growth_year_end": None,
+            "source_label": "BEA real GDP specialization",
+            "summary": None,
+            "note": "No latest-year GDP share rows were available for specialization.",
+        }
+
+    latest_market = market_basis_rows[market_basis_rows["year"] == int(selected_year)][["sector_id", "sector_label", "share_value", "raw_value"]].rename(
+        columns={"share_value": "latest_share", "raw_value": "latest_employment"}
+    )
+    latest_us = benchmark_rows[benchmark_rows["year"] == int(selected_year)][["sector_id", "share_value"]].rename(
+        columns={"share_value": "us_share"}
+    )
+    rows = latest_market.merge(latest_us, on="sector_id", how="inner")
+    rows["lq_value"] = rows["latest_share"] / rows["us_share"]
+
+    growth_pair = _get_latest_comparable_basis_year_pair(market_basis_rows)
+    growth_year_start = None
+    growth_year_end = None
+    rows["growth_value"] = pd.NA
+    if growth_pair is not None:
+        growth_year_start, growth_year_end = growth_pair
+        growth_start = market_basis_rows[market_basis_rows["year"] == int(growth_year_start)][["sector_id", "raw_value"]].rename(
+            columns={"raw_value": "growth_start"}
+        )
+        growth_end = market_basis_rows[market_basis_rows["year"] == int(growth_year_end)][["sector_id", "raw_value"]].rename(
+            columns={"raw_value": "growth_end"}
+        )
+        rows = rows.merge(growth_start, on="sector_id", how="left").merge(growth_end, on="sector_id", how="left")
+        rows["growth_value"] = (rows["growth_end"] / rows["growth_start"]) - 1.0
+        rows.loc[rows["growth_start"].isna() | rows["growth_end"].isna() | (rows["growth_start"] <= 0), "growth_value"] = pd.NA
+
+    rows = rows.dropna(subset=["lq_value"]).copy()
+    if rows.empty:
+        return {
+            "mode": "empty",
+            "rows": empty_rows,
+            "latest_lq_year": selected_year,
+            "growth_year_start": growth_year_start,
+            "growth_year_end": growth_year_end,
+            "source_label": "BEA real GDP specialization",
+            "summary": None,
+            "note": "No usable GDP specialization sectors were returned for this market.",
+        }
+
+    rows["specialization_label"] = rows["lq_value"].map(
+        lambda value: "Specialized" if pd.notna(value) and float(value) >= 1.0 else "Below US mix"
+    )
+    rows["growth_label"] = rows["growth_value"].map(
+        lambda value: "Growing" if pd.notna(value) and float(value) >= 0 else "Shrinking"
+    )
+    rows["latest_employment_label"] = rows["latest_employment"].map(lambda value: _format_raw_value(value, "gdp_share"))
+
+    has_growth = rows["growth_value"].notna().any() and growth_year_start is not None and growth_year_end is not None
+    if has_growth:
+        rows = rows.sort_values(
+            ["lq_value", "growth_value", "sector_label"],
+            ascending=[False, False, True],
+            kind="mergesort",
+            na_position="last",
+        ).reset_index(drop=True)
+        intersection = rows[(rows["lq_value"] >= 1.0) & (rows["growth_value"] >= 0)]
+        lead_row = intersection.iloc[0] if not intersection.empty else rows.iloc[0]
+        summary = (
+            f"{lead_row['sector_label']} stands out as a GDP-specialized sector in {selected_year} "
+            f"and posted {lead_row['growth_value']:+.1%} real GDP growth from {growth_year_start} to {growth_year_end}."
+        )
+        note = (
+            f"GDP location quotient divides {selected_year} market GDP share by the same-year U.S. GDP share. "
+            f"Growth compares the latest comparable BEA GDP pair: {growth_year_start} to {growth_year_end}."
+        )
+        mode = "scatter"
+    else:
+        rows = rows.sort_values(
+            ["lq_value", "latest_share", "sector_label"],
+            ascending=[False, False, True],
+            kind="mergesort",
+            na_position="last",
+        ).head(D1_SPECIALIZATION_TOP_SECTORS).reset_index(drop=True)
+        lead_row = rows.iloc[0]
+        summary = (
+            f"{lead_row['sector_label']} is the clearest GDP-specialized sector in {selected_year}, "
+            "but the latest comparable BEA growth pair is unavailable."
+        )
+        note = (
+            f"GDP location quotient divides {selected_year} market GDP share by the same-year U.S. GDP share. "
+            "Recent GDP growth could not be computed from the latest comparable year pair, so D1 falls back to a ranked table."
+        )
+        mode = "table"
+
+    return {
+        "mode": mode,
+        "rows": rows,
+        "latest_lq_year": selected_year,
+        "growth_year_start": growth_year_start,
+        "growth_year_end": growth_year_end,
+        "source_label": "BEA real GDP specialization",
+        "summary": summary,
+        "note": note,
+    }
 
 
 def _build_basis_rows_for_market_and_basis(market_rows: pd.DataFrame, market_id: str, basis: str) -> pd.DataFrame:
@@ -3186,109 +3821,128 @@ def get_d5_lodes_benchmark_surface(
     market_id: str = DEFAULT_MARKET_ID,
     peer_market_ids: Iterable[str] | None = None,
 ) -> dict[str, object]:
-    """Build the D5 jobs-to-workers benchmark surface for the market, peers, division, and U.S."""
+    """Build D5 market-level economic context rows for the market and selected peers.
+
+    The first D5 benchmark chart leaned on CBSA jobs-to-workers ratios, but at
+    broad geography that measure collapses toward 1.00 by construction and
+    carries much less signal than it does at tract grain. Phase 1 keeps that
+    metric in D3/D4 where it remains informative and replaces the D5 comparison
+    slot with GDP and income context instead.
+    """
     peer_rows = _resolve_d5_peer_rows(market_id, peer_market_ids)
-    selected_peer_ids = peer_rows["peer_market_id"].tolist()
-    context = get_market_context(market_id)
-    division_id = context.get("division_id")
-
-    market_and_peer_ids = [str(market_id), *selected_peer_ids]
-    placeholders = ", ".join(["?"] * len(market_and_peer_ids))
-
-    con = get_connection()
-    try:
-        cbsa_rows = con.execute(
-            f"""
-            SELECT
-                geo_id AS market_id,
-                geo_name,
-                year,
-                jobs_total,
-                workers_total,
-                jobs_minus_workers,
-                jobs_to_workers_ratio
-            FROM patterns_in_place.gold.economics_lodes_wide
-            WHERE geo_level = 'cbsa'
-              AND geo_id IN ({placeholders})
-            ORDER BY geo_id, year
-            """,
-            market_and_peer_ids,
-        ).fetchdf()
-        benchmark_rows = con.execute(
-            _read_sql_file("d5_lodes_benchmarks.sql"),
-            [division_id],
-        ).fetchdf()
-    finally:
-        con.close()
-
-    market_rows = cbsa_rows[cbsa_rows["market_id"] == str(market_id)].copy()
-    if market_rows.empty:
+    selected_peer_ids = peer_rows["peer_market_id"].astype(str).tolist()
+    comparison_ids = [str(market_id), *selected_peer_ids]
+    market_surface = get_market_surfaces(comparison_ids).rename(
+        columns={
+            "geo_id": "market_id",
+        }
+    )
+    if market_surface.empty:
         return {
             "rows": pd.DataFrame(),
             "selected_year": None,
             "peer_rows": peer_rows,
-            "notes": ["No D5 LODES benchmark rows were returned for the selected market."],
+            "notes": ["No D5 economic-context rows were returned for the selected market."],
         }
 
-    selected_year = int(market_rows["year"].max())
-    market_rows = market_rows[market_rows["year"] == selected_year].copy()
-    peer_metric_rows = cbsa_rows[
-        (cbsa_rows["market_id"].isin(selected_peer_ids))
-        & (cbsa_rows["year"] == selected_year)
-    ].copy()
+    comparable_rows = market_surface[market_surface["real_gdp_total"].notna()].copy()
+    if comparable_rows.empty:
+        return {
+            "rows": pd.DataFrame(),
+            "selected_year": None,
+            "peer_rows": peer_rows,
+            "notes": ["No D5 GDP rows were available for the selected market and peers."],
+        }
 
-    peer_metric_rows = peer_metric_rows.merge(
+    coverage = (
+        comparable_rows.groupby("year", as_index=False)["market_id"]
+        .nunique()
+        .rename(columns={"market_id": "covered_market_count"})
+    )
+    selected_year_rows = coverage[coverage["covered_market_count"] == len(comparison_ids)]
+    selected_year = (
+        int(selected_year_rows["year"].max())
+        if not selected_year_rows.empty
+        else int(comparable_rows["year"].max())
+    )
+    selected_rows = comparable_rows[comparable_rows["year"] == selected_year].copy()
+    if selected_rows.empty:
+        return {
+            "rows": pd.DataFrame(),
+            "selected_year": None,
+            "peer_rows": peer_rows,
+            "notes": ["No D5 economic-context rows survived the selected-year filter."],
+        }
+
+    placeholders = ", ".join(["?"] * len(comparison_ids))
+    con = get_connection()
+    try:
+        population_rows = con.execute(
+            f"""
+            SELECT
+                geo_id AS market_id,
+                year,
+                pop_total AS market_population
+            FROM patterns_in_place.gold.population_demographics
+            WHERE geo_level = 'cbsa'
+              AND year = ?
+              AND geo_id IN ({placeholders})
+            """,
+            [selected_year, *comparison_ids],
+        ).fetchdf()
+    finally:
+        con.close()
+
+    selected_rows = selected_rows.merge(
+        population_rows,
+        on=["market_id", "year"],
+        how="left",
+    )
+    selected_rows["gdp_per_capita"] = selected_rows["real_gdp_total"] / selected_rows["market_population"]
+    selected_rows["wages_salaries_per_job"] = selected_rows["bea_wages_salaries"] / selected_rows["qcew_private_emp_total"]
+    selected_rows["compensation_per_job"] = selected_rows["bea_compensation_total"] / selected_rows["qcew_private_emp_total"]
+    selected_rows = selected_rows.merge(
         peer_rows[["peer_market_id", "peer_rank", "peer_geo_name", "similarity"]],
         left_on="market_id",
         right_on="peer_market_id",
         how="left",
     )
-    peer_metric_rows["entity"] = peer_metric_rows["peer_geo_name"].fillna(peer_metric_rows["geo_name"])
-    peer_metric_rows["entity_type"] = "peer"
-    peer_metric_rows["entity_order"] = peer_metric_rows["peer_rank"].fillna(99).astype(int) + 1
-
-    market_rows["entity"] = market_rows["geo_name"]
-    market_rows["entity_type"] = "market"
-    market_rows["entity_order"] = 1
-
-    selected_benchmarks = benchmark_rows[benchmark_rows["year"] == selected_year].copy()
-    selected_benchmarks["entity"] = selected_benchmarks["benchmark_geo_name"]
-    selected_benchmarks["entity_type"] = "benchmark"
-    selected_benchmarks["entity_order"] = selected_benchmarks["benchmark_scope"].map({"division": 98, "us": 99})
-    selected_benchmarks = selected_benchmarks.rename(columns={"benchmark_geo_id": "market_id", "benchmark_geo_name": "geo_name"})
-
-    keep_columns = [
-        "market_id",
-        "geo_name",
-        "entity",
-        "entity_type",
-        "entity_order",
-        "year",
-        "jobs_total",
-        "workers_total",
-        "jobs_minus_workers",
-        "jobs_to_workers_ratio",
-    ]
-    concat_frames = [
-        frame[keep_columns]
-        for frame in [market_rows, peer_metric_rows, selected_benchmarks]
-        if not frame.empty
-    ]
-    combined = pd.concat(concat_frames, ignore_index=True)
-    combined["jobs_to_workers_ratio_label"] = combined["jobs_to_workers_ratio"].apply(
-        lambda value: "—" if pd.isna(value) else f"{float(value):.2f}x"
+    selected_rows["entity"] = selected_rows["peer_geo_name"].fillna(selected_rows["geo_name"])
+    selected_rows["entity_type"] = selected_rows["market_id"].map(
+        lambda value: "market" if str(value) == str(market_id) else "peer"
     )
-    combined["jobs_minus_workers_label"] = combined["jobs_minus_workers"].apply(_format_signed_jobs_count)
-    combined["jobs_total_label"] = combined["jobs_total"].apply(lambda value: "—" if pd.isna(value) else f"{int(round(float(value))):,}")
-    combined["workers_total_label"] = combined["workers_total"].apply(lambda value: "—" if pd.isna(value) else f"{int(round(float(value))):,}")
-    combined = combined.sort_values(["entity_order", "entity"], kind="mergesort").reset_index(drop=True)
+    selected_rows["entity_order"] = selected_rows["peer_rank"].fillna(99).astype(int) + 1
+    selected_rows.loc[selected_rows["entity_type"] == "market", "entity_order"] = 1
+    selected_rows = selected_rows.sort_values(["entity_order", "entity"], kind="mergesort").reset_index(drop=True)
 
     notes = [
-        f"LODES benchmark panel uses {selected_year}, the latest year available for {market_rows['geo_name'].iloc[0]}.",
-        "Division is read from the governed LODES surface; U.S. is first-pass derived from state rows.",
+        f"Economic context uses {selected_year}, the latest common BEA GDP year available for the market and selected peers.",
+        "GDP per resident uses the same-year CBSA population row from `gold.population_demographics` when it is available.",
+        "Wages-per-job and compensation-per-job divide BEA annual totals by same-year QCEW private employment, so they are market-level pay context rather than occupation wages.",
+        "Industry concentration uses the existing Gold HHI diagnostic, where higher values mean a less diversified sector mix.",
+        "This replaces the prior CBSA jobs-to-workers benchmark because that ratio is informative at tract grain, but weakly informative at broad comparison grain.",
     ]
     return {
-        "rows": combined,
+        "rows": selected_rows[
+            [
+                "market_id",
+                "geo_name",
+                "entity",
+                "entity_type",
+                "entity_order",
+                "year",
+                "real_gdp_total",
+                "gdp_per_capita",
+                "bea_proprietors_income",
+                "bea_wages_salaries",
+                "bea_compensation_total",
+                "wages_salaries_per_job",
+                "compensation_per_job",
+                "market_population",
+                "industry_concentration_hhi",
+                "similarity",
+            ]
+        ].copy(),
         "selected_year": selected_year,
         "peer_rows": peer_rows,
         "notes": notes,
@@ -3300,18 +3954,18 @@ def get_d5_takeaway(
     basis: str = "employment_share",
     peer_market_ids: Iterable[str] | None = None,
 ) -> str | None:
-    """Build a short regional-fit synthesis from the D5 mix and LODES benchmark panels."""
+    """Build a short regional-fit synthesis from the D5 mix and market-context panels."""
     mix_payload = get_d5_mix_comparison_payload(market_id, basis, peer_market_ids)
-    lodes_payload = get_d5_lodes_benchmark_surface(market_id, peer_market_ids)
+    context_payload = get_d5_lodes_benchmark_surface(market_id, peer_market_ids)
 
     chart_rows = mix_payload["chart_rows"]
-    lodes_rows = lodes_payload["rows"]
-    if chart_rows.empty or lodes_rows.empty:
+    context_rows = context_payload["rows"]
+    if chart_rows.empty or context_rows.empty:
         return None
 
-    market_name = str(lodes_rows[lodes_rows["entity_type"] == "market"]["entity"].iloc[0])
+    market_name = str(context_rows[context_rows["entity_type"] == "market"]["entity"].iloc[0])
     selected_year = mix_payload["selected_year"]
-    lodes_year = lodes_payload["selected_year"]
+    context_year = context_payload["selected_year"]
 
     market_sector = chart_rows[chart_rows["entity_type"] == "market"][["series", "share_value"]].rename(
         columns={"share_value": "market_share"}
@@ -3327,17 +3981,27 @@ def get_d5_takeaway(
     sector_delta["share_delta"] = sector_delta["market_share"] - sector_delta["peer_avg_share"]
     top_sector = sector_delta.sort_values(["share_delta", "series"], ascending=[False, True], kind="mergesort").iloc[0]
 
-    ratio_rows = lodes_rows[lodes_rows["entity_type"].isin(["market", "peer"])].dropna(subset=["jobs_to_workers_ratio"]).copy()
-    if ratio_rows.empty:
+    context_rank_rows = context_rows[context_rows["entity_type"].isin(["market", "peer"])].dropna(subset=["gdp_per_capita"]).copy()
+    if context_rank_rows.empty:
         return None
-    ratio_rows = ratio_rows.sort_values(["jobs_to_workers_ratio", "entity"], ascending=[False, True], kind="mergesort").reset_index(drop=True)
-    market_rank = int(ratio_rows.index[ratio_rows["entity_type"] == "market"][0]) + 1
-    compared_count = int(len(ratio_rows))
+    context_rank_rows = context_rank_rows.sort_values(["gdp_per_capita", "entity"], ascending=[False, True], kind="mergesort").reset_index(drop=True)
+    market_rank = int(context_rank_rows.index[context_rank_rows["entity_type"] == "market"][0]) + 1
+    compared_count = int(len(context_rank_rows))
+    concentration_rank_rows = context_rows[context_rows["entity_type"].isin(["market", "peer"])].dropna(subset=["industry_concentration_hhi"]).copy()
+    concentration_clause = ""
+    if not concentration_rank_rows.empty:
+        concentration_rank_rows = concentration_rank_rows.sort_values(
+            ["industry_concentration_hhi", "entity"],
+            ascending=[False, True],
+            kind="mergesort",
+        ).reset_index(drop=True)
+        concentration_rank = int(concentration_rank_rows.index[concentration_rank_rows["entity_type"] == "market"][0]) + 1
+        concentration_clause = f" Its concentration HHI ranked {concentration_rank} of {len(concentration_rank_rows)} on the same peer set."
 
     return (
         f"In {selected_year}, {market_name} ran most above its selected-peer average in {top_sector['series']} "
-        f"({top_sector['share_delta']:+.1%} share difference). In {lodes_year}, its jobs-to-workers ratio ranked "
-        f"{market_rank} of {compared_count} across the selected peer set."
+        f"({top_sector['share_delta']:+.1%} share difference). In {context_year}, its GDP per resident ranked "
+        f"{market_rank} of {compared_count} across the selected peer set.{concentration_clause}"
     )
 
 
@@ -3348,12 +4012,12 @@ def get_d5_page_payload(
 ) -> dict[str, object]:
     """Bundle the D5 page payload so the Streamlit page can stay presentation-focused."""
     mix_payload = get_d5_mix_comparison_payload(market_id, basis, peer_market_ids)
-    lodes_payload = get_d5_lodes_benchmark_surface(market_id, peer_market_ids)
+    context_payload = get_d5_lodes_benchmark_surface(market_id, peer_market_ids)
     selected_peer_rows = _resolve_d5_peer_rows(market_id, peer_market_ids)
 
     basis_label = "Employment share" if basis == "employment_share" else "GDP share"
     mix_year = mix_payload.get("selected_year")
-    lodes_year = lodes_payload.get("selected_year")
+    context_year = context_payload.get("selected_year")
     mix_title = f"D5 — {basis_label} vs peers"
     mix_subtitle = (
         f"{basis_label} | {mix_year} | Market, selected peers, division, and U.S."
@@ -3366,15 +4030,15 @@ def get_d5_page_payload(
         "peer_rows": selected_peer_rows,
         "available_peer_rows": get_d5_peer_defaults(market_id, 10),
         "mix_payload": mix_payload,
-        "lodes_payload": lodes_payload,
+        "context_payload": context_payload,
         "takeaway": get_d5_takeaway(market_id, basis, selected_peer_rows["peer_market_id"].tolist()),
         "mix_title": mix_title,
         "mix_subtitle": mix_subtitle,
-        "lodes_title": "D5 — Jobs-to-workers benchmark",
-        "lodes_subtitle": (
-            f"Jobs-to-workers ratio | {lodes_year} | Market, selected peers, division, and U.S."
-            if lodes_year is not None
-            else "Jobs-to-workers benchmark unavailable"
+        "context_title": "D5 — Market economic context",
+        "context_subtitle": (
+            f"Total GDP, GDP per resident, and proprietors income | {context_year} | Market and selected peers"
+            if context_year is not None
+            else "Economic context comparison unavailable"
         ),
     }
 
@@ -3601,7 +4265,7 @@ def get_d6_sector_scorecard_payload(
         )
 
     notes = [
-        f"Sector exposure uses Felten Appendix B joined to section-owned `AIOE_DataAppendix.xlsx` at 4-digit NAICS.",
+        f"Sector exposure uses Felten Appendix B (AIIE) joined to section-owned `AIOE_DataAppendix.xlsx` at 4-digit NAICS.",
         f"Detailed industry employment comes from `staging.bls_qcew_county`, rolled to CBSA via `silver.xwalk_cbsa_county`, then paired back to the broad D1 sector taxonomy.",
         f"Coverage check: {_safe_pct(coverage.get('matched_share_total'))} of {year} detailed private employment matched a Felten industry score {coverage_note_suffix}",
         "Sector rows show broad D1 sectors for comparability, while the explanation panel preserves the underlying 4-digit detail.",
@@ -3796,7 +4460,7 @@ def get_d6_occupation_companion_payload(
             )
 
     notes = [
-        f"Occupation exposure uses Felten Appendix A joined directly to `silver.bls_oews` detailed SOC rows for {year}.",
+        f"Occupation exposure uses Felten Appendix A (AIOE) joined directly to `silver.bls_oews` detailed SOC rows for {year}.",
         f"Coverage check: {_safe_pct(coverage.get('matched_share_total'))} of detailed OEWS employment matched a Felten occupation score.",
         occupation_note,
         f"Broad occupation-family summary uses the {year} `gold.economics_occupation_wide` surface where available for compact share and LQ context.",

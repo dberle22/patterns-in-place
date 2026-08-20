@@ -52,23 +52,23 @@ def test_d5_mix_payload_includes_market_peers_and_benchmarks(d5):
     assert any(entity.startswith("South Atlantic") for entity in chart_rows["entity"].unique())
 
 
-def test_d5_lodes_surface_uses_its_own_latest_year(d5):
+def test_d5_context_surface_uses_latest_common_gdp_year(d5):
     payload = d5.get_d5_lodes_benchmark_surface("40060")
     rows = payload["rows"]
 
     assert not rows.empty
     assert payload["selected_year"] == 2023
-    assert {"market", "peer", "benchmark"} <= set(rows["entity_type"])
-    assert rows.loc[rows["entity_type"] == "market", "jobs_to_workers_ratio"].iloc[0] > 0
-    assert "United States" in set(rows["entity"])
-    assert "South Atlantic" in set(rows["entity"])
+    assert {"market", "peer"} <= set(rows["entity_type"])
+    assert rows.loc[rows["entity_type"] == "market", "real_gdp_total"].iloc[0] > 0
+    assert rows.loc[rows["entity_type"] == "market", "gdp_per_capita"].iloc[0] > 0
+    assert rows["entity"].nunique() >= 3
 
 
 def test_d5_page_payload_builds_for_richmond(d5):
     payload = d5.get_d5_page_payload("40060", basis="employment_share")
 
     assert payload["mix_payload"]["selected_year"] == 2024
-    assert payload["lodes_payload"]["selected_year"] == 2023
+    assert payload["context_payload"]["selected_year"] == 2023
     assert payload["takeaway"] is not None
     assert "In 2024" in payload["takeaway"]
     assert "In 2023" in payload["takeaway"]

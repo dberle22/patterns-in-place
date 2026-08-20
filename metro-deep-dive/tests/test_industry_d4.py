@@ -200,7 +200,22 @@ def test_d4_overlay_reads_cached_layers(monkeypatch, tmp_path, d4):
                 "centroid_lon": -77.32,
                 "attributes_json": json.dumps({"primary_category": "airport"}),
                 "extract_date": "2026-07-28T12:00:00+00:00",
-            }
+            },
+            {
+                "market_id": "40060",
+                "source_system": "overture",
+                "source_id": "overture:place:false-port",
+                "feature_name": "Flat Rock Creek Gymnastics",
+                "layer_group": "overture_pois",
+                "category": "infrastructure",
+                "subcategory": "port",
+                "geometry_type": "Point",
+                "geometry": json.dumps({"type": "Point", "coordinates": [-77.449, 37.541]}),
+                "centroid_lat": 37.541,
+                "centroid_lon": -77.449,
+                "attributes_json": json.dumps({"primary_category": "port"}),
+                "extract_date": "2026-07-28T12:00:00+00:00",
+            },
         ]
     )
 
@@ -227,12 +242,13 @@ def test_d4_overlay_reads_cached_layers(monkeypatch, tmp_path, d4):
     assert len(payload["osm_line_features"]) == 1
     assert len(payload["osm_polygon_features"]) == 1
     assert len(payload["osm_point_features"]) == 1
-    assert len(payload["overture_pois"]) == 1
+    assert len(payload["overture_pois"]) == 2
     assert payload["base_surface"] == "jobs_total"
     assert payload["interpretation"]["selected_detail"]["tract_name"] == "Core Tract"
     assert payload["interpretation"]["selected_detail"]["highways_count"] == 1
     assert payload["interpretation"]["selected_detail"]["ports_count"] == 1
     assert payload["interpretation"]["selected_detail"]["warehouses_logistics_count"] == 1
+    assert payload["interpretation"]["selected_detail"]["airports_count"] == 0
     assert payload["interpretation"]["selected_detail"]["interpretation_type"] == "Mixed"
     assert payload["layer_summary"]["row_count"].sum() == 3
     assert payload["base_payload"]["features"]

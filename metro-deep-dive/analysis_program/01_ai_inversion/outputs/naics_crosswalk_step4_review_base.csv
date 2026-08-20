@@ -1,0 +1,333 @@
+naics_code,naics_title_ours,selected_felten_code,selected_felten_name,aiie_score,match_basis,manual_notes,review_source,latest_year_employment,latest_year_weight,step4_match_flag
+7225,Restaurants,7225,Restaurants and Other Eating Places,-1.171986,raw_exact_match,,notebook_raw_appendix_b,10781478.0,0.093466412646259,True
+5613,Employment services,5613,Employment Services,-0.7234654,raw_exact_match,,notebook_raw_appendix_b,3202176.0,0.02776019237640211,True
+6241,Individual and family services,6241,Individual and Family Services,1.163092,raw_exact_match,,notebook_raw_appendix_b,3111631.0,0.0269752428237475,True
+6221,General medical and surgical hospitals,6221,General Medical and Surgical Hospitals,0.5274962,raw_exact_match,,notebook_raw_appendix_b,3077727.0,0.026681323450693194,True
+6211,Offices of physicians,6211,Offices of Physicians,1.009907,raw_exact_match,,notebook_raw_appendix_b,2886021.0,0.025019392488837715,True
+4451,Grocery stores,4450,Food and Beverage Stores (4451 and 4452 only),-0.4066956,raw_normalized_match,,notebook_raw_appendix_b,2658001.0,0.02304264946607219,True
+2382,Building equipment contractors,2382,Building Equipment Contractors,-0.8320791,raw_exact_match,,notebook_raw_appendix_b,2513189.0,0.021787250331729936,True
+5511,Management of companies and enterprises,5511,Management of Companies and Enterprises,1.69871,raw_exact_match,,notebook_raw_appendix_b,2476752.0,0.021471371963514396,True
+5415,Computer systems design and related services,5415,Computer Systems Design and Related Services,1.860226,raw_exact_match,,notebook_raw_appendix_b,2388342.0,0.020704931078317047,True
+5617,Services to buildings and dwellings,5617,Services to Buildings and Dwellings,-1.998597,raw_exact_match,,notebook_raw_appendix_b,2263587.0,0.01962340938809201,True
+4552,"NAICS 4552 Warehouse clubs, supercenters, and other general merchandise retailers",4520,General Merchandise Stores,-0.007219,raw_normalized_match,,notebook_raw_appendix_b,1900643.0,0.01647698793534835,True
+5416,Management and technical consulting services,5416,"Management, Scientific, and Technical Consulting Services",1.8047,raw_exact_match,,notebook_raw_appendix_b,1856146.0,0.016091236096544746,True
+6216,Home health care services,6216,Home Health Care Services,0.6927072,raw_exact_match,,notebook_raw_appendix_b,1700122.0,0.01473863828326535,True
+5221,Depository credit intermediation,5220,Credit Intermediation and Related Activities (5221 And 5223 only),1.888684,raw_normalized_match,,notebook_raw_appendix_b,1688994.0,0.01464216781419538,True
+5413,Architectural and engineering services,5413,"Architectural, Engineering, and Related Services",1.492814,raw_exact_match,,notebook_raw_appendix_b,1677691.0,0.01454418024123547,True
+4931,Warehousing and storage,4931,Warehousing and Storage,-1.59126,raw_exact_match,,notebook_raw_appendix_b,1577562.0,0.013676145410402697,True
+7211,Traveler accommodation,7211,Traveler Accommodation,-0.902616,raw_exact_match,,notebook_raw_appendix_b,1536214.0,0.013317692772452917,True
+6231,Nursing care facilities,6231,Nursing Care Facilities (Skilled Nursing Facilities),-0.2430007,raw_exact_match,,notebook_raw_appendix_b,1291237.0,0.011193946717334816,True
+5242,Insurance agencies and brokerages,5242,"Agencies, Brokerages, and Other Insurance Related Activities",2.120996,raw_exact_match,,notebook_raw_appendix_b,1286103.0,0.011149439223786538,True
+4411,Automobile dealers,4411,Automobile Dealers,-0.1668894,raw_exact_match,,notebook_raw_appendix_b,1249125.0,0.010828870837259814,True
+6213,Offices of other health practitioners,6213,Offices of Other Health Practitioners,0.7008373,raw_exact_match,,notebook_raw_appendix_b,1224360.0,0.010614178963920686,True
+7139,Other amusement and recreation industries,7139,Other Amusement and Recreation Industries,-1.085068,raw_exact_match,,notebook_raw_appendix_b,1207621.0,0.010469065809556718,True
+5411,Legal services,5411,Legal Services,2.156741,raw_exact_match,,notebook_raw_appendix_b,1191123.0,0.010326041923978322,True
+5412,Accounting and bookkeeping services,5412,"Accounting, Tax Preparation, Bookkeeping, and Payroll Services",2.215628,raw_exact_match,,notebook_raw_appendix_b,1131910.0,0.00981271465177845,True
+5241,Insurance carriers,5241,Insurance Carriers,2.058794,raw_exact_match,,notebook_raw_appendix_b,1131403.0,0.009808319385080169,True
+4561,NAICS 4561 Health and personal care retailers,4461,Health and Personal Care Stores,0.3257251,raw_normalized_match,,notebook_raw_appendix_b,1081548.0,0.009376118159749166,True
+6214,Outpatient care centers,6214,Outpatient Care Centers,0.9686477,raw_exact_match,,notebook_raw_appendix_b,1079429.0,0.009357748198933273,True
+4441,Building material and supplies dealers,4441,Building Material and Supplies Dealers,0.1045359,raw_exact_match,,notebook_raw_appendix_b,1066224.0,0.009243271873980994,True
+5616,Investigation and security services,5616,Investigation and Security Services,-0.3442498,raw_exact_match,,notebook_raw_appendix_b,1027817.0,0.00891031525054728,True
+6212,Offices of dentists,6212,Offices of Dentists,0.4154884,raw_exact_match,,notebook_raw_appendix_b,1024339.0,0.008880163894380372,True
+8111,Automotive repair and maintenance,8111,Automotive Repair and Maintenance,-1.094294,raw_exact_match,,notebook_raw_appendix_b,1011367.0,0.008767707484892983,True
+4841,General freight trucking,,,,,,,1000083.0,0.008669884626069695,False
+2381,Building foundation and exterior contractors,2381,"Foundation, Structure, and Building Exterior Contractors",-1.757023,raw_exact_match,,notebook_raw_appendix_b,970264.0,0.008411378792389118,True
+4551,NAICS 4551 Department stores,4520,General Merchandise Stores,-0.007219,raw_normalized_match,,notebook_raw_appendix_b,958673.0,0.008310894499884623,True
+6244,Child day care services,6244,Child Day Care Services,0.0572718,raw_exact_match,,notebook_raw_appendix_b,942396.0,0.008169786499790093,True
+6113,Colleges and universities,6113,"Colleges, Universities, and Professional Schools",1.456562,raw_exact_match,,notebook_raw_appendix_b,942043.0,0.00816672628451496,True
+6111,Elementary and secondary schools,6111,Elementary and Secondary Schools,1.315956,raw_exact_match,,notebook_raw_appendix_b,909221.0,0.007882186948083023,True
+2361,Residential building construction,2361,Residential Building Construction,-0.7602519,raw_exact_match,,notebook_raw_appendix_b,885990.0,0.007680793573984848,True
+6233,Community care facilities for the elderly,6233,Continuing Care Retirement Communities and Assisted Living Facilities for the Elderly,-0.4843864,raw_exact_match,,notebook_raw_appendix_b,879611.0,0.007625492969905288,True
+2362,Nonresidential building construction,2362,Nonresidential Building Construction,-0.6632232,raw_exact_match,,notebook_raw_appendix_b,865561.0,0.007503691200455873,True
+5419,Other professional and technical services,5419,"Other Professional, Scientific, and Technical Services",0.6022445,raw_exact_match,,notebook_raw_appendix_b,863010.0,0.0074815761603231005,True
+5417,Scientific research and development services,5417,Scientific Research and Development Services,1.635407,raw_exact_match,,notebook_raw_appendix_b,846229.0,0.007336098901025547,True
+4581,NAICS 4581 Clothing and clothing accessories retailers,4481,Clothing Stores,0.2268381,raw_normalized_match,,notebook_raw_appendix_b,832578.0,0.007217756128445193,True
+5313,Activities related to real estate,5310,Real Estate,0.5238351,raw_normalized_match,,notebook_raw_appendix_b,822707.0,0.007132182799887529,True
+2383,Building finishing contractors,2383,Building Finishing Contractors,-1.602616,raw_exact_match,,notebook_raw_appendix_b,821143.0,0.007118624225694015,True
+4244,Grocery and related product wholesalers,,,,,,,784814.0,0.006803682127307695,False
+2389,Other specialty trade contractors,2389,Other Specialty Trade Contractors,-1.358564,raw_exact_match,,notebook_raw_appendix_b,771680.0,0.0066898213130764765,True
+4238,Machinery and supply merchant wholesalers,4238,"Machinery, Equipment, and Supplies Merchant Wholesalers",0.2607571,raw_exact_match,,notebook_raw_appendix_b,745697.0,0.00646457039666337,True
+8121,Personal care services,8121,Personal Care Services,-0.4751154,raw_exact_match,,notebook_raw_appendix_b,737089.0,0.0063899462236085254,True
+4234,Commercial equip. merchant wholesalers,4234,Professional and Commercial Equipment and Supplies Merchant Wholesalers,1.041147,raw_exact_match,,notebook_raw_appendix_b,714727.0,0.006196086353969535,True
+7223,Special food services,7223,Special Food Services,-1.060899,raw_exact_match,,notebook_raw_appendix_b,691718.0,0.005996617534520312,True
+4921,Couriers and express delivery services,4921,Couriers and Express Delivery Services,-1.150431,raw_exact_match,,notebook_raw_appendix_b,690990.0,0.0059903063823381645,True
+5614,Business support services,5614,Business Support Services,1.704965,raw_exact_match,,notebook_raw_appendix_b,650540.0,0.005639638654635045,True
+5311,Lessors of real estate,5310,Real Estate,0.5238351,raw_normalized_match,,notebook_raw_appendix_b,624498.0,0.005413876257481901,True
+5132,NAICS 5132 Software publishers,5112,Software Publishers,1.966309,raw_normalized_match,,notebook_raw_appendix_b,616021.0,0.00534038774505324,True
+4571,NAICS 4571 Gasoline stations,4471,Gasoline Stations,-0.3108229,raw_normalized_match,,notebook_raw_appendix_b,614971.0,0.005331285121713604,True
+5611,Office administrative services,5611,Office Administrative Services,1.753769,raw_exact_match,,notebook_raw_appendix_b,594084.0,0.005150212270575531,True
+6232,Residential mental health facilities,6232,"Residential Intellectual and Developmental Disability, Mental Health, and Substance Abuse Facilities",0.8572415,raw_exact_match,,notebook_raw_appendix_b,546395.0,0.004736788456819435,True
+5239,Other financial investment activities,5230,"Securities, Commodity Contracts, and Other Financial Investments and Related Activities",2.218665,raw_normalized_match,,notebook_raw_appendix_b,542659.0,0.004704400456060501,True
+4413,"Auto parts, accessories, and tire stores",4413,"Automotive Parts, Accessories, and Tire Stores",-0.6871853,raw_exact_match,,notebook_raw_appendix_b,519796.0,0.004506197334713742,True
+6116,Other schools and instruction,6116,Other Schools and Instruction,0.6729133,raw_exact_match,,notebook_raw_appendix_b,516630.0,0.004478750758053468,True
+2371,Utility system construction,2371,Utility System Construction,-1.176381,raw_exact_match,,notebook_raw_appendix_b,512319.0,0.004441377987370448,True
+4591,"NAICS 4591 Sporting goods, hobby, and musical instrument retailers",4511,"Sporting Goods, Hobby, and Musical Instrument Stores",0.2090943,raw_normalized_match,,notebook_raw_appendix_b,476318.0,0.004129279375132129,True
+5418,"Advertising, pr, and related services",5418,"Advertising, Public Relations, and Related Services",1.305607,raw_exact_match,,notebook_raw_appendix_b,475967.0,0.004126236498187165,True
+4599,NAICS 4599 Other miscellaneous retailers,4539,Other Miscellaneous Store Retailers,0.00781,raw_normalized_match,,notebook_raw_appendix_b,475599.0,0.00412304624543575,True
+4251,Electronic markets and agents and brokers,4251,Wholesale Electronic Markets and Agents and Brokers,0.9876717,raw_exact_match,,notebook_raw_appendix_b,463178.0,0.004015366545910399,True
+5222,Nondepository credit intermediation,5220,Credit Intermediation and Related Activities (5221 And 5223 only),1.888684,raw_exact_match,,notebook_raw_appendix_b,461046.0,0.003996883885948395,True
+5182,"Data processing, hosting and related services",5182,"Data Processing, Hosting, and Related Services",1.74286,raw_exact_match,,notebook_raw_appendix_b,447680.0,0.0038810118254173714,True
+5171,Wired telecommunications carriers,5170,Telecommunications,0.2466103,raw_normalized_match,,notebook_raw_appendix_b,440866.0,0.0038219401345256764,True
+8139,Professional and similar organizations,8139,"Business, Professional, Labor, Political, and Similar Organizations",1.360341,raw_exact_match,,notebook_raw_appendix_b,426950.0,0.003701300033197701,True
+4842,Specialized freight trucking,,,,,,,417587.0,0.003620130640503404,False
+8129,Other personal services,8129,Other Personal Services,-0.7702041,raw_exact_match,,notebook_raw_appendix_b,413397.0,0.0035838068387957136,True
+4491,NAICS 4491 Furniture and home furnishings retailers,,,,,,,388899.0,0.0033714296325343777,False
+3364,Aerospace product and parts manufacturing,3364,Aerospace Product and Parts Manufacturing,0.5189539,raw_exact_match,,notebook_raw_appendix_b,384751.0,0.003335469935760273,True
+4811,Scheduled air transportation,4811,Scheduled Air Transportation,-0.4555449,raw_exact_match,,notebook_raw_appendix_b,378731.0,0.00328328156194636,True
+4492,NAICS 4492 Electronics and appliance retailers,4431,Electronics and Appliance Stores,0.3619018,raw_normalized_match,,notebook_raw_appendix_b,378136.0,0.0032781234087205665,True
+7224,"Drinking places, alcoholic beverages",7224,Drinking Places (Alcoholic Beverages),-0.99913,raw_exact_match,,notebook_raw_appendix_b,373091.0,0.0032343874708648866,True
+4236,Electric goods merchant wholesalers,,,,,,,355269.0,0.003079885610713465,False
+4231,Motor vehicle and parts merchant wholesalers,4231,Motor Vehicle and Motor Vehicle Parts and Supplies Merchant Wholesalers,-0.1601646,raw_exact_match,,notebook_raw_appendix_b,352232.0,0.0030535573563492038,True
+5231,Securities and commodity contracts brokerage,,,,,,,349932.0,0.0030336182766528583,False
+5312,Offices of real estate agents and brokers,,,,,,,339603.0,0.0029440744704860963,False
+3323,Architectural and structural metals mfg.,,,,,,,338376.0,0.00293343740492635,False
+8134,Civic and social organizations,8134,Civic and Social Organizations,-0.3505448,raw_exact_match,,notebook_raw_appendix_b,331536.0,0.0028741403157424355,True
+3345,Electronic instrument manufacturing,3345,"Navigational, Measuring, Electromedical, and Control Instruments Manufacturing",1.113945,raw_exact_match,,notebook_raw_appendix_b,326523.0,0.002830681791169488,True
+3231,Printing and related support activities,3231,Printing and Related Support Activities,-0.2099964,raw_exact_match,,notebook_raw_appendix_b,322489.0,0.002795710379215115,True
+3363,Motor vehicle parts manufacturing,3363,Motor Vehicle Parts Manufacturing,-0.5860924,raw_exact_match,,notebook_raw_appendix_b,316367.0,0.0027426377505624946,True
+3344,Semiconductor and electronic component mfg.,3344,Semiconductor and Other Electronic Component Manufacturing,0.6828295,raw_exact_match,,notebook_raw_appendix_b,314109.0,0.0027230627757997344,True
+6219,Other ambulatory health care services,6219,Other Ambulatory Health Care Services,0.7869348,raw_exact_match,,notebook_raw_appendix_b,308303.0,0.00267272960331409,True
+5619,Other support services,5619,Other Support Services,-0.4762704,raw_exact_match,,notebook_raw_appendix_b,300322.0,0.0026035409967677713,True
+4237,Hardware and plumbing merchant wholesalers,,,,,,,299905.0,0.002599925954927173,False
+3327,Machine shops and threaded product mfg.,3327,"Machine Shops; Turned Product; and Screw, Nut, and Bolt Manufacturing",-0.6099281,raw_exact_match,,notebook_raw_appendix_b,299728.0,0.002598391512707063,True
+3118,Bakeries and tortilla manufacturing,3118,Bakeries and Tortilla Manufacturing,-0.8015609,raw_exact_match,,notebook_raw_appendix_b,298490.0,0.0025876590863313778,True
+4239,Misc. durable goods merchant wholesalers,,,,,,,297854.0,0.002582145497337084,False
+2373,"Highway, street, and bridge construction",2373,"Highway, Street, and Bridge Construction",-1.296256,raw_exact_match,,notebook_raw_appendix_b,294192.0,0.002550399014794468,True
+4249,Misc. nondurable goods merchant wholesalers,,,,,,,293563.0,0.0025449461099557717,False
+5121,Motion picture and video industries,5121,Motion Picture and Video Industries,0.4026041,raw_exact_match,,notebook_raw_appendix_b,290033.0,0.002514343957204424,True
+6215,Medical and diagnostic laboratories,6215,Medical and Diagnostic Laboratories,0.6741955,raw_exact_match,,notebook_raw_appendix_b,288741.0,0.002503143395914129,True
+1151,Support activities for crop production,1151,Support Activities for Crop Production,-2.165304,raw_exact_match,,notebook_raw_appendix_b,277424.0,0.0024050344546430237,True
+3261,Plastics product manufacturing,3261,Plastics Product Manufacturing,-0.8657592,raw_exact_match,,notebook_raw_appendix_b,264955.0,0.002296938635193575,True
+3254,Pharmaceutical and medicine manufacturing,3254,Pharmaceutical and Medicine Manufacturing,0.4637086,raw_exact_match,,notebook_raw_appendix_b,257212.0,0.0022298132899375737,True
+3391,Medical equipment and supplies manufacturing,3391,Medical Equipment and Supplies Manufacturing,0.2301883,raw_exact_match,,notebook_raw_appendix_b,252601.0,0.0021898397697289436,True
+5223,Activities related to credit intermediation,5220,Credit Intermediation and Related Activities (5221 And 5223 only),1.888684,raw_normalized_match,,notebook_raw_appendix_b,250663.0,0.002173038927793501,True
+8133,Social advocacy organizations,8133,Social Advocacy Organizations,1.194087,raw_exact_match,,notebook_raw_appendix_b,246220.0,0.0021345218273192126,True
+4881,Support activities for air transportation,4881,Support Activities for Air Transportation,-0.3353398,raw_exact_match,,notebook_raw_appendix_b,245706.0,0.002130065876465334,True
+4233,Lumber and const. supply merchant wholesalers,,,,,,,243995.0,0.0021152329350042696,False
+4242,Druggists' goods merchant wholesalers,,,,,,,242240.0,0.0021000185502794495,False
+4885,Freight transportation arrangement,4885,Freight Transportation Arrangement,1.024609,raw_exact_match,,notebook_raw_appendix_b,241704.0,0.0020953718777936927,True
+8123,Drycleaning and laundry services,8123,Drycleaning and Laundry Services,-1.148211,raw_exact_match,,notebook_raw_appendix_b,236973.0,0.0020543580577748184,True
+2131,Support activities for mining,2131,Support Activities for Mining,-0.9810408,raw_exact_match,,notebook_raw_appendix_b,231840.0,0.0020098592333916265,True
+5131,"NAICS 5131 Newspaper, periodical, book, and directory publishers",,,,,,,230261.0,0.001996170621721831,False
+3399,Other miscellaneous manufacturing,3399,Other Miscellaneous Manufacturing,-0.068744,raw_exact_match,,notebook_raw_appendix_b,213714.0,0.0018527219470542533,True
+8113,Commercial machinery repair and maintenance,8113,Commercial and Industrial Machinery and Equipment (except Automotive and Electronic) Repair and Maintenance,-0.7797639,raw_exact_match,,notebook_raw_appendix_b,212805.0,0.001844841675991654,True
+4452,Specialty food stores,4450,Food and Beverage Stores (4451 and 4452 only),-0.4066956,raw_normalized_match,,notebook_raw_appendix_b,208356.0,0.0018062725605268535,True
+8141,Private households,,,,,,,199610.0,0.0017304520426902285,False
+5321,Automotive equipment rental and leasing,5321,Automotive Equipment Rental and Leasing,-0.1278947,raw_exact_match,,notebook_raw_appendix_b,198081.0,0.0017171968892747014,True
+2211,Power generation and supply,2211,"Electric Power Generation, Transmission and Distribution",0.2096187,raw_exact_match,,notebook_raw_appendix_b,192445.0,0.0016683374748535696,True
+3339,Other general purpose machinery manufacturing,,,,,,,192107.0,0.0016654072970547153,False
+6117,Educational support services,6117,Educational Support Services,1.605398,raw_exact_match,,notebook_raw_appendix_b,191131.0,0.0016569461919313966,True
+6243,Vocational rehabilitation services,6243,Vocational Rehabilitation Services,0.2863293,raw_exact_match,,notebook_raw_appendix_b,189352.0,0.0016415237472445275,True
+4595,NAICS 4595 Used merchandise retailers,,,,,,,189123.0,0.0016395385084399783,False
+4594,"NAICS 4594 Office supplies, stationery, and gift retailers",,,,,,,186183.0,0.0016140511630889976,False
+6242,Emergency and other relief services,6242,"Community Food and Housing, and Emergency and Other Relief Services",0.8514432,raw_exact_match,,notebook_raw_appendix_b,184841.0,0.0016024171435444342,True
+3121,Beverage manufacturing,3121,Beverage Manufacturing,-0.6586424,raw_exact_match,,notebook_raw_appendix_b,183467.0,0.001590505710717139,True
+8131,Religious organizations,8131,Religious Organizations,0.9662193,raw_exact_match,,notebook_raw_appendix_b,183092.0,0.0015872547738101264,True
+9999,Unclassified,,,,,,,179738.0,0.0015581783941138033,False
+3119,Other food manufacturing,3119,Other Food Manufacturing,-0.8538909,raw_exact_match,,notebook_raw_appendix_b,177821.0,0.0015415596046451537,True
+3329,Other fabricated metal product manufacturing,,,,,,,176786.0,0.0015325870187817981,False
+5162,"NAICS 5162 Media streaming distribution services, social networks, and other media networks and content providers",5152,Cable and Other Subscription Programming,1.098212,raw_normalized_match,,notebook_raw_appendix_b,173538.0,0.0015044295705845241,True
+5324,Machinery and equipment rental and leasing,5321,Automotive Equipment Rental and Leasing,-0.1278947,accepted_suggested_join,Same 3-digit NAICS family with strong title alignment.,recommended_felten_naics_overrides_initial,173283.0,0.0015022189334877555,True
+4248,Alcoholic beverage merchant wholesalers,,,,,,,173234.0,0.0015017941443985724,False
+3116,Animal slaughtering and processing,3116,Animal Slaughtering and Processing,-1.662866,raw_exact_match,,notebook_raw_appendix_b,171630.0,0.0014878888036016428,True
+5615,Travel arrangement and reservation services,5615,Travel Arrangement and Reservation Services,1.68347,raw_exact_match,,notebook_raw_appendix_b,166696.0,0.001445115143070439,True
+5621,Waste collection,5621,Waste Collection,-1.332496,raw_exact_match,,notebook_raw_appendix_b,162573.0,0.0014093721754234684,True
+4582,NAICS 4582 Shoe retailers,4482,Shoe Stores,0.2810808,raw_normalized_match,,notebook_raw_appendix_b,160831.0,0.001394270489844758,True
+4442,Lawn and garden equipment and supplies stores,4442,Lawn and Garden Equipment and Supplies Stores,-0.4641636,raw_exact_match,,notebook_raw_appendix_b,157619.0,0.0013664251315905571,True
+7113,Promoters of performing arts and sports,7113,"Promoters of Performing Arts, Sports, and Similar Events",-0.1931654,raw_exact_match,,notebook_raw_appendix_b,157461.0,0.0013650554035070691,True
+4453,"Beer, wine, and liquor stores",4453,"Beer, Wine, and Liquor Stores",-0.0185797,raw_exact_match,,notebook_raw_appendix_b,151578.0,0.0013140547053098516,True
+4922,Local messengers and local delivery,4922,Local Messengers and Local Delivery,-1.182829,raw_exact_match,,notebook_raw_appendix_b,150705.0,0.0013064865241903256,True
+4412,Other motor vehicle dealers,4412,Other Motor Vehicle Dealers,-0.1300993,raw_exact_match,,notebook_raw_appendix_b,150020.0,0.0013005481461068487,True
+1113,Fruit and tree nut farming,,,,,,,149932.0,0.0012997852595793365,False
+7121,"Museums, historical sites, zoos, and parks",7121,"Museums, Historical Sites, and Similar Institutions",0.380777,raw_exact_match,,notebook_raw_appendix_b,148900.0,0.001290838681211237,True
+8132,Grantmaking and giving services,8132,Grantmaking and Giving Services,1.721215,raw_exact_match,,notebook_raw_appendix_b,147773.0,0.0012810685321600276,True
+3273,Cement and concrete product manufacturing,3270,Nonmetallic Mineral Product Manufacturing,-0.9656745,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial,141627.0,0.0012277878435453585,True
+5629,Remediation and other waste services,5629,Remediation and Other Waste Management Services,-0.7835333,raw_exact_match,,notebook_raw_appendix_b,141010.0,0.0012224389686876867,True
+4854,School and employee bus transportation,4854,School and Employee Bus Transportation,0.076602,raw_exact_match,,notebook_raw_appendix_b,138461.0,0.0012003412668850845,True
+5414,Specialized design services,5414,Specialized Design Services,1.280983,raw_exact_match,,notebook_raw_appendix_b,136249.0,0.0011811650737162515,True
+4246,Chemical merchant wholesalers,,,,,,,134810.0,0.0011686901451584074,False
+1114,Greenhouse and nursery production,,,,,,,133574.0,0.001157975057112893,False
+3371,Household and institutional furniture mfg.,3379,Other Furniture Related Product Manufacturing,-0.5724769,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial,128485.0,0.0011138576759934572,True
+7131,Amusement parks and arcades,7131,Amusement Parks and Arcades,-0.533819,raw_exact_match,,notebook_raw_appendix_b,125230.0,0.0010856395436405857,True
+5192,"NAICS 5192 Web search portals, libraries, archives, and other information services",5191,Other Information Services,1.749664,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial,124185.0,0.0010765802661263765,True
+7112,Spectator sports,7112,Spectator Sports,-0.2576417,raw_exact_match,,notebook_raw_appendix_b,123757.0,0.0010728698634698392,True
+3335,Metalworking machinery manufacturing,3335,Metalworking Machinery Manufacturing,-0.346932,raw_exact_match,,notebook_raw_appendix_b,121601.0,0.0010541791435457867,True
+5612,Facilities support services,5612,Facilities Support Services,-1.008228,raw_exact_match,,notebook_raw_appendix_b,121546.0,0.0010537023394660914,True
+3219,Other wood product manufacturing,3219,Other Wood Product Manufacturing,-1.146,raw_exact_match,,notebook_raw_appendix_b,120226.0,0.0010422590415534061,True
+7111,Performing arts companies,7111,Performing Arts Companies,0.1677087,raw_exact_match,,notebook_raw_appendix_b,119798.0,0.0010385486388968688,True
+4243,Apparel and piece goods merchant wholesalers,4243,"Apparel, Piece Goods, and Notions Merchant Wholesalers",0.6573116,raw_exact_match,,notebook_raw_appendix_b,117981.0,0.001022796765936756,True
+4583,"NAICS 4583 Jewelry, luggage, and leather goods retailers",4483,"Jewelry, Luggage, and Leather Goods Stores",0.3828857,raw_normalized_match,,notebook_raw_appendix_b,115056.0,0.0009974394580620557,True
+8122,Death care services,8122,Death Care Services,-0.3155441,raw_exact_match,,notebook_raw_appendix_b,114580.0,0.0009933129354814207,True
+4235,Metal and mineral merchant wholesalers,,,,,,,111994.0,0.00097089447457066,False
+1121,Cattle ranching and farming,,,,,,,108450.0,0.0009401709535081172,False
+6115,Technical and trade schools,6115,Technical and Trade Schools,0.947026,raw_exact_match,,notebook_raw_appendix_b,108285.0,0.0009387405412690315,True
+6239,Other residential care facilities,6239,Other Residential Care Facilities,0.7190148,raw_exact_match,,notebook_raw_appendix_b,104088.0,0.0009023560554057437,True
+5322,Consumer goods rental,,,,,,,100986.0,0.0008754643053109334,False
+3328,"Coating, engraving, and heat treating metals",3328,"Coating, Engraving, Heat Treating, and Allied Activities",-0.7753809,raw_exact_match,,notebook_raw_appendix_b,100851.0,0.0008742939680244087,True
+4232,Furniture and furnishing merchant wholesalers,,,,,,,98094.0,0.0008503930798840503,False
+3251,Basic chemical manufacturing,3254,Pharmaceutical and Medicine Manufacturing,0.4637086,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial,98017.0,0.000849725554172477,True
+3222,Converted paper product manufacturing,3222,Converted Paper Product Manufacturing,-0.8241846,raw_exact_match,,notebook_raw_appendix_b,96549.0,0.0008369992198271573,True
+4241,Paper and paper product merchant wholesalers,,,,,,,94670.0,0.0008207098586317516,False
+4884,Support activities for road transportation,4884,Support Activities for Road Transportation,-0.9504591,raw_exact_match,,notebook_raw_appendix_b,93327.0,0.0008090671699221029,True
+8112,Electronic equipment repair and maintenance,8112,Electronic and Precision Equipment Repair and Maintenance,0.1066877,raw_exact_match,,notebook_raw_appendix_b,90073.0,0.0007808577067343167,True
+3332,Industrial machinery manufacturing,,,,,,,89845.0,0.0007788811370948529,False
+3115,Dairy product manufacturing,3115,Dairy Product Manufacturing,-0.8435335,raw_exact_match,,notebook_raw_appendix_b,88922.0,0.0007708794977210585,True
+5161,NAICS 5161 Radio and television broadcasting stations,,,,,,,87881.0,0.0007618548968671908,False
+3331,"Ag., construction, and mining machinery mfg.",,,,,,,87478.0,0.0007583612233377878,False
+4883,Support activities for water transportation,4883,Support Activities for Water Transportation,-1.411064,raw_exact_match,,notebook_raw_appendix_b,84908.0,0.0007360814690683929,True
+4859,Other ground passenger transportation,4859,Other Transit and Ground Passenger Transportation,0.9623069,raw_exact_match,,notebook_raw_appendix_b,84872.0,0.0007357693791253197,True
+2379,Other heavy construction,2379,Other Heavy and Civil Engineering Construction,-1.104619,raw_exact_match,,notebook_raw_appendix_b,84563.0,0.0007330906071139412,True
+6223,Other hospitals,6223,Specialty (except Psychiatric and Substance Abuse) Hospitals,0.5900623,raw_exact_match,,notebook_raw_appendix_b,82384.0,0.0007142004963929251,True
+2111,Oil and gas extraction,2111,Oil and Gas Extraction,0.6686154,raw_exact_match,,notebook_raw_appendix_b,80267.0,0.0006958478739072019,True
+3114,Fruit and vegetable preserving and specialty,3114,Fruit and Vegetable Preserving and Specialty Food Manufacturing,-0.980808,raw_exact_match,,notebook_raw_appendix_b,79663.0,0.0006906116981956398,True
+4853,Taxi and limousine service,4853,Taxi and Limousine Service,1.369857,raw_exact_match,,notebook_raw_appendix_b,76017.0,0.0006590039222943895,True
+8114,Household goods repair and maintenance,8114,Personal and Household Goods Repair and Maintenance,-0.7464604,raw_exact_match,,notebook_raw_appendix_b,73462.0,0.0006368542055012754,True
+3353,Electrical equipment manufacturing,3353,Electrical Equipment Manufacturing,0.332973,raw_exact_match,,notebook_raw_appendix_b,71302.0,0.0006181288089168813,True
+3256,"Soap, cleaning compound, and toiletry mfg.",3254,Pharmaceutical and Medicine Manufacturing,0.4637086,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial,70614.0,0.0006121644233381484,True
+3341,Computer and peripheral equipment mfg.,3341,Computer and Peripheral Equipment Manufacturing,1.596084,raw_exact_match,,notebook_raw_appendix_b,70164.0,0.000608263299049733,True
+4247,Petroleum merchant wholesalers,,,,,,,69299.0,0.0006007644712508899,False
+3359,Other electrical equipment and component mfg.,3359,Other Electrical Equipment and Component Manufacturing,-0.0384073,raw_exact_match,,notebook_raw_appendix_b,69201.0,0.0005999148930725239,True
+3362,Motor vehicle body and trailer manufacturing,3362,Motor Vehicle Body and Trailer Manufacturing,-0.8058288,raw_exact_match,,notebook_raw_appendix_b,68790.0,0.0005963518662224378,True
+1112,Vegetable and melon farming,,,,,,,62110.0,0.0005384418434521822,False
+3241,Petroleum and coal products manufacturing,3241,Petroleum and Coal Products Manufacturing,-0.1959436,raw_exact_match,,notebook_raw_appendix_b,62084.0,0.0005382164451599626,True
+5622,Waste treatment and disposal,5622,Waste Treatment and Disposal,-0.7965308,raw_exact_match,,notebook_raw_appendix_b,60659.0,0.0005258628849133138,True
+6114,"Business, computer and management training",6114,Business Schools and Computer and Management Training,1.741192,raw_exact_match,,notebook_raw_appendix_b,58429.0,0.0005065306467729441,True
+3342,Communications equipment manufacturing,3342,Communications Equipment Manufacturing,1.181725,raw_exact_match,,notebook_raw_appendix_b,55015.0,0.00047693411717149905,True
+7115,"Independent artists, writers, and performers",7115,"Independent Artists, Writers, and Performers",0.6088023,raw_exact_match,,notebook_raw_appendix_b,54278.0,0.0004705449425035831,True
+3334,Hvac and commercial refrigeration equipment,,,,,,,53919.0,0.0004674327122379361,False
+3321,Forging and stamping,,,,,,,53569.0,0.00046439850445805745,False
+4592,NAICS 4592 Book retailers and news dealers,4512,Book Stores and News Dealers,0.2499871,raw_normalized_match,,notebook_raw_appendix_b,52708.0,0.00045693435331955594,True
+4572,NAICS 4572 Fuel dealers,,,,,,,51644.0,0.0004477103616687248,False
+3366,Ship and boat building,3366,Ship and Boat Building,-0.6675431,raw_exact_match,,notebook_raw_appendix_b,51107.0,0.0004430550200178824,True
+3372,Office furniture and fixtures manufacturing,3379,Other Furniture Related Product Manufacturing,-0.5724769,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial,49034.0,0.00042508384079591535,True
+3333,Commercial and service industry machinery,3333,Commercial and Service Industry Machinery Manufacturing,0.3308995,raw_exact_match,,notebook_raw_appendix_b,48347.0,0.0004191281243822678,True
+3361,Motor vehicle manufacturing,3361,Motor Vehicle Manufacturing,-0.3023474,raw_exact_match,,notebook_raw_appendix_b,47349.0,0.00041047629762707094,True
+1119,Other crop farming,,,,,,,44355.0,0.0003845208173614803,False
+3324,"Boiler, tank, and shipping container mfg.",,,,,,,43916.0,0.00038071505388900394,False
+7132,Gambling industries,7132,Gambling Industries,-0.1355364,raw_exact_match,,notebook_raw_appendix_b,43915.0,0.00038070638472391855,True
+3255,"Paint, coating, and adhesive manufacturing",3254,Pharmaceutical and Medicine Manufacturing,0.4637086,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial,41309.0,0.0003581145405114506,True
+4593,NAICS 4593 Florists,4531,Florists,-0.3690017,raw_normalized_match,,notebook_raw_appendix_b,40982.0,0.0003552797235285354,True
+3152,Cut and sew apparel manufacturing,3152,Cut and Sew Apparel Manufacturing,-0.6520287,raw_exact_match,,notebook_raw_appendix_b,40822.0,0.00035389265711487653,True
+3279,Other nonmetallic mineral products,3270,Nonmetallic Mineral Product Manufacturing,-0.9656745,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial,39312.0,0.00034080221783597145,True
+3315,Foundries,3315,Foundries,-1.078051,raw_exact_match,,notebook_raw_appendix_b,38311.0,0.0003321243835855185,True
+6222,Psychiatric and substance abuse hospitals,6222,Psychiatric and Substance Abuse Hospitals,0.5211326,raw_exact_match,,notebook_raw_appendix_b,38094.0,0.0003302431747619937,True
+4245,Farm product raw material merch. whls.,4245,Farm Product Raw Material Merchant Wholesalers,-0.7109669,raw_exact_match,,notebook_raw_appendix_b,37897.0,0.0003285353492401763,True
+3259,Other chemical product and preparation mfg.,3254,Pharmaceutical and Medicine Manufacturing,0.4637086,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial,36504.0,0.0003164592022762592,True
+1111,Oilseed and grain farming,,,,,,,34958.0,0.0003030566730542809,False
+3252,"Resin, rubber, and artificial fibers mfg.",3254,Pharmaceutical and Medicine Manufacturing,0.4637086,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial,34607.0,0.00030001379610931683,True
+7212,Rv parks and recreational camps,7212,RV (Recreational Vehicle) Parks and Recreational Camps,-0.404939,raw_exact_match,,notebook_raw_appendix_b,34249.0,0.00029691023500875524,True
+3113,Sugar and confectionery product manufacturing,3113,Sugar and Confectionery Product Manufacturing,-0.7729946,raw_exact_match,,notebook_raw_appendix_b,33512.0,0.00029052106034083933,True
+3262,Rubber product manufacturing,3262,Rubber Product Manufacturing,-1.077709,raw_exact_match,,notebook_raw_appendix_b,29916.0,0.0002593467426938574,True
+4812,Nonscheduled air transportation,4812,Nonscheduled Air Transportation,0.1134526,raw_exact_match,,notebook_raw_appendix_b,28813.0,0.0002497846536046969,True
+2123,Nonmetallic mineral mining and quarrying,2123,Nonmetallic Mineral Mining and Quarrying,-1.037903,raw_exact_match,,notebook_raw_appendix_b,28078.0,0.00024341281726695174,True
+7114,Agents and managers for public figures,7114,"Agents and Managers for Artists, Athletes, Entertainers, and Other Public Figures",1.910984,raw_exact_match,,notebook_raw_appendix_b,26808.0,0.00023240297760853486,True
+3111,Animal food manufacturing,3111,Animal Food Manufacturing,-0.78914,raw_exact_match,,notebook_raw_appendix_b,26492.0,0.0002296635214415587,True
+3112,Grain and oilseed milling,3112,Grain and Oilseed Milling,-0.7206286,raw_exact_match,,notebook_raw_appendix_b,25577.0,0.00022173123538844734,True
+2372,Land subdivision,2372,Land Subdivision,0.5814018,raw_exact_match,,notebook_raw_appendix_b,25309.0,0.0002194078991455688,True
+3211,Sawmills and wood preservation,3211,Sawmills and Wood Preservation,-1.421037,raw_exact_match,,notebook_raw_appendix_b,25296.0,0.00021929519999945904,True
+4831,"Sea, coastal, and great lakes transportation",4831,"Deep Sea, Coastal, and Great Lakes Water Transportation",-0.3280049,raw_exact_match,,notebook_raw_appendix_b,25268.0,0.00021905246337706875,True
+3311,Iron and steel mills and ferroalloy mfg.,3311,Iron and Steel Mills and Ferroalloy Manufacturing,-0.9913391,raw_exact_match,,notebook_raw_appendix_b,24327.0,0.00021089477903173782,True
+3272,Glass and glass product manufacturing,3270,Nonmetallic Mineral Product Manufacturing,-0.9656745,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial,21693.0,0.00018806019819687955,True
+3149,Other textile product mills,3149,Other Textile Product Mills,-0.561571,raw_exact_match,,notebook_raw_appendix_b,20429.0,0.0001771023735289749,True
+4889,Other support activities for transportation,4889,Other Support Activities for Transportation,-1.105623,raw_exact_match,,notebook_raw_appendix_b,20410.0,0.0001769376593923529,True
+1133,Logging,1133,Logging,-1.360161,raw_exact_match,,notebook_raw_appendix_b,20249.0,0.00017554192381360873,True
+2213,"Water, sewage and other systems",2213,"Water, Sewage and Other Systems",-0.1564226,raw_exact_match,,notebook_raw_appendix_b,20175.0,0.0001749004055972915,True
+5178,NAICS 5178 All other telecommunications,,,,,,,19231.0,0.0001667167137567045,False
+3312,Steel product mfg. from purchased steel,3312,Steel Product Manufacturing from Purchased Steel,-0.9156145,raw_exact_match,,notebook_raw_appendix_b,18928.0,0.00016408995673583812,True
+3336,Turbine and power transmission equipment mfg.,3336,"Engine, Turbine, and Power Transmission Equipment Manufacturing",0.1307197,raw_exact_match,,notebook_raw_appendix_b,18463.0,0.00016005879497114217,True
+2212,Natural gas distribution,2212,Natural Gas Distribution,0.3453538,raw_exact_match,,notebook_raw_appendix_b,18425.0,0.0001597293666978982,True
+5122,Sound recording industries,5122,Sound Recording Industries,1.43428,raw_exact_match,,notebook_raw_appendix_b,18200.0,0.00015777880455369048,True
+4882,Support activities for rail transportation,4882,Support Activities for Rail Transportation,-1.474989,raw_exact_match,,notebook_raw_appendix_b,17826.0,0.000154536536811763,True
+3141,Textile furnishings mills,3141,Textile Furnishings Mills,-1.067818,raw_exact_match,,notebook_raw_appendix_b,17513.0,0.00015182308814004294,True
+3314,Other nonferrous metal production,3314,Nonferrous Metal (except Aluminum) Production and Processing,-0.7421725,raw_exact_match,,notebook_raw_appendix_b,16907.0,0.00014656957409831016,True
+1123,Poultry and egg production,,,,,,,16052.0,0.00013915743795032086,False
+3212,Plywood and engineered wood product mfg.,3212,"Veneer, Plywood, and Engineered Wood Product Manufacturing",-1.13457,raw_exact_match,,notebook_raw_appendix_b,15900.0,0.000137839724857345,True
+5323,General rental centers,,,,,,,15772.0,0.00013673007172641794,False
+5331,Lessors of nonfinancial intangible assets,5331,Lessors of Nonfinancial Intangible Assets (except Copyrighted Works),1.911472,raw_exact_match,,notebook_raw_appendix_b,15294.0,0.00013258621081561222,True
+3326,Spring and wire product manufacturing,,,,,,,14486.0,0.0001255815254266352,False
+5259,Other investment pools and funds,5259,Other Investment Pools and Funds,2.07022,raw_exact_match,,notebook_raw_appendix_b,14140.0,0.000122581994307098,True
+3351,Electric lighting equipment manufacturing,3351,Electric Lighting Equipment Manufacturing,0.5806971,raw_exact_match,,notebook_raw_appendix_b,13946.0,0.00012090017628053667,True
+4862,Pipeline transportation of natural gas,4862,Pipeline Transportation of Natural Gas,-0.0901119,raw_exact_match,,notebook_raw_appendix_b,13897.0,0.00012047538719135366,True
+3117,Seafood product preparation and packaging,3117,Seafood Product Preparation and Packaging,-1.258223,raw_exact_match,,notebook_raw_appendix_b,13238.0,0.00011476240740009642,True
+1152,Support activities for animal production,1152,Support Activities for Animal Production,-1.149307,raw_exact_match,,notebook_raw_appendix_b,12412.0,0.00010760167703958276,True
+3313,Alumina and aluminum production,3313,Alumina and Aluminum Production and Processing,-1.022397,raw_exact_match,,notebook_raw_appendix_b,10789.0,9.353162210603114e-05,True
+4832,Inland water transportation,4832,Inland Water Transportation,-0.8718479,raw_exact_match,,notebook_raw_appendix_b,10680.0,9.258668311172606e-05,True
+3132,Fabric mills,3132,Fabric Mills,-1.114104,raw_exact_match,,notebook_raw_appendix_b,10600.0,9.189314990489666e-05,True
+4851,Urban transit systems,4851,Urban Transit Systems,-0.1201694,raw_exact_match,,notebook_raw_appendix_b,10486.0,9.090486508516475e-05,True
+3379,Other furniture related product manufacturing,3379,Other Furniture Related Product Manufacturing,-0.5724769,raw_exact_match,,notebook_raw_appendix_b,10098.0,8.754122903204212e-05,True
+3253,Agricultural chemical manufacturing,3254,Pharmaceutical and Medicine Manufacturing,0.4637086,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial,10056.0,8.717712409845669e-05,True
+3221,"Pulp, paper, and paperboard mills",3221,"Pulp, Paper, and Paperboard Mills",-0.9502621,raw_exact_match,,notebook_raw_appendix_b,9939.0,8.616283178346867e-05,True
+4872,"Scenic and sightseeing transportation, water",4872,"Scenic and Sightseeing Transportation, Water",-0.6679308,raw_exact_match,,notebook_raw_appendix_b,9687.0,8.397820218195603e-05,True
+1122,Hog and pig farming,,,,,,,9521.0,8.253912077778501e-05,False
+2121,Coal mining,2121,Coal Mining,-1.146242,raw_exact_match,,notebook_raw_appendix_b,9487.0,8.224436916488251e-05,True
+1153,Support activities for forestry,1151,Support Activities for Crop Production,-2.165304,accepted_suggested_join,Same 3-digit NAICS family with strong title alignment.,recommended_felten_naics_overrides_initial,9372.0,8.124741518006523e-05,True
+3322,Cutlery and handtool manufacturing,,,,,,,9337.0,8.094399440207736e-05,False
+3369,Other transportation equipment manufacturing,3369,Other Transportation Equipment Manufacturing,-0.1676746,raw_exact_match,,notebook_raw_appendix_b,8864.0,7.684347931669848e-05,True
+1129,Other animal production,,,,,,,8683.0,7.527436043624695e-05,False
+4855,Charter bus industry,4855,Charter Bus Industry,0.0093568,raw_exact_match,,notebook_raw_appendix_b,8516.0,7.382660986699056e-05,True
+3133,Textile and fabric finishing mills,3133,Textile and Fabric Finishing and Fabric Coating Mills,-0.4358472,raw_exact_match,,notebook_raw_appendix_b,8376.0,7.26129267550391e-05,True
+3343,Audio and video equipment manufacturing,3343,Audio and Video Equipment Manufacturing,1.161132,raw_exact_match,,notebook_raw_appendix_b,7505.0,6.50620839656839e-05,True
+3271,Clay product and refractory manufacturing,3270,Nonmetallic Mineral Product Manufacturing,-0.9656745,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial,7477.0,6.481934734329362e-05,True
+3352,Household appliance manufacturing,3352,Household Appliance Manufacturing,0.0281708,raw_exact_match,,notebook_raw_appendix_b,6750.0,5.851686432623136e-05,True
+6112,Junior colleges,6112,Junior Colleges,1.530079,raw_exact_match,,notebook_raw_appendix_b,5741.0,4.976967675509544e-05,True
+3131,"Fiber, yarn, and thread mills",3131,"Fiber, Yarn, and Thread Mills",-1.587852,raw_exact_match,,notebook_raw_appendix_b,5712.0,4.9518270967619784e-05,True
+2122,Metal ore mining,2122,Metal Ore Mining,-0.8924032,raw_exact_match,,notebook_raw_appendix_b,5382.0,4.665744648944847e-05,True
+5232,Securities and commodity exchanges,,,,,,,5186.0,4.495829013271642e-05,False
+3325,Hardware manufacturing,,,,,,,5036.0,4.365791536991128e-05,False
+5251,Insurance and employee benefit funds,5251,Insurance and Employee Benefit Funds,2.180309,raw_exact_match,,notebook_raw_appendix_b,4968.0,4.306841214410628e-05,True
+5174,Satellite telecommunications,,,,,,,4801.0,4.1620661574849893e-05,False
+4861,Pipeline transportation of crude oil,4861,Pipeline Transportation of Crude Oil,-0.1340503,raw_exact_match,,notebook_raw_appendix_b,4645.0,4.026827182153254e-05,True
+3365,Railroad rolling stock manufacturing,3365,Railroad Rolling Stock Manufacturing,-0.6623871,raw_exact_match,,notebook_raw_appendix_b,3982.0,3.452061536993382e-05,True
+3346,Magnetic media manufacturing and reproducing,3346,Manufacturing and Reproducing Magnetic and Optical Media,0.1490236,raw_exact_match,,notebook_raw_appendix_b,2869.0,2.487183462991967e-05,True
+3159,Accessories and other apparel manufacturing,3159,Apparel Accessories and Other Apparel Manufacturing,-0.7916203,raw_exact_match,,notebook_raw_appendix_b,2823.0,2.447305303599276e-05,True
+7213,Rooming and boarding houses,7213,Rooming and Boarding Houses,-1.051392,raw_exact_match,,notebook_raw_appendix_b,2716.0,2.3545452371858427e-05,True
+3151,Apparel knitting mills,3151,Apparel Knitting Mills,-1.272213,raw_exact_match,,notebook_raw_appendix_b,2656.0,2.302530246673637e-05,True
+1125,Aquaculture,,,,,,,2641.0,2.2895264990455855e-05,False
+4852,Interurban and rural bus transportation,4852,Interurban and Rural Bus Transportation,-0.0462207,raw_exact_match,,notebook_raw_appendix_b,2628.0,2.2782565844346076e-05,True
+3169,Other leather product manufacturing,3169,Other Leather and Allied Product Manufacturing,-0.6799067,raw_exact_match,,notebook_raw_appendix_b,2584.0,2.2401122580589902e-05,True
+4871,"Scenic and sightseeing transportation, land",4871,"Scenic and Sightseeing Transportation, Land",0.4042215,raw_exact_match,,notebook_raw_appendix_b,2444.0,2.1187439468638437e-05,True
+4911,Postal service,4911,Postal Service (federal government),-1.314742,raw_exact_match,,notebook_raw_appendix_b,1984.0,1.7199623529369337e-05,True
+3122,Tobacco manufacturing,3122,Tobacco Manufacturing,-0.8843057,raw_exact_match,,notebook_raw_appendix_b,1711.0,1.483294146106398e-05,True
+1141,Fishing,,,,,,,1601.0,1.3879333301673542e-05,False
+3162,Footwear manufacturing,3162,Footwear Manufacturing,-0.5300771,raw_exact_match,,notebook_raw_appendix_b,1559.0,1.3515228368088103e-05,True
+3274,Lime and gypsum product manufacturing,3270,Nonmetallic Mineral Product Manufacturing,-0.9656745,accepted_suggested_join,Same 3-digit NAICS family with moderate title alignment.,recommended_felten_naics_overrides_initial,1345.0,1.1660027039819435e-05,True
+4869,Other pipeline transportation,4869,Other Pipeline Transportation,-0.0393555,raw_exact_match,,notebook_raw_appendix_b,1323.0,1.1469305407941348e-05,True
+5211,Monetary authorities - central bank,5211,Monetary Authorities-Central Bank,1.770347,raw_exact_match,,notebook_raw_appendix_b,930.0,8.062323529391877e-06,True
+4879,"Scenic and sightseeing transportation, other",4879,"Scenic and Sightseeing Transportation, Other",0.1866125,raw_exact_match,,notebook_raw_appendix_b,568.0,4.9240857684888024e-06,True
+3161,Leather and hide tanning and finishing,3161,Leather and Hide Tanning and Finishing,-1.103977,raw_exact_match,,notebook_raw_appendix_b,563.0,4.880739943061964e-06,True
+1124,Sheep and goat farming,,,,,,,387.0,3.3549668880372646e-06,False
+1131,Timber tract operations,,,,,,,300.0,2.600749525610283e-06,False
+1142,Hunting and trapping,,,,,,,202.0,1.751171347244257e-06,False
+1132,Forest nursery and gathering forest products,,,,,,,163.0,1.4130739089149204e-06,False
+4821,Rail transportation,4821,Rail Transportation,-0.5922358,raw_exact_match,,notebook_raw_appendix_b,31.0,2.687441176463959e-07,True
+4421,Furniture stores,4421,Furniture Stores,-0.0112289,raw_exact_match,,notebook_raw_appendix_b,,,True
+4422,Home furnishings stores,4422,Home Furnishings Stores,0.049807,raw_exact_match,,notebook_raw_appendix_b,,,True
+4431,Electronics and appliance stores,4431,Electronics and Appliance Stores,0.3619018,raw_exact_match,,notebook_raw_appendix_b,,,True
+4461,Health and personal care stores,4461,Health and Personal Care Stores,0.3257251,raw_exact_match,,notebook_raw_appendix_b,,,True
+4471,Gasoline stations,4471,Gasoline Stations,-0.3108229,raw_exact_match,,notebook_raw_appendix_b,,,True
+4481,Clothing stores,4481,Clothing Stores,0.2268381,raw_exact_match,,notebook_raw_appendix_b,,,True
+4482,Shoe stores,4482,Shoe Stores,0.2810808,raw_exact_match,,notebook_raw_appendix_b,,,True
+4483,"Jewelry, luggage, and leather goods stores",4483,"Jewelry, Luggage, and Leather Goods Stores",0.3828857,raw_exact_match,,notebook_raw_appendix_b,,,True
+4511,Sporting goods and musical instrument stores,4511,"Sporting Goods, Hobby, and Musical Instrument Stores",0.2090943,raw_exact_match,,notebook_raw_appendix_b,,,True
+4512,"Book, periodical, and music stores",4512,Book Stores and News Dealers,0.2499871,raw_exact_match,,notebook_raw_appendix_b,,,True
+4521,Department stores,,,,,,,,,False
+4522,NAICS 4522 Department stores,,,,,,,,,False
+4523,"NAICS 4523 General merchandise stores, including warehouse clubs and supercenters",,,,,,,,,False
+4529,Other general merchandise stores,,,,,,,,,False
+4531,Florists,4531,Florists,-0.3690017,raw_exact_match,,notebook_raw_appendix_b,,,True
+4532,"Office supplies, stationery, and gift stores",,,,,,,,,False
+4533,Used merchandise stores,,,,,,,,,False
+4539,Other miscellaneous store retailers,4539,Other Miscellaneous Store Retailers,0.00781,raw_exact_match,,notebook_raw_appendix_b,,,True
+4541,Electronic shopping and mail-order houses,4541,Electronic Shopping and Mail-Order Houses,0.6046838,raw_exact_match,,notebook_raw_appendix_b,,,True
+4542,Vending machine operators,4542,Vending Machine Operators,-0.6646855,raw_exact_match,,notebook_raw_appendix_b,,,True
+4543,Direct selling establishments,4543,Direct Selling Establishments,-0.0433316,raw_exact_match,,notebook_raw_appendix_b,,,True
+5111,"Newspaper, book, and directory publishers",5111,"Newspaper, Periodical, Book, and Directory Publishers",1.337831,raw_exact_match,,notebook_raw_appendix_b,,,True
+5112,Software publishers,5112,Software Publishers,1.966309,raw_exact_match,,notebook_raw_appendix_b,,,True
+5151,Radio and television broadcasting,5151,Radio and Television Broadcasting,1.429625,raw_exact_match,,notebook_raw_appendix_b,,,True
+5152,Cable and other subscription programming,5152,Cable and Other Subscription Programming,1.098212,raw_exact_match,,notebook_raw_appendix_b,,,True
+5172,Wireless telecommunications carriers,,,,,,,,,False
+5173,NAICS 5173 Wired and wireless telecommunications carriers,,,,,,,,,False
+5179,Other telecommunications,,,,,,,,,False
+5191,Other information services,5191,Other Information Services,1.749664,raw_exact_match,,notebook_raw_appendix_b,,,True
+7221,Full-service restaurants,,,,,,,,,False
+7222,Limited-service eating places,,,,,,,,,False

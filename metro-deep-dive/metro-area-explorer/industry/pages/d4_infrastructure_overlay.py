@@ -53,6 +53,21 @@ def _build_geojson_outline_layer(features, layer_id: str, color: list[int], fill
     )
 
 
+def _build_county_outline_layer(features, layer_id: str) -> pdk.Layer:
+    """Draw county boundaries above tract fill and below thematic overlays."""
+    return pdk.Layer(
+        "GeoJsonLayer",
+        {"type": "FeatureCollection", "features": features},
+        id=layer_id,
+        stroked=True,
+        filled=False,
+        get_line_color=[55, 65, 81, 190],
+        line_width_min_pixels=1.3,
+        pickable=False,
+        opacity=0.9,
+    )
+
+
 def _build_scatter_layer(df: pd.DataFrame, layer_id: str, color: list[int], radius_column: str) -> pdk.Layer:
     """Render cached point-like layers through their stored centroids."""
     return pdk.Layer(
@@ -89,13 +104,53 @@ def _render_html_table(df: pd.DataFrame) -> None:
     st.markdown(df.fillna("—").to_html(index=False), unsafe_allow_html=True)
 
 
+def _decorate_d4_base_features(features) -> list[dict]:
+    """Build one tooltip contract for tract-fill features so hover copy never shows null rows."""
+    decorated: list[dict] = []
+    for feature in features:
+        feature_copy = dict(feature)
+        properties = dict(feature_copy.get("properties", {}))
+        properties["tooltip_title"] = properties.get("tract_display_name", properties.get("tract_name", "Tract"))
+        properties["tooltip_body"] = (
+            f"Area anchor: {properties.get('place_label', '—')}<br/>"
+            f"County / city: {properties.get('county_name', '—')}<br/>"
+            f"Tract: {properties.get('tract_geoid', '—')}<br/>"
+            f"Dominant sector: {properties.get('dominant_sector_label', '—')}<br/>"
+            f"{properties.get('label', 'Metric')}: {properties.get('metric', '—')}<br/>"
+            f"Largest-overlap share: {properties.get('label_overlap_share_pct', '—')}"
+        )
+        feature_copy["properties"] = properties
+        decorated.append(feature_copy)
+    return decorated
+
+
+def _decorate_d4_overlay_features(features) -> list[dict]:
+    """Build one tooltip contract for overlay features instead of mixing tract and layer schemas."""
+    decorated: list[dict] = []
+    for feature in features:
+        feature_copy = dict(feature)
+        properties = dict(feature_copy.get("properties", {}))
+        feature_name = properties.get("feature_name") or "Unnamed feature"
+        layer_group = properties.get("layer_group") or "unclassified"
+        source_system = properties.get("source_system") or "unknown"
+        properties["tooltip_title"] = feature_name
+        properties["tooltip_body"] = (
+            f"Layer group: {layer_group}<br/>"
+            f"Source: {source_system}"
+        )
+        feature_copy["properties"] = properties
+        decorated.append(feature_copy)
+    return decorated
+
+
 def _render_interpretation_detail(detail: dict[str, object], buffer_miles: float) -> None:
     """Render the selected D4 tract read ahead of the companion map."""
     if not detail:
         st.info("No shortlisted tract is available for detailed D4 interpretation yet.")
         return
 
-    st.subheader(f"Selected job center: {detail['tract_name']}")
+    display_name = detail.get("tract_display_name", detail["tract_name"])
+    st.subheader(f"Selected job center: {display_name}")
     detail_cols = st.columns(4)
     with detail_cols[0]:
         st.metric("Typology read", detail["interpretation_type"])
@@ -110,6 +165,10 @@ def _render_interpretation_detail(detail: dict[str, object], buffer_miles: float
         f"Shortlist rank #{int(detail['shortlist_rank'])}. Review uses a {buffer_miles:.1f}-mile straight-line "
         "buffer around the tract centroid, so this is a proximity read rather than network access."
     )
+    if detail.get("label_overlap_share_pct"):
+        st.caption(
+            f"Richmond neighborhood label uses the largest tract-overlap polygon share: {detail['label_overlap_share_pct']}."
+        )
     st.markdown(detail["interpretation_rationale"])
 
     evidence = pd.DataFrame(
@@ -197,20 +256,33 @@ def render_page(market_id: str) -> None:
 
     st.subheader(base_payload.get("title", "D4 map"))
     st.caption(base_payload.get("subtitle", ""))
+    manifest_extract_date = payload["manifest"].get("extract_date")
+    if manifest_extract_date:
+        st.caption(
+            f"Cached overlay extract date: {str(manifest_extract_date).split('T')[0]}. "
+            "Infrastructure counts and shapes reflect that cache date, while the tract fill follows the latest available LODES tract year above."
+        )
 
-    layers = [_build_base_geojson_layer(base_payload["features"])]
-    if show_lines and payload["osm_line_features"]:
+    base_features = _decorate_d4_base_features(base_payload["features"])
+    line_features = _decorate_d4_overlay_features(payload["osm_line_features"])
+    polygon_features = _decorate_d4_overlay_features(payload["osm_polygon_features"])
+    county_outline_features = payload.get("county_outline_features", [])
+
+    layers = [_build_base_geojson_layer(base_features)]
+    if county_outline_features:
+        layers.append(_build_county_outline_layer(county_outline_features, "d4-county-outlines"))
+    if show_lines and line_features:
         layers.append(
             _build_geojson_outline_layer(
-                payload["osm_line_features"],
+                line_features,
                 "d4-osm-lines",
                 D4_LAYER_STYLES["osm_lines"]["color"],
             )
         )
-    if show_polygons and payload["osm_polygon_features"]:
+    if show_polygons and polygon_features:
         layers.append(
             _build_geojson_outline_layer(
-                payload["osm_polygon_features"],
+                polygon_features,
                 "d4-osm-polygons",
                 D4_LAYER_STYLES["osm_polygons"]["color"],
                 fill_alpha=75,
@@ -260,14 +332,7 @@ def render_page(market_id: str) -> None:
             zoom=view_state["zoom"],
         ),
         tooltip={
-            "html": (
-                "<b>{tract_name}</b><br/>"
-                "Tract: {tract_geoid}<br/>"
-                "Dominant sector: {dominant_sector_label}<br/>"
-                "{label}: {metric}<br/>"
-                "Layer feature: {feature_name}<br/>"
-                "Layer group: {layer_group}"
-            ),
+            "html": "<b>{tooltip_title}</b><br/>{tooltip_body}",
             "style": {
                 "backgroundColor": "rgba(255, 255, 255, 0.96)",
                 "color": "#1f2933",
@@ -281,12 +346,12 @@ def render_page(market_id: str) -> None:
     if shortlist.empty:
         st.info("No D4 interpretation shortlist is available for this market yet.")
     else:
-        shortlist_options = shortlist["tract_name"].tolist()
+        shortlist_options = shortlist["tract_display_name"].tolist()
         selected_tract_name = st.selectbox(
             "Selected shortlisted tract",
             shortlist_options,
         )
-        selected_rows = shortlist[shortlist["tract_name"] == selected_tract_name]
+        selected_rows = shortlist[shortlist["tract_display_name"] == selected_tract_name]
         selected_detail = selected_rows.iloc[0].to_dict() if not selected_rows.empty else interpretation["selected_detail"]
         _render_interpretation_detail(selected_detail, float(buffer_miles))
 
