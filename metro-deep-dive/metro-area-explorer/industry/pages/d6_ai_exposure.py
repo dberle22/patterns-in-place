@@ -255,6 +255,9 @@ def render_page(market_id: str) -> None:
             st.caption(payload["takeaway"])
 
         st.subheader("Sector scorecard")
+        st.caption(
+            f"Broad-sector context uses QCEW {sector_payload.get('selected_year', '—')}, and the underlying Felten join runs on 4-digit NAICS rows from that same year."
+        )
         scorecard_table = _build_sector_table(sector_payload["scorecard_rows"])
         if scorecard_table.empty:
             st.info("The sector scorecard is unavailable for this market.")
@@ -289,22 +292,25 @@ def render_page(market_id: str) -> None:
         if occupation_payload.get("summary"):
             st.write(occupation_payload["summary"])
 
-        top_cols = st.columns([1.1, 0.9])
-        with top_cols[0]:
-            st.subheader("Detailed occupation ranking")
-            occupation_table = _build_occupation_table(occupation_payload["detail_rows"])
-            if occupation_table.empty:
-                st.info("The detailed occupation ranking is unavailable for this market.")
-            else:
-                _render_html_table(occupation_table)
+        st.subheader("Detailed occupation ranking")
+        st.caption(
+            f"Detailed occupation exposure uses OEWS {occupation_payload.get('selected_year', '—')} detailed SOC rows."
+        )
+        occupation_table = _build_occupation_table(occupation_payload["detail_rows"])
+        if occupation_table.empty:
+            st.info("The detailed occupation ranking is unavailable for this market.")
+        else:
+            _render_html_table(occupation_table)
 
-        with top_cols[1]:
-            st.subheader("Occupation family summary")
-            family_table = _build_family_table(occupation_payload["family_rows"])
-            if family_table.empty:
-                st.info("The occupation-family summary is unavailable for this market.")
-            else:
-                _render_html_table(family_table)
+        st.subheader("Occupation family summary")
+        st.caption(
+            f"Family summary uses the compact {occupation_payload.get('selected_year', '—')} occupation surface where available."
+        )
+        family_table = _build_family_table(occupation_payload["family_rows"])
+        if family_table.empty:
+            st.info("The occupation-family summary is unavailable for this market.")
+        else:
+            _render_html_table(family_table)
 
         scatter = _build_occupation_scatter(occupation_payload["detail_rows"])
         if scatter is not None:

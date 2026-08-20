@@ -20,7 +20,7 @@ from data_prep import (
     get_d2_sector_options,
     get_d2_tract_map_payload,
 )
-from shared_ui import format_gdp_total_cell, format_jobs_cell, format_percent_cell
+from shared_ui import format_gdp_total_cell, format_jobs_cell, format_percent_cell, render_color_legend
 
 
 _MAP_STYLE = "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
@@ -53,34 +53,58 @@ def _build_geojson_layer(features, layer_id: str) -> pdk.Layer:
     )
 
 
+def _build_outline_layer(features, layer_id: str) -> pdk.Layer:
+    """Draw county outlines above tract fills for metro orientation."""
+    return pdk.Layer(
+        "GeoJsonLayer",
+        {"type": "FeatureCollection", "features": features},
+        id=layer_id,
+        stroked=True,
+        filled=False,
+        get_line_color=[55, 65, 81, 190],
+        line_width_min_pixels=1.3,
+        pickable=False,
+        opacity=0.9,
+    )
+
+
 def _build_map_tooltip(mode: str) -> dict[str, object]:
     """Keep tract and county hover copy concise and specific to the active map."""
     if mode == "top_industry":
         html = (
-            "<b>{tract_name}</b><br/>"
+            "<b>{tract_display_name}</b><br/>"
+            "Area anchor: {place_label}<br/>"
+            "County / city: {county_name}<br/>"
             "Tract: {tract_geoid}<br/>"
             "Top sector: {dominant_sector_label}<br/>"
             "Top sector jobs: {selected_jobs}<br/>"
             "Top sector share: {selected_share_pct}<br/>"
-            "Total jobs: {jobs_total}"
+            "Total jobs: {jobs_total}<br/>"
+            "Label note: {label_basis_note}"
         )
     elif mode == "selected_industry":
         html = (
-            "<b>{tract_name}</b><br/>"
+            "<b>{tract_display_name}</b><br/>"
+            "Area anchor: {place_label}<br/>"
+            "County / city: {county_name}<br/>"
             "Tract: {tract_geoid}<br/>"
             "Sector: {sector_label}<br/>"
             "Sector jobs: {selected_jobs}<br/>"
             "Sector share: {selected_share_pct}<br/>"
-            "Total jobs: {jobs_total}"
+            "Total jobs: {jobs_total}<br/>"
+            "Largest-overlap share: {label_overlap_share_pct}"
         )
     elif mode == "jobs_density":
         html = (
-            "<b>{tract_name}</b><br/>"
+            "<b>{tract_display_name}</b><br/>"
+            "Area anchor: {place_label}<br/>"
+            "County / city: {county_name}<br/>"
             "Tract: {tract_geoid}<br/>"
             "Dominant sector: {dominant_sector_label}<br/>"
             "Total jobs: {jobs_total}<br/>"
             "Population: {selected_jobs}<br/>"
-            "Density metric: {selected_share_pct}"
+            "Density metric: {selected_share_pct}<br/>"
+            "Label note: {label_basis_note}"
         )
     else:
         html = (
@@ -108,8 +132,12 @@ def _render_map(payload: dict[str, object], layer_id: str, tooltip_mode: str) ->
         return
 
     view_state = payload["view_state"]
+    county_outline_features = payload.get("county_outline_features", [])
+    layers = [_build_geojson_layer(features, layer_id)]
+    if county_outline_features:
+        layers.append(_build_outline_layer(county_outline_features, f"{layer_id}-county-outlines"))
     deck = pdk.Deck(
-        layers=[_build_geojson_layer(features, layer_id)],
+        layers=layers,
         initial_view_state=pdk.ViewState(
             latitude=view_state["latitude"],
             longitude=view_state["longitude"],
@@ -139,7 +167,7 @@ def _build_jobs_intensity_scatter(rows: pd.DataFrame, ranking_metric_label: str)
     plot_rows = rows[
         [
             "tract_geoid",
-            "tract_name",
+            "tract_display_name",
             "jobs_total",
             "pop_total",
             "land_area_sqmi",
@@ -166,7 +194,7 @@ def _build_jobs_intensity_scatter(rows: pd.DataFrame, ranking_metric_label: str)
         y="jobs_per_sqmi",
         size="jobs_total",
         color="dominant_sector_label",
-        hover_name="tract_name",
+        hover_name="tract_display_name",
         hover_data={
             "tract_geoid": True,
             "jobs_total_label": True,
@@ -198,6 +226,7 @@ def _build_jobs_density_map_payload(
     rows: pd.DataFrame,
     density_metric_label: str,
     view_state: dict[str, float],
+    county_outline_features: list[dict],
 ) -> dict[str, object]:
     """Build a tract density map payload from the already prepared D2 tract surface."""
     if rows.empty:
@@ -225,6 +254,11 @@ def _build_jobs_density_map_payload(
                 "properties": {
                     "tract_geoid": row["tract_geoid"],
                     "tract_name": row["tract_name"],
+                    "tract_display_name": row["tract_display_name"],
+                    "place_label": row["place_label"],
+                    "county_name": row["county_display_name"],
+                    "label_basis_note": row["label_basis_note"],
+                    "label_overlap_share_pct": row["label_overlap_share_pct"],
                     "jobs_total": format_jobs_cell(row["jobs_total"]),
                     "dominant_sector_label": row["dominant_sector_label"],
                     "selected_share_pct": _format_density_cell(metric_value),
@@ -244,6 +278,7 @@ def _build_jobs_density_map_payload(
         ),
         "rows": rows,
         "view_state": view_state,
+        "county_outline_features": county_outline_features,
         "title": f"{density_metric_label} by tract",
         "subtitle": "Tract jobs intensity surface from the same D2 workplace dataset",
     }
@@ -273,6 +308,7 @@ def render_page(market_id: str) -> None:
                 (idx for idx, (sector_id, _) in enumerate(sector_options) if sector_id == "professional"),
                 0,
             ),
+            disabled=map_surface != "tract" or tract_mode == "jobs_density",
         )
         selected_sector = sector_lookup[selected_sector_label]
         ranking_metric_label = st.selectbox(
@@ -292,12 +328,19 @@ def render_page(market_id: str) -> None:
         )
         rows = base_payload.get("rows", pd.DataFrame())
         payload = (
-            _build_jobs_density_map_payload(rows, ranking_metric_label, base_payload["view_state"])
+            _build_jobs_density_map_payload(
+                rows,
+                ranking_metric_label,
+                base_payload["view_state"],
+                base_payload.get("county_outline_features", []),
+            )
             if tract_mode == "jobs_density"
             else base_payload
         )
         st.subheader(payload.get("title", "Tract industry map"))
         st.caption(payload.get("subtitle", ""))
+        if tract_mode == "jobs_density":
+            st.caption("Jobs density is an all-jobs tract surface. It does not respond to the sector selector.")
         _render_map(payload, "industry_d2_tracts", tract_mode)
 
         legend = payload.get("legend")
@@ -305,7 +348,7 @@ def render_page(market_id: str) -> None:
         with info_cols[0]:
             if isinstance(legend, pd.DataFrame) and not legend.empty:
                 st.markdown("**Legend**")
-                _render_html_table(legend)
+                render_color_legend(legend)
         with info_cols[1]:
             if isinstance(rows, pd.DataFrame) and not rows.empty:
                 st.markdown("**Top mapped tracts**")
@@ -313,7 +356,7 @@ def render_page(market_id: str) -> None:
                     display = rows[
                         [
                             "tract_geoid",
-                            "tract_name",
+                            "tract_display_name",
                             "dominant_sector_label",
                             "dominant_sector_jobs",
                             "dominant_sector_share",
@@ -328,7 +371,7 @@ def render_page(market_id: str) -> None:
                     display = display.rename(
                         columns={
                             "tract_geoid": "Tract",
-                            "tract_name": "Name",
+                            "tract_display_name": "Name",
                             "dominant_sector_label": "Top sector",
                             "dominant_sector_jobs": "Top sector jobs",
                             "dominant_sector_share": "Top sector share",
@@ -341,7 +384,7 @@ def render_page(market_id: str) -> None:
                     display = rows[
                         [
                             "tract_geoid",
-                            "tract_name",
+                            "tract_display_name",
                             jobs_column,
                             share_column,
                             "jobs_total",
@@ -355,7 +398,7 @@ def render_page(market_id: str) -> None:
                     display = display.rename(
                         columns={
                             "tract_geoid": "Tract",
-                            "tract_name": "Name",
+                            "tract_display_name": "Name",
                             jobs_column: f"{selected_sector_label} jobs",
                             share_column: f"{selected_sector_label} share",
                             "jobs_total": "Total jobs",
@@ -365,7 +408,7 @@ def render_page(market_id: str) -> None:
                     display = rows[
                         [
                             "tract_geoid",
-                            "tract_name",
+                            "tract_display_name",
                             "dominant_sector_label",
                             "jobs_total",
                             "pop_total",
@@ -383,7 +426,7 @@ def render_page(market_id: str) -> None:
                     display = display.rename(
                         columns={
                             "tract_geoid": "Tract",
-                            "tract_name": "Name",
+                            "tract_display_name": "Name",
                             "dominant_sector_label": "Dominant sector",
                             "jobs_total": "Total jobs",
                             "pop_total": "Population",
@@ -414,7 +457,7 @@ def render_page(market_id: str) -> None:
             density_display = rows[
                 [
                     "tract_geoid",
-                    "tract_name",
+                    "tract_display_name",
                     "dominant_sector_label",
                     "jobs_total",
                     "pop_total",
@@ -432,7 +475,7 @@ def render_page(market_id: str) -> None:
             density_display = density_display.rename(
                 columns={
                     "tract_geoid": "Tract",
-                    "tract_name": "Name",
+                    "tract_display_name": "Name",
                     "dominant_sector_label": "Dominant sector",
                     "jobs_total": "Total jobs",
                     "pop_total": "Population",
@@ -463,7 +506,7 @@ def render_page(market_id: str) -> None:
         with info_cols[0]:
             if isinstance(legend, pd.DataFrame) and not legend.empty:
                 st.markdown("**Legend**")
-                _render_html_table(legend)
+                render_color_legend(legend)
         with info_cols[1]:
             if isinstance(rows, pd.DataFrame) and not rows.empty:
                 gdp_column = COUNTY_GDP_SECTOR_COLUMNS[selected_sector]
@@ -490,6 +533,7 @@ def render_page(market_id: str) -> None:
         st.markdown(
             "- D2 tract maps use the latest tract-level LODES workplace jobs and collapse raw LODES industries into the broader D1 sector taxonomy.\n"
             "- D2 county maps use the latest county year with BEA GDP-share coverage, which is currently 2023 in the local DuckDB.\n"
+            "- The jobs-density view is intentionally all-jobs rather than sector-specific, so the sector selector is disabled when that surface is active.\n"
             "- The jobs-intensity companion view uses the same tract surface and adds population plus tract land area so we can compare absolute job hubs against jobs-per-resident and jobs-per-square-mile intensity.\n"
             "- Geometry is simplified before export from DuckDB spatial so the interactive map payload stays lighter and more stable."
         )

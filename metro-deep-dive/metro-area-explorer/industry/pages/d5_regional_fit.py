@@ -14,7 +14,7 @@ if str(SECTION_ROOT) not in sys.path:
     sys.path.insert(0, str(SECTION_ROOT))
 
 from data_prep import D5_DEFAULT_PEER_COUNT, build_d5_mix_chart, get_d5_page_payload
-from shared_ui import format_jobs_cell, format_ratio_cell
+from shared_ui import format_gdp_total_cell
 
 
 def _render_chart(chart_result) -> None:
@@ -28,51 +28,67 @@ def _render_html_table(df: pd.DataFrame) -> None:
     st.markdown(df.fillna("—").to_html(index=False), unsafe_allow_html=True)
 
 
-def _build_lodes_chart(rows: pd.DataFrame):
-    """Render the D5 jobs-to-workers benchmark as a horizontal comparison bar chart."""
+def _build_mix_chart(rows: pd.DataFrame):
+    """Render D5 mix comparison as full-width vertical stacked bars."""
     if rows.empty:
         return None
 
     plot_rows = rows.copy().sort_values(
-        ["jobs_to_workers_ratio", "entity"],
-        ascending=[False, True],
+        ["entity_order", "display_order", "series"],
+        ascending=[True, True, True],
         kind="mergesort",
-        na_position="last",
     )
     fig = px.bar(
         plot_rows,
-        x="jobs_to_workers_ratio",
-        y="entity",
-        orientation="h",
-        color="entity_type",
-        color_discrete_map={
-            "market": "#1D4ED8",
-            "peer": "#64748B",
-            "benchmark": "#B45309",
-        },
-        hover_data={
-            "jobs_to_workers_ratio": ":.2f",
-            "jobs_minus_workers": ":,.0f",
-            "jobs_total": ":,.0f",
-            "workers_total": ":,.0f",
-            "entity_type": False,
-        },
+        x="entity",
+        y="share_value",
+        color="series",
+        custom_data=["raw_value_label", "time_window", "source"],
         labels={
-            "jobs_to_workers_ratio": "Jobs / resident workers",
             "entity": "",
+            "share_value": "Share of total",
+            "series": "Sector",
         },
-        title="Regional labor-pull benchmark",
+        title="Peer mix comparison",
+    )
+    fig.update_traces(
+        hovertemplate=(
+            "<b>%{x}</b><br>"
+            "Sector: %{fullData.name}<br>"
+            "Share: %{y:.1%}<br>"
+            "Raw value: %{customdata[0]}<br>"
+            "Year: %{customdata[1]}<br>"
+            "Source: %{customdata[2]}<extra></extra>"
+        )
     )
     fig.update_layout(
+        barmode="stack",
         margin=dict(l=20, r=20, t=55, b=20),
-        legend_title_text="Entity type",
-        yaxis={"categoryorder": "total ascending"},
+        legend_title_text="Sector",
+        yaxis_tickformat=".0%",
+        xaxis={"categoryorder": "array", "categoryarray": plot_rows["entity"].drop_duplicates().tolist()},
     )
     return fig
 
 
-def _format_lodes_table(rows: pd.DataFrame) -> pd.DataFrame:
-    """Format the D5 LODES benchmark rows for compact display."""
+def _format_currency_per_capita(value) -> str:
+    """Format per-person dollar values compactly for D5 context tables."""
+    numeric_value = pd.to_numeric(value, errors="coerce")
+    if pd.isna(numeric_value):
+        return "—"
+    return f"${float(numeric_value):,.0f}"
+
+
+def _format_hhi(value) -> str:
+    """Format concentration HHI values compactly for D5 context tables."""
+    numeric_value = pd.to_numeric(value, errors="coerce")
+    if pd.isna(numeric_value):
+        return "—"
+    return f"{float(numeric_value):.3f}"
+
+
+def _format_context_table(rows: pd.DataFrame) -> pd.DataFrame:
+    """Format the D5 economic context rows for compact display."""
     if rows.empty:
         return rows
 
@@ -80,32 +96,41 @@ def _format_lodes_table(rows: pd.DataFrame) -> pd.DataFrame:
         [
             "entity",
             "entity_type",
-            "jobs_to_workers_ratio",
-            "jobs_minus_workers_label",
-            "jobs_total",
-            "workers_total",
+            "real_gdp_total",
+            "gdp_per_capita",
+            "wages_salaries_per_job",
+            "compensation_per_job",
+            "industry_concentration_hhi",
+            "bea_proprietors_income",
+            "market_population",
         ]
     ].copy()
     display = display.rename(
         columns={
             "entity": "Entity",
             "entity_type": "Type",
-            "jobs_to_workers_ratio": "Jobs / workers",
-            "jobs_minus_workers_label": "Jobs minus workers",
-            "jobs_total": "Workplace jobs",
-            "workers_total": "Resident workers",
+            "real_gdp_total": "Real GDP total",
+            "gdp_per_capita": "GDP per resident",
+            "wages_salaries_per_job": "Wages / private job",
+            "compensation_per_job": "Compensation / private job",
+            "industry_concentration_hhi": "Industry HHI",
+            "bea_proprietors_income": "Proprietors income",
+            "market_population": "Population",
         }
     )
     display["Type"] = display["Type"].map(
         {
             "market": "Market",
             "peer": "Peer",
-            "benchmark": "Benchmark",
         }
     )
-    display["Jobs / workers"] = display["Jobs / workers"].map(format_ratio_cell)
-    display["Workplace jobs"] = display["Workplace jobs"].map(format_jobs_cell)
-    display["Resident workers"] = display["Resident workers"].map(format_jobs_cell)
+    display["Real GDP total"] = display["Real GDP total"].map(format_gdp_total_cell)
+    display["GDP per resident"] = display["GDP per resident"].map(_format_currency_per_capita)
+    display["Wages / private job"] = display["Wages / private job"].map(_format_currency_per_capita)
+    display["Compensation / private job"] = display["Compensation / private job"].map(_format_currency_per_capita)
+    display["Industry HHI"] = display["Industry HHI"].map(_format_hhi)
+    display["Proprietors income"] = display["Proprietors income"].map(format_gdp_total_cell)
+    display["Population"] = display["Population"].map(lambda value: "—" if pd.isna(pd.to_numeric(value, errors="coerce")) else f"{int(round(float(value))):,}")
     return display
 
 
@@ -153,7 +178,7 @@ def render_page(market_id: str) -> None:
     selected_peer_ids = [peer_label_to_id[label] for label in selected_peer_labels]
     payload = get_d5_page_payload(market_id, basis=basis, peer_market_ids=selected_peer_ids)
     mix_payload = payload["mix_payload"]
-    lodes_payload = payload["lodes_payload"]
+    context_payload = payload["context_payload"]
 
     st.header("D5 — Regional Fit and Peer Benchmarking")
 
@@ -161,7 +186,7 @@ def render_page(market_id: str) -> None:
     with metric_cols[0]:
         st.metric("Mix panel latest year", mix_payload["selected_year"] if mix_payload["selected_year"] is not None else "—")
     with metric_cols[1]:
-        st.metric("LODES panel latest year", lodes_payload["selected_year"] if lodes_payload["selected_year"] is not None else "—")
+        st.metric("Context panel latest year", context_payload["selected_year"] if context_payload["selected_year"] is not None else "—")
     with metric_cols[2]:
         st.metric("Selected peers", len(payload["peer_rows"]))
 
@@ -170,23 +195,19 @@ def render_page(market_id: str) -> None:
 
     st.subheader(payload["mix_title"])
     st.caption(payload["mix_subtitle"])
-    mix_chart = build_d5_mix_chart(
-        mix_payload["chart_rows"],
-        payload["mix_title"],
-        payload["mix_subtitle"],
-    )
+    mix_chart = _build_mix_chart(mix_payload["chart_rows"])
     if mix_chart is None:
         st.info("The D5 industry/GDP comparison panel is unavailable for this selection.")
     else:
-        _render_chart(mix_chart)
+        st.plotly_chart(mix_chart, width="stretch")
 
-    st.subheader(payload["lodes_title"])
-    st.caption(payload["lodes_subtitle"])
-    lodes_chart = _build_lodes_chart(lodes_payload["rows"])
-    if lodes_chart is None:
-        st.info("The D5 jobs-to-workers benchmark panel is unavailable for this selection.")
+    st.subheader(payload["context_title"])
+    st.caption(payload["context_subtitle"])
+    context_table = _format_context_table(context_payload["rows"])
+    if context_table.empty:
+        st.info("The D5 market context panel is unavailable for this selection.")
     else:
-        st.plotly_chart(lodes_chart, width="stretch")
+        _render_html_table(context_table)
 
     lower_cols = st.columns([0.9, 1.1])
     with lower_cols[0]:
@@ -198,16 +219,16 @@ def render_page(market_id: str) -> None:
             _render_html_table(peer_table)
 
     with lower_cols[1]:
-        st.markdown("**Jobs-to-workers benchmark table**")
-        lodes_table = _format_lodes_table(lodes_payload["rows"])
-        if lodes_table.empty:
-            st.info("No LODES benchmark rows were available for this selection.")
-        else:
-            _render_html_table(lodes_table)
+        st.markdown("**Context interpretation**")
+        st.markdown(
+            "D5 now treats broad comparison as economic context rather than a CBSA jobs-to-workers contest. "
+            "The tract-scale jobs-to-workers read still lives in D3 and D4, where it stays analytically useful. "
+            "This panel now also carries pay and diversification context so a market can be read as high-employment, high-wage, diversified, or concentrated rather than just large."
+        )
 
     with st.expander("Data notes"):
         for note in mix_payload["notes"]:
             st.markdown(f"- {note}")
-        for note in lodes_payload["notes"]:
+        for note in context_payload["notes"]:
             st.markdown(f"- {note}")
         st.markdown("- Peer defaults come from the promoted Cross-Frame Intelligence similarity bundle in `mart_intelligence.intelligence_cross_frame`.")

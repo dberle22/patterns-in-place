@@ -829,19 +829,55 @@ def _build_remaining_review_queue(rows: pd.DataFrame, kind: str) -> pd.DataFrame
 
 
 def _build_final_crosswalk(
+    mod,
     audit_rows: pd.DataFrame,
+    recommended_rows: pd.DataFrame,
     locked_overrides_path: Path,
     kind: str,
 ) -> pd.DataFrame:
-    """Build the app-facing final crosswalk from direct matches plus locked overrides."""
+    """Build the app-facing final crosswalk from direct matches, accepted suggestions, and locked overrides."""
     if kind == "soc":
         our_code_col = "our_soc_code"
         felten_code_col = "felten_soc_code"
         felten_name_col = "felten_soc_name"
+        appendix_rows = mod.get_felten_appendix_a().rename(
+            columns={"soc_code": "felten_soc_code", "soc_title_felten": "appendix_title", "aioe_score": "appendix_score"}
+        ).copy()
+        score_lookup = appendix_rows[["felten_soc_code", "appendix_title", "appendix_score"]].copy()
+
+        soc_crosswalk = _load_soc_crosswalk()
+        if not soc_crosswalk.empty:
+            soc_crosswalk = soc_crosswalk.merge(
+                appendix_rows[["felten_soc_code", "appendix_score"]].rename(columns={"felten_soc_code": "soc_2010_code"}),
+                on="soc_2010_code",
+                how="left",
+            )
+            soc_crosswalk["title_similarity"] = soc_crosswalk.apply(
+                lambda row: _score_titles(_normalize_title(row["soc_2018_title"]), _normalize_title(row["soc_2010_title"])),
+                axis=1,
+            )
+            soc_crosswalk["same_code_flag"] = soc_crosswalk["soc_2010_code"] == soc_crosswalk["soc_2018_code"]
+            soc_crosswalk = soc_crosswalk.sort_values(
+                ["soc_2018_code", "same_code_flag", "title_similarity", "soc_2010_code"],
+                ascending=[True, False, False, True],
+                kind="mergesort",
+            )
+            vintage_lookup = (
+                soc_crosswalk[soc_crosswalk["appendix_score"].notna()][["soc_2018_code", "appendix_score"]]
+                .drop_duplicates(subset=["soc_2018_code"], keep="first")
+                .rename(columns={"soc_2018_code": "felten_soc_code", "appendix_score": "vintage_score"})
+            )
+            score_lookup = score_lookup.merge(vintage_lookup, on="felten_soc_code", how="outer")
+            score_lookup["appendix_score"] = score_lookup["appendix_score"].combine_first(score_lookup["vintage_score"])
+            score_lookup = score_lookup.drop(columns=["vintage_score"])
     else:
         our_code_col = "our_naics_code"
         felten_code_col = "felten_naics_code"
         felten_name_col = "felten_naics_name"
+        appendix_rows = mod.get_felten_appendix_b().rename(
+            columns={"industry_code": "felten_naics_code", "industry_title_felten": "appendix_title", "aiie_score": "appendix_score"}
+        ).copy()
+        score_lookup = appendix_rows[["felten_naics_code", "appendix_title", "appendix_score"]].copy()
 
     base_rows = audit_rows[audit_rows["audit_status"] == "matched"].copy()
     base_rows = base_rows[
@@ -850,6 +886,34 @@ def _build_final_crosswalk(
     base_rows["match_basis"] = "direct_or_fallback_map"
     base_rows["manual_notes"] = pd.NA
     base_rows["review_source"] = pd.NA
+
+    accepted_rows = pd.DataFrame(
+        columns=[
+            "our_code",
+            "our_name",
+            "felten_code",
+            "felten_name",
+            "felten_score",
+            "match_basis",
+            "manual_notes",
+            "review_source",
+        ]
+    )
+    if not recommended_rows.empty:
+        accepted_rows = recommended_rows[
+            recommended_rows["recommend_match"].astype(str).str.lower() == "true"
+        ].rename(
+            columns={
+                "recommended_felten_code": "felten_code",
+                "recommended_felten_name": "felten_name",
+                "recommended_felten_score": "felten_score",
+                "rationale": "manual_notes",
+            }
+        )
+        if not accepted_rows.empty:
+            accepted_rows = accepted_rows[["our_code", "our_name", "felten_code", "felten_name", "felten_score", "manual_notes"]].copy()
+            accepted_rows["match_basis"] = "accepted_suggested_join"
+            accepted_rows["review_source"] = f"recommended_initial_{kind}"
 
     override_rows = pd.DataFrame(
         columns=[
@@ -877,10 +941,14 @@ def _build_final_crosswalk(
             override_rows["match_basis"] = "manual_override"
             override_rows["review_source"] = f"felten_d6_manual_review_{kind}_{'2025' if kind == 'soc' else '2024'}"
 
-    combined = pd.concat([base_rows, override_rows], ignore_index=True)
+    combined = pd.concat([base_rows, accepted_rows, override_rows], ignore_index=True)
     combined["our_code"] = combined["our_code"].astype(str).str.strip()
     combined["felten_code"] = combined["felten_code"].astype(str).str.strip()
-    combined = combined[combined["our_code"] != ""].copy()
+    combined = combined[
+        (combined["our_code"] != "")
+        & (combined["our_code"].str.lower() != "nan")
+    ].copy()
+    combined["felten_score"] = pd.to_numeric(combined["felten_score"], errors="coerce")
     combined = combined.drop_duplicates(subset=["our_code"], keep="last").copy()
     combined = combined.rename(
         columns={
@@ -891,6 +959,14 @@ def _build_final_crosswalk(
             "felten_score": "felten_score",
         }
     )
+    combined = combined.merge(
+        score_lookup.rename(columns={"appendix_title": "_appendix_title", "appendix_score": "_appendix_score"}),
+        on=felten_code_col,
+        how="left",
+    )
+    combined[felten_name_col] = combined["_appendix_title"].combine_first(combined[felten_name_col])
+    combined["felten_score"] = combined["_appendix_score"].combine_first(combined["felten_score"])
+    combined = combined.drop(columns=["_appendix_title", "_appendix_score"])
     return combined.sort_values(our_code_col, kind="mergesort").reset_index(drop=True)
 
 
@@ -1049,8 +1125,8 @@ def main() -> None:
     soc_remaining = soc_post[soc_post["post_review_status"] == "unmatched_our_code"].copy()
     naics_review = _build_remaining_review_queue(naics_remaining, kind="naics")
     soc_review = _build_remaining_review_queue(soc_remaining, kind="soc")
-    final_naics_crosswalk = _build_final_crosswalk(naics_audit, locked_naics_path, kind="naics")
-    final_soc_crosswalk = _build_final_crosswalk(soc_audit, locked_soc_path, kind="soc")
+    final_naics_crosswalk = _build_final_crosswalk(mod, naics_audit, naics_recs, locked_naics_path, kind="naics")
+    final_soc_crosswalk = _build_final_crosswalk(mod, soc_audit, soc_recs, locked_soc_path, kind="soc")
 
     naics_audit.to_csv(naics_path, index=False)
     soc_audit.to_csv(soc_path, index=False)

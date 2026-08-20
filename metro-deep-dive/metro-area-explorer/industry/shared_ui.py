@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from html import escape
+
 import pandas as pd
 import streamlit as st
 
@@ -65,3 +67,37 @@ def format_ratio_cell(value) -> str:
     if pd.isna(numeric_value):
         return "—"
     return f"{float(numeric_value):.2f}x"
+
+
+def render_color_legend(df: pd.DataFrame) -> None:
+    """Render map legends with visible swatches instead of raw hex codes.
+
+    D2 and D3 both carry legend data frames with one color column and one or
+    more label columns. Streamlit's plain HTML table path shows the literal hex
+    string, which is hard to scan during review. This helper turns the color
+    field into a small swatch while preserving the text labels beside it.
+    """
+    if df.empty:
+        return
+
+    color_columns = [column for column in df.columns if column.lower() == "color"]
+    if not color_columns:
+        st.markdown(df.fillna("—").to_html(index=False), unsafe_allow_html=True)
+        return
+
+    color_column = color_columns[0]
+    display = df.fillna("—").copy()
+
+    def _swatch(value: object) -> str:
+        color = str(value) if value not in (None, "—") else "#FFFFFF"
+        safe_color = escape(color)
+        return (
+            "<div style='display:flex;align-items:center;gap:8px;'>"
+            f"<span style='display:inline-block;width:14px;height:14px;border:1px solid #CBD2D9;"
+            f"background:{safe_color};border-radius:3px;'></span>"
+            f"<span>{safe_color}</span>"
+            "</div>"
+        )
+
+    display[color_column] = display[color_column].map(_swatch)
+    st.markdown(display.to_html(index=False, escape=False), unsafe_allow_html=True)

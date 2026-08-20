@@ -22,6 +22,7 @@ build/
 .pytest_cache/
 .ruff_cache/
 .coverage
+__marimo__/
 
 # ── Data files ───────────────────────────────────────────────────────────────
 data/raw/
@@ -70,6 +71,7 @@ exploration/**/outputs/
 exploration/**/cache/
 metro-deep-dive/metro-area-explorer/place_intelligence/outputs/jacksonville_fl/site_artifacts/
 metro-deep-dive/metro-area-explorer/place_intelligence/outputs/jacksonville_fl/market_artifacts/
+metro-deep-dive/archive/metro-area-explorer/industry_v0_2026-08-08/
 
 # ── Chart engine local artifacts ─────────────────────────────────────────────
 foundations/visual_library/chart_engine_py/chart_engine.egg-info/
@@ -81,6 +83,10 @@ foundations/visual_library/chart_engine_py/example/output_*.html
 .DS_Store
 .idea/
 .vscode/
+
+# ── Session-local scratch files ──────────────────────────────────────────────
+grad-school-action-plan.md
+tmp_update_cbsa_qa_note.py
 
 # ── Claude Code local workspace ──────────────────────────────────────────────
 # Claude stores machine-local permissions and paths here, so the whole folder

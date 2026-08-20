@@ -1,3 +1,68 @@
+## 2026-08-09 — Phase 5 workbench instruments, build 1
+- **Agent / model:** Codex GPT-5
+- **Turns / iterations:** 1 implementation pass after Phase 3 Richmond labeling and the D6 de-scope decision
+- **Key decisions made:** added shift-share as a D1 employment companion instead of a separate deliverable so the workbench can explain whether change came from national growth, inherited industry mix, or local competitive effect without fragmenting the section again
+- **Key decisions made:** used BEA broad-sector earnings totals divided by same-year QCEW employment as the first-pass wage context in D1 and D5, because that is the cleanest governed pay read already available in the current Gold surface
+- **Key decisions made:** surfaced the existing Gold `industry_concentration_hhi` in D5 rather than recomputing a second concentration metric in app prep, which keeps the diversification read aligned with the governed data layer
+- **Key decisions made:** derived GDP-basis specialization from market GDP share versus U.S. GDP share so D1 now supports an LQ-style specialization companion on both employment and GDP bases
+- **Notes:** targeted validation passed on Sunday, August 9, 2026 via `.venv312/bin/python -m pytest metro-deep-dive/tests/test_industry_d1.py metro-deep-dive/tests/test_industry_d5.py` plus `py_compile` on `data_prep.py`, `d1_makeup_change.py`, `d5_regional_fit.py`, and `app.py`; live Richmond sanity checks showed employment specialization through `2024`, GDP specialization through `2023`, shift-share on `2023-2024`, and D5 context now carrying pay plus concentration fields
+
+## 2026-08-09 — Phase 4 D6 extraction de-scope, build 1
+- **Agent / model:** Codex GPT-5
+- **Turns / iterations:** 1 structural cleanup pass during the Phase 5 implementation cycle
+- **Key decisions made:** removed D6 from the live workbook shell so the Industry explorer returns to a five-deliverable workbench and no longer duplicates the AI exposure path that is moving to a separate notebook/report workflow
+- **Key decisions made:** kept the existing D6 prep and page files in place for downstream reuse rather than deleting them, because another active agent owns that extraction path
+- **Notes:** this build is intentionally a shell-level de-scope rather than a full notebook/report extraction; the workbook now points away from D6 instead of continuing to present it as a first-class in-app page
+
+## 2026-08-09 — Phase 3 tract legibility crosswalk, build 1
+- **Agent / model:** Codex GPT-5
+- **Turns / iterations:** 1 implementation pass after Richmond-only tract/place strategy alignment
+- **Key decisions made:** treated the official City of Richmond neighborhood polygons as a bounded short-term labeling source and assigned each Richmond city tract the neighborhood with the largest areal overlap, instead of pretending a governed tract-to-place crosswalk already exists
+- **Key decisions made:** kept every non-Richmond tract on an explicit county or independent-city fallback label so the app gains readability without hiding the current geographic limitation
+- **Key decisions made:** built display labels as human-readable area anchors plus tract context, and propagated them across D2, D3, and D4 rather than patching each page independently
+- **Key decisions made:** added county boundary outlines to the D2, D3, and D4 tract maps so tract interpretation sits inside a visible metro frame
+- **Notes:** targeted validation passed on Sunday, August 9, 2026 via `.venv312/bin/python -m pytest metro-deep-dive/tests/test_industry_d2.py metro-deep-dive/tests/test_industry_d3.py metro-deep-dive/tests/test_industry_d4.py` plus `py_compile` on `data_prep.py` and the touched D2/D3/D4 page modules; Richmond overlap audit matched all `75` Richmond city tracts, with overlap share now surfaced in hover/detail copy because many tracts span multiple neighborhood polygons
+
+## 2026-08-09 — Phase 2 reading blockers, build 2
+- **Agent / model:** Codex GPT-5
+- **Turns / iterations:** 1 follow-on implementation pass after the first Phase 2 validation run
+- **Key decisions made:** moved legend rendering into a shared helper so D2 and D3 both show actual color swatches instead of raw color codes
+- **Key decisions made:** simplified the D6 occupation view to a stacked layout so the detailed ranking and family summary no longer collide at narrower widths
+- **Notes:** targeted validation passed on Sunday, August 9, 2026 via `.venv312/bin/python -m pytest metro-deep-dive/tests/test_industry_d6.py metro-deep-dive/tests/test_industry_d1.py` plus `py_compile` on `shared_ui.py` and the touched page modules
+
+## 2026-08-08 — Phase 2 reading blockers, build 1
+- **Agent / model:** Codex GPT-5
+- **Turns / iterations:** 1 implementation pass after the second Phase 1 validation run
+- **Key decisions made:** gave D1's current-mix chart the full content width and stacked the takeaway below it, following the review plan's bias toward making the primary chart readable before adding supporting copy
+- **Key decisions made:** replaced D5's tighter mix presentation with a full-width vertical stacked bar chart so the peer set can be scanned side by side without relying on the previous cramped layout
+- **Key decisions made:** rebuilt D4 hover copy around a single tooltip contract keyed to the hovered feature type, instead of one mixed schema that exposed blank tract fields on layers and blank layer fields on tracts
+- **Notes:** targeted validation passed on Saturday, August 8, 2026 via `.venv312/bin/python -m pytest metro-deep-dive/tests/test_industry_d1.py metro-deep-dive/tests/test_industry_d4.py metro-deep-dive/tests/test_industry_d5.py` plus `py_compile` on the touched page modules
+
+## 2026-08-08 — Phase 1 correctness pass, build 2
+- **Agent / model:** Codex GPT-5
+- **Turns / iterations:** 1 follow-on implementation pass after the first Phase 1 validation run
+- **Key decisions made:** added explicit panel-vintage captions where the app still expected the author to infer timing, especially on D1 benchmark context, D4 cached overlays, and the D6 sector / occupation surfaces
+- **Key decisions made:** switched D1's displayed sector count to use surfaced sector labels rather than internal sector IDs so the page-level metric reflects the user-facing taxonomy directly
+- **Notes:** targeted validation passed on Saturday, August 8, 2026 via `.venv312/bin/python -m pytest metro-deep-dive/tests/test_industry_d1.py metro-deep-dive/tests/test_industry_d4.py metro-deep-dive/tests/test_industry_d6.py` plus `py_compile` on the touched page modules
+
+## 2026-08-08 — Phase 1 correctness pass, build 1
+- **Agent / model:** Codex GPT-5
+- **Turns / iterations:** 1 implementation pass after archiving the v0 baseline
+- **Key decisions made:** replaced D4 raw-row proximity counts with distinct-entity counting so multipolygon fragments, repeated corridor segments, and noisy Overture infrastructure categories do not inflate shortlist interpretation counts
+- **Key decisions made:** treated OSM as the first-pass source of record for airports, ports, and warehouse/logistics counts in D4, while keeping Overture focused on amenity and institutional POIs
+- **Key decisions made:** removed CBSA-scale jobs-to-workers from D5's comparison slot and replaced it with market-level GDP, GDP-per-resident, and proprietors-income context across the selected peer set
+- **Key decisions made:** demoted CBSA-scale jobs-to-workers from D3 summary metrics while preserving tract-scale ratio rankings and hover context
+- **Key decisions made:** made D2's jobs-density mode explicit as an all-jobs surface so it no longer sits ambiguously under the sector selector
+- **Notes:** targeted validation passed on Saturday, August 8, 2026 via `.venv312/bin/python -m pytest metro-deep-dive/tests/test_industry_d4.py metro-deep-dive/tests/test_industry_d5.py metro-deep-dive/tests/test_industry_d6.py`; Richmond D4 now collapses the worst false-positive `port` counts, and D5 now compares Richmond's 2024 mix against a 2023 peer economic-context table instead of a broad-grain jobs-to-workers benchmark
+
+## 2026-08-08 — Archive v0 industry app before v1 remediation
+- **Agent / model:** Codex GPT-5
+- **Turns / iterations:** 1 implementation pass before Phase 1 review fixes
+- **Key decisions made:** treated the full `metro-deep-dive/metro-area-explorer/industry/` folder as the v0 app unit so the comparison snapshot keeps code, specs, reference inputs, and cached outputs together
+- **Key decisions made:** archived the baseline to `metro-deep-dive/archive/metro-area-explorer/industry_v0_2026-08-08/` to follow the existing `metro-deep-dive/archive/` convention instead of creating a one-off archive inside the live section folder
+- **Key decisions made:** excluded only runtime clutter (`__pycache__/` and `.DS_Store`) so the archived copy stays faithful while remaining easier to diff
+- **Notes:** this snapshot is the read-only v0 baseline for the workbook-improvement series; subsequent v1 fixes should happen only in the live `industry/` folder
+
 ## 2026-07-28 — Implement D1 first pass
 - **Agent / model:** Codex GPT-5
 - **Turns / iterations:** 2 turns after the planning pass

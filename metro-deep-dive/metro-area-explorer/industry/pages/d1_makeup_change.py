@@ -19,7 +19,9 @@ from data_prep import (
     build_current_mix_chart_for_basis_rows,
     get_benchmark_basis_frames,
     get_d1_basis_frames,
+    get_d1_shift_share_payload,
     get_d1_specialization_payload,
+    get_d1_wage_context_payload,
     get_available_years_for_basis_rows,
     get_latest_year_for_basis_rows,
     get_market_context,
@@ -130,6 +132,63 @@ def _format_specialization_table(rows: pd.DataFrame, include_growth: bool) -> pd
     return display
 
 
+def _format_shift_share_table(rows: pd.DataFrame) -> pd.DataFrame:
+    """Format the D1 shift-share decomposition table for compact review."""
+    if rows.empty:
+        return rows
+
+    display = rows[
+        [
+            "sector_label",
+            "local_change",
+            "national_growth_component",
+            "industry_mix_component",
+            "competitive_effect_component",
+        ]
+    ].copy()
+    display = display.rename(
+        columns={
+            "sector_label": "Sector",
+            "local_change": "Local change",
+            "national_growth_component": "National growth",
+            "industry_mix_component": "Industry mix",
+            "competitive_effect_component": "Local competitive",
+        }
+    )
+    signed_count = lambda value: "—" if pd.isna(pd.to_numeric(value, errors="coerce")) else f"{int(round(float(value))):+,}"
+    for column in ["Local change", "National growth", "Industry mix", "Local competitive"]:
+        display[column] = display[column].map(signed_count)
+    return display
+
+
+def _format_wage_context_table(rows: pd.DataFrame) -> pd.DataFrame:
+    """Format the D1 wage companion table."""
+    if rows.empty:
+        return rows
+
+    display = rows[
+        [
+            "sector_label",
+            "employment_share",
+            "earnings_share",
+            "earnings_total_label",
+            "earnings_per_job_label",
+        ]
+    ].copy()
+    display = display.rename(
+        columns={
+            "sector_label": "Sector",
+            "employment_share": "Employment share",
+            "earnings_share": "Earnings share",
+            "earnings_total_label": "Earnings total",
+            "earnings_per_job_label": "Estimated earnings / job",
+        }
+    )
+    display["Employment share"] = display["Employment share"].map(format_percent_cell)
+    display["Earnings share"] = display["Earnings share"].map(format_percent_cell)
+    return display
+
+
 def render_page(market_id: str) -> None:
     """Render the D1 current-mix and change page for one market."""
     frames = get_d1_basis_frames(market_id)
@@ -137,8 +196,6 @@ def render_page(market_id: str) -> None:
     market_context = get_market_context(market_id)
     employment_rows = frames["employment_share"]
     gdp_rows = frames["gdp_share"]
-    specialization_payload = get_d1_specialization_payload(market_id)
-
     if employment_rows.empty and gdp_rows.empty:
         st.error("No D1 industry rows were returned for this market.")
         st.stop()
@@ -152,6 +209,9 @@ def render_page(market_id: str) -> None:
 
     selected_basis_rows = employment_rows if basis == "employment_share" else gdp_rows
     selected_benchmarks = benchmark_frames[basis]
+    specialization_payload = get_d1_specialization_payload(market_id, basis=basis)
+    shift_share_payload = get_d1_shift_share_payload(market_id)
+    wage_context_payload = get_d1_wage_context_payload(market_id)
 
     if selected_basis_rows.empty:
         st.warning("This basis is unavailable for the selected market.")
@@ -176,7 +236,7 @@ def render_page(market_id: str) -> None:
     with metric_cols[1]:
         st.metric(
             "Sector count",
-            int(selected_basis_rows[selected_basis_rows["year"] == selected_year]["sector_id"].nunique()),
+            int(selected_basis_rows[selected_basis_rows["year"] == selected_year]["sector_label"].nunique()),
         )
     with metric_cols[2]:
         st.metric("Source", source_label)
@@ -192,23 +252,22 @@ def render_page(market_id: str) -> None:
         selected_year,
     )
 
-    top_col, bottom_col = st.columns([1.2, 1])
+    st.subheader("Current mix")
+    if current_mix is None:
+        st.warning("Current-mix chart is unavailable for this basis.")
+    else:
+        _render_chart(current_mix)
 
-    with top_col:
-        st.subheader("Current mix")
-        if current_mix is None:
-            st.warning("Current-mix chart is unavailable for this basis.")
-        else:
-            _render_chart(current_mix)
-
-    with bottom_col:
-        st.subheader("Takeaway")
-        if takeaway is None:
-            st.info("At least two comparable years are required to compute a share-change takeaway.")
-        else:
-            st.write(takeaway)
+    st.subheader("Takeaway")
+    if takeaway is None:
+        st.info("At least two comparable years are required to compute a share-change takeaway.")
+    else:
+        st.write(takeaway)
 
     st.subheader("Benchmark context")
+    st.caption(
+        f"Benchmark table uses the selected {selected_basis_rows['basis_label'].iloc[0].lower()} year ({selected_year})."
+    )
     if benchmark_table.empty:
         st.info("Benchmark rows are unavailable for the selected basis and year.")
     else:
@@ -240,14 +299,12 @@ def render_page(market_id: str) -> None:
         _render_chart(change_chart)
 
     st.subheader("Specialization companion")
-    if basis != "employment_share":
-        st.info("Specialization is only shown on the employment basis because the location quotients come from QCEW employment.")
-    elif specialization_payload["mode"] == "empty":
+    if specialization_payload["mode"] == "empty":
         st.info("Latest-year specialization rows were unavailable for this market.")
     else:
         st.caption(
             "Current mix shows what is large. This companion shows which sectors are overrepresented versus the U.S. "
-            "and, when the latest comparable QCEW pair exists, whether those specialized sectors are still growing."
+            "and, when the latest comparable source-year pair exists, whether those specialized sectors are still growing."
         )
         if specialization_payload["summary"]:
             st.write(specialization_payload["summary"])
@@ -276,10 +333,39 @@ def render_page(market_id: str) -> None:
             )
         st.caption(specialization_payload["note"])
 
+    if basis == "employment_share":
+        st.subheader("Shift-share decomposition")
+        if shift_share_payload["rows"].empty:
+            st.info(shift_share_payload["note"])
+        else:
+            st.caption(
+                f"Decomposes private-employment change from {shift_share_payload['start_year']} to {shift_share_payload['end_year']} "
+                "into national growth, industry mix, and local competitive effect."
+            )
+            if shift_share_payload["summary"]:
+                st.write(shift_share_payload["summary"])
+            _render_html_table(_format_shift_share_table(shift_share_payload["rows"].head(8)))
+            st.caption(shift_share_payload["note"])
+
+    st.subheader("Wage context")
+    if wage_context_payload["rows"].empty:
+        st.info(wage_context_payload["note"])
+    else:
+        st.caption(
+            f"Broad-sector earnings context uses the latest overlapping BEA earnings and QCEW employment year "
+            f"({wage_context_payload['selected_year']})."
+        )
+        if wage_context_payload["summary"]:
+            st.write(wage_context_payload["summary"])
+        _render_html_table(_format_wage_context_table(wage_context_payload["rows"].head(10)))
+        st.caption(wage_context_payload["note"])
+
     with st.expander("Data notes"):
         st.markdown(
             "- Employment view uses QCEW private employment when coverage is sufficient, with ACS as an explicit fallback.\n"
             "- GDP view uses BEA real GDP shares and may lag employment by one year.\n"
-            "- D1 specialization uses latest-year `lq_*` fields from `gold.economics_industry_wide` and the latest comparable QCEW year pair when growth is available.\n"
+            "- Employment-basis specialization uses latest-year `lq_*` fields from `gold.economics_industry_wide`; GDP-basis specialization derives the same concept from market share versus U.S. GDP share.\n"
+            "- Shift-share currently runs only on the employment basis because it relies on the QCEW employment series.\n"
+            "- Wage context uses BEA broad-sector earnings totals divided by same-year QCEW private employment.\n"
             "- US and division benchmarks are derived from state rows because `gold.economics_industry_wide` does not currently ship native division or US rows."
         )

@@ -17,7 +17,6 @@ from pages.d2_spatial_clusters import render_page as render_d2_page
 from pages.d3_job_centers import render_page as render_d3_page
 from pages.d4_infrastructure_overlay import render_page as render_d4_page
 from pages.d5_regional_fit import render_page as render_d5_page
-from pages.d6_ai_exposure import render_page as render_d6_page
 from shared_ui import render_market_selector
 
 
@@ -30,21 +29,21 @@ st.set_page_config(
 st.title("Industry Explorer")
 st.caption(
     "Combined shell for the Industry section. Each major deliverable now has its own smaller app surface, "
-    "and this entry point ties those pages together."
+    "and this entry point ties those pages together. D6 AI exposure has been moved out of the workbook flow "
+    "so it can live in the separate notebook/report path."
 )
 
 with st.sidebar:
     chosen_market_id = render_market_selector()
     page = st.radio(
         "Page",
-        options=["d1", "d2", "d3", "d4", "d5", "d6"],
+        options=["d1", "d2", "d3", "d4", "d5"],
         format_func=lambda value: {
             "d1": "D1 — Makeup and Change",
             "d2": "D2 — Spatial Clusters",
             "d3": "D3 — Job Centers",
             "d4": "D4 — Infrastructure Overlay",
             "d5": "D5 — Regional Fit",
-            "d6": "D6 — AI Exposure",
         }[value],
     )
 
@@ -60,5 +59,3 @@ elif page == "d4":
     render_d4_page(chosen_market_id)
 elif page == "d5":
     render_d5_page(chosen_market_id)
-else:
-    render_d6_page(chosen_market_id)

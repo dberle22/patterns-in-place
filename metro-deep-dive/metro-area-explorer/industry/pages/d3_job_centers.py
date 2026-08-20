@@ -21,7 +21,7 @@ from data_prep import (
     get_d3_map_payload,
     get_d3_page_payload,
 )
-from shared_ui import format_jobs_cell, format_percent_cell, format_ratio_cell
+from shared_ui import format_jobs_cell, format_percent_cell, format_ratio_cell, render_color_legend
 
 
 _MAP_STYLE = "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
@@ -49,6 +49,21 @@ def _build_geojson_layer(features, layer_id: str) -> pdk.Layer:
     )
 
 
+def _build_outline_layer(features, layer_id: str) -> pdk.Layer:
+    """Draw county outlines above tract fills for metro orientation."""
+    return pdk.Layer(
+        "GeoJsonLayer",
+        {"type": "FeatureCollection", "features": features},
+        id=layer_id,
+        stroked=True,
+        filled=False,
+        get_line_color=[55, 65, 81, 190],
+        line_width_min_pixels=1.3,
+        pickable=False,
+        opacity=0.9,
+    )
+
+
 def _render_map(payload: dict[str, object]) -> None:
     """Render the D3 tract job-center map."""
     features = payload.get("features", [])
@@ -59,7 +74,9 @@ def _render_map(payload: dict[str, object]) -> None:
     selected_sector_label = payload["selected_sector_label"]
     tooltip = {
         "html": (
-            "<b>{tract_name}</b><br/>"
+            "<b>{tract_display_name}</b><br/>"
+            "Area anchor: {place_label}<br/>"
+            "County / city: {county_name}<br/>"
             "Tract: {tract_geoid}<br/>"
             "Status: {highlight_status}<br/>"
             "Dominant sector: {dominant_sector_label}<br/>"
@@ -67,7 +84,8 @@ def _render_map(payload: dict[str, object]) -> None:
             "Resident workers: {workers_total}<br/>"
             "Jobs / workers: {jobs_to_workers_ratio_label}<br/>"
             f"{selected_sector_label} jobs: {{selected_sector_jobs}}<br/>"
-            f"{selected_sector_label} share: {{selected_sector_share_pct}}"
+            f"{selected_sector_label} share: {{selected_sector_share_pct}}<br/>"
+            "Largest-overlap share: {label_overlap_share_pct}"
         ),
         "style": {
             "backgroundColor": "rgba(255, 255, 255, 0.96)",
@@ -76,8 +94,12 @@ def _render_map(payload: dict[str, object]) -> None:
         },
     }
     view_state = payload["view_state"]
+    county_outline_features = payload.get("county_outline_features", [])
+    layers = [_build_geojson_layer(features, "industry_d3_tracts")]
+    if county_outline_features:
+        layers.append(_build_outline_layer(county_outline_features, "industry_d3_county_outlines"))
     deck = pdk.Deck(
-        layers=[_build_geojson_layer(features, "industry_d3_tracts")],
+        layers=layers,
         initial_view_state=pdk.ViewState(
             latitude=view_state["latitude"],
             longitude=view_state["longitude"],
@@ -134,7 +156,7 @@ def _format_job_center_table(rows: pd.DataFrame, table_type: str) -> pd.DataFram
     display = rows[
         [
             "tract_geoid",
-            "tract_name",
+            "tract_display_name",
             "dominant_sector_label",
             "jobs_total",
             "workers_total",
@@ -144,7 +166,7 @@ def _format_job_center_table(rows: pd.DataFrame, table_type: str) -> pd.DataFram
     display = display.rename(
         columns={
             "tract_geoid": "Tract",
-            "tract_name": "Name",
+            "tract_display_name": "Name",
             "dominant_sector_label": "Dominant sector",
             "jobs_total": "Workplace jobs",
             "workers_total": "Resident workers",
@@ -184,7 +206,7 @@ def _format_selected_sector_table(
     display = rows[
         [
             "tract_geoid",
-            "tract_name",
+            "tract_display_name",
             selected_sector_jobs_column,
             selected_sector_share_column,
             "jobs_total",
@@ -194,7 +216,7 @@ def _format_selected_sector_table(
     display = display.rename(
         columns={
             "tract_geoid": "Tract",
-            "tract_name": "Name",
+            "tract_display_name": "Name",
             selected_sector_jobs_column: f"{selected_sector_label} jobs",
             selected_sector_share_column: f"{selected_sector_label} share",
             "jobs_total": "Workplace jobs",
@@ -260,11 +282,11 @@ def render_page(market_id: str) -> None:
     with metrics[0]:
         st.metric("Latest LODES year", int(summary["year"]))
     with metrics[1]:
-        st.metric("Jobs / resident workers", summary["jobs_to_workers_ratio_label"])
-    with metrics[2]:
-        st.metric("Jobs minus workers", summary["jobs_minus_workers_label"])
-    with metrics[3]:
         st.metric("Workplace jobs", summary["jobs_total_label"])
+    with metrics[2]:
+        st.metric("Resident workers", summary["workers_total_label"])
+    with metrics[3]:
+        st.metric("Jobs minus workers", summary["jobs_minus_workers_label"])
 
     if payload["takeaway"]:
         st.caption(payload["takeaway"])
@@ -278,7 +300,7 @@ def render_page(market_id: str) -> None:
         legend = map_payload.get("legend")
         if isinstance(legend, pd.DataFrame) and not legend.empty:
             st.markdown("**Legend**")
-            _render_html_table(legend)
+            render_color_legend(legend)
     with map_info_cols[1]:
         highlight_rows = map_payload.get("highlight_rows", pd.DataFrame())
         if isinstance(highlight_rows, pd.DataFrame) and not highlight_rows.empty:
@@ -350,6 +372,7 @@ def render_page(market_id: str) -> None:
     with st.expander("Data notes"):
         st.markdown(
             "- D3 uses the same latest-year tract WAC/RAC surface as D2, then interprets it through tract rankings and a highlighted tract map.\n"
+            "- CBSA-level jobs-to-workers is no longer treated as a headline comparison metric here because it compresses toward 1.00 at broad geography. The ratio still stays on tract rankings where it helps identify unusually workplace-heavy tracts.\n"
             "- The jobs-to-workers ranking applies a minimum workplace-jobs floor so tiny tracts do not dominate on ratio alone.\n"
             "- Positive industry gaps mean the CBSA hosts a larger share of workplace jobs in that industry than resident workers; negative gaps mean the market looks more residence-heavy in that industry.\n"
             "- This page uses WAC/RAC only. It does not claim explicit origin-destination commute flows.\n"
