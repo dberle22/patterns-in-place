@@ -1,7 +1,31 @@
 # A1 — The AI Inversion: Analysis Plan
 
-**Version:** V2  
-**Updated:** 2026-08-17
+**Version:** V3  
+**Updated:** 2026-08-20
+
+## V3 Change Log
+
+This spec was updated after the first full H1-H3 notebook build and a review pass on the resulting visuals and interpretations.
+
+### What we learned in the first analysis pass
+
+1. **The descriptive baseline is now analytically useful, not just setup.**  
+   The national SOC decomposition views are already helping separate employment share, payroll share, and contribution to the national index. The next task is to make those relationships easier to compare in one visual sequence.
+
+2. **H1 currently looks more falsified than supported.**  
+   The observed metro rank correlation is extremely high, and the rank-shift distribution appears broad and roughly normal rather than driven by a few extreme movers. That does not make the payroll measure useless, but it does weaken the original H1 claim that the ranking changes substantially.
+
+3. **H2 currently looks weaker as a falsification target than planned.**  
+   The notebook now shows a clear positive relationship between `pct_ba_plus` and metro exposure. The likely interpretation is not that attainment is the wrong variable, but that it is a useful proxy that still leaves meaningful residual variation once industry and occupation structure are examined.
+
+4. **H2 needs an occupation-side comparison, not just industry mix.**  
+   Because the broader argument is about occupational structure, the H2 section should compare attainment against both industry composition and broad occupation composition before we settle the framing.
+
+5. **H3 is promising, but the metric needs to be made more legible.**  
+   The current concentration outputs are interesting enough to keep, but the notebook needs to explain the HHI construction clearly, restate that the concentration measure is computed within exposure bins rather than only at the top of the metro distribution, and improve the sensitivity visual so it is easier to interpret.
+
+6. **The next task is interpretation and framing, not new data engineering.**  
+   The immediate need is to tighten concepts, visual sequence, and section-level conclusions so Parts 4 and 5 can be built from stable findings rather than from half-settled charts.
 
 ## V2 Change Log
 
@@ -81,13 +105,14 @@ The main notebook now effectively has most of the build inputs already loaded or
 - national decomposition-ready SOC and NAICS detail frames
 
 **Still needs confirmation / cleanup before H2**
-- CBSA educational attainment rate in the exact field we want to use as the primary H2 attainment measure
-- final decision on whether H2 uses `pct_ba_plus` alone or also checks a second attainment cut
+- primary CBSA attainment field is now `pct_ba_plus`
+- decide whether to keep `pct_ba_plus` as the only attainment cut or add a secondary attainment robustness field
+- add a broad occupation-composition comparison alongside the current industry-composition comparison
 
 **Still needs explicit construction before H3**
-- concentration metric over exposed occupations
-- definition of the "exposed" occupation set
-- within-exposure-bin comparison structure
+- tighten the HHI explanation and notation in the notebook
+- confirm whether top-quartile exposed occupations remains the preferred exposed set
+- improve the major-group sensitivity visual so it is interpretable at a glance
 
 ## 1.1.2 Proposed notebook structure from here
 
@@ -106,6 +131,110 @@ The remaining notebook should read like one argument, not three disconnected ana
 - one or two visual cells
 - one residual / mover / decomposition cell if needed
 - one short markdown takeaway cell once the section stabilizes
+
+## 1.1.3 Immediate notebook refactor plan
+
+The first-pass Marimo conversion is useful, but it still carries too much Jupyter structure and too much build logic inside the notebook. Before adding more analysis, the next cleanup pass should make the notebook more explicitly Marimo-native and move recurring QA into reusable builders.
+
+### A. Presentation refactor inside the notebook
+
+**Goal:** use Marimo's native interaction model instead of Jupyter-style display patterns.
+
+1. Replace remaining Jupyter-style table presentation with Marimo-native viewers.
+   - Use `mo.ui.dataframe(...)` for large exploratory tables and full analytical surfaces.
+   - Use `mo.ui.table(...)` for compact summary tables, QA summaries, and small ranked exhibits.
+
+2. Remove unnecessary preview-only displays.
+   - The Felten load cell does not need to show raw tables by default.
+   - Large surfaces like detailed SOC and NAICS CBSA rows should be shown as interactive dataframes rather than `.head(...)` slices.
+
+3. Split visuals into one chart per cell where practical.
+   - The descriptive baseline should not bundle multiple charts in one output cell.
+   - H1 should keep separate cells for metrics, scatter, rank-shift distribution, and mover/QA tables.
+
+4. Keep narrative order explicit.
+   - Build objects first.
+   - Show the headline metric or summary second.
+   - Show the visual third.
+   - Keep raw ranked tables and residual reference tables at the end of a section.
+
+### B. Structural refactor of the build logic
+
+**Goal:** separate "construct the data" from "inspect and interpret the data."
+
+1. Split the metro exposure build into clearer units.
+   - SOC build cell
+   - NAICS build cell
+   - comparison-base assembly cell
+
+2. Keep the conceptual distinction explicit:
+   - **Metro exposure tables** are the scored metro-year analytical products built directly from detailed SOC and NAICS surfaces.
+   - **Comparison base** is the latest-row merged panel used for H2, H3, and broader interpretation.
+
+3. Defer historical SOC expansion unless it becomes necessary for a real analytical question.
+   - Current default: latest-year cross-sectional analysis
+   - Historical SOC exposure: optional later extension, not a prerequisite for cleaning up H1
+
+### C. Visual priority changes
+
+**Goal:** elevate the most interpretable national decomposition views.
+
+1. Promote national SOC major-group decomposition as the primary broad decomposition view.
+   - Preferred visuals:
+     - side-by-side horizontal bars for employment-weighted vs payroll-weighted contribution
+     - stacked bars for employment share vs payroll share
+     - slope chart if we want to emphasize which groups gain weight under payroll weighting
+   - Do **not** use pie charts as the primary chart type.
+
+2. Keep detailed occupation decomposition available, but treat it as a drill-down layer rather than the lead graphic.
+
+3. Reframe industry decomposition as secondary.
+   - Industry groups can remain as a comparison lens.
+   - Broad SOC occupation groups should carry the main interpretive story.
+
+### D. H1 interpretation and QA clarifications
+
+**Goal:** make the H1 result easier to trust and easier to explain.
+
+1. State the rank-correlation method clearly in the notebook.
+   - H1 Spearman is computed on the metro rank vectors for `E_m` and `W_m_local`.
+   - Because both measures come from the same underlying occupational structure, a high rank correlation is plausible even when rank shifts are analytically meaningful.
+
+2. Keep the rank-shift histogram as a core H1 exhibit.
+   - If the distribution remains roughly normal, that supports the interpretation that H1 is about broad reshuffling rather than a handful of extreme outliers.
+
+3. Downgrade the current in-notebook coverage QA from a "result" to a lightweight check.
+   - The current H1 coverage QA is useful as a quick read, but it is not strong enough to be the primary validation layer.
+
+### E. Builder-script direction
+
+**Goal:** keep the notebook focused on analysis and presentation, not data construction QA.
+
+1. Add a reusable builder script that materializes the main derived analysis tables.
+   - metro SOC exposure table
+   - metro NAICS exposure table
+   - latest-row comparison base
+   - standard QA summary tables
+
+2. Move repetitive QA into the builder layer.
+   - coverage checks
+   - row-count and merge diagnostics
+   - matched-employment and matched-payroll summaries
+   - any threshold flags we decide to keep
+
+3. Keep the notebook responsible for:
+   - descriptive baseline
+   - H1, H2, and H3 sections
+   - national decomposition exhibits
+   - interpretation notes and section takeaways
+
+### F. Next implementation order
+
+1. Finish the Marimo-native presentation cleanup.
+2. Split remaining multi-chart baseline cells into one-visual cells.
+3. Strengthen the national SOC-group decomposition visuals.
+4. Define the builder-script outputs and move recurring QA there.
+5. Only then resume deeper H2 and H3 buildout.
 
 ## 1.2 What has to be true before any number means anything
 
@@ -190,8 +319,40 @@ The baseline is not just scene-setting. It should lock down three facts that the
 | Rank-shift histogram | How much does the payroll ranking really move? | keep |
 | National occupation decomposition table | Which detailed occupations carry the exposure index? | keep |
 | National SOC major-group decomposition chart | Which broad occupation families carry the index? | keep |
-| National industry weight vs score scatter | Which industries are large, and which are high- or low-score outliers? | keep |
+| National industry weight vs score scatter | Which industries are large, and which are high- or low-score outliers? | secondary comparison |
 | Choropleth or regional map | Are the winners and losers regional rather than random? | build later if needed |
+
+### 1.4.3 Post-build review notes and next visual steps
+
+**Descriptive baseline**
+- Rebuild the national SOC employment-vs-payroll-share comparison as a `100%` stacked bar chart with `soc_major_group_label` as the fill.
+- Add a notebook explainer that distinguishes:
+  - `national_employment_share` / `national_payroll_share`
+  - `contribution_to_national_e` / `contribution_to_national_w_local`
+  - `employment_weighted_felten_score` / `payroll_weighted_felten_score`
+- Keep the national contribution chart, but clarify that it is showing which broad occupation groups contribute most to the aggregate exposure index, not a causal statement about the effect of AI on wages.
+- Test a combined national SOC chart that overlays group-level weighted Felten scores on top of the employment-share vs payroll-share comparison, likely using a second axis.
+- Simplify the national NAICS comparison to `2-digit` NAICS groups for readability.
+- Add a comparison frame that helps translate between SOC major groups and `2-digit` NAICS groups, even if the first pass is just conceptual rather than a strict crosswalk.
+
+**H1**
+- Treat H1 as provisionally falsified unless a stronger non-rank-based interpretation survives.
+- Keep the payroll-weighted measure because it still matters descriptively, even if it does not reorder metros much.
+- Preserve the `45°` line and fitted regression in the `E_m` vs `W_m_local` scatter because both are useful for quick interpretation.
+
+**H2**
+- Add a second composition pass using broad occupation groups, not just industry shares.
+- Keep the current framing open: attainment now looks like a solid but incomplete proxy, not obviously the wrong variable.
+- Add notebook-side explanations for:
+  - `VIF` as a multicollinearity check on how redundant the predictors are with one another
+  - residual tables as the ranking of metros whose observed exposure is above or below what a simpler model would predict
+- Do not add regional interactions or broader confounder stacks yet unless the occupation-side comparison still leaves a major unresolved question.
+
+**H3**
+- Make the HHI definition explicit: sum of squared exposed-employment shares within the selected exposed occupation set for each metro.
+- State clearly that the current notebook is not restricted to the top `10%` of CBSAs; the concentration measure is computed for the metro universe and then compared within `E_m` bins.
+- Rework the detailed-vs-major-group sensitivity chart so it shows the relationship more clearly than the current top-left-cluster view.
+- Keep the weak-negative-correlation interpretation provisional until the concentration definition and sensitivity framing are stable.
 
 ---
 
@@ -237,6 +398,26 @@ That matters because equal headline exposure may imply different kinds of local 
 
 **Interpretive extension:** H3 is the bridge to the unresolved sign question. If two metros have similar exposure levels but different exposure shape, then the downstream consequences of the same Felten score may plausibly differ depending on whether impact lands in a narrow high-wage occupational core or across a broad labor-market base.
 
+## 2.1 Working synthesis across H1-H3
+
+The three hypotheses now read better as one layered argument than as three disconnected tests.
+
+1. **H1 establishes the economic-weight layer.**  
+   The metro employment exposure map and the metro payroll exposure map are very closely aligned, but the payroll view amplifies the same geography. That means highly exposed metros are not just places with exposed jobs; they are also places where exposed payroll is economically important. If AI impact is positive, that can intensify upside in already high-exposure places. If AI impact is negative, the same places may face magnified downside because exposed payroll is concentrated there too.
+
+2. **H2 establishes the proxy-versus-structure layer.**  
+   Educational attainment is a meaningful proxy for metro exposure, but it is not a complete explanation. The notebook now points toward a more useful framing than "education is wrong": higher-attainment metros are often more exposed, but industry and occupation structure still explain why similarly educated places can differ.
+
+3. **H3 establishes the shape layer.**  
+   Even when two metros land near one another on headline exposure, the internal structure of that exposure may differ. The notebook does not yet show a strong, simple concentration pattern across metros, but it does justify looking more closely at whether exposure is broad or narrow inside specific markets rather than making blanket statements from the headline index alone.
+
+**Working cross-hypothesis takeaway:** AI exposure has at least three distinct dimensions that matter for metro interpretation:
+- **level** — how exposed a place is overall
+- **economic weight** — how much of that exposure sits in payroll rather than just job count
+- **structure** — how that exposure is distributed across industries and occupations
+
+That is the bridge into Richmond. The question is not just whether Richmond is exposed, but what kind of exposure it has, how economically important that exposure is, and how it is structured relative to peers.
+
 ---
 
 # Part 3 — Testing the hypotheses
@@ -250,20 +431,22 @@ That matters because equal headline exposure may imply different kinds of local 
 
 **Exhibits** — scatter of `E_m` vs. `W_m` with a 45° line; histogram of rank shifts; the top and bottom 20 movers as a plain table.
 
+**Implementation note:** the reported Spearman statistic is the rank correlation between the metro `E_m` ordering and the metro `W_m_local` ordering. A high value does not mean the two measures are identical; it means the wage-weighted view mostly preserves the same broad ordering while still allowing meaningful reshuffling within it.
+
 > **Prompt:** Before running it, name three metros you expect to rise most on the payroll measure, and why. A prediction you got wrong is informative. No prediction at all isn't.
 
-**Sanity check:** if the biggest movers are small metros with thin OEWS coverage, the wage field is driving noise rather than signal. Cross-reference the movers against the §1.2 coverage numbers before believing anything.
+**Sanity check:** if the biggest movers are small metros with thin OEWS coverage, the wage field is driving noise rather than signal. Cross-reference the movers against the §1.2 coverage numbers before believing anything. Long term, that check should live in the builder-layer QA rather than as a notebook-only artifact.
 
 **What you conclude either way** — one line each, for your own record:
 - If supported: ________________
-- If falsified: ________________
+- If falsified: the payroll-weighted measure adds descriptive nuance, but the broad metro ordering is too stable for H1 to stand as a strong inversion claim; wages mostly amplify the same geography rather than overturning it. ________________
 
 ## 3.2 Testing H2
 
 **Method — two passes, deliberately**
 
 *Pass 1: variance decomposition.* Bin metros by attainment; split total variation in `E_m` into between-tier and within-tier. Report η².
-- Bins: _______ · Robustness bins: _______
+- Bins: attainment quartiles · Robustness bins: attainment quintiles
 - **[settled]** Do not report the F-test. At n = 401 group means differ significantly regardless; the p-value carries no information.
 
 *Pass 2: partial R².* **[settled]** Industry mix first, attainment second.
@@ -272,14 +455,15 @@ That matters because equal headline exposure may imply different kinds of local 
 - Diagnostics: VIF, adjusted R², F-test on the single added coefficient
 - Weighting: unweighted primary, population-weighted as robustness
 
-*Residuals.* Fit `E_m ~` attainment alone; rank residuals; table the top and bottom _______ metros.
+*Residuals.* Fit `E_m ~` attainment alone; rank residuals; table the top and bottom `20` metros.
 
 **Exhibits** — strip plot of exposure by attainment tier (the one that shows you the answer before the statistics do); attainment vs. exposure scatter with fit line and residuals labeled; residual tables.
 
 **Notebook inputs required**
 - `E_m` at the metro level
-- primary CBSA attainment field: likely `pct_ba_plus`, pending confirmation in the notebook
+- primary CBSA attainment field: `pct_ba_plus`
 - metro-level industry composition fields from `gold.economics_industry_wide`
+- metro-level broad occupation composition fields from `gold.economics_occupation_wide`
 - optional population field for robustness weighting
 
 **Preferred section flow**
@@ -296,14 +480,14 @@ That matters because equal headline exposure may imply different kinds of local 
 
 **What you conclude either way:**
 - If attainment is redundant: ________________
-- If attainment survives: ________________
+- If attainment survives: attainment is a meaningful proxy for metro exposure, but it still leaves residual variation that composition-based views help explain, especially once we compare metros with similar BA+ shares but different industry and occupation mixes. ________________
 
 ## 3.3 Testing H3
 
 **Method**
-- Define "exposed" occupations: top AIOE quartile / decile / other: _______
+- Define "exposed" occupations: top AIOE quartile / decile / other: top quartile of detailed Felten scores
 - Compute concentration (HHI) of employment across exposed occupations, per metro
-- SOC granularity: detailed / broad: _______ · Sensitivity run at the other level: _______
+- SOC granularity: detailed primary · Sensitivity run at the other level: major-group comparison
 - Compare within-exposure-quartile spread in concentration
 
 **Exhibit** — scatter of exposure level (x) against exposed-footprint concentration (y), sized by employment. Quadrant naming is **[article]**; in the notebook just look at whether the cloud actually separates.
@@ -322,11 +506,13 @@ That matters because equal headline exposure may imply different kinds of local 
 5. table example metros that have similar `E_m` but very different concentration
 
 **Why this matters to the broader thesis**
-- H1 says payroll and headcount do not tell the same story
-- H2 says attainment is likely an incomplete proxy
+- H1 says payroll and headcount tell very similar geographic stories, but payroll amplifies the same high-exposure metros
+- H2 says attainment is a meaningful but incomplete proxy
 - H3 asks whether the *distribution* of impact inside a metro changes how that metro experiences AI, even at the same headline exposure level
 
 > **Prompt:** Run this at both SOC granularities before deciding which is primary. If the picture changes materially, the concentration measure is fragile and H3 should probably be demoted to option (b).
+
+**Current interpretation caution:** the first notebook pass suggests the level-vs-concentration relationship may be weak and slightly negative, but that is not yet a stable result. Do not lean on that interpretation until the HHI definition and the major-group sensitivity view are clearer.
 
 ---
 
@@ -355,6 +541,14 @@ Current working thesis for the broader piece:
 
 4. **Felten is about intensity of impact, not yet sign of impact.**
    The notebook should keep separating "where impact is concentrated" from "whether that impact is net-positive or net-negative."
+
+### 4.1.1 Current working findings write-up
+
+At the current notebook stage, the strongest cross-metro finding is that AI employment exposure and AI payroll exposure are tightly linked. The payroll-weighted measure does not radically reorder metros, but it does show that the same high-exposure places also carry disproportionately important exposed wage bills. That means the geography of AI impact is likely to matter economically even when the rank ordering itself stays stable.
+
+Educational attainment helps explain that geography, but it does not fully settle it. Higher-BA metros are often more exposed, yet similarly educated metros can still differ because of their underlying industry and occupation structure. That makes attainment a useful starting point rather than a full explanation.
+
+The remaining open question is structural shape. The notebook does not yet show a decisive national pattern in whether high-exposure metros are more diffuse or more concentrated internally. That uncertainty is useful rather than fatal: it gives the Richmond deep dive and future metro work a real analytical job to do instead of forcing a blanket national conclusion too early.
 
 **Implication for later deep dives**
 - Once the cross-metro structure is established, we can zoom into specific industries or occupation families and ask what positive-impact and negative-impact interpretations would each imply.
