@@ -21,4 +21,4 @@ SELECT soc_code,
 	metros,
 	max(metros) over(partition by year) as max_metros
 FROM soc_base
-ORDER BY year, employment DESC, soc_code;
+ORDER BY year, employment DESC, soc_code
