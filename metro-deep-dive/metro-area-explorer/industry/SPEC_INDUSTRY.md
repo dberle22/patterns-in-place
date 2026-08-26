@@ -1,8 +1,8 @@
 ---
 section: industry
-status: draft
+status: active_review
 spotlight_market: richmond_va (CBSA 40060)
-last_updated: 2026-07-29
+last_updated: 2026-08-22
 ---
 
 # Industry — Section Spec
@@ -11,7 +11,9 @@ Analytical content and tool requirements for the Industry section of Metro Area 
 
 ## Purpose
 
-Show the major industries and occupations in a market, how that makeup has changed over time, where industrial/economic activity concentrates spatially, and how the market compares regionally. Built market-agnostic: Richmond is the first market run through it, not a hardcoded target. A market is a CBSA GEOID (`market_id`) plus a small config (peer CBSAs, county/tract scope) — every deliverable below must accept that as an input, not assume Richmond.
+Show the major industries in a market, how that makeup has changed over time, where industrial/economic activity concentrates spatially, and how the market compares regionally. Built market-agnostic: Richmond is the first market run through it, not a hardcoded target. A market is a CBSA GEOID (`market_id`) plus a small config (peer CBSAs, county/tract scope) — every deliverable below must accept that as an input, not assume Richmond.
+
+Current live workbook scope is `D1` through `D5`. `D6` was built, reviewed, and then intentionally removed from the Streamlit shell because AI exposure belongs in its own downstream notebook/report path rather than inside the core industry workbench.
 
 ## Data sources
 
@@ -52,7 +54,7 @@ Each deliverable lists what it produces, its data source, and acceptance criteri
 - [x] Takeaway sentence is generated from the actual largest positive/negative share delta, not hardcoded
 - [x] Any ACS fallback is surfaced clearly in the app copy and chart metadata if it is ever used; as of July 28, 2026 no current CBSA appears to require this path under the live D1 coverage rule
 
-**Build status:** Reuses `chart_engine.prep/render.bar` for current mix and `chart_engine.prep/render.bump_chart` for change-over-time. The specialization companion is now in place as a small net-new addition on the employment basis: latest-year `lq_*` values drive an LQ-vs-growth scatter when the latest comparable QCEW pair exists, and otherwise D1 falls back to a ranked specialization table with explicit missing-growth copy. Parcat is **deferred companion work**, not part of the first ship.
+**Build status:** Reuses `chart_engine.prep/render.bar` for current mix and `chart_engine.prep/render.bump_chart` for change-over-time. The specialization companion now runs on both bases: employment specialization uses latest-year `lq_*` plus the latest comparable QCEW growth pair, while GDP specialization derives the same concept from market GDP share versus same-year U.S. GDP share and the latest comparable BEA growth pair. D1 also now includes an employment shift-share companion and a BEA/QCEW wage-context companion. Parcat is **deferred companion work**, not part of the first ship.
 
 ---
 
@@ -166,11 +168,11 @@ Each deliverable lists what it produces, its data source, and acceptance criteri
 - [x] Each D5 panel carries its own latest-year label and source note rather than forcing one harmonized year across industry, GDP, and LODES benchmark surfaces
 - [x] D5 copy explicitly distinguishes this section from D3: D3 asks where jobs concentrate within the CBSA; D5 asks how the whole CBSA compares with peers and the broader region
 
-**Build status:** Reuses `chart_engine.prep/render.bar` for the mix comparison and adds a small net-new benchmark comparison for the `jobs_to_workers_ratio`. First pass should keep independent latest-year labels per panel, use a manual peer list or the existing Cross-Frame Intelligence peer bundle for default peer suggestions, and document any derived U.S. or division benchmark rows clearly in the UI metadata.
+**Build status:** Reuses `chart_engine.prep/render.bar` for the mix comparison, but the broad comparison slot no longer centers on CBSA `jobs_to_workers_ratio`. D5 now uses market-level economic context instead: GDP, GDP per resident, proprietors income, wages-per-private-job, compensation-per-private-job, and the existing Gold `industry_concentration_hhi` diversification read across the selected peer set. First pass keeps independent latest-year labels per panel, uses the existing Cross-Frame Intelligence peer bundle for default peer suggestions, and documents any derived U.S. or division benchmark rows clearly in the UI metadata.
 
 ---
 
-### D6 — AI exposure setup and scorecard
+### D6 — AI exposure extraction target (out of workbook)
 
 **What it produces:**
 - Sector-level exposure scorecard that the explorer can hand off to Richmond S04a:
@@ -188,13 +190,14 @@ Each deliverable lists what it produces, its data source, and acceptance criteri
 **Data source:** `gold.economics_industry_wide` for market sector shares and specialization context; `silver.bls_oews` for detailed SOC employment at CBSA grain; `gold.economics_occupation_wide` for broad occupation-family context where a lighter summary is useful; Felten et al. Data Appendix B for 4-digit NAICS industry AIIE scores and Appendix A for 6-digit SOC occupation AIOE scores, treated as section-owned external reference inputs until a governed shared storage path exists.
 
 **Acceptance criteria:**
-- [x] D6 renders a sector exposure scorecard for any market with D1 employment coverage plus a valid industry-exposure lookup, without hardcoding Richmond-only sector assumptions
-- [x] D6 can read detailed OEWS occupations from `silver.bls_oews` and produce a ranked exposure view without requiring ACS occupation-by-industry cross-tabs
-- [x] D6 explains when exposure scores come from sector-level NAICS logic versus occupation-level SOC logic so the two views are not presented as interchangeable
-- [x] D6 synthesis explicitly connects the exposure view back to D1 specialization and D3/D4 job-center interpretation instead of acting as a detached thematic appendix
+- [x] D6 prep can render a sector exposure scorecard for any market with D1 employment coverage plus a valid industry-exposure lookup, without hardcoding Richmond-only sector assumptions
+- [x] D6 prep can read detailed OEWS occupations from `silver.bls_oews` and produce a ranked exposure view without requiring ACS occupation-by-industry cross-tabs
+- [x] D6 prep explains when exposure scores come from sector-level NAICS logic versus occupation-level SOC logic so the two views are not presented as interchangeable
+- [x] D6 prep explicitly connects the exposure view back to D1 specialization and D3/D4 job-center interpretation instead of acting as a detached thematic appendix
 - [x] Missing or partially matched NAICS/SOC crosswalk rows fail with transparent coverage notes rather than silent dropping
+- [ ] Downstream notebook/report implementation remains outside this workbook and is not closed out here
 
-**Build status:** D6 is now live as a dedicated `industry/` page with a sector/occupation toggle and app-facing final crosswalk tables. The raw Felten workbook remains section-owned at `metro-deep-dive/metro-area-explorer/industry/reference_data/AIOE_DataAppendix.xlsx`, while the runtime join now resolves through reviewed final crosswalk CSVs in `metro-deep-dive/metro-area-explorer/industry/outputs/national/d6_coverage_review/`. Sector exposure uses the final NAICS crosswalk to connect 4-digit QCEW industry groups rolled from `staging.bls_qcew_county` through `silver.xwalk_cbsa_county` back to Felten Appendix B scores, then collapses those detailed rows to the broad D1 sector taxonomy for comparability. The occupation companion uses the final SOC crosswalk against detailed `silver.bls_oews` rows for `2025`, adds a ranked table plus a bubble-scatter companion, and uses `gold.economics_occupation_wide` for the lighter family summary. Audit trail files preserve the original appendix rows, review queues, locked manual overrides, and final crosswalk outputs so the page uses the agreed shape while the methods trail stays inspectable.
+**Build status:** D6 prep and reference inputs still live in `industry/`, but D6 no longer appears in the live Streamlit shell. The raw Felten workbook remains section-owned at `metro-deep-dive/metro-area-explorer/industry/reference_data/AIOE_DataAppendix.xlsx`, while the runtime join resolves through reviewed final crosswalk CSVs in `metro-deep-dive/metro-area-explorer/industry/outputs/national/d6_coverage_review/`. Sector exposure uses the final NAICS crosswalk to connect 4-digit QCEW industry groups rolled from `staging.bls_qcew_county` through `silver.xwalk_cbsa_county` back to Felten Appendix B scores, then collapses those detailed rows to the broad D1 sector taxonomy for comparability. The occupation companion uses the final SOC crosswalk against detailed `silver.bls_oews` rows for `2025`, adds a ranked table plus a bubble-scatter companion, and uses `gold.economics_occupation_wide` for the lighter family summary. Audit trail files preserve the original appendix rows, review queues, locked manual overrides, and final crosswalk outputs so the downstream notebook/report path can reuse the same agreed shape while the methods trail stays inspectable.
 
 ---
 
@@ -258,8 +261,7 @@ This is **not** required for the current Industry app build. The existing WAC/RA
 - **D4 overlay toggles:** source/layer toggles for OSM lines, OSM polygons, Overture POIs, population centers, and job centers
 - **D4 interpretation controls:** selected job-center shortlist item plus buffer-distance control for the first-pass tract enrichment summary, with copy that this is straight-line proximity rather than network access
 - **Peer list input:** editable list of comparison CBSAs for D5, pre-filled either from a manual market config or from the best-fit peers in `mart_intelligence.intelligence_cross_frame`; exact fallback order is now a first-pass build decision, while the longer-term reusable peer-query surface remains open
-- **D6 exposure controls:** sector vs. occupation exposure view, selected basis/context labels, and clear coverage/source notes for the Felten joins
-- **Layout:** single-page, section-ordered D1 → D2 → D3 → D4 → D5 → D6, each in its own container so any deliverable can be hidden/shown independently while build is in progress
+- **Layout:** page-switched Streamlit shell with `D1` → `D5` as the live workbook surfaces; D6 is intentionally excluded from the shell and handled downstream
 
 ## Open decisions
 
@@ -278,11 +280,11 @@ This is **not** required for the current Industry app build. The existing WAC/RA
 | D4 job-center interpretation method | D4 | Resolved for first pass — use simple buffer-based counts/flags around the D3 shortlist; document network-access analysis as a future follow-on rather than blocking v1 |
 | D4 first-wave interpretation emphasis | D4 | Resolved for Richmond first pass — include hospitals and universities alongside freight/logistics and corridor infrastructure so institutional and infrastructure-led job centers can both be interpreted |
 | D4 cross-source deduplication policy | D4 | Deferred — first pass can use source-priority display behavior rather than full OSM/Overture entity resolution |
-| D6 scope relative to Richmond S04a/S04b | D6 | Resolved for first pass — the explorer should absorb the setup work for both the sector scorecard and the occupation-exposure companion rather than leaving all exposure prep to the downstream Quarto section |
+| D6 scope relative to Richmond S04a/S04b | D6 | Re-resolved after review — keep the prep and audit trail here, but move the live exposure storytelling out of the workbook and into the downstream notebook/report path |
 | Long-term storage path for the Felten appendix lookup tables | D6, Foundations | Open follow-on — first pass can keep the appendix files as section-owned reference inputs, but a shared governed lookup would be cleaner once the theme is reused across markets |
 | First-pass D6 policy/context flags | D6 | Open — we have the Richmond S04a scorecard shape, but still need to decide whether the explorer should ship with the full policy-flag column set or start with exposure + employment context only |
 | Parcat build approach (custom vs. existing plotting lib wrapped into chart_engine) | D1 | Deferred — revisit only if Richmond plus one additional market show a tier-migration story that the bump chart misses |
 
 ## Relationship to the Richmond Deep Dive
 
-This section's output is the interactive/exploratory layer for the analysis that ultimately populates `metro-deep-dive/markets/richmond_va/act2_engine_fabric/s04_industry.qmd` (Richmond SPEC.md §S04a/§S04b). Any engine built here is built in `foundations/` so the Quarto section can call the same functions rather than duplicating logic. This section is broader in scope than S04a/S04b, but it now intentionally absorbs more of that spine setup work: D1 should support specialization context, D4 should help interpret the job centers that D3 surfaces, and D6 should prepare the AI exposure scaffolding that Richmond S04a/S04b needs downstream. It still should not contradict the Deep Dive spec, and OD-style commute-shed claims remain deferred until managed LODES OD work exists.
+This section's output is the interactive/exploratory layer for the analysis that ultimately populates `metro-deep-dive/markets/richmond_va/act2_engine_fabric/s04_industry.qmd` (Richmond SPEC.md §S04a/§S04b). Any engine built here is ideally built in `foundations/` so the Quarto section can call the same functions rather than duplicating logic, though some first-pass Phase 5 instruments still live section-local in `data_prep.py`. This section is broader in scope than S04a/S04b, but it intentionally absorbs more of that spine setup work: D1 supports specialization, shift-share, and wage context; D4 helps interpret the job centers that D3 surfaces; and D6 prep remains available as a downstream AI exposure scaffold even though the live workbook no longer presents it as a first-class page. It still should not contradict the Deep Dive spec, and OD-style commute-shed claims remain deferred until managed LODES OD work exists.
