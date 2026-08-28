@@ -23,6 +23,19 @@ The intended flow for this workbook is:
 -> `Current notes / builds / queries`
 -> `Promotion path if reused`
 
+Working shorthand for the later acts:
+
+- `Act 2` = what this market is and how it works
+- `Act 3` = how this market is changing
+- `Act 4` = where inside the market the structure and opportunity are
+
+One nuance to keep in mind:
+
+- `Act 2` can include regional framing, but it is not primarily a time/trend act
+- `Act 3` is where explicit dynamics and trend interpretation belong
+- `Act 4` is the intra-CBSA narrowing layer: zones, corridors, and sometimes parcels
+- `Act 4` should still be legible through the three Intelligence frames, not just through an opportunity lens
+
 ## Source map
 
 Use these when we do not know an answer and need to audit what already exists.
@@ -81,43 +94,101 @@ We agreed to split `Act 1` into explicit reader-facing assets rather than keep
 
 | Act 1 asset | Why it deserves its own lineage | Notes |
 |---|---|---|
-| Top-line stat boxes | Headline market facts and locked summary fields |  |
-| Fingerprint KPI set | Canonical selected KPI set underneath multiple Act 1 outputs | Curated subset from the three-frame intelligence framework, then promoted into a locked fingerprint asset |
-| Fingerprint radar | Specific visual packaging of the fingerprint KPI set |  |
-| Fingerprint percentile table | Tabular packaging of the fingerprint KPI set |  |
-| Intelligence Cluster Label | Core identity asset and framework-facing presentation object |  |
+| Top-line stat boxes | Headline market facts and locked summary fields | Presentation subset of the Fingerprint KPI set; likely locked later at the issue layer |
+| Fingerprint KPI set | Canonical selected KPI set underneath multiple Act 1 outputs | Curated subset from the three-frame intelligence framework, organized as `frame -> topic -> KPI`, then promoted into a locked fingerprint asset |
+| Fingerprint radar | Specific visual packaging of the fingerprint KPI set | Market-specific selection from the broader Act 1 candidate pool |
+| Fingerprint percentile table | Tabular packaging of the fingerprint KPI set | Market-specific selection from the broader Act 1 candidate pool |
+| Intelligence Cluster Label | Core identity asset and framework-facing presentation object | Use `primary label + supporting label set`; likely cross-frame headline with frame-level supporting labels |
 | Frame/topic interpretation summary | Reader-facing interpretation of what the framework says | Keep this lighter than the full underlying scaffolding for now |
-| History Box | Historical context and market-specific angle |  |
-| Peer set | Standard peer list asset |  |
+| History Box | Historical context and market-specific angle | Editorial/research asset rather than framework-derived data asset |
+| Peer set | Standard peer list asset | Primary peers from cross-frame cosine similarity, with frame-specific peers as supporting surfaces |
 | Featured peer comparison | Standard comparison asset used to make the peer set concrete | Required |
-| Diverging peer / forward-analog candidate | Higher-signal peer interpretation and future comparison lead |  |
-| Similarity / framework methods caveat | Required caveat layer for framework-backed claims |  |
+| Diverging peer / forward-analog candidate | Higher-signal peer interpretation and future comparison lead | Light Act 1 interpretation; real analytical home is Act 3 |
+| Similarity / framework methods caveat | Required caveat layer for framework-backed claims | Needed because peer and cluster claims inherit open framework-method questions |
+
+### Act 3 working asset list
+
+This is the first pass at the reader-facing assets inside `Act 3 / Dynamics`.
+
+The goal here is to separate:
+
+- the reusable dynamic analysis layer
+- the specific editorial packaging we may choose issue by issue
+
+| Act 3 asset | Why it deserves its own lineage | Notes |
+|---|---|---|
+| Trend series candidate pool | Base pool of time-series measures that could lead the act | Likely broader than what appears in the final issue |
+| Lead trend panel set | The selected 4 to 6 small-multiple panels for the issue | Presentation subset from the candidate pool |
+| Converging / diverging / inflecting classifications | Core interpretation layer that keeps the act from becoming generic line charts | Should likely be reusable across multiple themes and markets |
+| Inflection flags | Programmatic detection of meaningful recent slope changes | Feels like a direct engine output rather than just editorial packaging |
+| Regional context comparison | Explains whether the metro is following or bucking its region | May reuse peer or division context rather than only national benchmarking |
+| Theme-specific dynamic read | Trend interpretation tied to the routed thematic analysis | Likely inherits context from Act 2 |
+| Diverging peer / forward-analog interpretation | More advanced comparative reading of trend paths | Light mention in Act 1, real analytical home here |
+| Data Take candidate pool | Pool of weird / surprising outlier candidates | Could become a repeatable promotion path into themes or recurring spines |
+| Data Take selected asset | The specific boxed weird-on-X finding chosen for the issue | Editorial selection from the candidate pool |
+
+### Act 4 working asset list
+
+This is the first pass at the reader-facing assets inside
+`Act 4 / Opportunity Funnel`.
+
+Working distinction:
+
+- `zones` = clustered tract structures built from tract similarity plus geographic proximity
+- `corridors` = selected, opportunity-relevant or otherwise analytically meaningful zone groupings that are close and related, but not necessarily strictly contiguous
+
+This keeps the zone model distinct from the later narrowing/selection layer.
+
+| Act 4 asset | Why it deserves its own lineage | Notes |
+|---|---|---|
+| Zone archetype map | Core spatial presentation of internal structure | Tract view is required; ZCTA and place rollups are desirable future legibility layers |
+| Zone composition benchmark bar | Turns zone composition into a comparative finding | Target national sample if feasible; otherwise use the best practical comparison set |
+| Zone interpretation summary | Explains what the market's mix suggests through Character, Livability, and Opportunity lenses | Depends on internal structure plus broader market context |
+| Corridor candidate pool | Set of potential corridors before editorial narrowing | Likely built from zones + infrastructure + access + trend signals |
+| Corridor identification method | Core logic for what counts as a corridor | Start with tract similarity + geographic proximity; infrastructure can enter later as overlay or model input |
+| Corridor stat blocks | Standardized comparable corridor summary object | Feels like a lock-once issue asset built on reusable analysis outputs |
+| Corridor narrative thesis | One-line explanation of why each corridor matters | Should stay readable through the three core frames, not just opportunity |
+| Parcel candidate pool | Set of potential parcels within the chosen corridor(s) | Conditional on data availability |
+| Parcel screening logic | Reusable logic for underutilized parcel identification | May connect to ROF and other downstream products later |
+| Parcel Watch table/map asset | Final parcel-level presentation output | Conditional presentation asset |
 
 | Issue Section / Output | Analysis Family | Specific analysis / question / theme | Why this belongs here | Market-specific or fixed? | Status | Notes / questions |
 |---|---|---|---|---|---|---|
 | Opening / Market Verdict |  |  |  |  |  |  |
-| Act 1 / Market Fingerprint / Top-line stat boxes |  |  |  |  |  |  |
-| Act 1 / Market Fingerprint / Fingerprint KPI set | Position | Profile |  |  |  |  |
-| Act 1 / Market Fingerprint / Fingerprint radar | Position | Profile |  |  |  |  |
-| Act 1 / Market Fingerprint / Fingerprint percentile table | Position | Profile |  |  |  |  |
-| Act 1 / Market Fingerprint / Intelligence Cluster Label | Position | Profile |  |  |  |  |
-| Act 1 / Market Fingerprint / Frame-topic interpretation summary | Position | Profile |  |  |  |  |
-| Act 1 / History Box |  |  |  |  |  |  |
-| Act 1 / Peer Markets / Peer set | Position | Peers |  |  |  |  |
-| Act 1 / Peer Markets / Featured peer comparison | Position | Peers |  |  |  |  |
-| Act 1 / Peer Markets / Diverging peer or forward-analog candidate | Position | Peers |  |  |  |  |
-| Act 1 / Peer Markets / Similarity-framework methods caveat | Position | Peers |  |  |  |  |
+| Act 1 / Market Fingerprint / Top-line stat boxes | Position | Profile | Headline presentation subset of the fingerprint data asset | Likely fixed subset later; do not over-lock yet | Planned | Treat as packaging of the fingerprint pool rather than a separate data class |
+| Act 1 / Market Fingerprint / Fingerprint KPI set | Position | Profile | Governing Act 1 candidate pool that supports multiple identity assets | Fixed base pool; displayed subset can vary by market | In progress | Define from framework structure first, then trace to current query outputs |
+| Act 1 / Market Fingerprint / Fingerprint radar | Position | Profile | Visual expression of the fingerprint for quick pattern recognition | Market-specific selection from fixed candidate pool | Planned | Do not define from presentation slots first |
+| Act 1 / Market Fingerprint / Fingerprint percentile table | Position | Profile | Tabular expression of the fingerprint for more precise comparison | Market-specific selection from fixed candidate pool | Planned | Likely shares the same base data frame as radar and stat boxes |
+| Act 1 / Market Fingerprint / Intelligence Cluster Label | Position | Profile | Core identity label connecting Act 1 to the Intelligence Framework | Fixed asset structure; final display choice can wait | In progress | Track both phase-build truth and promoted mart read layer |
+| Act 1 / Market Fingerprint / Frame-topic interpretation summary | Position | Profile | Reader-facing interpretation of what the framework says without exposing the full scaffolding | Market-specific interpretation on top of fixed framework structure | Planned | Keep lighter than full frame/topic machinery for now |
+| Act 1 / History Box | Editorial research | External research and writing | Adds market-specific historical context that does not come from the framework | Market-specific | Planned | Keep outside the modeled data lineage |
+| Act 1 / Peer Markets / Peer set | Position | Peers | Standard identity peer surface for showing what else is like this metro | Fixed structure; actual peers vary by market | In progress | Use cross-frame cosine similarity as primary; frame peers as secondary |
+| Act 1 / Peer Markets / Featured peer comparison | Position | Peers | Makes the peer set concrete with one comparison the reader can hold onto | Market-specific within a required asset slot | Planned | Exact selection rule can wait until build |
+| Act 1 / Peer Markets / Diverging peer or forward-analog candidate | Position | Peers | Adds higher-order interpretation beyond the plain peer list | Market-specific | Planned | Light Act 1 interpretation; fuller logic should be defined in Act 3 |
+| Act 1 / Peer Markets / Similarity-framework methods caveat | Position | Peers | Preserves honesty about open framework-method questions behind peer claims | Fixed caveat class; wording may lock later | In progress | Needed until similarity validation and universe questions are resolved |
 | Act 2 / Industry Makeup and Regional Role | Thematic | A1 AI inversion |  |  |  |  |
 | Act 2 / Industry Makeup and Regional Role | Explanation | Regional role |  |  |  |  |
 | Act 2 / Built Environment and Social Fabric | Explanation | Q4 Daily-needs access |  |  |  |  |
 | Act 2 / Built Environment and Social Fabric | Explanation | Q6 One metro? |  |  |  |  |
-| Act 3 / Trend Analysis | Position | Trajectory |  |  |  |  |
-| Act 3 / Trend Analysis | Thematic | Theme-specific dynamic read if routed |  |  |  |  |
-| Act 3 / Data Take Sidebar |  |  |  |  |  |  |
-| Act 4 / Zone Archetypes | Position | Internal structure |  |  |  |  |
-| Act 4 / Zone Corridors | Explanation | Corridors |  |  |  |  |
-| Act 4 / Zone Corridors | Explanation | Q2 Job-proximity gradient |  |  |  |  |
-| Act 4 / Parcel Watch | Explanation | Parcel watch |  |  |  |  |
+| Act 3 / Trend Analysis / Trend series candidate pool | Position + Thematic | Trajectory + routed theme context | Base pool of time-series measures that can support the market's dynamics read | Fixed candidate pool structure; actual selected series vary by market | In progress | Start with `population`, `permits`, `home prices`, `rents`, `employment`, `wages`, `income`; organize by data family |
+| Act 3 / Trend Analysis / Lead trend panel set | Position + Thematic | Trajectory + routed theme context | Reader-facing 4 to 6 panel set that turns the broader trend pool into the market's main dynamics story | Market-specific selection from the candidate pool | Planned | Select by strongest explanatory value for the market rather than one-per-family rules |
+| Act 3 / Trend Analysis / Converging-diverging-inflecting classifications | Position | Trajectory | Useful framing layer for interpreting series consistently across markets | Market-specific output from a reusable method | Planned | Helpful but not the primary Act 3 asset; avoid reducing the whole act to this classification alone |
+| Act 3 / Trend Analysis / Inflection flags | Position | Trajectory | Programmatic signal for where recent slope changes are strong enough to matter | Reusable method; market-specific outputs | In progress | Treat as engine output rather than pure issue packaging |
+| Act 3 / Trend Analysis / Regional context comparison | Position + Thematic | Trajectory + routed theme context | Every dynamic read should show whether the market follows or bucks its broader region and peer context | Required context class; exact comparison values vary by market | In progress | Lives underneath each trend or dynamic read rather than as a standalone section; default to Census Division plus nearby and similar metros |
+| Act 3 / Trend Analysis / Theme-specific dynamic read | Thematic | Routed theme read over time | Shows how the routed Act 2 theme is changing over time rather than only how it looks today | Conditional on routed theme strength | Planned | Example shape: current industry structure in Act 2, then strengthening/weakening/shifting in Act 3 |
+| Act 3 / Trend Analysis / Diverging peer or forward-analog interpretation | Position + Thematic | Peers + Trajectory + routed theme context | Higher-order comparative dynamics layer explaining where the market may be heading or why similar metros are splitting apart | Conditional; present only when signal is strong enough | Planned | Main reusable component is the comparison method; reuse Act 1 peer sets |
+| Act 3 / Data Take Sidebar / Data Take candidate pool | Position + Thematic + Explanation | Analysis/question-derived findings | Pool of possible short findings that emerge from actual analyses rather than generic outlier scanning | Market-specific | In progress | Data Takes should come from what proves interesting in the analyses and question bank work |
+| Act 3 / Data Take Sidebar / Data Take selected asset | Position + Thematic + Explanation | Selected analysis/question-derived finding | Final boxed finding when a market yields a genuinely interesting short take | Conditional | Planned | Do not manufacture these; only include when there is a real reason |
+| Act 4 / Zone Archetypes / Zone archetype map | Position | Internal structure | Core tract-level structure asset that lets us see how the metro organizes internally | Required tract view; ZCTA/place rollups are future extensions | In progress | Align to the Intelligence Framework at a lower geography level rather than inventing a disconnected typology |
+| Act 4 / Zone Archetypes / Zone composition benchmark bar | Position | Internal structure | Converts the zone mix into a comparative finding rather than a legend | Fixed comparison asset; benchmark values vary by market | Planned | Target a national sample if technically feasible; otherwise use a practical comparison baseline |
+| Act 4 / Zone Archetypes / Zone interpretation summary | Position + Explanation | Internal structure + routed explanatory context | Interprets what the market's internal structure means through Character, Livability, and Opportunity lenses | Market-specific interpretation on top of a reusable zone model | Planned | Not just opportunity concentration; this is where the three-frame geography becomes legible |
+| Act 4 / Zone Corridors / Corridor candidate pool | Explanation | Corridors | Creates the broader set of plausible corridor-level opportunity or structure targets before narrowing | Market-specific pool from reusable methods | Planned | Built from zones plus proximity, with infrastructure/access/trend overlays as available |
+| Act 4 / Zone Corridors / Corridor identification method | Explanation | Corridors | Defines how tract-derived zones become meaningful higher-order groupings | Reusable method; market-specific outputs | In progress | Distinguish from zone model: corridors are selected related groupings, not necessarily strictly contiguous |
+| Act 4 / Zone Corridors / Corridor stat blocks | Explanation | Corridors | Standard comparable summary object for selected corridors | Fixed issue asset built from market-specific corridor outputs | Planned | Feels like a lock-once packaging layer on top of reusable corridor logic |
+| Act 4 / Zone Corridors / Corridor narrative thesis | Explanation | Corridors + Q2 Job-proximity gradient + Q4 Daily-needs access | Explains why a corridor matters using the strongest combination of structure, access, role, and trend signals | Market-specific | Planned | Should remain interpretable through the three Intelligence frames, not just pure investment language |
+| Act 4 / Parcel Watch / Parcel candidate pool | Explanation | Parcel watch | Creates the optional set of parcels worth deeper review inside selected corridors | Conditional and market-specific | Planned | Downstream extension of corridor logic rather than a co-equal required component |
+| Act 4 / Parcel Watch / Parcel screening logic | Explanation | Parcel watch | Reusable logic for identifying underutilized parcels once corridor scope exists | Reusable method; conditional outputs | Planned | Can align to ROF/shared parcel logic as an input but still allow MDD-specific customization |
+| Act 4 / Parcel Watch / Parcel Watch table-map asset | Explanation | Parcel watch | Final parcel-level presentation asset when parcel data and signal are strong enough | Conditional | Planned | Only run when warranted; do not force parcel work into every market |
 
 ## 2.1 Act 3 and Act 4 dependency sketch
 
@@ -284,6 +355,20 @@ These are the first questions I think we should answer together.
    `Trend Analysis`
    or
    `Zone Corridors`
+
+6. For `Act 3 / Trend Analysis`, do we want the base unit to be:
+   `series`
+   `framing classification`
+   or
+   `panel`
+   My instinct is `series` first, because the panels are downstream packaging.
+
+7. For `Act 4 / Zone Corridors`, do we want to keep:
+   `corridor candidate pool`
+   and
+   `corridor stat blocks`
+   separate from the start?
+   My instinct is yes, because one is reusable analytical output and the other is a standardized issue asset.
 
 ## 8. Decisions Captured So Far
 
