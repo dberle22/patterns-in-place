@@ -13,6 +13,42 @@ Over the last two months the project accumulated seven overlapping efforts — t
 
 The organizing decision: **the Intelligence Framework is the router.** It tells us what is interesting about a metro, and therefore which analyses to run and which act to lead with. It is not a stat-box lookup. Acts are assembled in the issue from whatever the router selected; nothing is pre-built toward an act.
 
+## 1.1 Act shorthand
+
+The acts are best understood as output lenses:
+
+- `Act 1` = who this market is
+- `Act 2` = what this market is and how it works
+- `Act 3` = how this market is changing
+- `Act 4` = where inside the market the structure and opportunity are
+
+In practical terms:
+
+- `Act 1` gives identity
+- `Act 2` gives explanation
+- `Act 3` gives change over time
+- `Act 4` gives internal geographic targeting
+
+Another useful shorthand:
+
+- `Act 1` = what kind of place is this?
+- `Act 2` = why does it work this way?
+- `Act 3` = how is it moving?
+- `Act 4` = where exactly is the action inside it?
+
+Important nuance:
+
+- `Act 1` is the identity layer: fingerprint, cluster labels, peer set, and light framework interpretation
+- `Act 2` can include regional framing, but it is not primarily a time/trend act
+- `Act 3` is where explicit dynamics and trend interpretation belong
+- `Act 4` is the intra-CBSA narrowing layer: zones, corridors, and sometimes parcels
+- `Act 4` should still be legible through the three Intelligence frames, not just through an opportunity lens
+
+The acts are not rigid containers for questions. The questions, themes,
+datasets, and methods can cut across multiple acts. That is a feature, not a
+bug. The act structure tells us what kind of output we are producing; the
+analysis families tell us what tools we have available to produce it.
+
 ---
 
 ## 2. The three layers

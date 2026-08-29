@@ -29,12 +29,40 @@ Working shorthand for the later acts:
 - `Act 3` = how this market is changing
 - `Act 4` = where inside the market the structure and opportunity are
 
+Full act shorthand:
+
+- `Act 1` = who this market is
+- `Act 2` = what this market is and how it works
+- `Act 3` = how this market is changing
+- `Act 4` = where inside the market the structure and opportunity are
+
 One nuance to keep in mind:
 
+- `Act 1` is the identity layer: fingerprint, cluster labels, peer set, and light framework interpretation
 - `Act 2` can include regional framing, but it is not primarily a time/trend act
 - `Act 3` is where explicit dynamics and trend interpretation belong
 - `Act 4` is the intra-CBSA narrowing layer: zones, corridors, and sometimes parcels
 - `Act 4` should still be legible through the three Intelligence frames, not just through an opportunity lens
+
+How they fit together:
+
+- `Act 1` gives identity
+- `Act 2` gives explanation
+- `Act 3` gives change over time
+- `Act 4` gives internal geographic targeting
+
+Another useful shorthand:
+
+- `Act 1` = what kind of place is this?
+- `Act 2` = why does it work this way?
+- `Act 3` = how is it moving?
+- `Act 4` = where exactly is the action inside it?
+
+Important nuance:
+
+- the `acts` are best understood as output lenses
+- the `questions`, `themes`, `datasets`, and `methods` can cut across multiple acts
+- the goal of this workbook is to make those overlaps visible, not to force every question into a single act
 
 ## Source map
 
@@ -106,6 +134,41 @@ We agreed to split `Act 1` into explicit reader-facing assets rather than keep
 | Diverging peer / forward-analog candidate | Higher-signal peer interpretation and future comparison lead | Light Act 1 interpretation; real analytical home is Act 3 |
 | Similarity / framework methods caveat | Required caveat layer for framework-backed claims | Needed because peer and cluster claims inherit open framework-method questions |
 
+### Act 2 working asset list
+
+This is the first pass at the reader-facing and analytical assets inside
+`Act 2 / Engine and Fabric`.
+
+The organizing idea here is:
+
+- start from `analysis questions`
+- map them into `component groups`
+- use the component groups as reusable capability buckets
+
+Component groups are not strict ownership buckets. They are the reusable
+capabilities that help us answer multiple questions and themes.
+
+Starting component groups:
+
+- `industry / economic engine`
+- `regional role`
+- `built environment`
+- `social fabric`
+- `access / amenities`
+- shared `comparison / benchmarking` method underneath multiple components
+
+| Act 2 asset | Why it deserves its own lineage | Notes |
+|---|---|---|
+| Deeper market KPI/profile tables | Core Act 2 baseline that goes deeper than Act 1 identity | Built from component-specific datasets and question-specific cuts |
+| Benchmark comparison layer | Shared comparison method used across Act 2 questions and themes | Reuse national, Census Division, peer set, and sometimes nearby-metro comparisons |
+| Industry / economic makeup analysis | Explains how the market's industries and economic base are structured | Separate from regional role |
+| Regional role analysis | Explains how the market fits into its broader region through commuting, infrastructure, and comparative role | Cross-cutting capability, not just one question |
+| Built environment analysis | Explains infrastructure, building types, land use, and physical market form | Can contain multiple sub-components with separate inputs and outputs |
+| Access / amenities analysis | Explains what amenities exist and how accessible they are | Closely related to built environment but analytically distinct |
+| Social fabric analysis | Explains cultural anchors, civic institutions, neighborhood character, and social capital signals | Keep these subcomponents distinguishable from the start |
+| Theme analysis slot | Lets routed thematic analyses sit alongside explanation questions | A1 is the first instance; more can follow |
+| Explanation question slot | Lets standardized market questions sit alongside themes | Questions can be market-specific in selection, standardized in build method |
+
 ### Act 3 working asset list
 
 This is the first pass at the reader-facing assets inside `Act 3 / Dynamics`.
@@ -166,10 +229,15 @@ This keeps the zone model distinct from the later narrowing/selection layer.
 | Act 1 / Peer Markets / Featured peer comparison | Position | Peers | Makes the peer set concrete with one comparison the reader can hold onto | Market-specific within a required asset slot | Planned | Exact selection rule can wait until build |
 | Act 1 / Peer Markets / Diverging peer or forward-analog candidate | Position | Peers | Adds higher-order interpretation beyond the plain peer list | Market-specific | Planned | Light Act 1 interpretation; fuller logic should be defined in Act 3 |
 | Act 1 / Peer Markets / Similarity-framework methods caveat | Position | Peers | Preserves honesty about open framework-method questions behind peer claims | Fixed caveat class; wording may lock later | In progress | Needed until similarity validation and universe questions are resolved |
-| Act 2 / Industry Makeup and Regional Role | Thematic | A1 AI inversion |  |  |  |  |
-| Act 2 / Industry Makeup and Regional Role | Explanation | Regional role |  |  |  |  |
-| Act 2 / Built Environment and Social Fabric | Explanation | Q4 Daily-needs access |  |  |  |  |
-| Act 2 / Built Environment and Social Fabric | Explanation | Q6 One metro? |  |  |  |  |
+| Act 2 / Industry Makeup and Regional Role / Deeper market KPI-profile tables | Explanation + Thematic | Component-specific baseline tables across questions and themes | Gives Act 2 a deeper market baseline than Act 1 and feeds multiple question paths | Fixed capability class; exact contents vary by market and question | In progress | Think of this as reusable component datasets rather than one-off issue tables |
+| Act 2 / Industry Makeup and Regional Role / Benchmark comparison layer | Explanation + Thematic | Shared comparison and benchmarking method | Reusable comparison layer across Act 2 questions so each analysis does not reinvent regional and peer comparisons | Reusable method; market-specific outputs | In progress | Should support national, Census Division, Act 1 peer set, and sometimes nearby metros; likely points toward shared geo rollup assets |
+| Act 2 / Industry Makeup and Regional Role / Industry-economic makeup analysis | Thematic + Explanation | A1 AI inversion + other industry-facing questions/themes | Explains how the market's industries, economic base, and sector structure are organized | Market-specific findings from reusable methods and datasets | In progress | A1 is the first Act 2 theme instance, not a one-off special case |
+| Act 2 / Industry Makeup and Regional Role / Regional role analysis | Explanation | Regional role + Q6 One metro? + other region-facing questions | Explains how the market fits its broader region through commuting, infrastructure, trade/base metrics, and comparative role | Reusable capability; market-specific findings | In progress | Broader than industry; likely needs standard region-analysis components such as shared geo rollups |
+| Act 2 / Built Environment and Social Fabric / Built environment analysis | Explanation | Q4 Daily-needs access + Q6 One metro? + future built-form questions | Explains infrastructure, building types, land use, and physical market form | Reusable capability; market-specific findings | Planned | Built environment can contain separate sub-components with their own inputs and outputs |
+| Act 2 / Built Environment and Social Fabric / Access-amenities analysis | Explanation | Q4 Daily-needs access + related livability questions | Explains what livability amenities exist and how accessible they are | Reusable capability; market-specific findings | In progress | Separate from built environment even when they share inputs and maps |
+| Act 2 / Built Environment and Social Fabric / Social fabric analysis | Explanation | Q6 One metro? + character-facing questions + future cultural analyses | Explains cultural anchors, civic institutions, neighborhood character, and social capital signals | Reusable capability; market-specific findings | Planned | Start with those four subcomponents but leave room for additional signals later |
+| Act 2 / Built Environment and Social Fabric / Theme analysis slot | Thematic | Routed thematic analyses that land in Act 2 | Allows themes to sit beside explanation questions and reuse the same component capabilities | Market-specific selection from reusable build methods | Planned | The standardized part is how we build and answer the theme, not which theme is chosen for a market |
+| Act 2 / Built Environment and Social Fabric / Explanation question slot | Explanation | Q1 Q2 Q4 Q5 Q6 and related market questions | Allows standardized question builds to sit beside themes and feed later acts | Market-specific selection from reusable build methods | In progress | Questions chosen can vary by market, but the datasets, methods, and outputs should standardize |
 | Act 3 / Trend Analysis / Trend series candidate pool | Position + Thematic | Trajectory + routed theme context | Base pool of time-series measures that can support the market's dynamics read | Fixed candidate pool structure; actual selected series vary by market | In progress | Start with `population`, `permits`, `home prices`, `rents`, `employment`, `wages`, `income`; organize by data family |
 | Act 3 / Trend Analysis / Lead trend panel set | Position + Thematic | Trajectory + routed theme context | Reader-facing 4 to 6 panel set that turns the broader trend pool into the market's main dynamics story | Market-specific selection from the candidate pool | Planned | Select by strongest explanatory value for the market rather than one-per-family rules |
 | Act 3 / Trend Analysis / Converging-diverging-inflecting classifications | Position | Trajectory | Useful framing layer for interpreting series consistently across markets | Market-specific output from a reusable method | Planned | Helpful but not the primary Act 3 asset; avoid reducing the whole act to this classification alone |
@@ -235,6 +303,49 @@ This is the program layer in its own terms.
 | Candidate scan |  |  |  |  |
 | Similarity neighborhood |  |  |  |  |
 
+#### Questions for 3.1 Position
+
+Use these to fill the Position table while keeping the level light and useful.
+
+1. For `Profile`, what are the core current sources we should name?
+   Likely candidates: Intelligence Framework outputs, `mart_intelligence`, Research Tool Overview tab, frame review notebooks/artifacts.
+
+2. For `Profile`, what rough outputs should we name?
+   Examples: fingerprint-style profile tables, frame/topic summaries, cluster label assets, scorecards, identity visuals.
+
+3. For `Peers`, should we explicitly list both cross-frame cosine similarity outputs and frame-specific similarity outputs as separate current sources?
+
+4. For `Peers`, what outputs do we want to call out now?
+   Examples: peer tables, featured peer comparisons, similarity views, head-to-head KPI comparisons.
+
+5. For `Trajectory`, what do we see as the main current build/source?
+   Likely candidates: Phase 6 trajectory outputs, `trajectory_scores.parquet`, candidate-list outputs, Research Tool Trajectory tab.
+
+6. For `Trajectory`, what rough outputs should we list?
+   Examples: trend leads, direction classifications, turn signals, dynamic comparison charts, Act 3 inputs.
+
+7. For `Internal structure`, do we want to list the current sources as Phase 7 zone model outputs, tract assignments, ZCTA rollups, Research Tool Zone Map tab, plus place-intelligence overlap where relevant?
+
+8. For `Internal structure`, what outputs should we name?
+   Examples: zone maps, composition bars, zone summaries, Act 4 zone inputs.
+
+9. For `Candidate scan`, do we want to treat it as a real Position analysis in this table, or more as a market-selection artifact built from Position outputs?
+
+10. If we keep `Candidate scan`, what sources should we name?
+    Likely candidates: `phase6_candidate_list.csv`, Research Tool Candidate List tab, cross-frame divergence flags, trajectory outputs.
+
+11. For `Candidate scan`, what outputs should we list?
+    Examples: market ranking tables, candidate shortlists, market-selection views.
+
+12. For `Similarity neighborhood`, since it is not built yet, should the Current build/source field emphasize `not built` plus the existing similarity matrices and peer outputs it would build on?
+
+13. For `Similarity neighborhood`, what do we imagine as the rough outputs?
+    Examples: peer networks, threshold-based neighbor sets, pairwise similarity exploration, beyond-top-10 comparison surfaces.
+
+14. Across all Position analyses, do we want to explicitly note that these are the strongest existing bridge from Research Tool surfaces into Marimo notebook analyses?
+
+15. Are there any Position analyses that should already carry a public-sharing caution note because of framework validation or universe-consistency concerns?
+
 ### 3.2 Explanation
 
 | Analysis / Question | Current build/source | Main outputs it can feed | Routed by what signal? | Notes / audit needs |
@@ -249,6 +360,77 @@ This is the program layer in its own terms.
 | Corridors |  |  |  |  |
 | Parcel watch |  |  |  |  |
 | Catchment |  |  |  |  |
+
+#### Questions for 3.2 Explanation
+
+Use these to fill the Explanation table while keeping the level light and useful.
+
+1. For each explanation question, what current sources should we name:
+   existing data assets, partial notebooks, specs, app surfaces, or methods notes?
+
+2. For `Q1 Supply or demand`, what sources do we already know or expect to need?
+   Likely candidates: housing stock composition, vacancy, permits, HPI, related housing engine work.
+
+3. For `Q1 Supply or demand`, what rough outputs should we name?
+   Examples: submarket comparison tables, supply-vs-demand diagnostic views, housing pressure maps, explanation notes that can feed Act 2 or Act 3.
+
+4. For `Q2 Job-proximity gradient`, what current build/source should we name now?
+   Likely candidates: Industry D3 job centers, tract price data, any existing job-center mapping work.
+
+5. For `Q2 Job-proximity gradient`, what rough outputs should we list?
+   Examples: gradient charts, tract-distance comparisons, corridor-supporting inputs, internal opportunity comparisons.
+
+6. For `Q3 Where growth lands`, what sources do we already know or expect to need?
+   Likely candidates: tract housing-unit change, tract population change, tract vintage handling, geography helpers.
+
+7. For `Q3 Where growth lands`, what outputs should we name?
+   Examples: infill-vs-greenfield views, growth maps, tract change summaries, Act 3 or Act 4 supporting inputs.
+
+8. For `Q4 Daily-needs access`, what sources should we name now?
+   Likely candidates: Overture POIs, OSM, POI taxonomy work, Place Intelligence methods, Richmond/Jacksonville ingest work.
+
+9. For `Q4 Daily-needs access`, what outputs should we list?
+   Examples: amenity access maps, tract access scores, livability summaries, corridor-supporting access overlays.
+
+10. For `Q5 Afford to live near jobs`, what sources do we already know or expect to need?
+    Likely candidates: LODES RAC/WAC, tract income, OEWS, workplace/residence comparisons.
+
+11. For `Q5 Afford to live near jobs`, what outputs should we name?
+    Examples: affordability-to-jobs comparisons, mismatch summaries, tract or corridor overlays, Act 4 supporting inputs.
+
+12. For `Q6 One metro?`, what should the current sources emphasize?
+    Likely candidates: LODES WAC/RAC integration, county industry mix, polycentricity ideas, market-structure and character context.
+
+13. For `Q6 One metro?`, what rough outputs should we list?
+    Examples: commuting integration views, polycentricity comparisons, sub-center maps, market-structure summaries that can feed Act 2 and Act 4.
+
+14. For `Regional role`, what current sources should we name?
+    Likely candidates: WAC/RAC, deferred OD, IRS flows, infrastructure context, geo rollups, regional comparison logic.
+
+15. For `Regional role`, what outputs should we list?
+    Examples: commute-shed summaries, inflow/outflow views, regional benchmark tables, metro-within-region interpretation assets.
+
+16. For `Corridors`, what current sources should we name even though the method is unsettled?
+    Likely candidates: Internal structure outputs, Q4 access work, OSM infrastructure, possible trend overlays.
+
+17. For `Corridors`, what rough outputs should we list?
+    Examples: corridor candidate pools, selected corridor summaries, corridor-level theses, Act 4 stat-block inputs.
+
+18. For `Parcel watch`, what sources should we name now?
+    Likely candidates: Regrid or county parcels, corridor scope, parcel screening logic, ROF/shared parcel methods where relevant.
+
+19. For `Parcel watch`, what outputs should we list?
+    Examples: parcel candidate tables, parcel maps, underutilized-site screens, corridor follow-through assets.
+
+20. For `Catchment`, what current sources should we name?
+    Likely candidates: Place Intelligence D1-D3, apportionment methods, barriers, daytime population, site-level artifact builds.
+
+21. For `Catchment`, what outputs should we list?
+    Examples: site catchment maps, tract-apportionment summaries, access/barrier diagnostics, place-level supporting views.
+
+22. Across the Explanation family, do we want to explicitly note that many of these questions can feed multiple acts, especially Act 2, Act 3, and Act 4?
+
+23. Which Explanation questions already look most reusable as standard methods, even if their exact market selection will vary?
 
 ### 3.3 Thematic
 
@@ -266,6 +448,63 @@ This is the program layer in its own terms.
 | A10 Polarization |  |  |  |  |
 | Housing satellite |  |  |  |  |
 | CBSA similarity study |  |  |  |  |
+
+#### Questions for 3.3 Thematic
+
+Use these to fill the Thematic table while keeping the level light and useful.
+
+1. For each thematic entry, what current sources should we name:
+   existing notebooks, specs, marts, draft engines, or known input datasets?
+
+2. For `A1 AI inversion`, what sources should we explicitly call out?
+   Likely candidates: A1 Marimo notebook, Industry engine work, NAICS-to-AIOE crosswalk, `SPEC_INDUSTRY.md`, industry data products already in progress.
+
+3. For `A1 AI inversion`, what rough outputs should we list?
+   Examples: market-mode section outputs, all-market article outputs, exposure scorecards, sector comparisons, regional or peer comparisons.
+
+4. For `A2 Building lowers prices?`, what current sources or precursor work should we name even if it is still banked?
+   Likely candidates: housing engine ideas, permits, price/burden data, housing satellite overlaps.
+
+5. For `A3 Moving toward harm?`, what sources or precursor work should we name?
+   Likely candidates: hazard data, growth series, environment/livability inputs, Act 3 overlap.
+
+6. For `A4 Remote work rewired?`, what sources or precursor work should we name?
+   Likely candidates: work-geography concepts, LODES, WFH series, housing and industry context.
+
+7. For `A5 How many downtowns?`, what sources or precursor work should we name?
+   Likely candidates: WAC, polycentricity ideas, Q6 overlap, internal-structure work.
+
+8. For `A6 Specialization predicts growth?`, what sources or precursor work should we name?
+   Likely candidates: LQ panels, growth series, industry engine, benchmarking methods.
+
+9. For `A7 Who is squeezed?`, what sources or precursor work should we name?
+   Likely candidates: housing burden, price levels, income or wage context, overlap with Q1 and Q5.
+
+10. For `A8 Geography of life expectancy`, what sources or precursor work should we name?
+    Likely candidates: `health_wide`, housing/social-fabric context, health/livability inputs.
+
+11. For `A9 Converging or diverging?`, what sources or precursor work should we name?
+    Likely candidates: long-panel dispersion work, trend series families, Act 3 methods, peer comparisons.
+
+12. For `A10 Polarization`, what sources or precursor work should we name?
+    Likely candidates: sector wage distributions, industry and people context, growth/structure comparisons.
+
+13. For `Housing satellite`, what should the current-source row emphasize?
+    Likely candidates: vacancy, costs, supply character, overheating heuristic, overlaps with A2, A7, and Q1.
+
+14. For `CBSA similarity study`, what should the current-source row emphasize?
+    Likely candidates: cross-frame cosine method, methods memo, framework review questions, peer outputs, similarity artifacts.
+
+15. Across the thematic entries, what rough output types do we want to name repeatedly?
+    Examples: market-mode notebook sections, all-market articles, comparative charts, scorecards, maps, reusable visual packages.
+
+16. For the `Runs in market mode, all-market mode, or both?` column, do we want to default most entries to `both` unless a theme is clearly one-sided?
+
+17. Which thematic entries already look closest to real build readiness, and which are still mostly placeholders or concept stubs?
+
+18. Across the Thematic family, do we want to explicitly note that the reusable part is the standard build method and theme-engine interface, while the specific selected theme remains market-dependent?
+
+19. Which thematic entries look most likely to feed more than one act once built, rather than staying isolated inside Act 2?
 
 ## 4. Analysis -> Engine Requirements
 
@@ -321,56 +560,7 @@ When something is needed by more than one analysis or output, track it here.
 |---|---|---|---|---|---|---|
 |  |  |  |  |  |  |  |
 
-## 7. Working Questions
-
-These are the first questions I think we should answer together.
-
-1. For `Act 1 / Market Fingerprint`, do we want to treat these as separate assets:
-   `Fingerprint KPIs`
-   `Radar`
-   `Percentile table`
-   `Top-line stat boxes`
-   or keep them bundled for now under one fingerprint row?
-
-2. For `Act 1 / Peer Markets`, what is the first-pass output we care about most:
-   `peer list`
-   `featured peer comparison`
-   `diverging peer logic`
-   `full similarity audit trail`
-
-3. For `Act 3 / Trend Analysis`, do we want it to be driven primarily by:
-   `Trajectory`
-   or
-   `Trajectory + time-series engine outputs`
-   from the start?
-
-4. For `Act 4 / Zone Corridors`, do we want to treat corridor detection as:
-   `an Explanation analysis method`
-   first,
-   and only later promote it into an engine if reused?
-
-5. Which issue section should we fully work backward first:
-   `Market Fingerprint`
-   `Peer Markets`
-   `Trend Analysis`
-   or
-   `Zone Corridors`
-
-6. For `Act 3 / Trend Analysis`, do we want the base unit to be:
-   `series`
-   `framing classification`
-   or
-   `panel`
-   My instinct is `series` first, because the panels are downstream packaging.
-
-7. For `Act 4 / Zone Corridors`, do we want to keep:
-   `corridor candidate pool`
-   and
-   `corridor stat blocks`
-   separate from the start?
-   My instinct is yes, because one is reusable analytical output and the other is a standardized issue asset.
-
-## 8. Decisions Captured So Far
+## 7. Decisions Captured So Far
 
 | Decision area | Current decision | Notes |
 |---|---|---|
@@ -386,3 +576,7 @@ These are the first questions I think we should answer together.
 | Intelligence Cluster Label lineage | Track both `phase build artifacts` and `promoted mart_intelligence outputs` | Preserve the distinction between build truth and product read layer while promotions are still in motion |
 | Peer set structure | Default to primary peers from cross-frame cosine similarity, with secondary peer sets for each individual frame | Cross-frame peers are the main Act 1 identity peer surface |
 | Diverging peer / forward-analog placement | Treat as a light higher-order interpretation in Act 1, but define the real analytical logic in Act 3 / Trend Analysis | Most of the actual work belongs with trend and trajectory machinery |
+| Act 2 organizing rule | Start from analysis questions, map into reusable component-group capabilities, then trace upstream inputs needed to answer them | Component groups are capability buckets, not strict ownership buckets |
+| Act 2 standardization rule | The reusable part is how we build and answer questions and themes; the market-specific part is which ones we choose to pursue | Standardize datasets, methods, workflows, and outputs where possible |
+| Shared comparison method | Treat comparison and benchmarking as a shared method reused across multiple Act 2 components and later acts | Support national, Census Division, Act 1 peer set, and sometimes nearby-metro comparisons |
+| Regional role scope | Treat regional role as a broader cross-cutting capability, not just an industry sub-question | Includes commuting, infrastructure, trade/base metrics, and comparative regional fit |
