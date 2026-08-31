@@ -23,6 +23,15 @@ The intended flow for this workbook is:
 -> `Current notes / builds / queries`
 -> `Promotion path if reused`
 
+Scaffold rule for the new build tree:
+
+- scaffold by `engines`, `analyses`, and `issues`
+- do not scaffold by acts at the top level
+- keep reusable act-level builders inside `analyses/`
+- keep `issues/` focused on market-specific assembly, decisions, and output planning
+- use `issues/_shared/` for shared issue-facing conventions and specs
+- build the new tree first inside `metro-deep-dive-program/` so it stays clearly separated from the legacy `metro-deep-dive/` structure
+
 Working shorthand for the later acts:
 
 - `Act 2` = what this market is and how it works
@@ -296,238 +305,99 @@ This is the program layer in its own terms.
 
 | Analysis | Current build/source | Main outputs it can feed | Still internal-only? | Notes / audit needs |
 |---|---|---|---|---|
-| Profile |  |  |  |  |
-| Peers |  |  |  |  |
-| Trajectory |  |  |  |  |
-| Internal structure |  |  |  |  |
-| Candidate scan |  |  |  |  |
-| Similarity neighborhood |  |  |  |  |
-
-#### Questions for 3.1 Position
-
-Use these to fill the Position table while keeping the level light and useful.
-
-1. For `Profile`, what are the core current sources we should name?
-   Likely candidates: Intelligence Framework outputs, `mart_intelligence`, Research Tool Overview tab, frame review notebooks/artifacts.
-
-2. For `Profile`, what rough outputs should we name?
-   Examples: fingerprint-style profile tables, frame/topic summaries, cluster label assets, scorecards, identity visuals.
-
-3. For `Peers`, should we explicitly list both cross-frame cosine similarity outputs and frame-specific similarity outputs as separate current sources?
-
-4. For `Peers`, what outputs do we want to call out now?
-   Examples: peer tables, featured peer comparisons, similarity views, head-to-head KPI comparisons.
-
-5. For `Trajectory`, what do we see as the main current build/source?
-   Likely candidates: Phase 6 trajectory outputs, `trajectory_scores.parquet`, candidate-list outputs, Research Tool Trajectory tab.
-
-6. For `Trajectory`, what rough outputs should we list?
-   Examples: trend leads, direction classifications, turn signals, dynamic comparison charts, Act 3 inputs.
-
-7. For `Internal structure`, do we want to list the current sources as Phase 7 zone model outputs, tract assignments, ZCTA rollups, Research Tool Zone Map tab, plus place-intelligence overlap where relevant?
-
-8. For `Internal structure`, what outputs should we name?
-   Examples: zone maps, composition bars, zone summaries, Act 4 zone inputs.
-
-9. For `Candidate scan`, do we want to treat it as a real Position analysis in this table, or more as a market-selection artifact built from Position outputs?
-
-10. If we keep `Candidate scan`, what sources should we name?
-    Likely candidates: `phase6_candidate_list.csv`, Research Tool Candidate List tab, cross-frame divergence flags, trajectory outputs.
-
-11. For `Candidate scan`, what outputs should we list?
-    Examples: market ranking tables, candidate shortlists, market-selection views.
-
-12. For `Similarity neighborhood`, since it is not built yet, should the Current build/source field emphasize `not built` plus the existing similarity matrices and peer outputs it would build on?
-
-13. For `Similarity neighborhood`, what do we imagine as the rough outputs?
-    Examples: peer networks, threshold-based neighbor sets, pairwise similarity exploration, beyond-top-10 comparison surfaces.
-
-14. Across all Position analyses, do we want to explicitly note that these are the strongest existing bridge from Research Tool surfaces into Marimo notebook analyses?
-
-15. Are there any Position analyses that should already carry a public-sharing caution note because of framework validation or universe-consistency concerns?
+| Profile | Intelligence Framework outputs, `mart_intelligence`, notebook-first Act 1 profile data frame, Research Tool Overview tab, frame review artifacts/notebooks | Fingerprint-style profile tables, scorecards, frame/topic summaries, cluster-label assets, radar charts, and future identity visuals such as KPI strips, frame-balance scatters, or compact peer-position plots | Public sharing should stay mindful of framework validation and universe-consistency questions | Start with a thinner notebook data frame while the KPI shape stabilizes; likely promote later into broader MDD marts rather than a one-off Act 1 mart; this is one of the strongest bridges from Research Tool surfaces into Marimo notebook analyses |
+| Peers | Cross-frame cosine similarity outputs plus frame-specific similarity outputs; Intelligence Framework peer artifacts; Research Tool Peers tab | Peer tables, featured peer comparisons, similarity views/tables, head-to-head KPI comparisons, supporting Act 1 and Act 3 comparative assets, and future peer-network visuals | Peer outputs should carry the same framework-method caveats as other public Position assets | Make it explicit that both cross-frame and frame-specific peer sources are used; peer tables and similarity views may consolidate later if they stay structurally similar |
+| Trajectory | Existing trajectory outputs and candidate-list artifacts where available; Research Tool Trajectory tab; future trajectory data frame or mart rather than assuming one fixed parquet dependency | Trend leads, direction/distribution summaries, turn signals, Act 3 inputs, notebook-first comparison views, and future slope/distribution visuals if they prove easy and useful | Direction-style outputs may need caution if presented too simply before method review is complete | If `trajectory_scores.parquet` already exists, review and reuse it, but the scalable target is a queryable mart/data frame; avoid overcommitting to dynamic charting early |
+| Internal structure | Phase 7 zone model outputs, tract assignments, ZCTA rollups, Research Tool Zone Map tab, place-intelligence overlap where relevant, `dim_geo` and related geo-rollup helpers | Zone maps, composition bars, zone summaries, Act 4 zone inputs, supporting infrastructure/place context, and future rollup comparison visuals | Tract-first structure is likely fine internally while broader rollup methods are still stabilizing | Add core infrastructure/place context alongside zone outputs; tract view is primary, ZCTA/place support can improve over time; longer-term this points toward investing in a stronger shared geo mart with `dim_geo` plus encoded rollups and labels |
+| Candidate scan | Market-selection artifact built from Position outputs rather than a core downstream analysis surface | Rankings table, candidate shortlist, lightweight market-selection output, and future shortlist comparison views if useful | Less about public sharing than about how it gets reused across planning and issue selection | Incorporate Candidate Scan logic more broadly into Act 1 thinking, but keep one simple market-selection output here |
+| Similarity neighborhood | Not built yet; will build on existing similarity matrices, peer outputs, zone-cluster labels, KPI tables, `dim_geo` rollups, and neighborhood-boundary inputs once ingested | Threshold-based neighbor sets, pairwise similarity exploration, peer networks, beyond-top-10 comparison surfaces, tract-zone clustering comparison views, and future graph/network visuals | No immediate public-sharing note beyond the same framework-method caveats that apply to peer logic | Define these outputs more carefully once build work starts; current value is in identifying likely input dependencies and overlap with existing peer infrastructure |
 
 ### 3.2 Explanation
 
 | Analysis / Question | Current build/source | Main outputs it can feed | Routed by what signal? | Notes / audit needs |
 |---|---|---|---|---|
-| Q1 Supply or demand |  |  |  |  |
-| Q2 Job-proximity gradient |  |  |  |  |
-| Q3 Where growth lands |  |  |  |  |
-| Q4 Daily-needs access |  |  |  |  |
-| Q5 Afford to live near jobs |  |  |  |  |
-| Q6 One metro? |  |  |  |  |
-| Regional role |  |  |  |  |
-| Corridors |  |  |  |  |
-| Parcel watch |  |  |  |  |
-| Catchment |  |  |  |  |
-
-#### Questions for 3.2 Explanation
-
-Use these to fill the Explanation table while keeping the level light and useful.
-
-1. For each explanation question, what current sources should we name:
-   existing data assets, partial notebooks, specs, app surfaces, or methods notes?
-
-2. For `Q1 Supply or demand`, what sources do we already know or expect to need?
-   Likely candidates: housing stock composition, vacancy, permits, HPI, related housing engine work.
-
-3. For `Q1 Supply or demand`, what rough outputs should we name?
-   Examples: submarket comparison tables, supply-vs-demand diagnostic views, housing pressure maps, explanation notes that can feed Act 2 or Act 3.
-
-4. For `Q2 Job-proximity gradient`, what current build/source should we name now?
-   Likely candidates: Industry D3 job centers, tract price data, any existing job-center mapping work.
-
-5. For `Q2 Job-proximity gradient`, what rough outputs should we list?
-   Examples: gradient charts, tract-distance comparisons, corridor-supporting inputs, internal opportunity comparisons.
-
-6. For `Q3 Where growth lands`, what sources do we already know or expect to need?
-   Likely candidates: tract housing-unit change, tract population change, tract vintage handling, geography helpers.
-
-7. For `Q3 Where growth lands`, what outputs should we name?
-   Examples: infill-vs-greenfield views, growth maps, tract change summaries, Act 3 or Act 4 supporting inputs.
-
-8. For `Q4 Daily-needs access`, what sources should we name now?
-   Likely candidates: Overture POIs, OSM, POI taxonomy work, Place Intelligence methods, Richmond/Jacksonville ingest work.
-
-9. For `Q4 Daily-needs access`, what outputs should we list?
-   Examples: amenity access maps, tract access scores, livability summaries, corridor-supporting access overlays.
-
-10. For `Q5 Afford to live near jobs`, what sources do we already know or expect to need?
-    Likely candidates: LODES RAC/WAC, tract income, OEWS, workplace/residence comparisons.
-
-11. For `Q5 Afford to live near jobs`, what outputs should we name?
-    Examples: affordability-to-jobs comparisons, mismatch summaries, tract or corridor overlays, Act 4 supporting inputs.
-
-12. For `Q6 One metro?`, what should the current sources emphasize?
-    Likely candidates: LODES WAC/RAC integration, county industry mix, polycentricity ideas, market-structure and character context.
-
-13. For `Q6 One metro?`, what rough outputs should we list?
-    Examples: commuting integration views, polycentricity comparisons, sub-center maps, market-structure summaries that can feed Act 2 and Act 4.
-
-14. For `Regional role`, what current sources should we name?
-    Likely candidates: WAC/RAC, deferred OD, IRS flows, infrastructure context, geo rollups, regional comparison logic.
-
-15. For `Regional role`, what outputs should we list?
-    Examples: commute-shed summaries, inflow/outflow views, regional benchmark tables, metro-within-region interpretation assets.
-
-16. For `Corridors`, what current sources should we name even though the method is unsettled?
-    Likely candidates: Internal structure outputs, Q4 access work, OSM infrastructure, possible trend overlays.
-
-17. For `Corridors`, what rough outputs should we list?
-    Examples: corridor candidate pools, selected corridor summaries, corridor-level theses, Act 4 stat-block inputs.
-
-18. For `Parcel watch`, what sources should we name now?
-    Likely candidates: Regrid or county parcels, corridor scope, parcel screening logic, ROF/shared parcel methods where relevant.
-
-19. For `Parcel watch`, what outputs should we list?
-    Examples: parcel candidate tables, parcel maps, underutilized-site screens, corridor follow-through assets.
-
-20. For `Catchment`, what current sources should we name?
-    Likely candidates: Place Intelligence D1-D3, apportionment methods, barriers, daytime population, site-level artifact builds.
-
-21. For `Catchment`, what outputs should we list?
-    Examples: site catchment maps, tract-apportionment summaries, access/barrier diagnostics, place-level supporting views.
-
-22. Across the Explanation family, do we want to explicitly note that many of these questions can feed multiple acts, especially Act 2, Act 3, and Act 4?
-
-23. Which Explanation questions already look most reusable as standard methods, even if their exact market selection will vary?
+| Q1 Supply or demand | Thin existing foundation so far; start from relevant Gold tables or MDD marts plus any housing notebooks, apps, and notes; supply side should include housing stock composition, vacancy, permits, HPI; demand side should include population growth, HPI, costs, and migration | Submarket comparison tables, supply-vs-demand diagnostic views, housing pressure maps, housing stock maps, permitting maps, population-growth maps, possible commuting-pattern context, and explanation notes that can feed Act 2 or Act 3 | Livability divergence and other housing-related market signals | One of the more reusable explanation questions; can likely standardize before some of the heavier POI/network-dependent questions |
+| Q2 Job-proximity gradient | Industry D3 job centers, tract price data, existing job-center mapping work, and future road/network layers so the method is not based only on geographic proximity | Gradient charts, tract-distance comparisons, corridor-supporting inputs, internal opportunity comparisons | Opportunity and internal-structure signals; likely helpful when corridor questions emerge | One of the more reusable explanation questions; likely needs network-analysis follow-on to reach its better form |
+| Q3 Where growth lands | Tract housing-unit change, tract population change, tract vintage handling, geography helpers, plus any relevant tract-change notebooks or notes | Infill-vs-greenfield views, growth maps, tract change summaries, Act 3 or Act 4 supporting inputs | Livability and internal-structure signals tied to growth placement | One of the more reusable explanation questions; vintage handling remains the known hazard |
+| Q4 Daily-needs access | Overture POIs, OSM, POI taxonomy work, Place Intelligence methods, Richmond/Jacksonville ingest work, plus any related notes/specs/apps | Amenity access maps, tract access scores, livability summaries, corridor-supporting access overlays | Livability divergence and related place-access signals | More setup-heavy than some other explanation questions because it depends on POI data, taxonomy quality, infrastructure, and likely later network-analysis choices |
+| Q5 Afford to live near jobs | LODES RAC/WAC, tract income, OEWS, workplace/residence comparisons, plus any supporting labor or affordability notes | Affordability-to-jobs comparisons, mismatch summaries, tract or corridor overlays, Act 4 supporting inputs | Opportunity divergence and labor/housing tension signals | Reusable eventually, but depends on more setup than the simpler regional/housing structure questions |
+| Q6 One metro? | LODES WAC/RAC integration, county industry mix, polycentricity ideas, market-structure context, character context, and any relevant regional notes | Commuting integration views, polycentricity comparisons, sub-center maps, market-structure summaries that can feed Act 2 and Act 4 | Character divergence and broader market-structure or regional-fit signals | One of the most reusable bridge questions; spans regional role, character explanation, polycentricity, and internal market structure |
+| Regional role | WAC/RAC, deferred OD, IRS flows, infrastructure context, geo rollups, regional comparison logic, and any related notebooks/specs/notes | Commute-shed summaries, inflow/outflow views, regional benchmark tables, metro-within-region interpretation assets | Broad regional-fit and comparison signals across multiple frames | One of the most reusable explanation capabilities; likely points toward shared region-analysis components and cleaner geo rollups |
+| Corridors | Internal structure outputs, Q4 access work, OSM infrastructure, possible trend overlays, and any future zone/corridor method notes | Corridor candidate pools, selected corridor summaries, corridor-level theses, Act 4 stat-block inputs | Zone-composition outliers and related internal-structure signals | Setup-heavy because the method is still being defined; should still be tracked now because it reuses many Act 2 and Act 4 inputs |
+| Parcel watch | Regrid or county parcels, corridor scope, parcel screening logic, ROF/shared parcel methods where relevant, and any market-specific parcel prep work | Parcel candidate tables, parcel maps, underutilized-site screens, corridor follow-through assets | Conditional on corridor selection and parcel-data readiness | Reusable eventually, but strongly conditional and setup-heavy; should not be treated as required for every market |
+| Catchment | Place Intelligence D1-D3, apportionment methods, barriers, daytime population, site-level artifact builds, and related methods/architecture notes | Site catchment maps, tract-apportionment summaries, access/barrier diagnostics, place-level supporting views | Place/site-centered questions rather than classic metro routing alone | Built already in a place-intelligence context; methods look promotable even if the app/product surface itself is not the direct target here |
 
 ### 3.3 Thematic
 
 | Theme / Entry | Current build/source | Main outputs it can feed | Runs in market mode, all-market mode, or both? | Notes / audit needs |
 |---|---|---|---|---|
-| A1 AI inversion |  |  |  |  |
-| A2 Building lowers prices? |  |  |  |  |
-| A3 Moving toward harm? |  |  |  |  |
-| A4 Remote work rewired? |  |  |  |  |
-| A5 How many downtowns? |  |  |  |  |
-| A6 Specialization predicts growth? |  |  |  |  |
-| A7 Who is squeezed? |  |  |  |  |
-| A8 Geography of life expectancy |  |  |  |  |
-| A9 Converging or diverging? |  |  |  |  |
-| A10 Polarization |  |  |  |  |
-| Housing satellite |  |  |  |  |
-| CBSA similarity study |  |  |  |  |
+| A1 AI inversion | Existing A1 Marimo notebook, industry engine work, NAICS-to-AIOE crosswalk, `SPEC_INDUSTRY.md`, and underlying industry input datasets already in progress | All-market analysis notebooks first, later market-mode sections, exposure scorecards, sector comparisons, change-over-time views, possible within-market AI impact reads, comparative charts, and reusable visual packages | Both | Closest thematic analysis to done; useful as the first instance of the standard Act 2 theme build method |
+| A2 Building lowers prices? | Housing engine ideas, permits, price/burden data, housing satellite overlaps, and any housing input datasets already available | All-market notebooks, later market-mode sections, comparative charts, housing burden vs supply views, scorecards, maps, and reusable housing analysis packages | Both | Likely has much of the data already; should connect closely to Q1 and broader housing-pressure logic |
+| A3 Moving toward harm? | EPA data, FEMA data, building growth, population growth, environment/livability inputs, and related hazard/growth precursor work | All-market notebooks, later market-mode sections, hazard-growth comparisons, risk scorecards, maps, and reusable environment-growth analysis packages | Both | Data foundation appears mostly present; should explicitly connect hazard data to growth and built environment dynamics |
+| A4 Remote work rewired? | Work-geography concepts, LODES, ACS commute and WFH series, housing context, industry context, and related work-geography precursor datasets | All-market notebooks, later market-mode sections, commute/WFH comparison views, housing-industry context charts, regional/work-geography analyses, and reusable comparative visuals | Both | Analytic approach still needs definition; work geography here means understanding how jobs, commuting burden, remote-work eligibility, and housing patterns reshape market structure |
+| A5 How many downtowns? | WAC, polycentricity ideas, Q6 overlap, internal-structure work, job-density ideas, shopping/transit density ideas, and 15-minute-city literature/method references | All-market notebooks, later market-mode sections, polycentricity comparisons, sub-center maps, downtown typology views, density/time-series comparisons, and reusable place-structure visuals | Both | Needs analytic approach definition more than raw data discovery; should distinguish major downtowns, smaller suburban downtowns, and walkable strip/station-area centers |
+| A6 Specialization predicts growth? | LQ panels, growth series, industry engine work, benchmarking methods, and related industry-growth precursor datasets | All-market notebooks, later market-mode sections, specialization vs growth comparisons, benchmarking tables, scorecards, and reusable industry-growth visuals | Both | Data likely mostly available; method design is more important than data discovery at this stage |
+| A7 Who is squeezed? | Housing burden, price levels, income and wage context, overlaps with Q1 and Q5, and related affordability precursor datasets | All-market notebooks, later market-mode sections, burden vs income comparisons, affordability scorecards, maps, and reusable housing-pressure visuals | Both | Likely has most of the needed data; analytic framing still needs design |
+| A8 Geography of life expectancy | `health_wide`, housing context, social-fabric context, health/livability inputs, POIs, food-desert data, and related health precursor work | All-market notebooks, later market-mode sections, health-geography comparisons, scorecards, maps, and reusable health-context visuals | Both | Data appears broadly present; could benefit from stronger POI/food-access integration |
+| A9 Converging or diverging? | Long-panel dispersion work, trend-series families, Act 3 methods, peer comparisons, and related convergence precursor datasets | All-market notebooks, later market-mode sections, long-run divergence charts, peer comparisons, trend scorecards, and reusable dynamics visuals | Both | Data likely mostly present; analytic approach still needs definition |
+| A10 Polarization | Sector wage distributions, industry and people context, growth/structure comparisons, and any additional needed labor or earnings datasets | All-market notebooks, later market-mode sections, wage-distribution views, sector-demographic comparisons, scorecards, and reusable labor-structure visuals | Both | Needs more data than many of the other themes; interesting lens may combine sector, industry, demographics, and political/economic sorting questions later |
+| Housing satellite | Vacancy, costs, supply character, overheating heuristic, overlaps with A2, A7, and Q1, plus underlying housing input datasets | All-market notebooks, later market-mode sections, housing scorecards, comparison tables, maps, and reusable housing diagnostics | Both | Revisit the housing overheating heuristic and decide whether it should be reused as-is or reviewed/rebuilt |
+| CBSA similarity study | Cross-frame cosine method, methods memo, framework review questions, peer outputs, similarity artifacts, and broader Intelligence Framework data assets | All-market methods/analysis notebook first, later comparative article or supporting market-mode interpretation, similarity scorecards/tables, comparison visuals, and reusable methods outputs | Both | Cross-analysis extension of the Intelligence Framework; much of the data should already exist even if the framing still needs tightening |
 
-#### Questions for 3.3 Thematic
+## 4. Analysis -> Reusable Component Audit
 
-Use these to fill the Thematic table while keeping the level light and useful.
+Only after we know which analyses feed which outputs do we ask what reusable
+components are required underneath.
 
-1. For each thematic entry, what current sources should we name:
-   existing notebooks, specs, marts, draft engines, or known input datasets?
+This section should stay disciplined about distinguishing between:
 
-2. For `A1 AI inversion`, what sources should we explicitly call out?
-   Likely candidates: A1 Marimo notebook, Industry engine work, NAICS-to-AIOE crosswalk, `SPEC_INDUSTRY.md`, industry data products already in progress.
+- `engine`
+- `shared method`
+- `shared dataset / mart`
+- `supporting infrastructure`
 
-3. For `A1 AI inversion`, what rough outputs should we list?
-   Examples: market-mode section outputs, all-market article outputs, exposure scorecards, sector comparisons, regional or peer comparisons.
+Working boundary:
 
-4. For `A2 Building lowers prices?`, what current sources or precursor work should we name even if it is still banked?
-   Likely candidates: housing engine ideas, permits, price/burden data, housing satellite overlaps.
+- `engine` = the reusable computational system that produces a class of derived outputs
+- `shared method` = the reusable analytical logic or comparison approach applied across questions/themes
+- `shared dataset / mart` = the reusable queryable output layer that stores prepared inputs or derived results for downstream notebook work
+- `supporting infrastructure` = enabling inputs or platform pieces that make methods and marts possible but are not themselves the main analytical product
 
-5. For `A3 Moving toward harm?`, what sources or precursor work should we name?
-   Likely candidates: hazard data, growth series, environment/livability inputs, Act 3 overlap.
+The purpose here is to audit overlap from Sections `2` and `3`, make the
+dependencies clearer, and only then decide what should become a promoted engine
+or foundation-owned asset.
 
-6. For `A4 Remote work rewired?`, what sources or precursor work should we name?
-   Likely candidates: work-geography concepts, LODES, WFH series, housing and industry context.
-
-7. For `A5 How many downtowns?`, what sources or precursor work should we name?
-   Likely candidates: WAC, polycentricity ideas, Q6 overlap, internal-structure work.
-
-8. For `A6 Specialization predicts growth?`, what sources or precursor work should we name?
-   Likely candidates: LQ panels, growth series, industry engine, benchmarking methods.
-
-9. For `A7 Who is squeezed?`, what sources or precursor work should we name?
-   Likely candidates: housing burden, price levels, income or wage context, overlap with Q1 and Q5.
-
-10. For `A8 Geography of life expectancy`, what sources or precursor work should we name?
-    Likely candidates: `health_wide`, housing/social-fabric context, health/livability inputs.
-
-11. For `A9 Converging or diverging?`, what sources or precursor work should we name?
-    Likely candidates: long-panel dispersion work, trend series families, Act 3 methods, peer comparisons.
-
-12. For `A10 Polarization`, what sources or precursor work should we name?
-    Likely candidates: sector wage distributions, industry and people context, growth/structure comparisons.
-
-13. For `Housing satellite`, what should the current-source row emphasize?
-    Likely candidates: vacancy, costs, supply character, overheating heuristic, overlaps with A2, A7, and Q1.
-
-14. For `CBSA similarity study`, what should the current-source row emphasize?
-    Likely candidates: cross-frame cosine method, methods memo, framework review questions, peer outputs, similarity artifacts.
-
-15. Across the thematic entries, what rough output types do we want to name repeatedly?
-    Examples: market-mode notebook sections, all-market articles, comparative charts, scorecards, maps, reusable visual packages.
-
-16. For the `Runs in market mode, all-market mode, or both?` column, do we want to default most entries to `both` unless a theme is clearly one-sided?
-
-17. Which thematic entries already look closest to real build readiness, and which are still mostly placeholders or concept stubs?
-
-18. Across the Thematic family, do we want to explicitly note that the reusable part is the standard build method and theme-engine interface, while the specific selected theme remains market-dependent?
-
-19. Which thematic entries look most likely to feed more than one act once built, rather than staying isolated inside Act 2?
-
-## 4. Analysis -> Engine Requirements
-
-Only after we know which analyses feed which outputs do we ask what engines are
-required underneath.
-
-| Analysis / Question / Theme | Required engine piece | Why required | Current state | Existing source/build | Promote to foundations later? | Notes |
-|---|---|---|---|---|---|---|
-| Profile | Intelligence Framework |  |  |  |  |  |
-| Peers | Intelligence Framework |  |  |  |  |  |
-| Trajectory | Intelligence Framework |  |  |  |  |  |
-| Internal structure | Intelligence Framework |  |  |  |  |  |
-| Q4 Daily-needs access | Spatial / POI |  |  |  |  |  |
-| Q6 One metro? | Benchmarking / geography / workforce logic |  |  |  |  |  |
-| Regional role | Benchmarking / geography / workforce logic |  |  |  |  |  |
-| Corridors | Spatial / POI |  |  |  |  |  |
-| Corridors | Geography |  |  |  |  |  |
-| Parcel watch | Spatial / POI |  |  |  |  |  |
-| Parcel watch | Geography |  |  |  |  |  |
-| A1 AI inversion | Theme engine interface |  |  |  |  |  |
-| A1 AI inversion | Benchmarking |  |  |  |  |  |
-| Trend Analysis | Time series |  |  |  |  |  |
-| Market-wide notebook config | Registries |  |  |  |  |  |
+| Analysis / Question / Theme | Required reusable component | Component type | Why required | Current state | Existing source/build | Used by other analyses? | Promote to foundations later? | Notes |
+|---|---|---|---|---|---|---|---|---|
+| Profile | Intelligence Framework outputs | engine | Supplies the scored frame outputs, cluster labels, peer context, and other identity-layer signals used in Act 1 | Exists | Phase 2-7 Intelligence Framework outputs, `mart_intelligence`, Research Tool consumers | Yes | Yes | Core dependency for most Position work |
+| Profile | Act 1 profile data frame or broader MDD profile mart | shared dataset / mart | Provides a notebook-first reusable base for fingerprint KPIs, scorecards, and related identity assets | Partial | Notebook-first profile work to be built from `mart_intelligence` | Yes | Yes | Start thin, then promote into broader MDD marts once shape stabilizes |
+| Peers | Similarity outputs and peer tables | engine | Supplies cross-frame and frame-specific peer relationships | Exists | Cosine-similarity outputs, peer artifacts, Research Tool Peers tab | Yes | Yes | Should keep both cross-frame and frame-specific peer paths explicit |
+| Trajectory | Trajectory mart and trend-signal build method | shared dataset / mart | Builds and stores the reusable trajectory outputs, turn signals, and related trend measures in a queryable form for notebook workflows | Partial | Existing trajectory outputs, candidate-list artifacts, Research Tool Trajectory tab | Yes | Yes | Treat the time-series logic and signal method as the build path into a reusable trajectory mart; avoid overcommitting to one fixed file artifact |
+| Internal structure | Zone model outputs | engine | Supplies tract-derived internal structure used by Act 4 and related geography questions | Partial | Phase 7 zone outputs, tract assignments, Zone Map tab | Yes | Yes | Tract-first now, with rollups improving over time |
+| Internal structure | Shared geo mart and rollups | shared dataset / mart | Supports tract, ZCTA, place, and related geography rollups from one core layer | Partial | `dim_geo`, existing rollup helpers, future geo-mart investment | Yes | Yes | Strong candidate for broader platform investment |
+| Candidate scan | Candidate ranking method | shared method | Produces a lightweight market-selection artifact from Position signals | Partial | Candidate-list logic and outputs | Somewhat | Maybe | More planning artifact than core analysis surface |
+| Similarity neighborhood | Higher-order similarity exploration method | shared method | Extends beyond top-10 peers into threshold sets, networks, and pairwise exploration | Not built | Existing similarity matrices and peer outputs to build from | Yes | Maybe | Needs neighborhood boundaries and clearer rollout logic |
+| Q1 Supply or demand | Housing structure and demand comparison method | shared method | Standardizes how supply-side and demand-side housing signals are compared within a market | Partial | Gold housing data, housing notebooks/notes, housing satellite overlaps | Yes | Yes | One of the strongest reusable explanation questions |
+| Q1 Supply or demand | Housing component datasets | shared dataset / mart | Provides reusable supply-side and demand-side housing inputs for the method | Partial | Housing stock, vacancy, permits, HPI, population growth, costs, migration inputs | Yes | Yes | Good candidate for broader MDD housing marts |
+| Q2 Job-proximity gradient | Job-center proximity method | shared method | Computes the relationship between jobs and prices within the market | Partial | Industry D3 job centers, tract price data, mapping work | Yes | Maybe | Better version likely needs road or network layers |
+| Q2 Job-proximity gradient | Network and road context | supporting infrastructure | Improves the method beyond pure geographic proximity | Not built | Future road/network inputs | Yes | Maybe | Important follow-on but not required for first pass |
+| Q3 Where growth lands | Tract growth-change method | shared method | Standardizes how in-market growth location is classified and compared | Partial | Tract housing-unit change, tract population change, geography helpers | Yes | Maybe | Vintage handling is the key known hazard |
+| Q4 Daily-needs access | Spatial / POI access method | shared method | Standardizes how amenity access is measured and summarized | Partial | Overture, OSM, taxonomy work, Place Intelligence methods, ingest workflows | Yes | Yes | Heavier setup than some other questions, but clearly reusable |
+| Q4 Daily-needs access | POI taxonomy and access inputs | supporting infrastructure | Supplies the cleaned POI and amenity inputs that make the access method possible | Partial | POI ingest work, taxonomy notes, Richmond/Jacksonville builds | Yes | Yes | Likely shared across multiple questions and acts |
+| Q5 Afford to live near jobs | Jobs-housing affordability method | shared method | Compares where people live, what they earn, and what it costs near job concentrations | Partial | LODES RAC/WAC, tract income, OEWS | Yes | Maybe | Reusable eventually, but needs more setup than the simpler housing or regional methods |
+| Q6 One metro? | Polycentricity and integration method | shared method | Standardizes how to test whether a metro functions as one system or several linked centers | Partial | LODES WAC/RAC, county mix, polycentricity ideas, market-structure context | Yes | Yes | One of the strongest bridge questions across acts |
+| Regional role | Regional comparison and role method | shared method | Standardizes how a market is compared to its region and how its role is interpreted | Partial | WAC/RAC, OD plans, IRS flows, geo rollups, regional comparison logic | Yes | Yes | Broader than industry; should align to the same shared comparison/benchmarking stack rather than diverging into a separate method family |
+| Regional role | Regional rollup datasets | shared dataset / mart | Makes region, division, state, and nearby-metro comparisons reusable across questions | Partial | `dim_geo`, geo rollups, regional comparison inputs | Yes | Yes | Strong overlap with shared geo investment |
+| Corridors | Corridor identification method | shared method | Defines how zone structures become meaningful corridor-like groupings | Partial | Internal structure outputs, Q4 access work, infrastructure overlays, trend overlays | Yes | Maybe | Distinct from the zone model; not necessarily strictly contiguous |
+| Corridors | Corridor candidate datasets | shared dataset / mart | Reusable corridor-level inputs built from zones, access, infrastructure, and trend context | Not built | Future combination of zone, access, and trend inputs | Yes | Maybe | Could become important if corridor workflows stabilize |
+| Parcel watch | Parcel screening logic | shared method | Standardizes how underutilized parcels are identified once corridor scope is defined | Partial | Parcel methods, corridor scope, ROF/shared parcel logic | Yes | Maybe | Reusable, but conditional and market-specific in activation |
+| Catchment | Catchment and apportionment method | shared method | Standardizes point-centered tract weighting, barriers, and daytime-population logic | Exists | Place Intelligence D1-D3, methods memo, architecture notes | Yes | Yes | Good example of promotable methods even if the current product surface is different |
+| A1 AI inversion | Theme engine interface | engine | Standardizes how thematic analyses run in all-market and market modes | Partial | A1 notebook, industry engine work, theme build pattern | Yes | Yes | A1 is the first real test case for this interface |
+| A1 AI inversion | Industry theme datasets and crosswalks | shared dataset / mart | Provides reusable sector, employment, and exposure inputs for industry themes | Partial | NAICS-to-AIOE crosswalk, industry data products, SPEC work | Yes | Yes | Strong thematic candidate for promotion |
+| A2-A10 thematic analyses | Standard thematic build method | shared method | Standardizes how themes are built, compared, and rendered across entries | Partial | Emerging from A1 plus analysis program structure | Yes | Yes | The reusable part is the build method, not the specific chosen theme |
+| A2-A10 thematic analyses | Shared comparison and benchmarking method | shared method | Reuses one common comparison and benchmarking logic across full-market themes, market-mode themes, and cross-act analyses | Partial | Benchmarking ideas and comparison logic emerging across Sections 2 and 3 | Yes | Yes | Theme comparison, regional comparison, and peer benchmarking should be treated as variations of the same shared method family |
+| Act 2 components broadly | Shared benchmark and comparison datasets | shared dataset / mart | Stores reusable comparison-ready reference data for national, Census Division, peer-set, and other recurring benchmark cuts | Partial | Emerging from geo rollups, peer logic, and benchmark inputs across Sections 2 and 3 | Yes | Yes | Distinct from the comparison method itself; likely a major reusable data-product layer |
+| Market-wide notebook config | Registries and notebook config | supporting infrastructure | Centralizes market constants and lock-once notebook inputs | Not built | Proposed `market.yaml` and related registry ideas | Yes | Maybe | Useful enabling layer, but probably not a foundation asset by itself |
 
 ## 5. Existing Builds and Notes Audit
 
@@ -535,30 +405,64 @@ This is where we trace current material back into the program.
 
 | Existing artifact | Best mapped to | Layer in program | Useful as-is, reference only, or needs translation? | What to audit for | Notes |
 |---|---|---|---|---|---|
-| `RESEARCH_TOOL_ROADMAP.md` | Position source material | Analysis |  |  |  |
-| `Overview tab` | Profile / fingerprint source material | Analysis |  |  |  |
-| `Peers tab` | Peers source material | Analysis |  |  |  |
-| `Trajectory tab` | Trajectory source material | Analysis |  |  |  |
-| `Zone Map tab` | Internal structure source material | Analysis |  |  |  |
-| `Candidate List tab` | Candidate scan source material | Analysis |  |  |  |
-| `analysis_program.md` | Thematic inventory | Analysis |  |  |  |
-| `deep_dive_question_bank.md` | Explanation inventory | Analysis |  |  |  |
-| `SPEC_INDUSTRY.md` | A1 / industry implementation source | Analysis / Engine |  |  |  |
-| `POI_INFRA_PROPOSAL.md` | Spatial / POI source | Engine |  |  |  |
-| `SPEC_PLACE_INTELLIGENCE.md` | Catchment / place-use source | Analysis / Engine |  |  |  |
-| `METHODS_MEMO.md` | Catchment / barrier / node methods | Engine |  |  |  |
-| `TECHNICAL_ARCHITECTURE.md` | Place Intelligence pipeline source | Engine |  |  |  |
-| `metro_deep_dive_build_approach.md` | Build order / lock-once / engine framing | Issue / Engine |  |  |  |
-| `metro_deep_dive_template_guidance.md` | Issue spine | Issue |  |  |  |
-| `intelligence_framework_review_question_bank.md` | Method audit and publishability constraints | Engine / Audit |  |  |  |
+| `exploration/intelligence_framework/docs/intelligence_framework_overview.md` | Intelligence Framework system reference | Engine / Analysis | Useful as-is | Canonical outputs, build sequence, frame structure, trajectory/zones extensions, known limitations | Strongest current reference for what the framework actually is; essential for aligning Position work and for honest caveat language |
+| `RESEARCH_TOOL_ROADMAP.md` | Position source material | Analysis | Reference only, with selective translation | Which tab logic should become notebook analyses versus remain legacy UI framing | Very useful as a map of existing Position surfaces; not the long-term structure itself |
+| `Overview tab` | Profile / fingerprint source material | Analysis | Needs translation | Current query logic, scorecard structure, cluster-label display, what can become notebook-first identity assets | One of the clearest bridges from legacy app outputs into Act 1 notebook work |
+| `Peers tab` | Peers source material | Analysis | Needs translation | Cross-frame vs frame-specific peer behavior, current comparison layout, what should become reusable peer tables/views | Strong source for Act 1 and Act 3 comparative outputs, but should move out of app-specific framing |
+| `Trajectory tab` | Trajectory source material | Analysis | Needs translation | What trajectory signals already exist, how they are surfaced today, and what should become a queryable trajectory mart | Useful starting point, but current outputs likely need stronger treatment of magnitude/distribution |
+| `Zone Map tab` | Internal structure source material | Analysis | Needs translation | Zone labels, rollups, map behavior, tract-first assumptions, and what can feed Act 4 zone assets | Good source for tract-first zone work; current app issues do not invalidate the underlying analytical value |
+| `Candidate List tab` | Candidate scan source material | Analysis | Useful as-is for planning, needs translation for productization | Candidate-score logic, ranking usefulness, and what should remain a simple market-selection artifact | Better treated as planning/selection support than as a major user-facing analysis surface |
+| `analysis_program.md` | Thematic inventory | Analysis | Useful as-is | Theme list, claim framing, status vocabulary, and which entries are close to readiness | Strong inventory of thematic intent; pairs well with Section 3.3 but does not yet encode shared build methods |
+| `deep_dive_question_bank.md` | Explanation inventory | Analysis | Useful as-is | Question boundaries, act pairings, and whether question definitions still match current act thinking | Strongest current reference for explanation-question scope; should continue to inform cross-act reuse rather than rigid act placement |
+| `SPEC_INDUSTRY.md` | A1 / industry implementation source | Analysis / Engine | Useful as-is, with selective translation | Which deliverables already imply reusable datasets, methods, benchmarks, and visuals | Best-developed thematic implementation artifact; likely the first real template for a reusable theme build path |
+| `POI_INFRA_PROPOSAL.md` | Spatial / POI source | Engine / Supporting infrastructure | Useful as-is | Source-role decisions, storage recommendations, and what should become shared POI infrastructure versus market-specific cache work | Strong guidance for how OSM and Overture should split responsibilities; helps shape Q4, Corridors, and broader access work |
+| `SPEC_PLACE_INTELLIGENCE.md` | Catchment / place-use source | Analysis / Engine | Useful as-is, with selective translation | Which place-intelligence outputs are directly reusable for MDD versus which remain site-product specific | Valuable for understanding catchment and place-context outputs; some pieces promote well even if the app itself is not the target |
+| `METHODS_MEMO.md` | Catchment / barrier / node methods | Engine | Useful as-is | Shipped methods versus deferred methods, barrier logic, POI classification, and what is ready to promote | One of the strongest method audit docs in the repo; especially useful for separating real shipped logic from future experiments |
+| `TECHNICAL_ARCHITECTURE.md` | Place Intelligence pipeline source | Supporting infrastructure / Engine | Useful as-is for architecture, needs translation for MDD reuse | Which analytical bases, app-facing surfaces, and cached artifacts are reusable beyond the original app | Strong architectural audit; especially useful for distinguishing analytical base products from app/render layers |
+| `metro_deep_dive_build_approach.md` | Build order / lock-once / engine framing | Issue / Engine | Useful as-is | Build sequence, lock-once decisions, reuse-first logic, and what should be treated as engine work rather than section writing | Still one of the best guides for execution order and anti-overbuilding discipline |
+| `metro_deep_dive_template_guidance.md` | Issue spine | Issue | Useful as-is | Fixed spine, act/section shape, and where issue packaging should stay separate from analysis logic | Strongest current reference for the issue/output layer; should remain stable even as analytical methods evolve |
+| `intelligence_framework_review_question_bank.md` | Method audit and publishability constraints | Engine / Audit | Useful as-is | Which methodological issues block external confidence in peer sets, rankings, zones, and related outputs | Crucial caveat and audit artifact; should directly inform what Position claims are treated cautiously in public outputs |
 
-## 6. Reuse and Promotion Ledger
+## 6. Reusable Component Build Map
 
-When something is needed by more than one analysis or output, track it here.
+Use this section as a fresh reusable-component-first view of the program.
 
-| Reusable piece | First discovered from | Used by | Current home | Desired home | Promotion trigger | Notes |
-|---|---|---|---|---|---|---|
-|  |  |  |  |  |  |  |
+The goal is not to repeat Sections `4` and `5`. The goal is to say:
+
+- what reusable component we think needs to exist
+- what it should broadly enable
+- how ready it is
+- whether we have strong references already or need to build from scratch
+
+This section should stay focused on build direction first. Existing notes, specs,
+or apps are supporting evidence, not the main organizing principle.
+
+| Reusable component | Component type | What it should enable | Build priority | Current readiness | Reference strength | Likely starting point | Likely destination | Notes |
+|---|---|---|---|---|---|---|---|---|
+| Intelligence Framework outputs | engine | Act 1 identity assets, peer logic, trajectory context, internal-structure base, candidate scan | High | Exists | Strong | Reuse and stabilize current framework outputs and marts | foundations | Core system already exists; main work is contract clarity and downstream reuse |
+| Act 1 profile data frame and broader MDD profile marts | shared dataset / mart | Fingerprint KPI set, scorecards, radar/table inputs, deeper profile views | High | Partial | Strong | Start with notebook-first profile data frame from `mart_intelligence` | shared platform asset | Promote into broader MDD marts once KPI shape stabilizes |
+| Shared comparison and benchmarking method | shared method | Regional comparisons, peer comparisons, theme comparisons, scorecards, benchmark tables across acts | High | Partial | Medium | Consolidate existing comparison logic into one reusable method family | shared platform asset | Strong overlap across Acts 1-4 and thematic work |
+| Shared benchmark and comparison datasets | shared dataset / mart | Queryable benchmark-ready cuts for national, Census Division, peer sets, and related comparison contexts | High | Partial | Medium | Build on geo rollups, peer logic, and benchmark inputs already identified | shared platform asset | Natural partner to the shared comparison method |
+| Shared geo mart and rollups | shared dataset / mart | Tract, ZCTA, place, regional, and other geography joins and labels across the whole program | High | Partial | Medium | Strengthen `dim_geo` plus encoded rollups and labels | foundations | Likely one of the most leveraged platform investments |
+| Trajectory mart and trend-signal build method | shared dataset / mart | Act 3 trend work, turn signals, candidate scan support, dynamic reads | High | Partial | Medium | Review existing trajectory outputs, then build a reusable queryable mart | shared platform asset | Method and stored outputs should stay coupled in the build path |
+| Zone model outputs | engine | Act 4 zone archetypes, zone summaries, corridor substrate, internal-structure views | High | Partial | Medium | Reuse Phase 7 outputs and tract assignments first | shared platform asset | Strong candidate for promotion once zone contracts are clearer |
+| Regional comparison and role method | shared method | Regional role analyses, Q6 support, market-within-region interpretation, later comparative notes | High | Partial | Medium | Standardize WAC/RAC, geo rollups, IRS/OD extensions, and regional comparison logic | shared platform asset | Should align to the broader comparison stack rather than fork |
+| Housing structure and demand comparison method | shared method | Q1, A2, A7, housing diagnostics, pressure maps, housing comparisons over time | High | Partial | Medium | Start from Gold housing inputs and existing housing notes | shared platform asset | One of the clearest reusable explanation methods |
+| Housing component datasets | shared dataset / mart | Reusable supply-side and demand-side housing inputs for multiple questions and themes | High | Partial | Medium | Organize stock, vacancy, permits, HPI, costs, migration, and population inputs into reusable datasets | shared platform asset | Supports both explanation questions and thematic analyses |
+| Spatial / POI access method | shared method | Q4, corridor overlays, livability summaries, place-access analyses | High | Partial | Strong | Build from current OSM/Overture and Place Intelligence access logic | shared platform asset | Strong overlap across Act 2, Act 4, and place-intelligence work |
+| POI taxonomy and access inputs | supporting infrastructure | Clean amenity and POI inputs that make access methods and maps possible | High | Partial | Strong | Reuse current ingest/taxonomy work and promote the stable pieces | shared platform asset | Could later feed its own marts once stable |
+| Theme engine interface | engine | Standard all-market and market-mode thematic builds | High | Partial | Strong | Use A1 as the first real template | shared platform asset | One of the most important scaling components for the thematic family |
+| Industry theme datasets and crosswalks | shared dataset / mart | A1, A6, A10, industry comparisons, exposure analyses, growth-specialization work | High | Partial | Strong | Build from current industry spec and crosswalk work | shared platform asset | Probably the strongest current thematic data-product candidate |
+| Standard thematic build method | shared method | Reusable workflow for A1-A10 and future themes | High | Partial | Medium | Generalize from A1 and the analysis program | shared platform asset | Standardize method and outputs, not theme choice |
+| Q6 polycentricity and integration method | shared method | One Metro, market-structure interpretation, internal-center logic, support for downtown-related themes | Medium | Partial | Medium | Build from LODES integration and polycentricity ideas already identified | shared platform asset | Important bridge question across Acts 2 and 4 |
+| Tract growth-change method | shared method | Q3, growth maps, infill-vs-greenfield views, Act 3 and Act 4 support | Medium | Partial | Medium | Start from tract housing/population change plus geography helpers | shared platform asset | Main risk is tract vintage handling |
+| Job-center proximity method | shared method | Q2, corridor-supporting inputs, internal opportunity comparisons | Medium | Partial | Medium | Start from D3 job centers and tract price data | shared platform asset | Better version likely needs network support |
+| Network and road context | supporting infrastructure | Improved proximity, access, and corridor methods beyond pure distance logic | Medium | Not built | Weak | Build after core job/access methods prove useful | shared platform asset | Important, but not the first dependency to solve |
+| Corridor identification method | shared method | Corridor candidate pools, selected corridor summaries, corridor stat-block inputs | Medium | Partial | Medium | Build on zones plus access, infrastructure, and trend overlays | shared platform asset | Distinct from the underlying zone model |
+| Corridor candidate datasets | shared dataset / mart | Reusable corridor-level inputs once zone/access/trend layers stabilize | Medium | Not built | Weak | Assemble later from validated zone, access, and trend components | shared platform asset | Likely follows method stabilization rather than precedes it |
+| Parcel screening logic | shared method | Parcel Watch and later parcel-level follow-through inside selected corridors | Medium | Partial | Medium | Align to ROF/shared parcel logic, then customize for MDD | shared platform asset | Conditional component, not required for every market |
+| Catchment and apportionment method | shared method | Catchment maps, tract weighting, barriers, site-level supporting views | Medium | Exists | Strong | Reuse Place Intelligence shipped method directly | shared platform asset | Clear candidate for reuse beyond the original app |
+| Market-wide notebook config | supporting infrastructure | Shared market constants and lock-once notebook inputs across analyses | Low | Not built | Medium | Start simple with `market.yaml` or similar config layer | stay in MDD | Useful enabler, but not a core promoted analytical asset yet |
 
 ## 7. Decisions Captured So Far
 
@@ -580,3 +484,11 @@ When something is needed by more than one analysis or output, track it here.
 | Act 2 standardization rule | The reusable part is how we build and answer questions and themes; the market-specific part is which ones we choose to pursue | Standardize datasets, methods, workflows, and outputs where possible |
 | Shared comparison method | Treat comparison and benchmarking as a shared method reused across multiple Act 2 components and later acts | Support national, Census Division, Act 1 peer set, and sometimes nearby-metro comparisons |
 | Regional role scope | Treat regional role as a broader cross-cutting capability, not just an industry sub-question | Includes commuting, infrastructure, trade/base metrics, and comparative regional fit |
+| Profile build path | Start with a thinner notebook data frame built from `mart_intelligence`, then promote into broader MDD marts once the KPI shape stabilizes | Avoid creating a one-off Act 1 profile mart too early |
+| Geography investment direction | Invest in a stronger shared geo mart with core `dim_geo` plus encoded rollups and labels | Tract, ZCTA, place, and other geography views should build from the same core geography layer |
+| Explanation cross-act rule | Explanation questions can feed multiple acts, especially Act 2, Act 3, and Act 4 | Do not force them into a single-act mental model |
+| Most reusable explanation questions | Regional Role, Supply or Demand, Job-proximity Gradient, One Metro, and Where Growth Lands look most reusable early | Others are still important, but likely require more POI, infrastructure, or network-analysis setup first |
+| Reusable component boundary: engine | Treat an engine as the reusable computational system that produces a class of derived outputs | Example shape: Intelligence Framework outputs, zone model outputs, theme engine interface |
+| Reusable component boundary: shared method | Treat a shared method as reusable analytical logic applied across multiple questions or themes | Example shape: comparison/benchmarking, regional role, job-proximity logic |
+| Reusable component boundary: shared dataset or mart | Treat a shared dataset or mart as the queryable output layer that stores prepared inputs or derived results for downstream notebook work | Example shape: trajectory mart, geo mart, benchmark datasets |
+| Reusable component boundary: supporting infrastructure | Treat supporting infrastructure as enabling inputs or platform pieces that make methods and marts possible but are not the main analytical product | Example shape: road networks, POI taxonomy inputs, market config |

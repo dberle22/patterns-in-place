@@ -132,4 +132,96 @@
             </root>
         </mxGraphModel>
     </diagram>
+    <diagram id="metro-deep-dive-overview" name="Metro Deep Dive">
+        <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="mdd_title" value="Metro Deep Dive Program&#xa;Work backward from outputs, then standardize the reusable parts" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=24;fontStyle=1;fontColor=#1F2937;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="20" width="760" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_subtitle" value="Acts are output lenses. Questions, themes, datasets, and methods can cut across acts." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;fontColor=#6B7280;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="74" width="760" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_flow" value="Reusable Components -&gt; Analysis Families -&gt; Issue / Output Lenses" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#9CA3AF;fillColor=#F9FAFB;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="650" y="110" width="500" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_components_group" value="Reusable Components" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0F766E;fillColor=#CCFBF1;fontSize=18;fontStyle=1;align=left;spacingLeft=12;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="180" width="420" height="780" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_comp_1" value="Intelligence Framework outputs&#xa;Profile, peers, similarity, trajectory, zone types" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0F766E;fillColor=#FFFFFF;fontSize=14;align=left;spacingLeft=10;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="230" width="360" height="92" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_comp_2" value="Shared comparison and benchmarking method&#xa;National, division, state, peer-set, nearby-metro comparisons" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0F766E;fillColor=#FFFFFF;fontSize=14;align=left;spacingLeft=10;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="340" width="360" height="92" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_comp_3" value="Shared datasets and marts&#xa;Geo mart, profile marts, benchmark datasets, trajectory outputs" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0F766E;fillColor=#FFFFFF;fontSize=14;align=left;spacingLeft=10;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="450" width="360" height="92" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_comp_4" value="Spatial / POI access method&#xa;POI ingest, taxonomy, access logic, tract assignment, barriers" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0F766E;fillColor=#FFFFFF;fontSize=14;align=left;spacingLeft=10;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="560" width="360" height="92" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_comp_5" value="Theme engine interface&#xa;Reusable notebook pattern for `market: all` and `market: &lt;cbsa&gt;`" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0F766E;fillColor=#FFFFFF;fontSize=14;align=left;spacingLeft=10;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="670" width="360" height="92" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_comp_6" value="Act 4 build assets&#xa;Zone model outputs, corridor identification, catchment, parcel screening [Target]" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0F766E;fillColor=#F0FDFA;dashed=1;fontSize=14;align=left;spacingLeft=10;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="780" width="360" height="92" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_analysis_group" value="Analysis Families" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#1D4ED8;fillColor=#DBEAFE;fontSize=18;fontStyle=1;align=left;spacingLeft=12;" parent="1" vertex="1">
+                    <mxGeometry x="520" y="180" width="520" height="780" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_analysis_1" value="Position&#xa;Profile, peers, trajectory, internal structure, candidate scan" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#1D4ED8;fillColor=#FFFFFF;fontSize=14;align=left;spacingLeft=10;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="550" y="230" width="460" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_analysis_2" value="Explanation&#xa;Q1 supply or demand, Q2 job-proximity gradient, Q3 where growth lands, Q4 daily-needs access, Q5 afford to live near jobs, Q6 one metro?, regional role, corridors, parcel watch, catchment" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#1D4ED8;fillColor=#FFFFFF;fontSize=14;align=left;spacingLeft=10;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="550" y="350" width="460" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_analysis_3" value="Thematic&#xa;A1 AI inversion, A2 housing, A3 hazards, A4 remote work, A5 downtowns, A6 specialization, A7 who is squeezed?, A8 life expectancy, A9 convergence/divergence, A10 polarization" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#1D4ED8;fillColor=#FFFFFF;fontSize=14;align=left;spacingLeft=10;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="550" y="540" width="460" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_analysis_4" value="Cross-act reuse note&#xa;Act 2 is the main explanatory workbench. Act 3 and Act 4 often reuse work assembled there first." style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#1D4ED8;fillColor=#EFF6FF;dashed=1;fontSize=14;align=left;spacingLeft=10;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="550" y="710" width="460" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_analysis_5" value="Build loop&#xa;Issue need -&gt; analysis question or theme -&gt; reusable component to promote" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#1D4ED8;fillColor=#EFF6FF;dashed=1;fontSize=14;align=left;spacingLeft=10;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="550" y="820" width="460" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_issue_group" value="Issue / Output Lenses" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#7C3AED;fillColor=#EDE9FE;fontSize=18;fontStyle=1;align=left;spacingLeft=12;" parent="1" vertex="1">
+                    <mxGeometry x="1100" y="180" width="620" height="780" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_issue_1" value="Act 1: Who this market is&#xa;Identity, fingerprint KPI set, radar, percentile table, cluster label, peers" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#7C3AED;fillColor=#FFFFFF;fontSize=14;align=left;spacingLeft=10;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="1130" y="230" width="560" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_issue_2" value="Act 2: What this market is and how it works&#xa;The main explanation workbench: regional role, industry/economic engine, built environment, social fabric, amenities, routed themes" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#7C3AED;fillColor=#FFFFFF;fontSize=14;align=left;spacingLeft=10;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="1130" y="350" width="560" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_issue_3" value="Act 3: How this market is changing&#xa;Trend series, inflection signals, regional context, theme-specific dynamic reads, selected Data Takes" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#7C3AED;fillColor=#FFFFFF;fontSize=14;align=left;spacingLeft=10;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="1130" y="490" width="560" height="105" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_issue_4" value="Act 4: Where inside the market the structure and opportunity are&#xa;Zone archetypes, corridor identification, parcel watch when warranted&#xa;Act 4 should still be legible through Character, Livability, and Opportunity." style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#7C3AED;fillColor=#FFFFFF;fontSize=14;align=left;spacingLeft=10;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="1130" y="615" width="560" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_issue_5" value="Acts are output lenses, not rigid containers&#xa;Questions, themes, datasets, and methods can appear in more than one act." style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#7C3AED;fillColor=#F5F3FF;dashed=1;fontSize=14;align=left;spacingLeft=10;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="1130" y="760" width="560" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_ref_group" value="Current Strong References" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#9CA3AF;fillColor=#F9FAFB;fontSize=18;fontStyle=1;align=left;spacingLeft=12;" parent="1" vertex="1">
+                    <mxGeometry x="1100" y="880" width="620" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_ref_text" value="Intelligence Framework overview, Research Tool roadmap, Place Intelligence methods + architecture, Industry spec, build approach, template guidance" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=12;spacingTop=12;fontSize=13;fontColor=#111827;" parent="1" vertex="1">
+                    <mxGeometry x="1120" y="900" width="580" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_edge_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F766E;strokeWidth=2;endArrow=block;endFill=1;" parent="1" source="mdd_components_group" target="mdd_analysis_group" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_edge_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=2;endArrow=block;endFill=1;" parent="1" source="mdd_analysis_group" target="mdd_issue_group" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_edge_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6B7280;dashed=1;endArrow=block;endFill=1;" parent="1" source="mdd_ref_group" target="mdd_analysis_2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdd_edge_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6B7280;dashed=1;endArrow=block;endFill=1;" parent="1" source="mdd_ref_group" target="mdd_comp_1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
 </mxfile>

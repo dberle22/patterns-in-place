@@ -49,6 +49,16 @@ datasets, and methods can cut across multiple acts. That is a feature, not a
 bug. The act structure tells us what kind of output we are producing; the
 analysis families tell us what tools we have available to produce it.
 
+One more practical reading rule:
+
+- start from the `issue` output we want
+- trace back to the `analysis` that answers it
+- then identify the `engine`, `shared method`, `shared dataset / mart`, and `supporting infrastructure` needed underneath
+
+That is the main planning loop for Metro Deep Dive. It keeps us working
+backward from outputs while still standardizing the reusable systems that power
+them.
+
 ---
 
 ## 2. The three layers
@@ -62,6 +72,58 @@ analysis families tell us what tools we have available to produce it.
 Analyses are where new things get found. Issues are where the series stays comparable. Neither waits for the other to finish.
 
 *Naming note: "engine," "analysis," and "issue" already carry these meanings in the existing docs — the build approach calls the shared components engines, `analysis_program.md` calls its entries analyses, and the template calls a published market an issue. The folders adopt that vocabulary rather than inventing a parallel one. Where "Analysis Program" appears below it means the specific banked list, not the layer.*
+
+## 2.1 Reusable component view
+
+The three layers are the program structure. A second view is useful for build
+planning: the reusable component view. This helps us distinguish what should be
+built once and reused across acts, questions, and themes.
+
+| Component type | What it is | Example shape |
+|---|---|---|
+| `engine` | A reusable computational system that produces a class of derived outputs | Intelligence Framework outputs, zone model outputs, theme engine interface |
+| `shared method` | Reusable analytical logic applied across multiple questions or themes | comparison/benchmarking, regional role, job-proximity logic |
+| `shared dataset / mart` | A queryable output layer storing prepared inputs or derived results for downstream notebook work | trajectory mart, geo mart, benchmark datasets |
+| `supporting infrastructure` | Enabling inputs or platform pieces that make methods and marts possible without being the main analytical product | road networks, POI taxonomy inputs, market config |
+
+This view matters because the acts are output lenses, while the reusable
+components underneath can cut across multiple acts. The practical build goal is
+to standardize the reusable part:
+
+- datasets and marts
+- methods
+- notebook workflows
+- shared visual/output patterns
+
+The market-specific part is usually which questions or themes get chosen, not
+the build method used to answer them.
+
+## 2.2 Scaffold rule for the new build tree
+
+The new build tree should be scaffolded by `engines`, `analyses`, and
+`issues`, not by acts.
+
+Why:
+
+- the `acts` are reader-facing output lenses
+- the reusable work happens underneath them
+- if we scaffold by acts too early, we risk duplicating logic that should stay shared
+
+The intended folder logic is:
+
+- `engines/` = reusable systems, methods, marts, and supporting infrastructure
+- `analyses/` = reusable question notebooks, theme notebooks, and reusable act-level issue builders
+- `issues/` = market-specific assembly, selections, lock-once decisions, and final output planning
+
+One important consequence:
+
+- reusable `Act 1`, `Act 2`, `Act 3`, or `Act 4` builders should usually live under `analyses/`, not under `issues/`
+- `issues/` can still have a `_shared/` area for conventions, specs, and shared issue-facing guidance
+- market folders under `issues/` should stay focused on market-specific assembly rather than becoming a second reusable notebook layer
+
+This new structure should be developed first inside `metro-deep-dive-program/`
+as a clean sandbox alongside the legacy `metro-deep-dive/` tree. If it proves
+itself, we can later decide how to merge or migrate it.
 
 ---
 
@@ -103,9 +165,34 @@ The deep dive question bank. National methods say where a market sits; these say
 
 POIs are not an analysis. They are an input to Q4 and Corridors.
 
+**Cross-act note:** Explanation questions are not owned by one act. Many of
+them feed multiple acts:
+
+- `Act 2` as the main explanatory workbench
+- `Act 3` when the same question gains a time-series or comparative dynamic read
+- `Act 4` when the same question becomes spatially targeted within the market
+
+The most reusable early explanation questions currently look like:
+
+- Regional role
+- Q1 Supply or demand
+- Q2 Job-proximity gradient
+- Q6 One metro?
+- Q3 Where growth lands
+
+This is also why `Act 2` matters so much. It is increasingly the main
+explanatory workbench of the program. A large share of what later appears in
+`Act 3` and `Act 4` will be assembled first here, then reused in change-over-
+time or intra-market form.
+
 ### 3.3 Thematic — the Analysis Program (national grain, transposable)
 
 Each entry produces a **theme engine** that runs in two modes: `market: all` yields the national article; `market: <cbsa>` yields that market's section. Same notebook, one parameter. Industry is the first instance of the interface; Housing and Migration follow its shape.
+
+Thematic work should usually start in `market: all` mode to understand and
+structure the analysis, then transpose into `market: <cbsa>` mode once the
+shared method is clear. The reusable part is the build method and theme-engine
+interface, not the choice of which theme a given market gets.
 
 | Entry | Themes crossed | Engine | Status |
 |---|---|---|---|
@@ -141,6 +228,16 @@ Position runs first and is cheap. Its outputs select the Explanation and Themati
 
 Routing is a proposal the analyst reviews, not an automated pipeline. The router's job is to make the first look efficient, not to replace judgment.
 
+In practice the routing path is:
+
+`Act / issue need`
+-> `analysis family`
+-> `specific question or theme`
+-> `reusable components required underneath`
+
+That means routing is not only about editorial sequencing. It is also how we
+discover what should become a shared build asset.
+
 ---
 
 ## 5. Engines
@@ -161,6 +258,18 @@ Built only on call. Each gets a folder under `engines/` with a notebook, `NOTES.
 **Promotion rule:** a component moves to `foundations/` when two different consumers call it without modification. One consumer is a notebook; two is a library.
 
 **Naming rule for "zones":** *zone types* = Phase 7 national tract labels; *corridors* = within-market groupings of same-type tracts; *catchments* = point-centered tract weights. Three objects, three names.
+
+**Act 2 workbench note:** `Act 2` is increasingly the main explanatory
+workbench of the program. `Act 3` and `Act 4` should be expected to reuse work
+first assembled there. That means the engine list above should be read less as
+"components for one section" and more as reusable building blocks that support
+multiple acts.
+
+The same logic should shape the initial scaffold:
+
+- do not create `act_1/`, `act_2/`, `act_3/`, `act_4/` as top-level build folders
+- keep reusable act builders inside `analyses/`
+- keep market issue assembly inside `issues/`
 
 ---
 
@@ -190,6 +299,12 @@ The template (`metro_deep_dive_template_guidance.md`) remains the delivery shape
 Analyses never own locks. They show the full set; the issue picks the locked subset.
 
 **Editorial-only elements** (no analysis behind them): Market Verdict, History Box, cultural fabric narrative, corridor names. Methods pieces currently identified: apportionment ("why the circle around your property is lying to you"), the fastest-growing-tract redistricting artifact, the similarity study, the contract-driven data development series.
+
+One more practical distinction:
+
+- the `issue` decides what gets shown and in what form
+- the `analysis` decides how the question is answered
+- the `reusable component` view tells us what should be built once and reused underneath both
 
 ---
 
