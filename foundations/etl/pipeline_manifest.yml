@@ -23,6 +23,19 @@ steps:
     enabled: true
     notes: Seed the minimal canonical geometry/reference tables from an existing DuckDB.
 
+  - id: tiger_display_geometry
+    layer: geo
+    script: foundations/etl/geo/get_tiger_geos.R
+    outputs:
+      - geo.tracts_<state>_display
+      - geo.tracts_all_us_display
+      - geo.states_display
+      - geo.counties_display
+      - geo.cbsas_display
+    depends_on: []
+    enabled: false
+    notes: On-demand Census cartographic-boundary build. Requires GEOGRAPHY_TIGER_STATE_SCOPE; it does not replace legacy geo tables or build analytical geometry.
+
   - id: geo_crosswalks
     layer: silver
     script: foundations/etl/silver/geo_crosswalks_silver.R
@@ -33,11 +46,113 @@ steps:
       - silver.xwalk_county_state
       - silver.xwalk_state_region
       - silver.xwalk_tract_county
-      - silver.xwalk_zcta_cbsa
-      - silver.xwalk_zcta_county
-      - silver.xwalk_zcta_tract
     depends_on:
       - seed_staging
+    enabled: true
+
+  - id: hud_usps_zip_crosswalk_staging
+    layer: staging
+    script: foundations/etl/staging/get_hud_usps_zip_crosswalk.R
+    outputs:
+      - staging.hud_usps_zip_county
+      - staging.hud_usps_zip_cbsa
+      - staging.hud_usps_zip_tract
+    depends_on:
+      - seed_staging
+    enabled: true
+
+  - id: zip_crosswalks
+    layer: silver
+    script: foundations/etl/silver/zip_crosswalks_silver.R
+    outputs:
+      - silver.xwalk_zip_county
+      - silver.xwalk_zip_cbsa
+      - silver.xwalk_zip_tract
+      - silver.xwalk_zcta_county
+      - silver.xwalk_zcta_cbsa
+      - silver.xwalk_zcta_tract
+    depends_on:
+      - hud_usps_zip_crosswalk_staging
+    enabled: true
+
+  - id: census_2020_block_registry_staging
+    layer: staging
+    script: foundations/etl/staging/get_census_2020_block_registry.R
+    outputs:
+      - staging.census_pl2020_blocks
+    depends_on:
+      - seed_staging
+    enabled: true
+    notes: National state-sequential Census PL 94-171 and Place-assignment build.
+
+  - id: census_2020_zcta_block_relationship
+    layer: staging
+    script: foundations/etl/staging/get_census_2020_zcta_block_relationship.R
+    outputs:
+      - staging.census_zcta_block_2020
+    depends_on:
+      - census_2020_block_registry_staging
+    enabled: true
+    notes: National Census relationship file that supplies complete ZCTA membership.
+
+  - id: census_2010_2020_block_relationship
+    layer: staging
+    script: foundations/etl/staging/get_census_2010_2020_block_relationship.R
+    outputs:
+      - staging.census_pl2010_blocks
+      - staging.census_block_relationship_2010_2020
+      - staging.census_tract_relationship_2010_2020
+    depends_on: []
+    enabled: true
+    notes: State-sequential 2010 PL block counts and Census temporal relationship inputs.
+
+  - id: geography_foundation
+    layer: silver
+    script: foundations/etl/silver/geography_foundation_silver.R
+    outputs:
+      - silver.block_registry
+      - silver.dim_geo
+      - silver.xwalk_containment
+      - silver.geography_coverage_audit
+    depends_on:
+      - census_2020_block_registry_staging
+      - census_2020_zcta_block_relationship
+      - census_2010_2020_block_relationship
+      - geo_crosswalks
+    enabled: true
+
+  - id: geography_allocations
+    layer: silver
+    script: foundations/etl/silver/geography_allocations_silver.R
+    outputs:
+      - silver.xwalk_allocation
+      - silver.xwalk_temporal
+      - silver.geography_allocation_audit
+    depends_on:
+      - geography_foundation
+      - census_2010_2020_block_relationship
+    enabled: true
+
+  - id: mart_geography_containment
+    layer: mart
+    script: foundations/etl/mart_geography/mart_geography_containment.sql
+    outputs:
+      - mart_geography.identity_current
+      - mart_geography.identity_vintaged
+      - mart_geography.exact_relationships
+      - mart_geography.rollup_tract_to_county
+      - mart_geography.rollup_county_to_cbsa
+      - mart_geography.rollup_tract_to_cbsa
+      - mart_geography.zip_allocation_catalog
+      - mart_geography.coverage_audit
+      - mart_geography.allocation_edges
+      - mart_geography.temporal_edges
+      - mart_geography.allocation_coverage_audit
+      - mart_geography.geometry_catalog
+    depends_on:
+      - geography_foundation
+      - geography_allocations
+      - zip_crosswalks
     enabled: true
 
   - id: opportunity_zones_staging

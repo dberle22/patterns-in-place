@@ -13,7 +13,7 @@ target_zctas AS (
   SELECT
     zc.zip_geoid AS geo_id,
     MIN(cc.county_name) AS county_name
-  FROM silver.xwalk_zcta_county zc
+  FROM silver.xwalk_zip_county zc
   JOIN silver.xwalk_cbsa_county cc
     ON zc.county_geoid = cc.county_geoid
   WHERE cc.cbsa_code = (SELECT target_geo_id FROM target_cbsa)
@@ -54,7 +54,7 @@ SELECT
   tail_rank <= 3 AS label_flag,
   NULL::DOUBLE AS weight_value,
   NULL::DOUBLE AS benchmark_value,
-  'gold.transport_built_form_wide + silver.xwalk_zcta_county + silver.xwalk_cbsa_county'::VARCHAR AS source,
+  'gold.transport_built_form_wide + silver.xwalk_zip_county + silver.xwalk_cbsa_county'::VARCHAR AS source,
   CAST(year AS VARCHAR) AS vintage,
   'Target CBSA is Wilmington, NC; highlighted ZCTAs are the three highest commute-intensity proxy observations. Proxy = mean travel time multiplied by drive-alone plus carpool commute share.'::VARCHAR AS note
 FROM ranked;

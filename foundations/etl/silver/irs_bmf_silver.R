@@ -66,7 +66,7 @@ if (length(snapshot_dates) != 1) {
 
 zcta_county_xwalk <- DBI::dbGetQuery(
   con,
-  "SELECT zip_geoid, county_geoid, rel_weight_pop, rel_weight_bus, rel_weight_hu FROM silver.xwalk_zcta_county"
+  "SELECT zip_geoid, county_geoid, residential_address_ratio AS rel_weight_pop, business_address_ratio AS rel_weight_bus, total_address_ratio AS rel_weight_hu FROM silver.xwalk_zip_county"
 ) %>%
   transmute(
     zip5 = as.character(.data$zip_geoid),

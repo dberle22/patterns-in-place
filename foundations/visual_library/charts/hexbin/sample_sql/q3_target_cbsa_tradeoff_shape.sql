@@ -18,7 +18,7 @@ base AS (
     c.cbsa_name,
     a.pop_total::DOUBLE AS pop_total
   FROM metro_deep_dive.gold.affordability_wide a
-  JOIN metro_deep_dive.silver.xwalk_zcta_cbsa x
+  JOIN metro_deep_dive.silver.xwalk_zip_cbsa x
     ON a.geo_id = x.zip_geoid
   LEFT JOIN (
     SELECT cbsa_code, cbsa_name, ROW_NUMBER() OVER (PARTITION BY cbsa_code ORDER BY county_geoid) AS rn
@@ -58,7 +58,7 @@ SELECT
   cbsa_name AS "group",
   NULL::DOUBLE AS weight_value,
   extreme_rank <= 5 AS highlight_flag,
-  'gold.affordability_wide + silver.xwalk_zcta_cbsa + silver.xwalk_cbsa_county'::VARCHAR AS source,
+  'gold.affordability_wide + silver.xwalk_zip_cbsa + silver.xwalk_cbsa_county'::VARCHAR AS source,
   '2026-04-15'::VARCHAR AS vintage,
   CASE
     WHEN extreme_rank <= 5 THEN 'Highlighted local outlier with large combined x/y extremity.'

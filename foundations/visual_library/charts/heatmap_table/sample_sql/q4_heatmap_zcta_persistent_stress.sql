@@ -5,7 +5,7 @@ WITH target_cbsa AS (
 ),
 target_zctas AS (
   SELECT DISTINCT zip_geoid AS geo_id
-  FROM silver.xwalk_zcta_cbsa
+  FROM silver.xwalk_zip_cbsa
   WHERE cbsa_geoid = (SELECT target_geo_id FROM target_cbsa)
 ),
 zcta_years AS (
@@ -55,7 +55,7 @@ SELECT
   metric_id,
   metric_label,
   metric_value,
-  'gold.affordability_wide + silver.xwalk_zcta_cbsa'::VARCHAR AS source,
+  'gold.affordability_wide + silver.xwalk_zip_cbsa'::VARCHAR AS source,
   '2026-04-16'::VARCHAR AS vintage,
   metric_group,
   direction,

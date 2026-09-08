@@ -1,7 +1,8 @@
 # Metro Deep Dive — Program
 
-**Status:** Proposed — for review and lock
+**Status:** Program structure locked; Position implementation and engine review in progress
 **Drafted:** 2026-08-22
+**Updated:** 2026-09-08
 **Sits above:** `metro_deep_dive_build_approach.md`, `metro_deep_dive_template_guidance.md`, `analysis_program.md`, `deep_dive_question_bank.md`, `RESEARCH_TOOL_ROADMAP.md`, `zone_methodology_notes.md`
 **Does not replace:** any of the above. This document says how they relate and what gets built in what order.
 
@@ -65,11 +66,13 @@ them.
 
 | Layer | What it is | Unit of work | Rule |
 |---|---|---|---|
-| **Engines** (`engines/`) | Reusable computation: scoring, similarity, POI ingest and taxonomy, benchmarking, time series, geography | A component folder with a notebook, a `NOTES.md`, and a contract | Built only when an analysis calls it. Promoted to `foundations/` when two consumers use it unchanged. |
-| **Analyses** (`analyses/`) | Parameterized Marimo notebooks that run one question wide for one market (or nationally) so we can look | One notebook per question | Exploratory. No outputs contract, no figure naming, no deliverable. Rerun on a new CBSA is the only requirement. |
+| **Engines** (`engines/`) | Reusable computation: scoring, similarity, POI ingest and taxonomy, infrastructure, benchmarking, time series, geography | A component folder with a notebook, a `NOTES.md`, and a contract | Built only when an analysis calls it. Promoted to `foundations/` when two consumers use it unchanged. |
+| **Analyses** (`analyses/`) | Parameterized notebooks that run one question nationally or for one market so we can look | One notebook per question | Exploratory. Reusable queries and QA outputs are welcome; final issue outputs and presentation locks do not live here. |
 | **Issues** (`issues/`) | Where the compelling parts of an analysis are selected, rendered to publisher spec, and written up | One folder per published piece | Owns every lock-once decision. Assembles acts from routed analyses. |
 
-Analyses are where new things get found. Issues are where the series stays comparable. Neither waits for the other to finish.
+Analyses are where new things get found. Issues are where the series stays
+comparable. Build order and publication order are separate: the former follows
+dependencies, while the latter follows the strongest completed story.
 
 *Naming note: "engine," "analysis," and "issue" already carry these meanings in the existing docs — the build approach calls the shared components engines, `analysis_program.md` calls its entries analyses, and the template calls a published market an issue. The folders adopt that vocabulary rather than inventing a parallel one. Where "Analysis Program" appears below it means the specific banked list, not the layer.*
 
@@ -84,7 +87,7 @@ built once and reused across acts, questions, and themes.
 | `engine` | A reusable computational system that produces a class of derived outputs | Intelligence Framework outputs, zone model outputs, theme engine interface |
 | `shared method` | Reusable analytical logic applied across multiple questions or themes | comparison/benchmarking, regional role, job-proximity logic |
 | `shared dataset / mart` | A queryable output layer storing prepared inputs or derived results for downstream notebook work | trajectory mart, geo mart, benchmark datasets |
-| `supporting infrastructure` | Enabling inputs or platform pieces that make methods and marts possible without being the main analytical product | road networks, POI taxonomy inputs, market config |
+| `supporting infrastructure` | Enabling inputs or platform pieces that make methods and marts possible without being the main analytical product | source extract caches, source registries, market config |
 
 This view matters because the acts are output lenses, while the reusable
 components underneath can cut across multiple acts. The practical build goal is
@@ -135,16 +138,22 @@ Analyses are organized by **where the question comes from**, not by where the an
 
 This is the Research Tool's content, rebuilt as notebooks. Runs first; its output routes everything else.
 
-| Analysis | Contents | Status (per docs — verify on open) |
+| Analysis | Contents | Current implementation state |
 |---|---|---|
-| **Profile** | Frame / subject / topic scores; cluster per frame; GMM soft membership; overlap and divergence flags; KPIs grouped under parent topic | Built in Streamlit |
-| **Peers** | Per-frame peers; cross-frame peers; diverging peers; head-to-head on core KPIs; forward analog (levels vs. slopes) | Levels built; slopes and forward analog not |
-| **Trajectory** | Direction per frame; turn signals; the five pattern flags; candidate score and why; KPI z-score movement | Built; int/string CBSA bug; flag meanings under-documented |
+| **Profile** | Identity labels; frame percentiles; topic and subject scores; raw KPI candidates and vintages; governed benchmark context | Marimo notebook and four reusable SQL surfaces implemented. Interactive review and headless-QA reconciliation remain. |
+| **Peers** | Promoted cross-frame and frame-specific top-10 peers; transparent overlap; target/top-five position; featured-peer governed KPI comparison | Marimo notebook and reusable peer query surfaces implemented. Interactive review and headless-QA reconciliation remain. Diverging peers, slopes, and forward analogs are not part of this level-based surface. |
+| **Trajectory** | Stored frame position and momentum; metric and annual evidence; national context; persisted turn signals and threshold sensitivity | Marimo notebook, six reusable SQL surfaces, and the 50-metric direct recurring Time-Series panel implemented. Interactive review and contract freeze remain. |
 | **Internal structure** | Phase 7 zone types within the metro; composition vs. national; ZCTA rollup; three-level tract benchmark | Model built on two markets; tract geometry loading broken in app |
 | **Candidate scan** | Ranked CBSAs by divergence + trajectory; filterable | Built; belongs on the landing surface of the frozen Research Tool, not a tab |
 | **Similarity neighborhood** | Threshold queries, peer networks, pairwise rank beyond top-10 | Not built; revisit trigger in `cross_frame_similarity_matrix_plan.md` |
 
 **Issue caveat:** Position analyses are internal until the Intelligence Framework review (`intelligence_framework_review_question_bank.md`) is answered — specifically Section B (similarity validation) and A1 (universe: 396 / 401 / 925). Until then, only the cross-frame cluster label and the peer list go in print, with a methods caveat. Frame composite scores do not.
+
+**Position completion boundary:** the implementation work for Profile, Peers,
+and Trajectory is complete enough for exploratory use. This is not a claim that
+their values, labels, or visuals are publication-ready. Remaining work is
+interactive multi-market review, reconciliation with the separate headless QA
+runners, and the applicable Intelligence/Trajectory contract reviews.
 
 ### 3.2 Explanation — why it sits there (sub-CBSA grain, routed per market)
 
@@ -156,7 +165,7 @@ The deep dive question bank. National methods say where a market sits; these say
 | **Q1 Supply or demand** | Is cheap housing abundant supply or absent demand, by submarket | Stock composition, vacancy, permits, HPI | Not built |
 | **Q2 Job-proximity gradient** | Price gradient from employment centers | Industry D3 job centers + tract prices | Job centers built; gradient not |
 | **Q3 Where growth lands** | Greenfield vs. infill vs. nowhere | Tract housing-unit and pop change | Not built; tract vintage handling is the hazard |
-| **Q4 Daily-needs access** | Per-tract amenity access | Overture POIs, OSM, POI taxonomy | POIs ingested (Richmond, Jacksonville); taxonomy partial; access metric not built |
+| **Q4 Daily-needs access** | Per-tract amenity access | Overture POIs, OSM, POI taxonomy | POI Engine ready for Richmond analysis: source acquisition, normalization, first mappings, and tract/county assignment complete; basket and access metric not built |
 | **Q5 Afford to live near jobs** | Residence income vs. workplace wages | LODES RAC/WAC, tract income, OEWS | Not built; OEWS ingestion needed |
 | **Regional role** | Inflow/outflow, commute shed, migration origins | LODES OD (not ingested), IRS flows | Partial from WAC/RAC; OD deferred |
 | **Corridors** | Contiguous same-type zones along infrastructure; amenity-vs-score overlap or divergence | Internal structure + Q4 + OSM infra | Not run on any market; method undecided |
@@ -187,12 +196,17 @@ time or intra-market form.
 
 ### 3.3 Thematic — the Analysis Program (national grain, transposable)
 
-Each entry produces a **theme engine** that runs in two modes: `market: all` yields the national article; `market: <cbsa>` yields that market's section. Same notebook, one parameter. Industry is the first instance of the interface; Housing and Migration follow its shape.
+Each entry produces a **theme engine** that runs in two modes: `market: all`
+yields the national analytical build; `market: <cbsa>` yields that market's
+section. Same notebook, one parameter. The canonical order is national first,
+then market mode. Industry is the first instance of the interface; Housing and
+Migration follow its shape.
 
-Thematic work should usually start in `market: all` mode to understand and
-structure the analysis, then transpose into `market: <cbsa>` mode once the
-shared method is clear. The reusable part is the build method and theme-engine
-interface, not the choice of which theme a given market gets.
+Thematic work starts in `market: all` mode to understand the distribution,
+test the claim, and stabilize the shared method. It then runs in
+`market: <cbsa>` mode so the issue can select the locally relevant findings.
+The reusable part is the build method and theme-engine interface, not the
+choice of which theme a given market gets.
 
 | Entry | Themes crossed | Engine | Status |
 |---|---|---|---|
@@ -247,17 +261,25 @@ Built only on call. Each gets a folder under `engines/` with a notebook, `NOTES.
 | Engine | First called by | Exists where (verify) |
 |---|---|---|
 | **Registries** — `market.yaml`; lock-once constants as data | Every analysis | Not built |
-| **Benchmarking** — one function: metric at grain → national / division / state / peer-set percentile and rank | Profile, Fingerprint, theme engines | Area Explorer `benchmark.py`, Industry D5, Place Intelligence D2 — three versions |
-| **Intelligence Framework** — scores, clusters, similarity, trajectory, zones | All Position analyses, Corridors | Phases 2–7; `mart_intelligence`; no canonical doc |
+| **Benchmarking** — one function: metric at grain → national / division / state / peer-set percentile and rank | Profile, Fingerprint, theme engines | Implemented in `engines/benchmarking/`, `mart_benchmarking`, and `foundations/benchmarking_py`; current national/geographic/peer-set comparisons are available. |
+| **Intelligence Framework** — scores, clusters, similarity, trajectory, zones | All Position analyses; later Corridor Intelligence | Implemented promoted marts and canonical contract in `engines/intelligence_framework/`; similarity/universe review remains an issue-publication gate. |
 | **Theme engine interface** — inputs, outputs, two run modes, one lock-once asset per theme | A1 / Industry | Industry D1/D3/D6 + A1 notebook |
-| **Spatial / POI** — ingest, taxonomy with explicit mapping rules, access metrics, point→tract apportionment, barriers, corridor detection | Q4, Q2, Corridors | Richmond D4, Jacksonville PI, Phase 7 Stage 2 |
-| **Time series** — indexed metro-vs-national, inflection detection, converge/diverge/inflect classification, decile outlier scan | Act 3, Data Take, forward-analog slopes | Not built — the one net-new engine |
-| **Geography** — crosswalk verbs, tract→place readability, vintage handling | Q3, Corridors | Proposed; block-registry source open |
+| **POI** — point-source ingest, identity and provenance, explicit taxonomy mappings, geographic assignment, and QA | Q4, later access and corridor analyses | Implemented through Epic 5 in `engines/poi/`; Richmond Overture is acquired, normalized, classified, and assigned to tract/county. Postal ZIP is source-address evidence; ZCTA geometry remains a Geography dependency. |
+| **Infrastructure** — ingest and normalize roads, rail, waterways, airports, ports, and other physical-network geometry | Q4 where needed, later Q2 and Corridors | Proposed in `engines/infrastructure/`; Richmond and Jacksonville OSM / `osmextract` work provides the starting evidence |
+| **Corridor Intelligence** — within-market corridor candidates built from zone structure, proximity, and optional POI, infrastructure, and trajectory evidence | Corridors | Future Intelligence Framework extension; Phase 7 Stage 2 is proposal evidence, not an implemented contract |
+| **Time series** — metric-aware trends, start/end percentile paths, national momentum and salience, tiered trajectory labels, turn signals | Position / Trajectory, Act 3, Data Takes, forward-analog slopes, Candidate Scan | Implemented in `engines/time_series/` and materialized in `mart_intelligence`. Current panel has 50 direct recurring KPIs; derived-change review and contract freeze remain. |
+| **Geography** — governed identities, exact rollups, tract→Place/ZCTA allocation edges, vintage handling, and on-demand display geometry | Q3, Corridors, maps | Implemented in `engines/geography/` and `mart_geography`; metric-specific QA and consumer geometry migration remain on call |
 | **Data foundation gaps** — vertical benchmark rows, vintage per metric, OEWS, LODES OD | Benchmarking, Q5, Regional role | Logged |
 
 **Promotion rule:** a component moves to `foundations/` when two different consumers call it without modification. One consumer is a notebook; two is a library.
 
 **Naming rule for "zones":** *zone types* = Phase 7 national tract labels; *corridors* = within-market groupings of same-type tracts; *catchments* = point-centered tract weights. Three objects, three names.
+
+**Spatial ownership rule:** `spatial` is a cross-cutting capability, not one
+catch-all engine. Geography owns boundaries and crosswalks; POI owns place
+points; Infrastructure owns physical line and polygon features. Catchment and
+barrier handling remain analytical methods. Corridor Intelligence is a future
+extension of the Intelligence Framework that can consume all three engines.
 
 **Act 2 workbench note:** `Act 2` is increasingly the main explanatory
 workbench of the program. `Act 3` and `Act 4` should be expected to reuse work
@@ -312,39 +334,53 @@ One more practical distinction:
 
 Richmond, VA (CBSA 40060) is market #1. Jacksonville is market #2 and is where Act 4 debuts, because zone types, Place Intelligence, and the ROF parcel path already exist there.
 
-What we know going in: the Act 2 pilot is underway; Gold industry profile shows professional services, transportation/utilities, and construction as stronger leads than information or manufacturing; A1 is active in Marimo; ~77k Overture POIs and `osmextract` infrastructure layers are ingested and reviewed; no Position analysis has been run on Richmond as a notebook.
+What we know going in: the Act 2 pilot is underway; Gold industry profile
+shows professional services, transportation/utilities, and construction as
+stronger leads than information or manufacturing; A1 is active in Marimo;
+~77k Overture POIs and `osmextract` infrastructure layers are ingested and
+reviewed; Richmond Profile and Peers analysis surfaces and QA bundles now
+exist, and the 50-metric Trajectory panel is materialized with its Marimo
+review surface. The open Position step is now interactive review and routing.
 
-### Step 0 — Run Position
+### Step 0 — Review Position
 
-Profile, Peers, Trajectory on Richmond. This is the routing checkpoint. Record the flags before choosing anything else. Expected cost: low — the marts exist; the work is porting the Research Tool queries into three notebooks.
+Run Profile, Peers, and Trajectory for Richmond and at least one contrasting
+metro. This is the routing checkpoint. Record the labels, peer lenses,
+coverage limitations, and ordinary/no-signal results before choosing anything
+else. Reconcile stable row counts and ordering with the headless QA runners;
+do not add market-specific logic to the Position notebooks during review.
 
 ### Step 1 — Default routed set (pending Step 0)
 
-Proposed on current evidence, to be confirmed or replaced by what Step 0 turns up:
+Proposed on current evidence, to be confirmed or replaced by the Position
+routing brief:
 
 | Analysis | Why now |
 |---|---|
-| **A1 / Industry engine, market mode** | Already active; sets the theme engine interface; produces §4 |
+| **A1 / Industry engine, all-market then Richmond mode** | Already active; sets the theme engine interface; produces §4 |
 | **Q4 Daily-needs access** | POIs and infra are ingested and idle; Livability is the thinnest frame and this is its best market-native question |
 | **Q6 One metro?** | Character opener; WAC/RAC exist; differentiates the first post a reader sees |
 | **Regional role (partial)** | WAC/RAC only; OD stays deferred |
-| **Housing satellite → Q1** | Only if Step 0 flags Livability divergence |
+| **Housing satellite → Q1** | Only if Position flags Livability divergence |
 
-### Step 2 — Issue arc
+### Step 2 — Build routed analyses
 
-Serialized on Substack, frame-sized posts, written in the order the analyses land — not in act order:
+For themes, build and inspect the national notebook first, then run the same
+analysis in Richmond mode. For Explanation questions, build the reusable
+question notebook and inspect its Richmond outputs. Open or widen an Engine
+component only when the analysis actually requires it.
+
+### Step 3 — Issue arc
+
+Publication order is separate from build order. The initial reader arc is:
 
 1. **Act 2 post — Industry makeup and exposure.** From A1 market mode. First lock: the exposure crosswalk.
 2. **Act 1 post — Identity.** From Profile and Peers. Locks: radar slots, axis order, stat boxes. Cluster label and peer list only; frame scores held back.
 3. **Act 2 post — Fabric.** From Q4 and Q6. Lock: daily-needs POI definition.
-4. **Act 3 post — Dynamics.** Requires the Time series component; this is where it gets built.
+4. **Act 3 post — Dynamics.** From Trajectory plus routed Act 2 context.
 5. **Synthesis + Verdict.**
 
 Act 4 is not in the Richmond arc. Overview + Acts 1–3 is a valid first issue per the build approach.
-
-### Step 3 — Transpose
-
-After the Act 2 post, run A1 in `market: all`. If the notebook transposes cleanly, the theme engine interface is right and the AI Inversion article follows. If it doesn't, fix the interface before Housing inherits it.
 
 ### Parallel, not blocking
 
@@ -356,14 +392,15 @@ After the Act 2 post, run A1 in `market: all`. If the notebook transposes cleanl
 
 ## 8. What locking each layer means
 
-- **Engines locked:** the eight named, each with a one-paragraph contract on open; built only on call; promoted on second use.
+- **Engines locked:** the named component boundaries, each with a one-paragraph contract on open; built only on call; promoted on second use.
 - **Analyses locked:** three families, the membership in Section 3, the routing rule in Section 4. New ideas get placed into a family or rejected. There is no fourth family.
 - **Issues locked:** the template as delivery shape; the lock-once list in Section 6 owned here; acts assembled from routed analyses.
 
 ## 9. Open before build
 
 - Confirm Richmond as market #1 and Jacksonville as #2 (build approach still lists this open).
-- Confirm `mart_area_explorer` and `mart_intelligence` are materialized and consistent (universe, CBSA code types).
+- Reconfirm `mart_area_explorer` and `mart_intelligence` consistency when a
+  new engine build changes their shared inputs (universe, CBSA code types).
 - Confirm what A1 currently reads from — marts, Gold, or the Industry Explorer prep layer.
 - Decide `market.yaml` shape when the first analysis opens, not before.
 

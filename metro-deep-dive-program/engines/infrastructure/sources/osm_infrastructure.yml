@@ -1,0 +1,22 @@
+# Cached OSM assets used by the first Infrastructure Engine extraction slice.
+# `source_release` identifies the dated local snapshot, not an asserted global
+# OSM replication sequence. The builder hashes both the PBF source asset and
+# the GeoPackage adapter used for local reads on every run.
+source_system: osm
+source_dataset: infrastructure
+query_method: core_tag_selector_then_governed_cbsa_clip
+markets:
+  richmond_va:
+    market_id: "40060"
+    source_release: "snapshot_2026-07-29"
+    provider: openstreetmap_fr
+    source_asset_uri: "http://download.openstreetmap.fr/extracts/north-america/us-south/virginia/richmond-latest.osm.pbf"
+    source_asset_path: "metro-deep-dive/metro-area-explorer/industry/outputs/richmond_va_osmextract/raw/openstreetmap_fr_richmond-latest.osm.pbf"
+    source_adapter_path: "metro-deep-dive/metro-area-explorer/industry/outputs/richmond_va_osmextract/raw/openstreetmap_fr_richmond-latest.gpkg"
+  jacksonville_fl:
+    market_id: "27260"
+    source_release: "snapshot_2026-08-01"
+    provider: openstreetmap_fr
+    source_asset_uri: "http://download.openstreetmap.fr/extracts/north-america/us-south/florida/northeast-latest.osm.pbf"
+    source_asset_path: "metro-deep-dive/metro-area-explorer/place_intelligence/outputs/jacksonville_fl/raw/openstreetmap_fr_northeast-latest.osm.pbf"
+    source_adapter_path: "metro-deep-dive/metro-area-explorer/place_intelligence/outputs/jacksonville_fl/raw/openstreetmap_fr_northeast-latest.gpkg"

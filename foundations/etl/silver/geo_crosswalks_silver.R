@@ -130,74 +130,8 @@ DBI::dbWriteTable(con, DBI::Id(schema="silver", table="xwalk_tract_county"),
 # Place <> County ----
 
 
-# ZCTA <> County ----
-zcta_county_xwalk_raw <- read_excel(paste0(data, "/demographics/raw/crosswalks/ZIP_COUNTY_062025.xlsx"))
-
-zcta_county_xwalk_clean <- zcta_county_xwalk_raw %>%
-  select(
-    zip_geoid = ZIP,
-    county_geoid = COUNTY,
-    zip_pref_city = USPS_ZIP_PREF_CITY,
-    zip_pref_state = USPS_ZIP_PREF_STATE,
-    rel_weight_pop = RES_RATIO,      # HUD's preferred pop-ish weight
-    rel_weight_bus = BUS_RATIO,      # HUD's preferred pop-ish weight
-    rel_weight_hu  = TOT_RATIO,      # or NA, but keeping it is nice
-  ) %>%
-  mutate(
-    zip_geoid   = str_pad(zip_geoid, 5, pad = "0"),
-    county_geoid = str_pad(county_geoid, 5, pad = "0"),
-    vintage = 2025L,
-    source  = "HUD_ZIP_COUNTY_2025Q1"
-  )
-
-DBI::dbWriteTable(con, DBI::Id(schema="silver", table="xwalk_zcta_county"),
-                  zcta_county_xwalk_clean, overwrite = TRUE)
-
-# ZCTA <> CBSA ----
-zcta_cbsa_xwalk_raw <- read_excel(paste0(data, "/demographics/raw/crosswalks/ZIP_CBSA_062025.xlsx"))
-
-zcta_cbsa_xwalk_clean <- zcta_cbsa_xwalk_raw %>%
-  select(
-    zip_geoid = ZIP,
-    cbsa_geoid = CBSA,
-    zip_pref_city = USPS_ZIP_PREF_CITY,
-    zip_pref_state = USPS_ZIP_PREF_STATE,
-    rel_weight_pop = RES_RATIO,      # HUD's preferred pop-ish weight
-    rel_weight_bus = BUS_RATIO,      # HUD's preferred pop-ish weight
-    rel_weight_hu  = TOT_RATIO,      # or NA, but keeping it is nice
-  ) %>%
-  mutate(
-    zip_geoid   = str_pad(zip_geoid, 5, pad = "0"),
-    cbsa_geoid = str_pad(cbsa_geoid, 5, pad = "0"),
-    vintage = 2025L,
-    source  = "HUD_ZIP_CBSA_2025Q1"
-  )
-
-DBI::dbWriteTable(con, DBI::Id(schema="silver", table="xwalk_zcta_cbsa"),
-                  zcta_cbsa_xwalk_clean, overwrite = TRUE)
-
-# ZCTA <> Tract ----
-zcta_tract_xwalk_raw <- read_excel(paste0(data, "/demographics/raw/crosswalks/ZIP_TRACT_062025.xlsx"))
-
-zcta_tract_xwalk_clean <- zcta_tract_xwalk_raw %>%
-  select(
-    zip_geoid = ZIP,
-    tract_geoid = TRACT,
-    zip_pref_city = USPS_ZIP_PREF_CITY,
-    zip_pref_state = USPS_ZIP_PREF_STATE,
-    rel_weight_pop = RES_RATIO,      # HUD's preferred pop-ish weight
-    rel_weight_bus = BUS_RATIO,      # HUD's preferred pop-ish weight
-    rel_weight_hu  = TOT_RATIO,      # or NA, but keeping it is nice
-  ) %>%
-  mutate(
-    zip_geoid   = str_pad(zip_geoid, 5, pad = "0"),
-    tract_geoid = str_pad(tract_geoid, 11, pad = "0"),
-    vintage = 2025L,
-    source  = "HUD_ZIP_TRACT_2025Q1"
-  )
-
-DBI::dbWriteTable(con, DBI::Id(schema="silver", table="xwalk_zcta_tract"),
-                  zcta_tract_xwalk_clean, overwrite = TRUE)
+# HUD-USPS ZIP allocations are staged and built by zip_crosswalks_silver.R.
+# They intentionally do not belong in this Census hierarchy script.
 
 # County <> State ----
 # Get all Counties from Tigris

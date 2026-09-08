@@ -118,6 +118,12 @@ Completed 2026-06-02:
   wrote `foundations/data_dictionary/sources/source__fhfa.md` documenting the annual FHFA CBSA and county file contract, index choice rationale, staging shape, Silver annual-metric logic, CBSA code join risk, and Gold placement decision (extends `gold.housing_market_wide`).
   Recorded the follow-on ZIP geography decision as well: if FHFA ZIP-level HPI is added later, we will treat five-digit ZIPs as an acceptable proxy for ZCTAs in Foundations.
 
+- Superseded geography clarification, 2026-09-08: five-digit FHFA ZIP rows are
+  source-native USPS ZIP identifiers, not Census ZCTAs. Preserve the current
+  legacy `zcta` labeling for compatibility until that consumer is migrated,
+  but do not use it as a general ZIP-to-ZCTA rule. New ZIP-source work uses
+  the versioned HUD-USPS allocation tables; ACS ZCTA work stays ZCTA-native.
+
 - Completed 2026-06-04:
   wrote `foundations/etl/staging/get_fhfa.R` to cache FHFA annual HPI workbooks under the raw data directory, normalize the annual CBSA and county extracts into source-faithful staging tables, and validate the staged annual key contract before writing to DuckDB.
 

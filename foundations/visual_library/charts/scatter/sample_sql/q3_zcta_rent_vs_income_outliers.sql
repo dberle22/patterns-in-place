@@ -28,7 +28,7 @@ zcta_housing AS (
 ),
 zcta_cbsa AS (
   SELECT zip_geoid AS geo_id, cbsa_geoid, rel_weight_hu, zip_pref_state
-  FROM metro_deep_dive.silver.xwalk_zcta_cbsa
+  FROM metro_deep_dive.silver.xwalk_zip_cbsa
   WHERE cbsa_geoid = (SELECT target_cbsa_geoid FROM params)
 ),
 base AS (
@@ -79,7 +79,7 @@ SELECT
       THEN TRUE
     ELSE target_flag
   END AS label_flag,
-  'silver.income_kpi + silver.housing_kpi + silver.xwalk_zcta_cbsa'::VARCHAR AS source,
+  'silver.income_kpi + silver.housing_kpi + silver.xwalk_zip_cbsa'::VARCHAR AS source,
   '2026-04-14'::VARCHAR AS vintage,
   CASE
     WHEN abs((rent_income_ratio - avg(rent_income_ratio) OVER ()) / NULLIF(stddev_samp(rent_income_ratio) OVER (), 0)) >= (SELECT outlier_z_threshold FROM params)

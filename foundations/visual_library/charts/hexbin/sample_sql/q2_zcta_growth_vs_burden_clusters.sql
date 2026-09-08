@@ -4,7 +4,7 @@ WITH region_lookup AS (
   SELECT
     zc.zip_geoid AS geo_id,
     MIN(sr.census_region) AS census_region
-  FROM metro_deep_dive.silver.xwalk_zcta_county zc
+  FROM metro_deep_dive.silver.xwalk_zip_county zc
   LEFT JOIN metro_deep_dive.silver.xwalk_county_state cs
     ON zc.county_geoid = cs.county_geoid
   LEFT JOIN metro_deep_dive.silver.xwalk_state_region sr
@@ -74,7 +74,7 @@ SELECT
   "group",
   NULL::DOUBLE AS weight_value,
   COALESCE(hotspot_rank <= 4, FALSE) AS highlight_flag,
-  'gold.population_demographics + gold.affordability_wide + silver.xwalk_zcta_county + silver.xwalk_county_state + silver.xwalk_state_region'::VARCHAR AS source,
+  'gold.population_demographics + gold.affordability_wide + silver.xwalk_zip_county + silver.xwalk_county_state + silver.xwalk_state_region'::VARCHAR AS source,
   '2026-04-15'::VARCHAR AS vintage,
   CASE
     WHEN hotspot_rank <= 4 THEN 'Highlighted from the extreme high-growth / high-burden tail.'

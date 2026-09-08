@@ -69,6 +69,8 @@ foundations/visual_library/charts/**/sample_output/
 foundations/data_dictionary/artifacts/
 exploration/**/outputs/
 exploration/**/cache/
+metro-deep-dive-program/engines/poi/outputs/
+metro-deep-dive-program/engines/infrastructure/outputs/
 metro-deep-dive/metro-area-explorer/place_intelligence/outputs/jacksonville_fl/site_artifacts/
 metro-deep-dive/metro-area-explorer/place_intelligence/outputs/jacksonville_fl/market_artifacts/
 metro-deep-dive/archive/metro-area-explorer/industry_v0_2026-08-08/

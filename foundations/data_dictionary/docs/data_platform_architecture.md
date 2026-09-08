@@ -50,6 +50,15 @@ Census Tract → County → CBSA → State → Division → Region → US
 ```
 All Gold tables carry `(geo_level, geo_id, geo_name, year)` as the primary key grain. Supported grains: US, Region, Division, State, CBSA, County, Census Place, Census Tract, ZCTA.
 
+**Governed geography interface (2026-09-08):** `gold.dim_geo` remains the
+backward-compatible serving dimension. New work should use vintaged
+`silver.dim_geo` and `mart_geography`: exact containment rollups are separate
+from weighted tract-to-Place/ZCTA allocations and 2010-to-2020 tract temporal
+edges. ACS ZCTA data is Census ZCTA-native; USPS ZIP is an identifier-only
+source bridge through versioned HUD-USPS crosswalks, not a geometry dimension.
+Display geometry is an on-demand cartographic product; full analytical
+TIGER/Line geometry is not a default platform dependency.
+
 ---
 
 ### Topic: Demographics

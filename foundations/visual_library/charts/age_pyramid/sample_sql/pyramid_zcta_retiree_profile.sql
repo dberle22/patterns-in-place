@@ -14,9 +14,9 @@ target_zctas AS (
       ORDER BY (k.pct_age_65_74 + k.pct_age_75_84 + k.pct_age_85p) DESC, k.geo_name
     ) AS retiree_rank
   FROM metro_deep_dive.silver.age_kpi k
-  JOIN metro_deep_dive.silver.xwalk_zcta_cbsa z
+  JOIN metro_deep_dive.silver.xwalk_zip_cbsa z
     ON k.geo_id = z.zip_geoid
-  LEFT JOIN metro_deep_dive.silver.xwalk_zcta_county x
+  LEFT JOIN metro_deep_dive.silver.xwalk_zip_county x
     ON k.geo_id = x.zip_geoid
   LEFT JOIN metro_deep_dive.silver.xwalk_county_state c
     ON x.county_geoid = c.county_geoid

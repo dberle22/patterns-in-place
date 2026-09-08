@@ -1,4 +1,4 @@
-version: 2
+version: 3
 catalog_name: geography_catalog
 description: Canonical geography levels, hierarchy edges, and restricted rollup paths for the patterns-foundations semantic layer.
 geo_levels:
@@ -8,6 +8,11 @@ geo_levels:
     id_shape: single literal row
     hierarchy_rank: 1
     supported_in_mvp: true
+    stability_class: stable
+    boundary_authority: Census geographic reference
+    available_vintages: [2020]
+    default_vintage: 2020
+    geometry_roles: [derived_analysis, derived_display]
     notes:
       - Warehouse rows may appear as `US`; the semantic layer normalizes to `us`.
 
@@ -17,6 +22,11 @@ geo_levels:
     id_shape: small integer-like code
     hierarchy_rank: 2
     supported_in_mvp: true
+    stability_class: stable
+    boundary_authority: Census geographic reference
+    available_vintages: [2020]
+    default_vintage: 2020
+    geometry_roles: [derived_analysis, derived_display]
     notes:
       - Warehouse rows may appear as `Region`; the semantic layer normalizes to `region`.
 
@@ -26,6 +36,11 @@ geo_levels:
     id_shape: small integer-like code
     hierarchy_rank: 3
     supported_in_mvp: true
+    stability_class: stable
+    boundary_authority: Census geographic reference
+    available_vintages: [2020]
+    default_vintage: 2020
+    geometry_roles: [derived_analysis, derived_display]
     notes:
       - Derived from Census division mappings in `silver.xwalk_state_region`.
 
@@ -35,6 +50,11 @@ geo_levels:
     id_shape: 2-digit FIPS
     hierarchy_rank: 4
     supported_in_mvp: true
+    stability_class: stable
+    boundary_authority: Census TIGER/Line
+    available_vintages: [2020, 2023, 2024]
+    default_vintage: 2024
+    geometry_roles: [analysis, display]
     notes:
       - Includes DC in the current crosswalk coverage.
 
@@ -44,6 +64,11 @@ geo_levels:
     id_shape: 5-digit CBSA code
     hierarchy_rank: 5
     supported_in_mvp: true
+    stability_class: periodic
+    boundary_authority: OMB CBSA delineation bulletin
+    available_vintages: [2023]
+    default_vintage: 2023
+    geometry_roles: [analysis, display]
     notes:
       - CBSA membership uses OMB county assignments.
 
@@ -53,6 +78,11 @@ geo_levels:
     id_shape: 5-digit county GEOID
     hierarchy_rank: 6
     supported_in_mvp: true
+    stability_class: continuous
+    boundary_authority: Census TIGER/Line
+    available_vintages: [2020, 2023, 2024]
+    default_vintage: 2023
+    geometry_roles: [analysis, display]
     notes:
       - County-to-state mapping is exact and one-to-one.
 
@@ -62,17 +92,43 @@ geo_levels:
     id_shape: Census place GEOID
     hierarchy_rank: 7
     supported_in_mvp: true
+    stability_class: continuous
+    boundary_authority: Census Boundary and Annexation Survey / TIGER/Line
+    available_vintages: [2020]
+    default_vintage: 2020
+    geometry_roles: [analysis, display]
     notes:
       - Place parent relationships remain intentionally restricted in the current contract.
 
   - geo_level: zcta
     display_name: ZCTA
     plural_display_name: ZCTAs
-    id_shape: 5-digit ZIP or ZCTA code
+    id_shape: 5-digit Census ZCTA code
     hierarchy_rank: 8
     supported_in_mvp: true
+    stability_class: decennial
+    boundary_authority: Census 2020 ZCTA delineation
+    available_vintages: [2020]
+    default_vintage: 2020
+    geometry_roles: [analysis, display]
     notes:
-      - Crosswalks to county, CBSA, and tract are weighted and many-to-many.
+      - A ZCTA is not a USPS ZIP code. Census ZCTA relationships and USPS ZIP
+        relationships use different tables and must not be joined by label alone.
+
+  - geo_level: zip
+    display_name: USPS ZIP Code
+    plural_display_name: USPS ZIP Codes
+    id_shape: 5-digit USPS ZIP code
+    hierarchy_rank: 8
+    supported_in_mvp: false
+    stability_class: continuous
+    boundary_authority: USPS, distributed by HUD USPS ZIP Crosswalk Files
+    available_vintages: [2025]
+    default_vintage: 2025
+    geometry_roles: []
+    notes:
+      - Operational delivery geography, not an areal Census geography.
+      - It has allocation edges only and no ZIP geometry in this engine.
 
   - geo_level: tract
     display_name: Census Tract
@@ -80,6 +136,11 @@ geo_levels:
     id_shape: 11-digit tract GEOID
     hierarchy_rank: 9
     supported_in_mvp: true
+    stability_class: decennial
+    boundary_authority: Census TIGER/Line / 2020 Census tabulation geography
+    available_vintages: [2010, 2020]
+    default_vintage: 2020
+    geometry_roles: [analysis, display]
     notes:
       - Tract-to-county mapping is exact in the TIGER-based crosswalk.
 
@@ -89,6 +150,11 @@ geo_levels:
     id_shape: NCES district identifier
     hierarchy_rank: 10
     supported_in_mvp: false
+    stability_class: periodic
+    boundary_authority: Texas Education Agency
+    available_vintages: []
+    default_vintage: null
+    geometry_roles: []
     notes:
       - Specialized education geography used by `gold.tx_isd_metrics`.
       - Not part of the default national geography hierarchy.
@@ -131,26 +197,26 @@ hierarchy_edges:
     valid_for_rollup: true
     caveat: Counties outside a CBSA have no parent CBSA row.
 
-  - child_geo_level: zcta
+  - child_geo_level: zip
     parent_geo_level: county
     relationship_type: weighted_many_to_many
-    source_table: silver.xwalk_zcta_county
+    source_table: silver.xwalk_zip_county
     valid_for_rollup: false
-    caveat: Approximation only; not safe for default additive rollups.
+    caveat: Pending Census ZCTA relationships. The current compatibility view is a HUD-USPS ZIP allocation and is not a ZCTA edge.
 
-  - child_geo_level: zcta
+  - child_geo_level: zip
     parent_geo_level: cbsa
     relationship_type: weighted_many_to_many
-    source_table: silver.xwalk_zcta_cbsa
+    source_table: silver.xwalk_zip_cbsa
     valid_for_rollup: false
-    caveat: Many ZIPs span multiple CBSAs and some map to synthetic fallback codes.
+    caveat: Pending Census ZCTA relationships. The current compatibility view is a HUD-USPS ZIP allocation and is not a ZCTA edge.
 
-  - child_geo_level: zcta
+  - child_geo_level: zip
     parent_geo_level: tract
     relationship_type: weighted_many_to_many
-    source_table: silver.xwalk_zcta_tract
+    source_table: silver.xwalk_zip_tract
     valid_for_rollup: false
-    caveat: Use only with explicit weighting logic outside the default planner.
+    caveat: Pending Census ZCTA relationships. The current compatibility view is a HUD-USPS ZIP allocation and is not a ZCTA edge.
 
 valid_rollup_paths:
   - path: [tract, county, state, division, region, us]
@@ -174,14 +240,23 @@ valid_rollup_paths:
     notes: No exact parent hierarchy is currently approved above CBSA.
 
 invalid_or_restricted_rollups:
+  - path: [zip, cbsa]
+    reason: HUD-USPS weighted many-to-many allocation; basis selection is required.
+
+  - path: [zip, county]
+    reason: HUD-USPS weighted many-to-many allocation; basis selection is required.
+
+  - path: [zip, tract]
+    reason: HUD-USPS weighted many-to-many allocation; basis selection is required.
+
   - path: [zcta, cbsa]
-    reason: Weighted many-to-many crosswalk; additive rollups require explicit weighting and bias controls.
+    reason: Census ZCTA allocation is governed from tract to ZCTA; reverse or downstream rollups require an explicit basis and metric-safe aggregation.
 
   - path: [zcta, county]
-    reason: Weighted many-to-many crosswalk; not safe for default SQL generation.
+    reason: Census ZCTA allocation is governed from tract to ZCTA; reverse or downstream rollups require an explicit basis and metric-safe aggregation.
 
   - path: [zcta, tract]
-    reason: Weighted many-to-many crosswalk; only allowed in future specialized workflows.
+    reason: Census ZCTA allocation is governed from tract to ZCTA; reverse or downstream rollups require an explicit basis and metric-safe aggregation.
 
   - path: [place, county]
     reason: No approved place-to-county hierarchy is cataloged yet.
@@ -194,3 +269,45 @@ invalid_or_restricted_rollups:
 
   - path: [tx_isd, county]
     reason: No normalized district-to-county hierarchy is approved in the core semantic layer.
+
+relationship_contracts:
+  - source_geo_level: tract
+    target_geo_level: county
+    relationship_type: containment
+    direction: up
+    boundary_vintage: 2020
+    status: planned_governed_rebuild
+
+  - source_geo_level: county
+    target_geo_level: cbsa
+    relationship_type: containment
+    direction: up
+    boundary_vintage: 2023
+    status: planned_governed_rebuild
+    caveat: A county can be outside every CBSA.
+
+  - source_geo_level: tract
+    target_geo_level: place
+    relationship_type: allocation
+    bases: [population, housing_units, land_area]
+    status: governed
+
+  - source_geo_level: tract
+    target_geo_level: zcta
+    relationship_type: allocation
+    bases: [population, housing_units, land_area]
+    status: governed
+
+  - source_geo_level: zip
+    target_geo_level: tract
+    relationship_type: allocation
+    bases: [residential_addresses, business_addresses, total_addresses]
+    status: existing_rename_pending
+
+  - source_geo_level: tract
+    target_geo_level: tract
+    relationship_type: temporal
+    from_boundary_vintage: 2010
+    to_boundary_vintage: 2020
+    bases: [population, housing_units, land_area]
+    status: governed
