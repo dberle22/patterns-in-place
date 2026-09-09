@@ -49,8 +49,11 @@ not in this planning document.
   amenity baskets, and interpretation.
 - Barrier handling belongs to the analysis using infrastructure as a
   constraint; a POI is not itself a barrier.
-- Corridor Intelligence will be a separate extension of the Intelligence
-  Framework that may consume POI outputs.
+- Corridor Intelligence owns reproducible grouping and may use versioned,
+  aggregate POI category counts or rates as soft membership evidence. The POI
+  Engine supplies governed records and mappings but does not decide how they
+  affect a structural candidate. A refreshed POI input requires a new Corridor
+  Intelligence run; it never silently changes prior membership.
 - Issue folders own reader-facing labels, selected categories, and narrative.
 
 ## Source lanes

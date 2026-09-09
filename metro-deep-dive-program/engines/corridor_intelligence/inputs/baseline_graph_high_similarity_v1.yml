@@ -1,0 +1,20 @@
+# Declared upper-bound sensitivity profile: requires more similar same-zone
+# edges than the shared default, with no market-specific change.
+profile: baseline_graph_high_similarity_v1
+method_version: corridor_baseline_v1
+similarity:
+  measure: cosine_similarity
+  fields: [character_score, livability_score, opportunity_score, composite_score]
+  minimum_similarity: 0.55
+spatial:
+  projected_crs:
+    jacksonville_fl: EPSG:26917
+    richmond_va: EPSG:26918
+  minimum_shared_boundary_m: 10
+  bounded_nearby_centroid_distance_m: 1000
+dbscan_challenger:
+  alpha_feature_distance: 0.70
+  maximum_centroid_distance_m: 1500
+  epsilon: 0.45
+  min_samples: 3
+  noise_policy: retain_zone_type_as_unassigned

@@ -206,6 +206,10 @@ cbsa_base as (
         end as cbsa_type_short,
         case when c.cbsa_type = 'Metropolitan Statistical Area' then true else false end as is_metro,
         case when c.cbsa_type = 'Micropolitan Statistical Area' then true else false end as is_micro,
+        -- CBSA names carry their ordered state abbreviations after the comma.
+        -- Preserve that first suffix as the deterministic primary state for
+        -- multi-state CBSAs (for example, WV in "Wheeling, WV-OH").
+        regexp_extract(c.cbsa_name, ', ([A-Z]{2})', 1) as primary_state_abbr_candidate,
         min(c.state_fips) filter (where c.state_fips is not null) as state_fips_single_candidate,
         min(c.state_name) filter (where c.state_name is not null) as state_name_single_candidate,
         min(c.state_abbr) filter (where c.state_abbr is not null) as state_abbr_single_candidate,
@@ -221,7 +225,21 @@ cbsa_base as (
         'silver.xwalk_cbsa_county' as source
     from county_enriched c
     where c.cbsa_code is not null
-    group by 1, 2, 3, 4, 5, 6
+    group by 1, 2, 3, 4, 5, 6, 7
+),
+cbsa_primary_state as (
+    -- Resolve the first state named in each official CBSA label back to its
+    -- governed county/state attributes. This keeps multi-state primary-state
+    -- selection deterministic without changing the full footprint counts.
+    select
+        c.cbsa_code,
+        min(c.state_fips) as state_fips,
+        min(c.state_name) as state_name,
+        min(c.state_abbr) as state_abbr
+    from county_enriched c
+    where c.cbsa_code is not null
+      and c.state_abbr = regexp_extract(c.cbsa_name, ', ([A-Z]{2})', 1)
+    group by 1
 ),
 cbsa_enriched as (
     select
@@ -232,9 +250,18 @@ cbsa_enriched as (
         cb.cbsa_type_short,
         cb.is_metro,
         cb.is_micro,
-        case when cb.state_count = 1 then cb.state_fips_single_candidate else null end as state_fips,
-        case when cb.state_count = 1 then cb.state_name_single_candidate else null end as state_name,
-        case when cb.state_count = 1 then cb.state_abbr_single_candidate else null end as state_abbr,
+        case
+            when cb.state_count = 1 then cb.state_fips_single_candidate
+            else ps.state_fips
+        end as state_fips,
+        case
+            when cb.state_count = 1 then cb.state_name_single_candidate
+            else ps.state_name
+        end as state_name,
+        case
+            when cb.state_count = 1 then cb.state_abbr_single_candidate
+            else ps.state_abbr
+        end as state_abbr,
         case when cb.region_count = 1 then cb.region_id_single_candidate else null end as region_id,
         case when cb.region_count = 1 then cb.region_name_single_candidate else null end as region_name,
         case when cb.division_count = 1 then cb.division_id_single_candidate else null end as division_id,
@@ -246,6 +273,8 @@ cbsa_enriched as (
         cb.vintage,
         cb.source
     from cbsa_base cb
+    left join cbsa_primary_state ps
+        on cb.cbsa_code = ps.cbsa_code
 ),
 us_row as (
     select

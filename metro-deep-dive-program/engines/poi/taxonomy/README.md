@@ -9,7 +9,9 @@ review state. Keep consumer baskets such as `daily_needs` in their analyses,
 not in this taxonomy.
 
 Start with the plain-language [Taxonomy Guide](TAXONOMY_GUIDE.md). The first
-approved Overture rules are in [q4_overture_v1.yml](q4_overture_v1.yml).
+approved Overture rules are in [q4_overture_v1.yml](q4_overture_v1.yml) and
+the broader reviewed [q4_overture_v2.yml](q4_overture_v2.yml).
 
 Use [the taxonomy exploration notebook](TAXONOMY_EXPLORATION_NOTEBOOK.py) to
-profile unmapped source values and inspect examples before proposing a new rule.
+view the active taxonomy, organize unmapped values by `source_category_basic`,
+and inspect examples before proposing a new exact rule.

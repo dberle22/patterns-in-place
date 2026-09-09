@@ -1,9 +1,11 @@
 # Infrastructure Engine Contract
 
-Status: Epics 1–2 complete on 2026-09-08. Product names below are logical
+Status: Epics 1–5 complete on 2026-09-08. Product names below are logical
 names, not yet materialized DuckDB table names. Epic 2 records the current
 Geography geometry role as `legacy_unclassified`; it is a clipped source-run
 boundary, not a substitute for a future materialized analytical CBSA geometry.
+The Epic 4 artifacts are geometry-validated serving candidates, not promoted
+consumer-serving layers, until Geography supplies that analytical geometry.
 
 ## Contract boundary
 
@@ -150,3 +152,25 @@ the market boundary, row accounting, identity completeness/duplicates,
 geometry type/CRS/emptiness/validity/repair outcomes, clipped/outside counts,
 mapping status and unmapped-tag distributions, overlapping or duplicate
 feature diagnostics where material, and map-ready review samples.
+
+## Consumer handoff
+
+`consumers/infrastructure_consumer_interface_v1.yml` is the read-only
+handoff declaration. It requires a candidate artifact to expose source record
+identity, governed classification, geometry, raw tags and attributes, CRS and
+geometry status, market/boundary provenance, source-run identity, and retained
+record status. `publish_infrastructure_interface.py` verifies those fields and
+returns the exact artifact URI; it does not copy data or materialize a table.
+
+Q4 currently has no declared infrastructure input. Its eventual method may
+select named physical context, but it owns the access definition and barrier
+handling. Q2 may use the preserved road geometry and OSM bridge, tunnel,
+layer, oneway, maxspeed, lanes, and access evidence in a named experiment, but
+the engine does not supply topology, routing, or travel times. Catchment,
+barrier, and Corridor Intelligence methods may spatially relate retained
+features, without receiving an infrastructure-engine conclusion.
+
+The adoption registry starts empty. A real analysis must record its name,
+market, source run, and interface version only after using the interface
+unchanged. Promotion remains an Epic 6 decision: it requires the Geography
+analytical-boundary gate and two consumers using the same interface unchanged.

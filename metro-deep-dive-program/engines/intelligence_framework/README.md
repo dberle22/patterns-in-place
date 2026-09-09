@@ -51,13 +51,14 @@ Spatial tables:
 - `intelligence_zones`
 - `intelligence_zones_zcta`
 
-Current live state reviewed on `2026-09-02`:
+Current live state reviewed through `2026-09-08`:
 
 - each CBSA-grain table has `396` rows for `396` distinct CBSAs
 - the current promoted peer surface is top `10` peers per table
 - cross-frame divergence fields are promoted into DuckDB
-- Phase 6 trajectory outputs exist, but they are not yet promoted into
-  `mart_intelligence`
+- Phase 7 tract and ZCTA outputs are promoted into DuckDB
+- the separate Time-Series engine now owns four versioned trajectory tables in
+  `mart_intelligence`; legacy Phase 6 files remain comparison evidence only
 
 ## What Downstream Analyses Should Read
 
@@ -66,9 +67,11 @@ For the first MDD consumers, use the framework this way:
 - `Profile` reads `intelligence_character`, `intelligence_livability`,
   `intelligence_opportunity`, and `intelligence_cross_frame`
 - `Peers` reads the frame tables plus `intelligence_cross_frame`
-- `Trajectory` currently reads Phase 6 files from
-  `exploration/intelligence_framework/phase_6_trajectory/outputs/`, not DuckDB
-- `Internal structure` reads `intelligence_zones` and
+- `Trajectory` reads the four canonical `intelligence_trajectory_*` tables
+  governed by the Time-Series engine
+- `Candidate Scan` combines current cross-frame fields with those Time-Series
+  outputs; its ranking stays analysis-local
+- `Internal Structure` reads `intelligence_zones` and
   `intelligence_zones_zcta`
 
 ## First-Class Query Surfaces
@@ -82,14 +85,17 @@ important. The first downstream contract is a curated subset:
   Act 1 profile work
 - `peers`: top-10 peer names, codes, and cosine similarities
 - `divergence context`: overlap and disagreement fields from Phase 5
-- `zones`: tract and ZCTA outputs for later Act 4 use
+- `zones`: Phase 7 tract and ZCTA outputs for Internal Structure
 
 ## What Is Not In The Contract Yet
 
 - a locked `fingerprint` mart does not exist yet; current fingerprint queries
   are curated joins across the frame tables
-- a trajectory mart does not exist yet; trajectory is file-backed today
-- the Phase 6 candidate list exists, but it is not promoted into DuckDB
+- the Phase 7 consumer contract should document the current model build and
+  input/boundary vintages before Internal Structure is locked; new table
+  fields are needed only if the existing build evidence cannot supply them
+- the legacy Phase 6 candidate list is intentionally not promoted; Candidate
+  Scan uses it only as a port-comparison baseline
 - the cross-frame table still mixes clean aliases with many source-prefixed
   fields like `character__...`, `livability__...`, and `opportunity__...`
 

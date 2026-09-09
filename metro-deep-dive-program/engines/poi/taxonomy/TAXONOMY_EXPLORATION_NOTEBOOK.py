@@ -12,8 +12,10 @@ def _():
 
     import duckdb
     import marimo as mo
+    import pandas as pd
+    import yaml
 
-    return Path, duckdb, mo
+    return Path, duckdb, mo, pd, yaml
 
 
 @app.cell
@@ -42,6 +44,19 @@ def _(mo):
 
 
 @app.cell
+def _(Path, pd, yaml):
+    # The registry is shown in the notebook so reviewers can see the current
+    # governed taxonomy before proposing additions from the source profile.
+    registry_path = Path(__file__).resolve().parent / "q4_overture_v2.yml"
+    registry = yaml.safe_load(registry_path.read_text())
+    current_taxonomy = pd.DataFrame(registry["rules"])[
+        ["governed_category", "source_taxonomy_primary", "rule_id"]
+    ].sort_values(["governed_category", "source_taxonomy_primary"])
+    current_taxonomy
+    return current_taxonomy, registry
+
+
+@app.cell
 def _(classified_path, duckdb):
     # One read-only connection keeps the source record, mapping result, and
     # taxonomy labels visible together without copying data into a notebook.
@@ -64,6 +79,21 @@ def _(profile):
 
 @app.cell
 def _(profile):
+    # This is the current taxonomy in use on the run, organized by Overture's
+    # broad basic-category family and then the governed category it supports.
+    current_taxonomy_coverage = profile("""
+        SELECT source_category_basic, governed_category, count(*) AS places,
+          count(DISTINCT source_taxonomy_primary) AS source_labels
+        FROM read_parquet(?)
+        WHERE mapping_status = 'mapped'
+        GROUP BY 1, 2 ORDER BY source_category_basic, places DESC
+    """)
+    current_taxonomy_coverage
+    return (current_taxonomy_coverage,)
+
+
+@app.cell
+def _(profile):
     # Start with high-volume unmapped values: these are the easiest candidates
     # for an exact, evidence-backed rule or an intentional exclusion decision.
     unmapped_categories = profile("""
@@ -75,6 +105,21 @@ def _(profile):
     """)
     unmapped_categories
     return (unmapped_categories,)
+
+
+@app.cell
+def _(profile):
+    # Basic categories are the review navigation layer: they group precise
+    # taxonomy.primary values without weakening the exact production match.
+    unmapped_basic_categories = profile("""
+        SELECT source_category_basic, count(*) AS places,
+          count(DISTINCT source_taxonomy_primary) AS taxonomy_labels
+        FROM read_parquet(?)
+        WHERE mapping_status = 'unmapped'
+        GROUP BY 1 ORDER BY places DESC LIMIT 100
+    """)
+    unmapped_basic_categories
+    return (unmapped_basic_categories,)
 
 
 @app.cell

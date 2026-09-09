@@ -148,9 +148,10 @@ Applies to:
 - `intelligence_opportunity`
 - `intelligence_cross_frame`
 
-### 6. Zone Surface
+### 6. Phase 7 Zone Surface
 
-Use these later for Act 4 bridge work:
+These materialized fields are the starting consumer surface for Internal
+Structure.
 
 Tract-level:
 
@@ -160,24 +161,51 @@ Tract-level:
 - `county_geoid`
 - `county_name`
 - `zone_type`
+- `zone_kmeans_cluster`
+- `zone_type_name_status`
+- `selected_k_for_run`
+- `character_score`
+- `livability_score`
+- `opportunity_score`
 - `composite_score`
+- `national_character_percentile`
+- `national_livability_percentile`
+- `national_opportunity_percentile`
 - `national_composite_percentile`
+- `cbsa_character_percentile`
+- `cbsa_livability_percentile`
+- `cbsa_opportunity_percentile`
 - `cbsa_composite_percentile`
+- `zone_peer_character_percentile`
+- `zone_peer_livability_percentile`
+- `zone_peer_opportunity_percentile`
 - `zone_peer_composite_percentile`
 
 ZCTA-level:
 
 - `zip_geoid`
+- `zcta_city`
+- `zcta_state`
 - `primary_zone_type`
+- `is_mixed_zone`
 - `dominant_zone_type`
 - `dominant_zone_share`
 - `secondary_zone_type`
 - `secondary_zone_share`
+- full `share_*` zone-composition fields
 - `tract_count`
+- `source_vintage`
+- `source`
+
+Before Internal Structure treats this as a locked consumer contract, it should
+identify the current model build and input/boundary vintages from the existing
+Phase 7 build evidence. These may be documented alongside the first notebook;
+new table fields are needed only if multiple runs make row-level disambiguation
+necessary. This is not a request to rerun or redesign the national zone model.
 
 ## Explicit Non-Contract Surfaces
 
-These outputs exist, but are not yet part of the DuckDB contract:
+These legacy outputs exist, but are not current canonical inputs:
 
 - `exploration/intelligence_framework/phase_6_trajectory/outputs/trajectory_scores.parquet`
 - `exploration/intelligence_framework/phase_6_trajectory/outputs/phase6_candidate_list.csv`
@@ -190,7 +218,10 @@ These outputs exist, but are not yet part of the DuckDB contract:
 - Cross-frame divergence fields are promoted and queryable now.
 - The current cross-frame table still exposes many prefixed fields like
   `character__...`, `livability__...`, and `opportunity__...`.
-- A full trajectory mart has not been promoted yet, so `Trajectory` remains
-  file-backed for now.
+- Current trajectory outputs are governed separately by
+  `engines/time_series/CONTRACT.md`; do not treat the legacy Phase 6 files as
+  the active contract.
+- Phase 7 model/run provenance is not explicit on each tract row and must be
+  documented from the build evidence when consumed.
 - The current promoted peer contract is top `10`; broader similarity retrieval
   would require a new promoted surface.

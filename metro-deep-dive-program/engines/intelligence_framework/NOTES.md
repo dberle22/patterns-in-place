@@ -2,7 +2,8 @@
 
 ## Audit Snapshot
 
-Reviewed on `2026-09-02`.
+Originally reviewed on `2026-09-02`; current-state notes refreshed on
+`2026-09-08`.
 
 ## Current Framework Surfaces
 
@@ -31,22 +32,28 @@ Observed current row counts:
 
 - `intelligence_cross_frame` mixes flattened aliases with many prefixed source
   fields, which makes it harder to treat as a clean notebook surface
-- no promoted trajectory mart yet even though Phase 6 outputs exist
+- the Phase 7 consumer contract still needs to point to the current model build
+  and vintage evidence; row-level fields can wait until multiple runs require
+  them
 - no locked fingerprint mart yet; early Act 1 fingerprint work still needs a
   curated join across frame tables
 
 ## Existing Research Tool Consumers
 
-Current Research Tool usage splits across:
+The legacy Research Tool usage split across:
 
 - Phase 2 to 5 promoted static frame outputs
 - Phase 6 trajectory files
 - Phase 7 zone outputs
 
-That means the current engine contract should distinguish:
+Current consumers should distinguish:
 
 - `queryable now in DuckDB`
-- `exists, but still file-backed`
+- `legacy comparison evidence only`
+
+Trajectory is no longer file-backed for current consumers. The Time-Series
+engine owns the canonical `mart_intelligence.intelligence_trajectory_*`
+tables, while the old Phase 6 files remain available only for comparison.
 
 ## Clarifications From This Review
 
@@ -60,6 +67,6 @@ That means the current engine contract should distinguish:
 ## Promotion Candidates
 
 - flatten and normalize the cross-frame column surface
-- promote a trajectory mart into DuckDB once Act 3 becomes an active consumer
+- keep trajectory governance in the separate Time-Series engine contract
 - promote a locked fingerprint asset once `Profile` stabilizes its selected KPI
   set

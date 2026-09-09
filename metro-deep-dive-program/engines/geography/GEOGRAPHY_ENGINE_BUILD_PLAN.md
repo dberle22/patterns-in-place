@@ -3,7 +3,7 @@ status: epics_2_through_7_complete
 scope: platform-wide geography engine
 planning_home: metro-deep-dive-program/engines/geography
 production_home: foundations
-last_updated: 2026-09-08
+last_updated: 2026-09-09
 ---
 
 # Geography Engine Build Plan
@@ -21,6 +21,20 @@ should provide:
 Census tract is the lowest geometry needed by the current program. Census
 blocks remain an internal tabular building block for crosswalks; block polygons
 are not part of v1.
+
+## Next priority: local-neighborhood mappings
+
+Corridor Intelligence is paused after prototype calibration. The next
+geography work is discovery and governed mapping of local neighborhoods for
+analysis and orientation. This does not authorize an algorithmic neighborhood
+classifier or a replacement for tract/ZCTA taxonomies.
+
+Before a build begins, document each source's license, geography coverage,
+vintage, identifier stability, geometry role, update cadence, and relationship
+basis. The eventual product must preserve sourced neighborhood identities and
+expose explicit tract-to-neighborhood and ZCTA-to-neighborhood overlap edges.
+Internal Structure can then use local neighborhoods as a contextual overlay;
+corridor questions remain analysis-local.
 
 ## Architecture
 

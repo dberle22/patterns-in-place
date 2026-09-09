@@ -22,17 +22,32 @@ Position notebooks:
 
 | Engine or component | Readiness for analyses | Next use |
 |---|---|---|
-| Intelligence Framework | Ready | Profile, Peers, Candidate Scan, Internal Structure |
+| Intelligence Framework | Ready for current Position use; Phase 7 consumer contract review is next | Profile, Peers, Candidate Scan, Internal Structure |
 | Profile surfaces and notebook | Implemented; interactive review pending | Position / Profile notebook |
 | Peer surfaces and notebook | Implemented; interactive review pending | Position / Peers notebook |
 | Benchmarking | Ready for the current national and peer comparisons | Profile, Peers, then routed Explanation and Thematic work |
 | Time-Series / Trajectory | 50-metric direct recurring panel and notebook implemented; interactive review and contract freeze pending | Position / Trajectory notebook |
-| Zone model and geography | Partial; do not widen yet | Position / Internal Structure, then Corridors |
+| Zone model and geography | Phase 7 tract/ZCTA marts and Geography relationships exist; next geographic priority is sourced local-neighborhood mapping with tract/ZCTA relationships | Position / Internal Structure |
+| Corridor Intelligence | Paused prototype; Jacksonville/Richmond artifacts are method reference only, not a consumer dependency | Optional, analysis-local corridor exploration |
+| POI Engine | Ready for Richmond analysis: classified, provenance-rich points with tract/county assignment | Q4 access method and Position / Internal Structure activity views |
+| Infrastructure Engine | Ready for analysis integration: Richmond/Jacksonville core road, rail, river/canal candidates are validated and exposed through a versioned handoff; promotion remains gated | Position / Internal Structure physical skeleton, Q4 where needed, or Q2 straight-line proximity; analytical-CBSA geometry remains a Geography gate |
 
 The immediate move is therefore not another program-level design pass. It is
 to turn the ready Position capabilities into notebooks with viewable outputs.
 The Time-Series pilot is ready to be reviewed through the Trajectory surface,
 where metric evidence can be inspected in context.
+
+### Newly unblocked infrastructure work
+
+The engine is no longer a source-ingestion blocker. Build the first Q4
+daily-needs notebook from the POI handoff and explicitly decide whether it
+needs any physical infrastructure context. Separately, a first Q2
+straight-line job-proximity notebook can use existing job centers and tract
+prices without routing. Do not open routing, barrier, catchment, or corridor
+work merely to exercise the engine. Geography's next supporting slice is an
+analytical CBSA boundary; it is required before the validated infrastructure
+candidates become authoritative consumer layers or are considered for
+promotion.
 
 ## Analysis notebook sequence
 
@@ -48,16 +63,21 @@ the analysis; issue styling waits.
 | P1 | Profile | Intelligence Framework, Profile surfaces, Benchmarking | None expected | Identity/label table, fingerprint candidate table, frame and topic views |
 | P2 | Peers | Intelligence Framework peer outputs, Peer surfaces, Benchmarking | None expected | Cross-frame and frame peers, featured-peer candidates, head-to-head comparison |
 | P3 | Trajectory | Intelligence Framework, Time-Series / Trajectory mart | Use the materialized pilot; keep consumer logic as query and interpretation only | Position and momentum paths, tiered signals, turn signals, KPI evidence |
-| P4 | Internal structure | Intelligence Framework zone outputs | Open only the tract-first geography/zone slice needed by the notebook | Zone map, composition table, frame-level zone summary |
-| P5 | Candidate scan | Profile, Peers, Trajectory | Keep ranking weights analysis-local on the first build | Ranked markets with visible contributing signals |
-| P6 | Similarity neighborhood | Intelligence Framework similarity outputs, Peers | Add threshold/network logic only after the top-peer notebook is understood | Threshold sets, peer network, pairwise-rank exploration |
+| P4 | Internal structure — Part 1 | Phase 7 tract/ZCTA outputs, Geography Place relationships, and a small set of scale metrics | Select governed market slices and materialize only the display geometry needed by planned views | Geography hierarchy, Place inventory, tract zone map, Place × Zone matrix, selected-Place profile, and supporting ZCTA view |
+| P4b | Internal structure — Part 2 | Part 1, declared POI/Infrastructure runs, existing D3 job centers, and local-neighborhood mappings when available | Build activity and physical-structure views; use corridor exploration only when a market question warrants it, without creating canonical boundaries | POI-by-Place/zone/neighborhood comparisons, anchors and employment centers, Infrastructure skeleton, integrated map, optional corridor exploration, and market synthesis |
+| P5 | Candidate scan | Profile and Trajectory; legacy Research Tool Candidate List as the port baseline | Keep the updated ranking method transparent and analysis-local | Filterable ranked markets, visible contributing signals, selected-market explanation, shortlist comparison |
 
 P1–P3 are implemented and ready for interactive review. The remaining work is
 to inspect their outputs across markets, reconcile the headless QA runners,
 and close the documented contract checks—not to add another Position notebook.
 P3 exposes all-market paths and metric evidence rather than treating
-`no_standout_trend` or `no_turn_signal` as missing results. P4–P6 then reuse
-the same Position base rather than opening unrelated components.
+`no_standout_trend` or `no_turn_signal` as missing results. P4 and P5 then reuse
+the same Position base rather than opening unrelated components. P4 is a broad
+market-anatomy review; it uses sourced local-neighborhood mappings when
+available and does not depend on a corridor engine. Corridor exploration is
+optional and analysis-local. Similarity Neighborhood is retired: Peers owns
+CBSA similarity, while Phase 7 tract types, local neighborhoods, and corridor
+questions remain distinct objects.
 
 ### 3.2 Explanation
 
@@ -68,13 +88,13 @@ below groups analyses so each one leaves a useful component for the next.
 |---|---|---|---|---|
 | E1 | Regional role | Benchmarking, WAC/RAC, existing geo labels | Regional comparison method; minimal regional rollups | Regional comparison table, inflow/outflow and market-role views |
 | E2 | Q6 One metro? | Regional role components, WAC/RAC | Integration/polycentricity method | County integration table, sub-center comparison, market-structure map |
-| E3 | Q4 Daily-needs access | POI Engine; Infrastructure Engine only where needed | Define the narrow daily-needs basket and access method in the analysis | Amenity inventory, tract access distribution, Richmond access map |
+| E3 | Q4 Daily-needs access | Ready Richmond POI handoff; validated Infrastructure candidate only where the method names physical context | Define the narrow daily-needs basket and access method; do not infer barrier or network rules from the engine | Amenity inventory, tract access distribution, Richmond access map |
 | E4 | Q1 Supply or demand | Existing housing inputs, Benchmarking | Housing structure/demand comparison method and reusable housing cut | Supply/demand quadrant, submarket comparison, diagnostic table |
 | E5 | Q3 Where growth lands | Existing tract population/housing histories | Tract vintage handling and growth-change method | Infill/greenfield classification table and tract map |
-| E6 | Q2 Job-proximity gradient | Existing job centers and tract prices; Infrastructure Engine when needed | First distance-based proximity method; routing stays optional | Price-distance curve, tract residuals, job-center map |
+| E6 | Q2 Job-proximity gradient | Existing job centers and tract prices; validated Infrastructure candidate for a named physical-context experiment | Start with a straight-line distance-based method; routing stays optional and is not an engine prerequisite | Price-distance curve, tract residuals, job-center map |
 | E7 | Q5 Afford to live near jobs | Q2, housing and labor inputs | Jobs-housing affordability method; close OEWS gap if still required | Residence/workplace mismatch table and affordability map |
-| E8 | Corridors | Internal Structure, Q4, Q2, Trajectory, POI and Infrastructure engines | Open the Corridor Intelligence Engine and candidate dataset | Corridor candidates, overlays, comparable corridor summaries |
-| E9 | Parcel watch | Corridors, existing ROF parcel logic | MDD-specific screening only after a corridor is selected | Parcel candidate table and selected-corridor map |
+| E8 | Corridor exploration | Internal Structure plus Q4, Q2, or Trajectory evidence when routed | Investigate a named or observed corridor question; do not create a canonical boundary | Evidence map, comparison, and issue leads where warranted |
+| E9 | Parcel watch | Selected corridor or district, existing ROF parcel logic | MDD-specific screening only after a structural candidate is selected | Parcel candidate table and selected-area map |
 | E10 | Catchment | Existing Place Intelligence catchment, apportionment, and barrier method | No promotion work until an MDD analysis actually reuses it unchanged | Weighted catchment map and tract contribution table |
 
 For Richmond, E1–E3 are the current first-wave candidates, subject to the
@@ -132,8 +152,8 @@ activated by a routed vertical slice): Theme engine interface, Industry
 theme datasets and crosswalks, POI Engine, Infrastructure Engine, daily-needs
 access method, Housing structure/demand method, Housing component datasets,
 Standard thematic build method, Q6 polycentricity method, Tract growth-change
-method, Job-center proximity method, Corridor Intelligence Engine, corridor
-candidate datasets, Parcel screening logic, catchment/apportionment/barrier
+method, Job-center proximity method, local-neighborhood mapping, Parcel
+screening logic, catchment/apportionment/barrier
 method, Zone model outputs, Regional comparison and role method, Shared
 benchmark and comparison datasets, Market-wide notebook config.
 
@@ -149,24 +169,24 @@ enabling input, not itself the analytical product.
 | Act 1 profile data frame / broader MDD profile marts | mart | High | Partial | Fingerprint KPI set, scorecards, radar/table inputs, deeper profile views | Act 1 Top-line stat boxes, Fingerprint radar, Fingerprint percentile table → Position: Profile |
 | Shared comparison and benchmarking method | method | High | Partial | Regional comparisons, peer comparisons, theme comparisons, scorecards, benchmark tables across acts | Act 2 Benchmark comparison layer, Deeper market KPI-profile tables → Thematic A2–A10, Explanation: Regional role, Q6 |
 | Shared benchmark and comparison datasets | mart | High | Partial | Queryable benchmark-ready cuts for national, Census Division, peer sets | Act 2 Benchmark comparison layer → (cross-cutting, no single analysis row) |
-| Shared geo mart and rollups | mart | High | Partial | Tract, ZCTA, place, regional geography joins and labels program-wide | Act 4 Zone archetype map → Position: Internal structure; Explanation: Q3, Regional role |
+| Shared geo mart and rollups | mart | High | Partial | CBSA, county, Census Place, tract, ZCTA, and regional identities, allocations, joins, and labels program-wide | Act 4 market anatomy and Zone archetype map → Position: Internal structure; Explanation: Q3, Regional role |
 | Time-series / trajectory engine and mart | engine | High | Implemented; review/freeze pending | Act 3 trend work, turn signals, candidate scan support, dynamic reads | Act 3 Tiered trajectory classifications, Turn-signal flags → Position: Trajectory |
-| Zone model outputs | engine | High | Partial | Act 4 zone archetypes, zone summaries, corridor substrate | Act 4 Zone archetype map, Zone composition benchmark bar, Zone interpretation summary → Position: Internal structure; Explanation: Corridors |
+| Zone model outputs | engine | High | Exists; consumer contract review pending | Place/zone composition, tract/ZCTA views, Act 4 zone archetypes, and corridor substrate | Act 4 market anatomy, Zone archetype map, Zone composition benchmark bar, Zone interpretation summary → Position: Internal structure |
 | Regional comparison and role method | method | High | Partial | Regional role analyses, Q6 support, market-within-region interpretation | Act 2 Regional role analysis → Explanation: Regional role, Q6 |
 | Housing structure and demand comparison method | method | High | Partial | Q1, A2, A7, housing diagnostics, pressure maps | Act 2 Explanation question slot (Q1) → Explanation: Q1; Thematic: A2, A7, Housing satellite |
 | Housing component datasets | mart | High | Partial | Reusable supply/demand-side housing inputs | Act 2 Deeper market KPI-profile tables → Explanation: Q1; Thematic: A2, A7, Housing satellite |
-| Daily-needs access method | method | High | Partial | Q4, livability summaries, corridor-supporting access evidence | Act 2 Access-amenities analysis, Built environment analysis → Explanation: Q4, Corridors |
-| POI Engine | engine | High | Ready for first analysis | Classified, provenance-rich Richmond place points with tract/county assignment and postal-ZIP evidence; ZCTA geometry remains deferred in Geography | Act 2 Access-amenities analysis → Explanation: Q4, Corridors |
+| Daily-needs access method | method | High | Partial | Q4, livability summaries, and optional context for a corridor exploration | Act 2 Access-amenities analysis, Built environment analysis → Explanation: Q4 and conditional corridor exploration |
+| POI Engine | engine | High | Ready for first analysis | Classified, provenance-rich Richmond place points with tract/county assignment and postal-ZIP evidence; governed categories support activity comparisons, anchors, and optional corridor exploration | Act 2 Access-amenities analysis and Internal Structure Place/zone/neighborhood activity review → Explanation: Q4; Position: Internal structure |
 | Theme engine interface | engine | High | Partial | Standard all-market and market-mode thematic builds | Act 2 Theme analysis slot, Industry-economic makeup analysis → Thematic: A1, A2–A10 |
 | Industry theme datasets and crosswalks | mart | High | Partial | A1, A6, A10, industry comparisons, exposure analyses | Act 2 Industry-economic makeup analysis → Thematic: A1, A6, A10 |
 | Standard thematic build method | method | High | Partial | Reusable workflow for A1–A10 and future themes | Act 2 Theme analysis slot → Thematic: A1–A10 (all) |
 | Q6 polycentricity and integration method | method | Medium | Partial | One Metro, market-structure interpretation, internal-center logic | Act 2 Social fabric analysis, Built environment analysis → Explanation: Q6; Thematic: A5 |
 | Tract growth-change method | method | Medium | Partial | Q3, growth maps, infill-vs-greenfield views | Act 2 Explanation question slot (Q3) → Explanation: Q3 |
-| Job-center proximity method | method | Medium | Partial | Q2, corridor-supporting inputs, internal opportunity comparisons | Act 4 Corridor narrative thesis → Explanation: Q2 |
-| Infrastructure Engine | engine | Medium | Partial | Governed roads, rail, waterways, airports, ports, and other physical-network geometry | Act 2 Built environment analysis → Explanation: Q2, Q4, Corridors |
-| Corridor Intelligence Engine | engine | Medium | Partial | Corridor candidate pools, selected corridor summaries, stat-block inputs | Act 4 Corridor candidate pool, Corridor Intelligence method → Explanation: Corridors |
-| Corridor candidate datasets | mart | Medium | Not built | Reusable corridor-level inputs once zone/access/trend layers stabilize | Act 4 Corridor stat blocks → Explanation: Corridors |
-| Parcel screening logic | method | Medium | Partial | Parcel Watch and parcel-level follow-through inside selected corridors | Act 4 Parcel screening logic → Explanation: Parcel watch |
+| Job-center proximity method | method | Medium | Partial | Q2, optional corridor-exploration context, internal opportunity comparisons | Act 2 job-proximity analysis → Explanation: Q2 |
+| Infrastructure Engine | engine | Medium | Ready for analysis integration; promotion gated | Richmond/Jacksonville validated core roads, rail, river/canal geometry with raw tags, QA, and a versioned read-only handoff. Internal Structure can show the physical skeleton and use it in optional corridor exploration. | Act 2 Built environment analysis and Internal Structure physical review → Explanation: Q2, Q4; Position: Internal structure |
+| Local-neighborhood mapping | geography product | Medium | Discovery not started | Sourced, vintaged neighborhood identifiers, geometry where supplied, and explicit tract/ZCTA relationships | Internal Structure orientation and neighborhood context → Position: Internal structure |
+| Corridor Intelligence prototype | prototype | Low | Paused after calibration | Preserved Jacksonville/Richmond method artifacts; no canonical mart or consumer contract | Method reference only; future work proceeds as analysis-local corridor exploration |
+| Parcel screening logic | method | Medium | Partial | Parcel Watch and parcel-level follow-through inside selected corridors or districts | Act 4 Parcel screening logic → Explanation: Parcel watch |
 | Catchment, apportionment, and barrier method | method | Medium | Exists | Catchment maps, tract weighting, barrier-aware variants, site-level supporting views | (none in §2) → Explanation: Catchment |
 | Market-wide notebook config | infra | Low | Not built | Shared market constants and lock-once notebook inputs | (none in §2) → (cross-cutting, no single analysis row) |
 
@@ -178,6 +198,6 @@ enabling input, not itself the analytical product.
 - Promotion trigger (per `metro_deep_dive_program.md` §5): a component moves
   to `foundations/` when two different consumers use it unmodified. One
   consumer is a notebook; two is a library.
-- This snapshot reflects the workbook and program doc as of 2026-09-07. If
+- This snapshot reflects the workbook and program doc as of 2026-09-08. If
   either source document changes materially, regenerate this file and
   `docs/build_map.html` together rather than letting them drift.

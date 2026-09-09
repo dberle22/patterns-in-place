@@ -39,6 +39,76 @@ role explicitly. It is sufficient for the source-run clip diagnostic but must
 be replaced by the Geography analytical geometry before a validated serving
 layer is promoted.
 
+## Epic 3 completed 2026-09-08
+
+`normalize_osm_infrastructure.py` applies the five-rule
+`sources/osm_core_mappings_v1.yml` mapping to each Epic 2 source run. Its
+logical `infrastructure_feature` output preserves raw OSM tags, source and
+clipped WKB geometry, source feature/geometry identity, mapping evidence,
+boundary provenance, and the explicit `unvalidated` geometry status.
+
+| Market | Retained mapped features | Retained unmapped | Rejected | Water retained |
+|---|---:|---:|---:|---|
+| Richmond | 21,302 | 0 | 0 | 224 river lines; 41 canal lines |
+| Jacksonville | 22,570 | 0 | 305 | 330 river lines; 55 canal lines; 86 river surfaces |
+
+The Jacksonville rejected stream contains only 305 `water_network` river
+surfaces with `missing_source_identity`; it is not part of the retained feature
+artifact. No pond, basin, reservoir, lake, wastewater, tank, untyped water,
+airport, port, warehouse/logistics, or industrial feature is mapped in v1.
+Empty unmapped and ambiguous review artifacts are still written so later rules
+do not change the output shape. No source records are merged with POI anchors.
+
+## Epic 4 completed 2026-09-08
+
+`validate_osm_infrastructure.py` applies the serving geometry gate to the
+Epic 3 retained and rejected streams. It declares local metric CRSs (`EPSG:26918`
+for Richmond and `EPSG:26917` for Jacksonville), checks non-empty supported
+line/polygon geometry and validity, keeps deterministic `ST_MakeValid` repair
+only when the repaired result preserves the declared form, and writes all
+other cases to the rejected audit stream. No repair was needed in either run.
+
+| Market | Valid serving-candidate features | Rejected: missing identity | Rejected: post-clip unsupported shape | Unmapped retained |
+|---|---:|---:|---:|---:|
+| Richmond | 21,277 | 0 | 25 | 0 |
+| Jacksonville | 22,567 | 305 | 3 | 0 |
+
+The post-clip rejections are otherwise valid core lines whose intersection
+with the CBSA reduced to a point or geometry collection; retaining them would
+break the line/polygon contract. The 305 Jacksonville river-surface identity
+rejections remain audit-only, as established in Epic 2.
+
+Each run now includes retained/rejected validated Parquet, `qa_summary.json`,
+and a bounded SVG review sample. The QA profile confirms that the routine
+water output is still only rivers and canals: Richmond has 221 valid river
+lines and 41 canal lines; Jacksonville has 328 valid river lines, 55 canal
+lines, and 86 river surfaces. The Jacksonville river surfaces total about
+12.16 million m² and include complex valid shapes (up to 20,702 vertices),
+but no scale-specific display filter, simplification, or dissolve was created:
+there is no named consumer need, and the analytical layer must preserve source
+features and lineage.
+
+The boundary role is still `legacy_unclassified`. Geometry validation is
+complete, but these are serving candidates rather than promoted consumer
+layers until Geography provides an analytical CBSA geometry for clipping and
+spatial QA.
+
+## Epic 5 completed 2026-09-08
+
+The versioned consumer handoff declaration and
+`publish_infrastructure_interface.py` now verify and expose the exact local
+validated candidate for each market without copying it into a new table or
+embedding an analytical method. Both Richmond and Jacksonville pass the
+required-field check for `infrastructure_consumer_v1`.
+
+Q4 has no declared physical-infrastructure input at this point, so no context
+was fabricated. Q2 can inspect road geometry and preserved topology-relevant
+OSM evidence in a future named experiment, but routing is not implemented.
+Catchment, barrier, and Corridor Intelligence work receive physical-feature
+evidence only. The adoption registry is deliberately empty: no analysis has
+yet consumed the interface unchanged. The resolver reports `candidate_only`
+until the Geography analytical-boundary dependency is met.
+
 ## Proven extraction evidence
 
 | Market | Legacy entry point | Cached source evidence | Raw output and manifest | Downstream consumer |

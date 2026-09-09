@@ -1,0 +1,35 @@
+{
+  "cbsa_code": "27260",
+  "geometry_role": "legacy_cartographic_tract_geometry_v1",
+  "geometry_vintage_status": "unknown_legacy_vintage",
+  "infrastructure_source_run_id": "osm-infrastructure-27260-snapshot-2026-08-01-0fc0cea5c456",
+  "market": "jacksonville_fl",
+  "method_version": "corridor_physical_evidence_v1",
+  "parameter_profile": "physical_evidence_v1__baseline_graph_high_similarity_v1",
+  "phase7_build_id": "phase7_2026-07-01_615b6a68e0a3",
+  "poi_source_run_id": "overture-places-27260-2026-08-19-0-20260909T093431Z",
+  "publication_status": "epic_3_review_artifact_not_duckdb_published",
+  "run_id": "corridor-27260-physical_evidence_v1__baseline_graph_high_similarity_v1-phase7_2026-07-01_615b6a68e0a3",
+  "tract_accounting": {
+    "bounded_nearby": {
+      "core_tract_count": 230,
+      "input_tract_count": 340,
+      "unassigned_tract_count": 110
+    },
+    "dbscan_challenger": {
+      "core_tract_count": 11,
+      "input_tract_count": 340,
+      "unassigned_tract_count": 329
+    },
+    "physical_evidence": {
+      "core_tract_count": 235,
+      "input_tract_count": 340,
+      "unassigned_tract_count": 79
+    },
+    "strict_adjacency": {
+      "core_tract_count": 230,
+      "input_tract_count": 340,
+      "unassigned_tract_count": 110
+    }
+  }
+}

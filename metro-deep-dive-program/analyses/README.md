@@ -4,7 +4,8 @@
 
 This includes:
 
-- `position/` analyses such as profile, peers, and trajectory
+- `position/` analyses such as Profile, Peers, Trajectory, Internal Structure,
+  and Candidate Scan
 - `explanation/` question notebooks
 - `thematic/` theme notebooks
 - `issue_builders/` reusable act-level builders that package standard outputs

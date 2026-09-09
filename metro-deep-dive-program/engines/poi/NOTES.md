@@ -122,10 +122,12 @@ No rule overlaps, ambiguous automated matches, or manual overrides exist yet.
 ## Downstream consumers and program fit
 
 The program names the POI Engine as the input to Q4 Daily-needs access and
-later Corridors. Q4 is the first consumer: it needs an amenity inventory,
-tract access distribution, and Richmond access map, while keeping its
-daily-needs basket and access method analysis-owned. Corridors consumes POI
-evidence later alongside zone, infrastructure, and trajectory evidence.
+Internal Structure context. Q4 is the first consumer: it needs an amenity
+inventory, tract access distribution, and Richmond access map, while keeping
+its daily-needs basket and access method analysis-owned. Corridor Intelligence
+may aggregate eligible governed POI categories as soft, versioned membership
+evidence; Internal Structure then reviews that evidence and any additional
+context without rewriting the engine run.
 
 This follows the workbook's required split: POI owns classified,
 provenance-rich, geographically assigned place points; the daily-needs method

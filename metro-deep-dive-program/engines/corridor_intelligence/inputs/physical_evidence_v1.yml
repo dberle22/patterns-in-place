@@ -1,0 +1,26 @@
+# Epic 3 refinement rules. These apply only to geographically plausible,
+# same-zone borderline relationships; POIs never create a stand-alone edge.
+profile: physical_evidence_v1
+method_version: corridor_physical_evidence_v1
+baseline_profile: baseline_graph_v1.yml
+borderline_similarity_minimum: 0.40
+infrastructure:
+  spine_buffer_m: 30
+  separator_boundary_buffer_m: 30
+  separator_minimum_overlap_m: 100
+  spine_types: [motorway, motorway_link, trunk, trunk_link, primary, primary_link]
+  separator_types: [rail, light_rail, subway, river, canal]
+poi:
+  eligible_categories: [grocery, pharmacy, hospital, school, university]
+  minimum_combined_places: 4
+  minimum_composition_similarity: 0.80
+  minimum_similarity_for_poi_refinement: 0.45
+bridge:
+  minimum_shared_boundary_m: 10
+  minimum_core_neighbors: 2
+  require_spine_evidence: true
+  maximum_bridges_per_section_join: 1
+form:
+  corridor_minimum_aspect_ratio: 3.0
+  district_maximum_aspect_ratio: 2.25
+  corridor_minimum_spine_edges: 2

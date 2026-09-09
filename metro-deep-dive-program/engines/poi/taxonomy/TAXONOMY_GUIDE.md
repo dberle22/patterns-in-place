@@ -33,9 +33,12 @@ record. This does not automatically place it in a score, catchment, or corridor.
 
 ## Current matching rule
 
-The first rule registry is [q4_overture_v1.yml](q4_overture_v1.yml). It uses
+The first rule registry is [q4_overture_v1.yml](q4_overture_v1.yml); the
+broader reviewed pass is [q4_overture_v2.yml](q4_overture_v2.yml). Both use
 an **exact match** on Overture's preserved `taxonomy.primary`. It does not use
-substring matching, keywords, scoring, or first-match ordering.
+substring matching, keywords, scoring, or first-match ordering. Overture's
+`basic_category` organizes the taxonomy for browsing, profiling, and deciding
+where new precise labels belong; it does not by itself weaken the match rule.
 
 | Source value | Governed category | Rule ID |
 |---|---|---|

@@ -50,8 +50,10 @@ complete transportation-network model.
   practical reach.
 - Barrier handling is an analytical interpretation of infrastructure, not a
   source classification produced here.
-- Corridor Intelligence will combine Intelligence Framework zones with
-  proximity and optional infrastructure, POI, and trajectory evidence.
+- Corridor Intelligence will combine Intelligence Framework zones and
+  proximity with governed Infrastructure membership evidence and cautiously
+  weighted aggregate POI evidence. Trajectory interpretation remains
+  downstream.
 - Parcel screening remains downstream and conditional.
 
 ## Source roles
@@ -183,44 +185,53 @@ provisional.
 
 ### 3. Normalize infrastructure features
 
-- [ ] Implement the initial roads/highways, rail, and `water_network`
+- [x] Implement the initial roads/highways, rail, and `water_network`
   mappings needed by current consumers.
-- [ ] Apply the same core `water_network` selectors to Richmond and
+- [x] Apply the same core `water_network` selectors to Richmond and
   Jacksonville before comparing their coverage; do not make the broad
   water-surface selector a routine consumer output.
-- [ ] Keep `water_network` linear and surface forms distinct, covering rivers,
+- [x] Keep `water_network` linear and surface forms distinct, covering rivers,
   canals, and source-supported riverbank/river surfaces; leave other water
   types source-side or conditional context until a named analysis selects them.
-- [ ] Preserve raw tags and source geometry alongside governed feature groups.
-- [ ] Keep airport, port, warehouse/logistics, and industrial mappings
+- [x] Preserve raw tags and source geometry alongside governed feature groups.
+- [x] Keep airport, port, warehouse/logistics, and industrial mappings
   exploratory until reviewed.
-- [ ] Avoid cross-source conflation with POI anchors.
-- [ ] Document unmapped and ambiguous tag handling.
+- [x] Avoid cross-source conflation with POI anchors.
+- [x] Document unmapped and ambiguous tag handling.
 
 ### 4. Validate and serve geometry
 
-- [ ] Validate CRS, geometry type, emptiness, and geometry validity.
-- [ ] Define when invalid geometry is repaired versus rejected.
-- [ ] Produce feature-count, coverage, and unmapped-tag summaries.
-- [ ] Create lightweight review maps for Richmond and Jacksonville.
-- [ ] Profile water count, area, vertex complexity, type, and scale-specific
+- [x] Validate CRS, geometry type, emptiness, and geometry validity.
+- [x] Define when invalid geometry is repaired versus rejected.
+- [x] Produce feature-count, coverage, and unmapped-tag summaries.
+- [x] Create lightweight review maps for Richmond and Jacksonville.
+- [x] Add a read-only market explorer for reviewing validated feature shape,
+  water complexity, source evidence, and rejection outcomes before analysis.
+- [x] Profile water count, area, vertex complexity, type, and scale-specific
   display burden before selecting a display derivative.
-- [ ] Add a documented size filter, simplification, or dissolve derivative
+- [x] Add a documented size filter, simplification, or dissolve derivative
   only when a consumer demonstrates a need; preserve feature lineage and do
   not apply it to the analytical layer.
-- [ ] Require geometry validation and bounded, partitioned execution before
+- [x] Require geometry validation and bounded, partitioned execution before
   any dissolve; a failed geometry operation must produce a QA outcome rather
   than crash a market build.
 
 ### 5. Support initial consumers
 
-- [ ] Supply Q4 with only the infrastructure context required by its first
+- [x] Supply Q4 with only the infrastructure context required by its first
   method, if any.
-- [ ] Expose road/network-ready attributes for a future Q2 experiment without
+- [x] Expose road/network-ready attributes for a future Q2 experiment without
   implementing routing in advance.
-- [ ] Make normalized layers available to future catchment, barrier, and
+- [x] Make normalized layers available to future catchment, barrier, and
   Corridor Intelligence work without embedding those methods here.
-- [ ] Record which interfaces consumers use unchanged.
+- [x] Record which interfaces consumers use unchanged.
+
+Epic 5 completed 2026-09-08. `consumers/infrastructure_consumer_interface_v1.yml`
+declares the read-only candidate handoff and each consumer's allowed use.
+Q4 currently requests no infrastructure context; Q2 and later methods can
+inspect the preserved road tags and geometry but receive no routing or barrier
+method. No analysis has adopted the interface unchanged yet, which is recorded
+explicitly as an empty adoption registry rather than inferred reuse.
 
 ### 6. Widen and promote
 

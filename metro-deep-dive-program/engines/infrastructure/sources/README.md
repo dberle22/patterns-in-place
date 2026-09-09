@@ -7,6 +7,12 @@ The Epic 2 OSM baseline is declared in
 cached GeoPackages used for local feature reads; both are checksummed at run
 time and remain outside Git.
 
+The approved initial core mapping is
+[osm_core_mappings_v1.yml](osm_core_mappings_v1.yml). It maps only the declared
+road hierarchy, rail, river/canal lines, and identity-complete river surfaces.
+Airport, port, warehouse/logistics, industrial, and broad water-surface rules
+are intentionally absent.
+
 A future source declaration must identify the provider, source release or
 dated snapshot, source asset URI and checksum where available, acquisition
 partition/query, governed boundary identity and vintage, CRS, and row

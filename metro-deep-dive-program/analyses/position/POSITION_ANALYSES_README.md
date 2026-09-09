@@ -3,14 +3,15 @@
 `position/` holds the first consumer layer on top of the Intelligence
 Framework engine.
 
-These analyses should stay thin. They consume the engine contract from
-`metro-deep-dive-program/engines/intelligence_framework/` and turn it into
-usable Act 1 and early Act 3 analysis surfaces without rebuilding framework
-logic here.
+These analyses should stay thin. They consume the engine contracts under
+`metro-deep-dive-program/engines/` and turn them into usable Position surfaces
+without rebuilding engine logic locally. Most are selected-market notebooks;
+Candidate Scan is the deliberate all-market exception used to choose which
+metro to inspect next.
 
 ## Build Rule
 
-Every analysis folder in `position/` should produce these things:
+The default analysis folder in `position/` should produce these things:
 
 - a named README that explains what the analysis is for
 - a named SPEC that defines its inputs, outputs, and scope
@@ -20,7 +21,7 @@ Every analysis folder in `position/` should produce these things:
 - lightweight validation artifacts so we can inspect whether the analysis is
   behaving correctly before any issue-layer cleanup
 
-Use the same folder shape for the first three Position analyses:
+Use the same folder shape for Profile, Peers, and Trajectory:
 
 ```text
 <analysis>/
@@ -49,6 +50,12 @@ Architecture rule:
 - Marimo notebooks load and explore those query surfaces
 - headless Python scripts validate stable query and visual expectations
 - saved files in this layer should usually be QA visuals, not substitute marts
+
+An analysis spec may declare a lighter build when the workflow does not need a
+second execution path. Candidate Scan is notebook-only by design: its Marimo
+surface owns the interactive ranking, explanation, sensitivity, and QA views.
+Internal Structure starts notebook-first and adds durable QA only after its
+two-part spatial surface stabilizes.
 
 Shared comparison logic is the exception to a SQL-only consumer pattern.
 Position notebooks should use `foundations/benchmarking_py` for on-demand
@@ -102,6 +109,36 @@ publication.
   `mart_intelligence` trajectory tables and produces selected-market evidence,
   national context, turn-status, and coverage surfaces without rebuilding the
   shared method. Its remaining work is interactive review and contract freeze.
+- `internal_structure/`
+  Planned two-part market-anatomy notebook. Part 1 relates counties, Census
+  Places, tracts, ZCTAs, and Phase 7 zones. Part 2 examines POIs, employment
+  centers, and major Infrastructure, with local-neighborhood mappings as a
+  contextual overlay. Corridor exploration is question-led analysis, not an
+  engine-produced geography.
+- `candidate_scan/`
+  Planned Marimo-only port of the legacy Research Tool Candidate List. It
+  updates the market-selection workflow to the current Profile and Time-Series
+  contracts while keeping ranking logic transparent and analysis-local.
+
+## Dependency Summary
+
+| Analysis | Build readiness | Remaining dependency |
+|---|---|---|
+| Candidate Scan | Ready to build | No new engine; use the current Intelligence Framework and Time-Series marts |
+| Internal Structure Part 1 | Ready for a first market slice | Select governed Place/tract/ZCTA relationships, display geometry, scale metrics, and Phase 7 fields |
+| Internal Structure Part 2 | POI, Infrastructure, and job-center capabilities exist | Select declared market inputs; local-neighborhood mappings are the next geographic dependency, while corridor exploration remains optional |
+
+Candidate Scan is an analysis, not an engine. Its first ranking method remains
+visible and local to the notebook. Corridor Intelligence is paused after its
+pilot: its structural candidates are preserved as method artifacts, not a
+canonical local-geography product. The next shared geography work is sourced
+local-neighborhood mapping and its tract/ZCTA relationships.
+
+`Similarity neighborhood` is retired as a Position analysis. CBSA similarity
+remains in Peers and the separate similarity-method study; national tract and
+ZCTA classifications remain in the Intelligence Framework; sourced local
+neighborhood mappings belong in Geography; and corridor questions belong in
+Internal Structure analysis.
 
 ## What Not To Do Here
 
@@ -111,3 +148,6 @@ publication.
 - do not polish validation visuals as if they are final issue charts
 - do not merge the three exploratory notebooks into the shared Act 1 issue
   assembly notebook; issue assembly remains a separate downstream consumer
+- do not use `similarity neighborhood` as a catch-all name for CBSA peers,
+tract zone types, ZCTA rollups, local neighborhoods, or analysis-local
+corridor explorations

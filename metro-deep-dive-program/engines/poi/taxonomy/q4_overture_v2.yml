@@ -1,0 +1,50 @@
+mapping_version: q4_overture_v2
+source_system: overture
+# Exact taxonomy.primary rules reviewed from Richmond's high-volume unmapped profile.
+rules:
+  - {rule_id: grocery_store, source_taxonomy_primary: grocery_store, governed_category: grocery}
+  - {rule_id: supermarket, source_taxonomy_primary: supermarket, governed_category: grocery}
+  - {rule_id: specialty_grocery_store, source_taxonomy_primary: specialty_grocery_store, governed_category: grocery}
+  - {rule_id: international_grocery_store, source_taxonomy_primary: international_grocery_store, governed_category: grocery}
+  - {rule_id: health_food_store, source_taxonomy_primary: health_food_store, governed_category: grocery}
+  - {rule_id: farmers_market, source_taxonomy_primary: farmers_market, governed_category: grocery}
+  - {rule_id: convenience_store, source_taxonomy_primary: convenience_store, governed_category: convenience_store}
+  - {rule_id: pharmacy, source_taxonomy_primary: pharmacy, governed_category: pharmacy}
+  - {rule_id: gas_station, source_taxonomy_primary: gas_station, governed_category: gas_station}
+  - {rule_id: discount_store, source_taxonomy_primary: discount_store, governed_category: discount_store}
+  - {rule_id: hardware_store, source_taxonomy_primary: hardware_store, governed_category: hardware_store}
+  - {rule_id: post_office, source_taxonomy_primary: post_office, governed_category: post_office}
+  - {rule_id: atm, source_taxonomy_primary: atm, governed_category: atm}
+  - {rule_id: bank_credit_union, source_taxonomy_primary: bank_or_credit_union, governed_category: bank_or_credit_union}
+  - {rule_id: hospital, source_taxonomy_primary: hospital, governed_category: hospital}
+  - {rule_id: pharmacy_clinic, source_taxonomy_primary: doctors_office, governed_category: doctors_office}
+  - {rule_id: dental_clinic, source_taxonomy_primary: dental_clinic, governed_category: dental_clinic}
+  - {rule_id: general_dentistry, source_taxonomy_primary: general_dentistry, governed_category: dental_clinic}
+  - {rule_id: physical_therapy, source_taxonomy_primary: physical_therapy, governed_category: physical_therapy}
+  - {rule_id: chiropractor, source_taxonomy_primary: chiropractic, governed_category: chiropractic}
+  - {rule_id: veterinarian, source_taxonomy_primary: veterinarian, governed_category: veterinarian}
+  - {rule_id: school, source_taxonomy_primary: school, governed_category: school}
+  - {rule_id: elementary_school, source_taxonomy_primary: elementary_school, governed_category: school}
+  - {rule_id: preschool, source_taxonomy_primary: preschool, governed_category: preschool}
+  - {rule_id: university, source_taxonomy_primary: university, governed_category: university}
+  - {rule_id: college_university, source_taxonomy_primary: college_university, governed_category: university}
+  - {rule_id: park, source_taxonomy_primary: park, governed_category: park}
+  - {rule_id: gym, source_taxonomy_primary: gym, governed_category: gym}
+  - {rule_id: dance_studio, source_taxonomy_primary: dance_studio, governed_category: fitness_or_recreation}
+  - {rule_id: restaurant, source_taxonomy_primary: restaurant, governed_category: restaurant}
+  - {rule_id: fast_food_restaurant, source_taxonomy_primary: fast_food_restaurant, governed_category: fast_food_restaurant}
+  - {rule_id: pizza_restaurant, source_taxonomy_primary: pizza_restaurant, governed_category: restaurant}
+  - {rule_id: mexican_restaurant, source_taxonomy_primary: mexican_restaurant, governed_category: restaurant}
+  - {rule_id: chinese_restaurant, source_taxonomy_primary: chinese_restaurant, governed_category: restaurant}
+  - {rule_id: italian_restaurant, source_taxonomy_primary: italian_restaurant, governed_category: restaurant}
+  - {rule_id: american_restaurant, source_taxonomy_primary: american_restaurant, governed_category: restaurant}
+  - {rule_id: seafood_restaurant, source_taxonomy_primary: seafood_restaurant, governed_category: restaurant}
+  - {rule_id: coffee_shop, source_taxonomy_primary: coffee_shop, governed_category: coffee_shop}
+  - {rule_id: bakery, source_taxonomy_primary: bakery, governed_category: bakery}
+  - {rule_id: sandwich_shop, source_taxonomy_primary: sandwich_shop, governed_category: sandwich_shop}
+  - {rule_id: hotel, source_taxonomy_primary: hotel, governed_category: hotel}
+  - {rule_id: lodging, source_taxonomy_primary: lodging, governed_category: lodging}
+  - {rule_id: public_health_clinic, source_taxonomy_primary: public_health_clinic, governed_category: public_health_clinic}
+  - {rule_id: fire_station, source_taxonomy_primary: fire_station, governed_category: fire_station}
+  - {rule_id: government_office, source_taxonomy_primary: government_office, governed_category: government_office}
+  - {rule_id: library, source_taxonomy_primary: library, governed_category: library}

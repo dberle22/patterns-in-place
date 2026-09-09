@@ -42,7 +42,8 @@ Important nuance:
 - `Act 1` is the identity layer: fingerprint, cluster labels, peer set, and light framework interpretation
 - `Act 2` can include regional framing, but it is not primarily a time/trend act
 - `Act 3` is where explicit dynamics and trend interpretation belong
-- `Act 4` is the intra-CBSA narrowing layer: zones, corridors, and sometimes parcels
+- `Act 4` is the intra-CBSA narrowing layer: zone types, corridors, districts,
+  and sometimes parcels
 - `Act 4` should still be legible through the three Intelligence frames, not just through an opportunity lens
 
 The acts are not rigid containers for questions. The questions, themes,
@@ -143,9 +144,19 @@ This is the Research Tool's content, rebuilt as notebooks. Runs first; its outpu
 | **Profile** | Identity labels; frame percentiles; topic and subject scores; raw KPI candidates and vintages; governed benchmark context | Marimo notebook and four reusable SQL surfaces implemented. Interactive review and headless-QA reconciliation remain. |
 | **Peers** | Promoted cross-frame and frame-specific top-10 peers; transparent overlap; target/top-five position; featured-peer governed KPI comparison | Marimo notebook and reusable peer query surfaces implemented. Interactive review and headless-QA reconciliation remain. Diverging peers, slopes, and forward analogs are not part of this level-based surface. |
 | **Trajectory** | Stored frame position and momentum; metric and annual evidence; national context; persisted turn signals and threshold sensitivity | Marimo notebook, six reusable SQL surfaces, and the 50-metric direct recurring Time-Series panel implemented. Interactive review and contract freeze remain. |
-| **Internal structure** | Phase 7 zone types within the metro; composition vs. national; ZCTA rollup; three-level tract benchmark | Model built on two markets; tract geometry loading broken in app |
-| **Candidate scan** | Ranked CBSAs by divergence + trajectory; filterable | Built; belongs on the landing surface of the frozen Research Tool, not a tab |
-| **Similarity neighborhood** | Threshold queries, peer networks, pairwise rank beyond top-10 | Not built; revisit trigger in `cross_frame_similarity_matrix_plan.md` |
+| **Internal structure** | Part 1: market geography and zone structure across counties, Census Places, tracts, ZCTAs, Phase 7 types, and sourced local neighborhoods when available. Part 2: POI/activity patterns, employment centers, Infrastructure, and optional corridor exploration. | Planned as a two-part Marimo market-anatomy analysis. The base can proceed from existing engines; local-neighborhood mapping is the next geography priority, while corridor work is analysis-local. |
+| **Candidate scan** | Filterable all-market selection surface using cross-frame divergence and current trajectory evidence, with visible rank contributions | Planned as a Marimo-only port and update of the frozen Research Tool Candidate List. |
+
+`Similarity neighborhood` is retired as a Position analysis because it mixed
+three distinct objects. CBSA similarity stays in `Peers` and the standalone
+similarity-method study; national tract and ZCTA classifications stay in the
+Intelligence Framework; local-neighborhood mapping belongs in Geography; and
+within-market corridor questions belong in `Internal structure` analysis.
+
+Internal Structure is broader than the structural-candidate pool. Its primary
+job is to show how the metro is assembled across formal Places, sourced local
+neighborhoods, small-area zone types, activity anchors, employment centers,
+and physical networks. Corridor exploration is optional within that review.
 
 **Issue caveat:** Position analyses are internal until the Intelligence Framework review (`intelligence_framework_review_question_bank.md`) is answered — specifically Section B (similarity validation) and A1 (universe: 396 / 401 / 925). Until then, only the cross-frame cluster label and the peer list go in print, with a methods caveat. Frame composite scores do not.
 
@@ -163,16 +174,17 @@ The deep dive question bank. National methods say where a market sits; these say
 |---|---|---|---|
 | **Q6 One metro?** | Are outlying counties functionally part of it | LODES WAC/RAC integration, county industry mix | Not built; integration threshold must be stated |
 | **Q1 Supply or demand** | Is cheap housing abundant supply or absent demand, by submarket | Stock composition, vacancy, permits, HPI | Not built |
-| **Q2 Job-proximity gradient** | Price gradient from employment centers | Industry D3 job centers + tract prices | Job centers built; gradient not |
+| **Q2 Job-proximity gradient** | Price gradient from employment centers | Industry D3 job centers + tract prices; validated Infrastructure candidate when a named physical-context experiment needs it | Job centers built; gradient not. Straight-line proximity can start now; routing remains out of scope until the method demonstrates a need. |
 | **Q3 Where growth lands** | Greenfield vs. infill vs. nowhere | Tract housing-unit and pop change | Not built; tract vintage handling is the hazard |
-| **Q4 Daily-needs access** | Per-tract amenity access | Overture POIs, OSM, POI taxonomy | POI Engine ready for Richmond analysis: source acquisition, normalization, first mappings, and tract/county assignment complete; basket and access metric not built |
+| **Q4 Daily-needs access** | Per-tract amenity access | Overture POIs, POI taxonomy; validated Infrastructure candidate only if the method names a physical-context need | POI Engine ready for Richmond analysis; daily-needs basket and access metric are the next build. Infrastructure is available but does not define access or barriers. |
 | **Q5 Afford to live near jobs** | Residence income vs. workplace wages | LODES RAC/WAC, tract income, OEWS | Not built; OEWS ingestion needed |
 | **Regional role** | Inflow/outflow, commute shed, migration origins | LODES OD (not ingested), IRS flows | Partial from WAC/RAC; OD deferred |
-| **Corridors** | Contiguous same-type zones along infrastructure; amenity-vs-score overlap or divergence | Internal structure + Q4 + OSM infra | Not run on any market; method undecided |
-| **Parcel watch** | Underutilized parcels in the top corridor | Regrid / county parcels | Conditional; Jacksonville path exists |
+| **Corridor exploration** | Where does a named or observed corridor pattern warrant deeper analysis, and why | Internal Structure + routed Q2/Q4/Trajectory evidence where relevant | Analysis-local and conditional; it does not rely on an engine-produced candidate boundary. |
+| **Parcel watch** | Underutilized parcels in the selected corridor or district | Regrid / county parcels | Conditional; Jacksonville path exists |
 | **Catchment** | Point-centered tract apportionment, daytime population, barriers | Place Intelligence D1–D3 | Built for Jacksonville as a site product; methods promote, app does not |
 
-POIs are not an analysis. They are an input to Q4 and Corridors.
+POIs are not an analysis. They are an input to Q4, Internal Structure's
+Place/Zone/neighborhood activity review, and any later corridor exploration.
 
 **Cross-act note:** Explanation questions are not owned by one act. Many of
 them feed multiple acts:
@@ -236,7 +248,7 @@ Position runs first and is cheap. Its outputs select the Explanation and Themati
 | Divergence flag on a frame | Explanation questions in that frame — Livability → Q1, Q4; Opportunity → Q5; Character → Q6 |
 | Pattern flag | The Thematic entry that tests it — Fast Demographic Changer → A9; Environmental Risk Outlier → A3; Hidden Livability Winner → A7; Diverging From Themselves → the frame pair's questions |
 | Diverging peer | A paired comparison; candidate for the featured peer in print |
-| Zone composition outlier | Corridors; which zone type leads Act 4 |
+| Zone composition outlier | Internal Structure Place/Zone and activity review; inspect corridors only where they add explanatory value |
 | Opportunity turn signal | Trajectory leads Act 3 |
 | No strong signal | Run the default set (Section 7) and let the Data Take scan find the hook |
 
@@ -264,22 +276,45 @@ Built only on call. Each gets a folder under `engines/` with a notebook, `NOTES.
 | **Benchmarking** — one function: metric at grain → national / division / state / peer-set percentile and rank | Profile, Fingerprint, theme engines | Implemented in `engines/benchmarking/`, `mart_benchmarking`, and `foundations/benchmarking_py`; current national/geographic/peer-set comparisons are available. |
 | **Intelligence Framework** — scores, clusters, similarity, trajectory, zones | All Position analyses; later Corridor Intelligence | Implemented promoted marts and canonical contract in `engines/intelligence_framework/`; similarity/universe review remains an issue-publication gate. |
 | **Theme engine interface** — inputs, outputs, two run modes, one lock-once asset per theme | A1 / Industry | Industry D1/D3/D6 + A1 notebook |
-| **POI** — point-source ingest, identity and provenance, explicit taxonomy mappings, geographic assignment, and QA | Q4, later access and corridor analyses | Implemented through Epic 5 in `engines/poi/`; Richmond Overture is acquired, normalized, classified, and assigned to tract/county. Postal ZIP is source-address evidence; ZCTA geometry remains a Geography dependency. |
-| **Infrastructure** — ingest and normalize roads, rail, waterways, airports, ports, and other physical-network geometry | Q4 where needed, later Q2 and Corridors | Proposed in `engines/infrastructure/`; Richmond and Jacksonville OSM / `osmextract` work provides the starting evidence |
-| **Corridor Intelligence** — within-market corridor candidates built from zone structure, proximity, and optional POI, infrastructure, and trajectory evidence | Corridors | Future Intelligence Framework extension; Phase 7 Stage 2 is proposal evidence, not an implemented contract |
+| **POI** — point-source ingest, identity and provenance, explicit taxonomy mappings, geographic assignment, and QA | Q4, Corridor Intelligence, Internal Structure activity review, and later access analyses | Implemented through Epic 5 in `engines/poi/`; Richmond Overture is acquired, normalized, classified, and assigned to tract/county. Postal ZIP is source-address evidence; ZCTA geometry remains a Geography dependency. |
+| **Infrastructure** — governed roads, rail, and river/canal geometry with raw OSM evidence and QA | Corridor Intelligence, Q4 where needed, Q2, and Internal Structure's physical skeleton | Implemented through Epic 5 in `engines/infrastructure/` for Richmond and Jacksonville: reproducible source runs, narrow mappings, geometry QA, and a verified read-only consumer handoff. Promotion is gated on analytical CBSA geometry and two unchanged consumer uses. |
+| **Corridor Intelligence** — prototype within-market structural grouping | Optional Internal Structure corridor exploration | Paused after Jacksonville/Richmond calibration. Preserve artifacts for method reference; do not publish, promote, or make it a consumer dependency. |
 | **Time series** — metric-aware trends, start/end percentile paths, national momentum and salience, tiered trajectory labels, turn signals | Position / Trajectory, Act 3, Data Takes, forward-analog slopes, Candidate Scan | Implemented in `engines/time_series/` and materialized in `mart_intelligence`. Current panel has 50 direct recurring KPIs; derived-change review and contract freeze remain. |
-| **Geography** — governed identities, exact rollups, tract→Place/ZCTA allocation edges, vintage handling, and on-demand display geometry | Q3, Corridors, maps | Implemented in `engines/geography/` and `mart_geography`; metric-specific QA and consumer geometry migration remain on call |
+| **Geography** — governed identities, exact rollups, tract→Place/ZCTA allocation edges, vintage handling, on-demand display geometry, and future sourced local-neighborhood mappings | Q3, Internal Structure, and maps | Implemented in `engines/geography/` and `mart_geography`; local-neighborhood source discovery and mapping are next. |
 | **Data foundation gaps** — vertical benchmark rows, vintage per metric, OEWS, LODES OD | Benchmarking, Q5, Regional role | Logged |
 
 **Promotion rule:** a component moves to `foundations/` when two different consumers call it without modification. One consumer is a notebook; two is a library.
 
-**Naming rule for "zones":** *zone types* = Phase 7 national tract labels; *corridors* = within-market groupings of same-type tracts; *catchments* = point-centered tract weights. Three objects, three names.
+**Infrastructure next step:** Q4 can now define and run its daily-needs method
+using the POI handoff, adding infrastructure only if that method explicitly
+needs it. Q2 can begin a straight-line job-proximity experiment from existing
+job centers and prices. In parallel, Geography needs to provide analytical
+CBSA geometry so the Infrastructure candidates can become authoritative
+consumer layers. These are integrations, not a reason to add routing, barrier,
+or corridor logic prematurely.
+
+**Naming rule for internal geography:** *zone types* = Phase 7 national tract
+labels; *corridors* = linear or branched structural candidates organized around
+a spine; *districts* = compact structural candidates without one dominant
+spine; *catchments* = point-centered tract weights. Distinct objects keep
+national classification, market form, and site reach from being conflated.
+
+**Structural-candidate membership rule:** every candidate stays within one CBSA
+and has one primary Phase 7 `zone_type`. Same-type tracts form its core; a small
+number of different-type tracts may join as explicit bridge members when they
+connect core sections and pass structural and Infrastructure checks. Governed
+Infrastructure evidence can strengthen, weaken, or block tract relationships;
+aggregate POI composition can refine borderline relationships but cannot form
+a candidate or justify a bridge alone. County lines do not split a qualifying
+candidate. One shared, versioned method is applied market by market, with no
+manual tract edits.
 
 **Spatial ownership rule:** `spatial` is a cross-cutting capability, not one
 catch-all engine. Geography owns boundaries and crosswalks; POI owns place
-points; Infrastructure owns physical line and polygon features. Catchment and
-barrier handling remain analytical methods. Corridor Intelligence is a future
-extension of the Intelligence Framework that can consume all three engines.
+points; Infrastructure owns physical line and polygon features. Catchment,
+broad access/barrier handling, and corridor exploration remain analytical
+methods. Geography, POI, and Infrastructure remain the source authorities;
+analyses do not rewrite their classifications.
 
 **Act 2 workbench note:** `Act 2` is increasingly the main explanatory
 workbench of the program. `Act 3` and `Act 4` should be expected to reuse work
@@ -305,7 +340,7 @@ The template (`metro_deep_dive_template_guidance.md`) remains the delivery shape
 | 1 Identity | Position: Profile, Peers |
 | 2 Engine & Fabric | Thematic instantiated for this market; Explanation Q6, Q4, Regional role |
 | 3 Dynamics | Position: Trajectory; Time series engine on reader-facing KPIs |
-| 4 Opportunity Funnel | Position: Internal structure; Explanation: Corridors, Q2, Q5, Parcel watch |
+| 4 Opportunity Funnel | Position: Internal structure; Explanation: conditional corridor opportunity read, Q2, Q5, Parcel watch |
 
 **Issue types:** market act (one frame-sized Substack post; the unit of the arc), market synthesis, national theme piece (with its methods note), Data Take (boxed, one chart, ~100 words, inside an act), methods piece.
 
@@ -315,12 +350,12 @@ The template (`metro_deep_dive_template_guidance.md`) remains the delivery shape
 - Top-line stat box fields
 - NAICS→exposure crosswalk version and citation
 - Archetype (zone type) names
-- Corridor stat block format and Investment Score threshold
+- Structural-candidate stat block format and Investment Score threshold
 - Peer count shown and the similarity caveat language
 
 Analyses never own locks. They show the full set; the issue picks the locked subset.
 
-**Editorial-only elements** (no analysis behind them): Market Verdict, History Box, cultural fabric narrative, corridor names. Methods pieces currently identified: apportionment ("why the circle around your property is lying to you"), the fastest-growing-tract redistricting artifact, the similarity study, the contract-driven data development series.
+**Editorial-only elements** (no analysis behind them): Market Verdict, History Box, cultural fabric narrative, corridor and district names. Methods pieces currently identified: apportionment ("why the circle around your property is lying to you"), the fastest-growing-tract redistricting artifact, the similarity study, the contract-driven data development series.
 
 One more practical distinction:
 
@@ -358,7 +393,7 @@ routing brief:
 | Analysis | Why now |
 |---|---|
 | **A1 / Industry engine, all-market then Richmond mode** | Already active; sets the theme engine interface; produces §4 |
-| **Q4 Daily-needs access** | POIs and infra are ingested and idle; Livability is the thinnest frame and this is its best market-native question |
+| **Q4 Daily-needs access** | Richmond POIs are ready and Infrastructure has a verified candidate handoff; define the narrow basket and access method, using physical context only if needed. |
 | **Q6 One metro?** | Character opener; WAC/RAC exist; differentiates the first post a reader sees |
 | **Regional role (partial)** | WAC/RAC only; OD stays deferred |
 | **Housing satellite → Q1** | Only if Position flags Livability divergence |

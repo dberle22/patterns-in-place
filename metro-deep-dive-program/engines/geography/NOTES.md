@@ -75,3 +75,36 @@ housing are areal interpolations of 2010 PL block counts through the Census
 block relationship. Coverage audits deliberately retain gaps, partial weights,
 and zero denominators. Metric-specific validation is still a downstream
 consumer responsibility.
+
+## Corridor Intelligence geometry follow-up (2026-09-08)
+
+Corridor Intelligence verified that the existing `geo.tracts_all_us` table
+has exactly one non-null geometry for each current Phase 7 tract in its first
+two markets: 340 for Jacksonville (`27260`) and 332 for Richmond (`40060`).
+The first Corridor build declares this table directly as
+`legacy_cartographic_tract_geometry_v1`, retaining its
+`unknown_legacy_vintage` status in run provenance. It does not infer that the
+table is a formal analytical geometry product.
+
+This is a usable current consumer surface, not a reason to block corridor
+work. The outstanding Geography follow-up is metadata promotion: materialize
+or register a vintaged, role-tagged tract geometry product in
+`mart_geography.geometry_catalog`, then migrate Corridor Intelligence through
+an unchanged-input compatibility check. Do not replace or relabel the legacy
+table in place.
+
+## Local-neighborhood mapping direction (2026-09-09)
+
+The program is pausing Corridor Intelligence as a canonical grouping engine.
+Its pilot candidates are not neighborhood boundaries and must not be promoted
+as one. The next geographic priority is a governed local-neighborhood overlay
+for analysis and orientation.
+
+This is a source-and-mapping task, not a request to algorithmically invent
+neighborhoods. Before implementation, identify the source, license, market
+coverage, vintage, identifier stability, geometry role, and update cadence.
+The product must retain source neighborhoods as supplied and provide explicit
+tract-to-neighborhood and ZCTA-to-neighborhood relationship edges (including
+partial and many-to-many overlaps where applicable). Tract Phase 7 types and
+ZCTA rollups remain separate taxonomies; a local neighborhood is a contextual
+overlay, not a replacement classification.

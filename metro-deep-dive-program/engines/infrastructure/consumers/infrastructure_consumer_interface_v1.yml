@@ -1,0 +1,32 @@
+# Read-only handoff contract. It exposes infrastructure evidence, not methods.
+interface_version: infrastructure_consumer_v1
+artifact: validated/osm_core_v1/infrastructure_feature.parquet
+required_fields:
+  - source_record_key
+  - feature_group
+  - feature_type
+  - feature_form
+  - geometry
+  - source_tags
+  - source_attributes
+  - analytical_crs
+  - geometry_status
+  - market_id
+  - market_boundary_vintage
+  - source_run_id
+  - record_status
+consumer_contracts:
+  q4_daily_needs_access:
+    status: no_infrastructure_input_requested
+    allowed_use: "May select named physical context after the Q4 method specifies it."
+    prohibited_use: "Does not define the daily-needs basket, access measure, or barriers."
+  q2_job_proximity:
+    status: ready_for_future_experiment
+    allowed_use: "Road geometry and preserved OSM bridge, tunnel, layer, oneway, maxspeed, lanes, and access tags may support a named experiment."
+    prohibited_use: "Does not supply graph topology, travel time, or routing."
+  catchment_barrier_corridor:
+    status: ready_for_future_experiment
+    allowed_use: "May spatially relate retained physical features to an analysis-owned method."
+    prohibited_use: "Does not label barriers, calculate catchments, or identify corridors."
+adoptions: []
+# Populate only after a real analysis consumes this interface unchanged.
