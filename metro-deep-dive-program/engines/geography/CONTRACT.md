@@ -1,7 +1,8 @@
 # Geography Engine Contract
 
-Status: Epics 2–7 implemented. Analytical geometry and consumer migrations
-remain intentionally on-demand.
+Status: Epics 2–7 implemented. The existing national tract, county, and CBSA
+cartographic products are approved as read-only display geometry; analytical
+geometry remains intentionally on-demand.
 
 ## Governing decisions
 
@@ -32,8 +33,10 @@ The inspected DuckDB baseline has the following nationwide current coverage:
 | `silver.xwalk_county_state` | 3,235 | Exact current county-to-state; TIGRIS 2023 |
 | `silver.xwalk_cbsa_county` | 1,915 | Exact-subset county-to-CBSA; OMB 2023 |
 | `silver.xwalk_zcta_*` | 291,494 | HUD-USPS ZIP allocations, vintage 2025 Q1; misnamed |
-| `geo.tracts_all_us` | 84,119 | Cartographic-boundary geometry, without a stored vintage/role |
-| `geo.counties`, `geo.cbsas`, `geo.states` | 3,235 / 935 / 56 | Cartographic-boundary geometry, without a stored vintage/role |
+| `geo.tracts_all_us` | 84,119 | Approved read-only tract display geometry; Census cartographic boundary source year 2024 |
+| `geo.counties` | 3,235 | Approved read-only county display geometry; Census cartographic boundary source year 2024 |
+| `geo.cbsas` | 935 | Approved read-only CBSA display geometry; Census cartographic boundary source year 2024 |
+| `geo.states` | 56 | Retained legacy cartographic geometry; not part of this approval |
 
 The baseline lacked `silver.block_registry`, `silver.dim_geo`, typed crosswalk
 tables, a `mart_geography` schema, Place/ZCTA geometry, and analytical
@@ -72,6 +75,26 @@ materialize one state at a time; DuckDB writes remain sequential.
 
 ## Geometry build policy
 
+### Approved current display products
+
+`geo.tracts_all_us`, `geo.counties`, and `geo.cbsas` are approved existing
+products for market-analysis consumers that need read-only map display geometry
+or a scoped geometry export. They were produced from the 2024 Census
+cartographic-boundary files through `tigris` with `cb = TRUE`. Their stable
+join keys are respectively `tract_geoid` (11-digit Census tract GEOID),
+`county_geoid` (5-digit county GEOID), and `cbsa_code` (5-digit CBSA code).
+Use those keys to join a metric or `mart_geography.identity_current`; do not
+join on names.
+
+The approval is deliberately narrow. These products are display geometry, not
+an analytical-boundary authority: do not use them for point containment,
+intersections or allocation weights, area or distance calculations, or to
+establish historical boundary equivalence. Their 2024 cartographic source
+vintage is recorded in `mart_geography.geometry_catalog`, while the tables
+themselves remain unchanged and read-only. A consumer that requires those
+operations needs a role-tagged `geo.<level>_analysis` product. No separate
+geometry materialization is required for the approved display use.
+
 `foundations/etl/geo/get_tiger_geos.R` is an on-demand cartographic display
 builder. It requires `GEOGRAPHY_TIGER_STATE_SCOPE`; a state-scoped run writes
 only `geo.tracts_<state>_display` with `geometry_role = 'display'` and a
@@ -91,8 +114,9 @@ creates full TIGER/Line analytical geometry.
   `land_area`; it carries `quality_flag`.
 - `harmonize()` restates from an older boundary vintage to the latest approved
   target and carries `change_type`.
-- `get_geometry()` discovers and returns a materialized `display` table only;
-  it does not silently fall back to legacy geometry or create analysis shapes.
+- `get_geometry()` discovers and returns an approved or materialized `display`
+  table only; it does not create analysis shapes or silently substitute an
+  unapproved legacy product.
 - `export_geometry()` produces scoped local artifacts only.
 
 No helper may imply that a rate, median, or index is additive.

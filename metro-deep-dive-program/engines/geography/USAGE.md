@@ -19,12 +19,22 @@ HUD-USPS `silver.xwalk_zip_*` allocation tables and must name an address basis.
 
 ## Geometry
 
-Geometry is optional and separate from identities. `geo.*_display` is created
-only by an on-demand scoped build; full TIGER/Line analysis geometry is not
-materialized. Discover available role-tagged tables through
+Geometry is optional and separate from identities. The approved current
+read-only display products are `geo.tracts_all_us` (`tract_geoid`),
+`geo.counties` (`county_geoid`), and `geo.cbsas` (`cbsa_code`). They use Census
+2024 cartographic-boundary source geometry and may be joined by those stable
+keys for market maps and scoped geometry exports. No separate materialization
+is needed for that display use.
+
+Discover approved and role-tagged display tables through
 `mart_geography.geometry_catalog`, then use `get_geometry()` or
-`export_geometry()` from `geography.py`. Legacy `geo.*` tables remain visible
-but are not governed by a stored role or boundary vintage.
+`export_geometry()` from `geography.py`. Filter the catalog to
+`consumer_status IN ('approved_read_only_display', 'materialized_display')`
+when a consumer needs an explicit eligibility check. These display products
+are not valid for point containment, overlays/intersections, allocation,
+area, distance, or historical-boundary analysis; request a role-tagged
+`geo.<level>_analysis` table for those operations. Other legacy `geo.*` tables
+remain unapproved unless the catalog says otherwise.
 
 ## QA boundary
 

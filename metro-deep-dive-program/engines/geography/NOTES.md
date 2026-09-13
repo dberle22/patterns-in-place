@@ -11,12 +11,14 @@ geometry, but it is not yet a governed geography engine.
 - `foundations/etl/gold/gold_dim_geo.sql` builds a compatible, current-only
   `gold.dim_geo`; its existing consumers include the Silver EJScreen/FEMA/IRS
   builds, Gold subject marts, the benchmarking engine, and visual-library SQL.
-- `foundations/etl/staging/get_tiger_geos.R` uses `tigris(..., cb = TRUE)`, so
-  the existing `geo` tables are cartographic boundaries—not full TIGER/Line
-  analytical shapes—and do not persist a boundary vintage or geometry role.
-- Current geometry consumers are primarily visual-library map samples and
-  render tests. Preserve legacy `geo.states`, `geo.counties`, `geo.cbsas`, and
-  `geo.tracts_all_us` until migration to role-specific tables is complete.
+- The former geometry build uses `tigris(..., cb = TRUE, year = 2024)`, so the
+  existing geometry is Census cartographic boundary—not full TIGER/Line
+  analytical geometry. `mart_geography.geometry_catalog` records that
+  provenance and approved display role for the tract, county, and CBSA
+  products without altering their physical tables.
+- `geo.tracts_all_us`, `geo.counties`, and `geo.cbsas` are approved read-only
+  display inputs for current market-analysis consumers. `geo.states` remains
+  visible but is outside this approval.
 
 ## Research conclusions
 
@@ -76,22 +78,15 @@ block relationship. Coverage audits deliberately retain gaps, partial weights,
 and zero denominators. Metric-specific validation is still a downstream
 consumer responsibility.
 
-## Corridor Intelligence geometry follow-up (2026-09-08)
+## Corridor Intelligence geometry follow-up (2026-09-08; superseded 2026-09-11)
 
-Corridor Intelligence verified that the existing `geo.tracts_all_us` table
-has exactly one non-null geometry for each current Phase 7 tract in its first
-two markets: 340 for Jacksonville (`27260`) and 332 for Richmond (`40060`).
-The first Corridor build declares this table directly as
-`legacy_cartographic_tract_geometry_v1`, retaining its
-`unknown_legacy_vintage` status in run provenance. It does not infer that the
-table is a formal analytical geometry product.
-
-This is a usable current consumer surface, not a reason to block corridor
-work. The outstanding Geography follow-up is metadata promotion: materialize
-or register a vintaged, role-tagged tract geometry product in
-`mart_geography.geometry_catalog`, then migrate Corridor Intelligence through
-an unchanged-input compatibility check. Do not replace or relabel the legacy
-table in place.
+Corridor Intelligence verified that `geo.tracts_all_us` has exactly one
+non-null geometry for each current Phase 7 tract in its first two markets: 340
+for Jacksonville (`27260`) and 332 for Richmond (`40060`). The catalog now
+approves this source as `approved_read_only_display` with the 2024 Census
+cartographic-boundary provenance and `tract_geoid` join key. Corridor and
+other market-analysis consumers may use it directly for map display and scoped
+exports; that approval does not make it analytical geometry.
 
 ## Local-neighborhood mapping direction (2026-09-09)
 

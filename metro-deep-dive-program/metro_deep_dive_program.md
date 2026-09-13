@@ -2,7 +2,7 @@
 
 **Status:** Program structure locked; Position implementation and engine review in progress
 **Drafted:** 2026-08-22
-**Updated:** 2026-09-08
+**Updated:** 2026-09-11
 **Sits above:** `metro_deep_dive_build_approach.md`, `metro_deep_dive_template_guidance.md`, `analysis_program.md`, `deep_dive_question_bank.md`, `RESEARCH_TOOL_ROADMAP.md`, `zone_methodology_notes.md`
 **Does not replace:** any of the above. This document says how they relate and what gets built in what order.
 
@@ -276,7 +276,7 @@ Built only on call. Each gets a folder under `engines/` with a notebook, `NOTES.
 | **Benchmarking** — one function: metric at grain → national / division / state / peer-set percentile and rank | Profile, Fingerprint, theme engines | Implemented in `engines/benchmarking/`, `mart_benchmarking`, and `foundations/benchmarking_py`; current national/geographic/peer-set comparisons are available. |
 | **Intelligence Framework** — scores, clusters, similarity, trajectory, zones | All Position analyses; later Corridor Intelligence | Implemented promoted marts and canonical contract in `engines/intelligence_framework/`; similarity/universe review remains an issue-publication gate. |
 | **Theme engine interface** — inputs, outputs, two run modes, one lock-once asset per theme | A1 / Industry | Industry D1/D3/D6 + A1 notebook |
-| **POI** — point-source ingest, identity and provenance, explicit taxonomy mappings, geographic assignment, and QA | Q4, Corridor Intelligence, Internal Structure activity review, and later access analyses | Implemented through Epic 5 in `engines/poi/`; Richmond Overture is acquired, normalized, classified, and assigned to tract/county. Postal ZIP is source-address evidence; ZCTA geometry remains a Geography dependency. |
+| **POI** — point-source ingest, identity and provenance, explicit taxonomy mappings, geographic assignment, and QA | Q4, Internal Structure activity review, and later access analyses | Implemented through Epic 5 in `engines/poi/`; Richmond and Jacksonville Overture are acquired, normalized, classified, and assigned to tract/county. A governed two-level taxonomy (22 categories, 117 sub-categories) is applied from one versioned seed and serves 96%+ of places per market; source detail is an optional third level. Marts key on `cbsa_code`, so markets accumulate rather than overwrite. Postal ZIP is source-address evidence; ZCTA geometry remains a Geography dependency. |
 | **Infrastructure** — governed roads, rail, and river/canal geometry with raw OSM evidence and QA | Corridor Intelligence, Q4 where needed, Q2, and Internal Structure's physical skeleton | Implemented through Epic 5 in `engines/infrastructure/` for Richmond and Jacksonville: reproducible source runs, narrow mappings, geometry QA, and a verified read-only consumer handoff. Promotion is gated on analytical CBSA geometry and two unchanged consumer uses. |
 | **Corridor Intelligence** — prototype within-market structural grouping | Optional Internal Structure corridor exploration | Paused after Jacksonville/Richmond calibration. Preserve artifacts for method reference; do not publish, promote, or make it a consumer dependency. |
 | **Time series** — metric-aware trends, start/end percentile paths, national momentum and salience, tiered trajectory labels, turn signals | Position / Trajectory, Act 3, Data Takes, forward-analog slopes, Candidate Scan | Implemented in `engines/time_series/` and materialized in `mart_intelligence`. Current panel has 50 direct recurring KPIs; derived-change review and contract freeze remain. |

@@ -5,157 +5,148 @@ app = marimo.App(width="medium")
 
 
 @app.cell
-def _():
-    # This notebook is read-only by design. It profiles source labels and
-    # review queues; production rules change only after a human decision.
+def imports():
+    import os
     from pathlib import Path
 
     import duckdb
     import marimo as mo
-    import pandas as pd
-    import yaml
-
-    return Path, duckdb, mo, pd, yaml
+    return Path, duckdb, mo, os
 
 
 @app.cell
-def _(Path):
-    engine_dir = Path(__file__).resolve().parents[1]
-    output_root = engine_dir / "outputs"
-    richmond_runs = sorted((output_root / "richmond_va").glob("*/classified/poi_classified_place.parquet"))
-    if not richmond_runs:
-        raise FileNotFoundError("Run POI acquisition, normalization, and classification for Richmond first.")
-    classified_path = richmond_runs[-1]
-    return (classified_path,)
+def resolve_database(Path, os):
+    # The notebook consumes managed DuckDB serving tables, not local artifacts.
+    root = Path(__file__).resolve().parents[4]
+    configured = os.environ.get("DB_PATH", "").strip()
+    if configured:
+        db_path = configured
+    else:
+        db_path = next(
+            line.split("=", 1)[1].strip().strip('"')
+            for line in (root / ".Renviron").read_text().splitlines()
+            if line.startswith("DB_PATH=")
+        )
+    return (db_path,)
 
 
 @app.cell
-def _(mo):
+def intro(mo):
     mo.md("""
-    # POI Taxonomy Exploration
+    # POI Taxonomy Review
 
-    This is a review surface for expanding governed POI categories safely. It
-    profiles Overture's preserved labels and names; it does not write mapping
-    rules, change classified records, or define Q4's `daily_needs` basket.
-    Promote a value only after inspecting its count and examples, then add an
-    exact rule in a new versioned YAML registry.
+    Two tables. **Rules** is the taxonomy as written in `overture_taxonomy.yml`,
+    which encodes the v1 category and sub-category documents and is read here
+    straight from that file — the same file the classifier applies, so the two
+    cannot drift. **Counts** is what those rules assign in the published market.
+
+    A rule with zero places in this market is not a problem: the market may
+    genuinely lack that tag. A rule with zero places in *every* market is a
+    mistake, and the validator reports it separately.
     """)
     return
 
 
 @app.cell
-def _(Path, pd, yaml):
-    # The registry is shown in the notebook so reviewers can see the current
-    # governed taxonomy before proposing additions from the source profile.
-    registry_path = Path(__file__).resolve().parent / "q4_overture_v2.yml"
-    registry = yaml.safe_load(registry_path.read_text())
-    current_taxonomy = pd.DataFrame(registry["rules"])[
-        ["governed_category", "source_taxonomy_primary", "rule_id"]
-    ].sort_values(["governed_category", "source_taxonomy_primary"])
-    current_taxonomy
-    return current_taxonomy, registry
+def load_rules(Path):
+    # The YAML seed is the contract. It is read directly here rather than from a
+    # published copy, so the notebook can never show rules that have drifted
+    # from what the classifier actually applies.
+    import pandas as pd
+    import yaml
+
+    seed_path = Path(__file__).parent / "overture_taxonomy.yml"
+    seed = yaml.safe_load(seed_path.read_text(encoding="utf-8"))
+
+    rows = []
+    for rule in seed["rules"]:
+        rows.append({
+            "category": rule["category"],
+            "sub_category": rule["sub_category"],
+            "source_category_basic": rule["basic"],
+            "split_leaf": None,
+            "review": rule.get("review"),
+        })
+        for leaf, target in (rule.get("split") or {}).items():
+            rows.append({
+                "category": target.get("category", rule["category"]),
+                "sub_category": target.get("sub_category", rule["sub_category"]),
+                "source_category_basic": rule["basic"],
+                "split_leaf": leaf,
+                "review": "split",
+            })
+    rules = pd.DataFrame(rows).sort_values(
+        ["category", "sub_category", "source_category_basic", "split_leaf"],
+        na_position="first",
+    ).reset_index(drop=True)
+    return rules, seed
 
 
 @app.cell
-def _(classified_path, duckdb):
-    # One read-only connection keeps the source record, mapping result, and
-    # taxonomy labels visible together without copying data into a notebook.
-    def profile(sql):
-        with duckdb.connect() as con:
-            return con.execute(sql, [str(classified_path)]).fetchdf()
-
-    return (profile,)
-
-
-@app.cell
-def _(profile):
-    coverage = profile("""
-        SELECT mapping_status, count(*) AS places
-        FROM read_parquet(?) GROUP BY 1 ORDER BY places DESC
-    """)
-    coverage
-    return (coverage,)
-
-
-@app.cell
-def _(profile):
-    # This is the current taxonomy in use on the run, organized by Overture's
-    # broad basic-category family and then the governed category it supports.
-    current_taxonomy_coverage = profile("""
-        SELECT source_category_basic, governed_category, count(*) AS places,
-          count(DISTINCT source_taxonomy_primary) AS source_labels
-        FROM read_parquet(?)
-        WHERE mapping_status = 'mapped'
-        GROUP BY 1, 2 ORDER BY source_category_basic, places DESC
-    """)
-    current_taxonomy_coverage
-    return (current_taxonomy_coverage,)
+def load_counts(db_path, duckdb):
+    with duckdb.connect(db_path, read_only=True) as con:
+        counts = con.execute("""
+            SELECT category, sub_category,
+                   count(*) AS places,
+                   count(taxonomy_detail) AS with_detail
+            FROM mart_poi.poi_classified_place
+            WHERE mapping_status = 'mapped'
+            GROUP BY ALL
+            ORDER BY category, places DESC
+        """).fetchdf()
+        by_category = con.execute("""
+            SELECT category,
+                   count(DISTINCT sub_category) AS sub_categories,
+                   count(*) AS places,
+                   round(100.0 * count(taxonomy_detail) / count(*), 1) AS detail_pct
+            FROM mart_poi.poi_classified_place
+            WHERE mapping_status = 'mapped'
+            GROUP BY ALL
+            ORDER BY places DESC
+        """).fetchdf()
+        unassigned = con.execute("""
+            SELECT mapping_evidence, count(*) AS places
+            FROM mart_poi.poi_classified_place
+            WHERE mapping_status = 'unmapped'
+            GROUP BY ALL
+            ORDER BY places DESC
+        """).fetchdf()
+    return by_category, counts, unassigned
 
 
 @app.cell
-def _(profile):
-    # Start with high-volume unmapped values: these are the easiest candidates
-    # for an exact, evidence-backed rule or an intentional exclusion decision.
-    unmapped_categories = profile("""
-        SELECT source_taxonomy_primary, source_category_basic, count(*) AS places,
-          count(DISTINCT source_name) AS distinct_names
-        FROM read_parquet(?)
-        WHERE mapping_status = 'unmapped'
-        GROUP BY 1, 2 ORDER BY places DESC LIMIT 100
-    """)
-    unmapped_categories
-    return (unmapped_categories,)
+def show_rules(mo, rules):
+    mo.vstack([
+        mo.md(f"## Rules — {len(rules):,} rows"),
+        mo.md(
+            "One row per rule. `split_leaf` is set only where the v1 docs marked "
+            "a row `[T]`, meaning the sub-category is decided by "
+            "`taxonomy.primary` rather than by `basic_category` alone. `review` "
+            "flags a rule not covered by either v1 document."
+        ),
+        mo.ui.table(rules, pagination=True, page_size=25),
+    ])
+    return
 
 
 @app.cell
-def _(profile):
-    # Basic categories are the review navigation layer: they group precise
-    # taxonomy.primary values without weakening the exact production match.
-    unmapped_basic_categories = profile("""
-        SELECT source_category_basic, count(*) AS places,
-          count(DISTINCT source_taxonomy_primary) AS taxonomy_labels
-        FROM read_parquet(?)
-        WHERE mapping_status = 'unmapped'
-        GROUP BY 1 ORDER BY places DESC LIMIT 100
-    """)
-    unmapped_basic_categories
-    return (unmapped_basic_categories,)
-
-
-@app.cell
-def _(mo, unmapped_categories):
-    options = {f"{row.source_taxonomy_primary or '(missing taxonomy)'} — {row.places:,}": row.source_taxonomy_primary for row in unmapped_categories.itertuples(index=False)}
-    category_selector = mo.ui.dropdown(options=options, label="Inspect an unmapped taxonomy.primary value", searchable=True, full_width=True)
-    category_selector
-    return (category_selector,)
-
-
-@app.cell
-def _(category_selector, classified_path, duckdb):
-    selected = category_selector.value
-    with duckdb.connect() as con:
-        examples = con.execute("""
-            SELECT source_name, source_address, source_postal_zip,
-              source_category_primary, source_category_basic,
-              source_taxonomy_primary, source_taxonomy_hierarchy
-            FROM read_parquet(?)
-            WHERE source_taxonomy_primary IS NOT DISTINCT FROM ?
-            ORDER BY source_name LIMIT 50
-        """, [str(classified_path), selected]).fetchdf()
-    examples
-    return examples, selected
-
-
-@app.cell
-def _(profile):
-    # Basic-category rollups reveal whether a precise source label has a broad
-    # family that warrants manual review before any many-to-one mapping choice.
-    basic_rollups = profile("""
-        SELECT source_category_basic, mapping_status, count(*) AS places
-        FROM read_parquet(?) GROUP BY 1, 2 ORDER BY places DESC LIMIT 100
-    """)
-    basic_rollups
-    return (basic_rollups,)
+def show_counts(by_category, counts, mo, unassigned):
+    mo.vstack([
+        mo.md("## Counts — places assigned in this market"),
+        mo.md(
+            "`detail_pct` is level 3 coverage: the share of places whose source "
+            "leaf adds something beyond the browsable node. Level 3 is optional "
+            "and analysis-specific, so a low share here is a fact about the "
+            "source, not a defect."
+        ),
+        mo.md("### By category"),
+        mo.ui.table(by_category, pagination=True, page_size=25),
+        mo.md("### By sub-category"),
+        mo.ui.table(counts, pagination=True, page_size=25),
+        mo.md("### Unmapped"),
+        mo.ui.table(unassigned),
+    ])
+    return
 
 
 if __name__ == "__main__":

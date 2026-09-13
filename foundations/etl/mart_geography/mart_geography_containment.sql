@@ -98,17 +98,22 @@ select audit_name, boundary_vintage, source_unit_count,
        zero_denominator_source_count, max_weight_sum_deviation
 from silver.geography_allocation_audit;
 
--- Discovery only: legacy tables have no stored role/vintage and remain visible
--- so consumers can migrate deliberately. Role-tagged display tables appear
--- only after the on-demand geometry builder has materialized them.
+-- Geometry discovery separates the approved, seeded display products from
+-- future role-tagged materializations. The three approved products were built
+-- by the former Census cartographic-boundary `tigris(..., cb = TRUE, year =
+-- 2024)` job and are intentionally retained as read-only display inputs; this
+-- catalog records their provenance without rewriting their existing rows.
 create or replace view mart_geography.geometry_catalog as
 select table_name,
        regexp_extract(table_name, '^tracts_([a-z]{2})_display$', 1) as state_scope,
        case
-         when table_name like '%_display' then 'display'
+         when table_name in ('tracts_all_us', 'counties', 'cbsas')
+           or table_name like '%_display' then 'display'
          else 'legacy_unclassified'
        end as geometry_role,
        case
+         when table_name in ('tracts_all_us', 'counties', 'cbsas')
+           then '2024_census_cartographic_boundary'
          when table_name like '%_display' then 'recorded_in_table'
          else 'unknown_legacy_vintage'
        end as boundary_vintage_status,
@@ -117,7 +122,32 @@ select table_name,
          when table_name like 'states%' then 'state'
          when table_name like 'counties%' then 'county'
          when table_name like 'cbsas%' then 'cbsa'
-       end as geo_level
+       end as geo_level,
+       case
+         when table_name = 'tracts_all_us' then 'tract_geoid'
+         when table_name = 'counties' then 'county_geoid'
+         when table_name = 'cbsas' then 'cbsa_code'
+         else null
+       end as stable_join_key,
+       case
+         when table_name in ('tracts_all_us', 'counties', 'cbsas')
+           then 'Census cartographic boundary via tigris; source year 2024'
+         when table_name like '%_display' then 'Recorded in table metadata'
+         else 'Unknown legacy source'
+       end as source_vintage,
+       case
+         when table_name in ('tracts_all_us', 'counties', 'cbsas')
+           then 'approved_read_only_display'
+         when table_name like '%_display' then 'materialized_display'
+         else 'legacy_unclassified'
+       end as consumer_status,
+       case
+         when table_name in ('tracts_all_us', 'counties', 'cbsas') then
+           'Map display and geometry export only; not analytical geometry, not a boundary-vintage authority, and not valid for spatial allocation, containment, area, or distance calculations.'
+         when table_name like '%_display' then
+           'Display only; use a role-tagged analytical product for spatial analysis.'
+         else 'Not approved for governed consumer use until provenance is recorded.'
+       end as limitations
 from information_schema.tables
 where table_schema = 'geo'
   and (

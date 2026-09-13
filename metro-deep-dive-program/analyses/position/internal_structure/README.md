@@ -6,8 +6,8 @@ Purpose:
 - show how counties, Census Places, tracts, ZCTAs, and Phase 7 zones relate
 - examine POIs, employment centers, and major Infrastructure within that
   geography
-- retain corridors and districts as one useful section rather than the
-  organizing frame for the analysis
+- keep this analysis focused on governed geography, tract clusters, activity,
+  and infrastructure; the deprecated Corridor Intelligence engine is excluded
 
 See [POSITION_INTERNAL_STRUCTURE_SPEC.md](POSITION_INTERNAL_STRUCTURE_SPEC.md)
 for the analysis boundary and

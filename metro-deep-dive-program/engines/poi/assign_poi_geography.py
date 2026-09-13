@@ -18,6 +18,9 @@ def main() -> None:
     with duckdb.connect(str(database_path(args.db_path)), read_only=True) as con:
       configure_extensions(con,'local.parquet')
       # Limit both geometry candidates to the governed CBSA before spatial joins.
+      # Every assignment carries its CBSA so markets can be loaded and filtered
+      # independently rather than overwriting one shared table.
+      cbsa=sql_literal(str(run['market_id']))
       q=f"""WITH p AS (SELECT source_record_key, longitude, latitude, source_address, source_postal_zip FROM read_parquet({sql_literal(str(places))})),
       point AS (SELECT *, ST_Point(longitude, latitude) AS geom FROM p),
       counties AS (SELECT c.county_geoid, c.geom FROM geo.counties c JOIN mart_geography.rollup_county_to_cbsa x ON c.county_geoid=x.county_geoid WHERE x.cbsa_code={sql_literal(str(run['market_id']))}),
@@ -27,7 +30,7 @@ def main() -> None:
       county_hits AS (SELECT p.source_record_key, c.county_geoid, row_number() OVER (PARTITION BY p.source_record_key ORDER BY c.county_geoid) AS rn FROM point p LEFT JOIN counties c ON ST_Intersects(p.geom,c.geom)),
       county_assign AS (SELECT source_record_key, 'county' geo_level, county_geoid geo_id, 2023 boundary_vintage, 'point_in_polygon' assignment_method, CASE WHEN county_geoid IS NULL THEN 'unassigned' ELSE 'assigned' END assignment_status FROM county_hits WHERE rn=1),
       zip_assign AS (SELECT source_record_key, 'zip' geo_level, coalesce(nullif(trim(source_postal_zip), ''), nullif(regexp_extract(source_address, '([0-9]{{5}})(?:-[0-9]{{4}})?', 1), '')) geo_id, NULL::INTEGER boundary_vintage, 'source_address_postal_zip' assignment_method, CASE WHEN coalesce(nullif(trim(source_postal_zip), ''), nullif(regexp_extract(source_address, '([0-9]{{5}})(?:-[0-9]{{4}})?', 1), '')) IS NOT NULL THEN 'address_supplied' ELSE 'unassigned' END assignment_status FROM p)
-      SELECT * FROM tract_assign UNION ALL SELECT * FROM county_assign UNION ALL SELECT * FROM zip_assign"""
+      SELECT {cbsa} AS cbsa_code, * FROM (SELECT * FROM tract_assign UNION ALL SELECT * FROM county_assign UNION ALL SELECT * FROM zip_assign)"""
       con.execute(f"COPY ({q}) TO {sql_literal(str(destination))} (FORMAT PARQUET, COMPRESSION ZSTD)")
       summary=con.execute(f"SELECT geo_level, assignment_status, count(*) FROM ({q}) GROUP BY 1,2 ORDER BY 1,2").fetchall()
     (out/'assignment_manifest.json').write_text(json.dumps({'source_run_id':run['source_run_id'],'rows':[dict(zip(['geo_level','assignment_status','count'],r)) for r in summary],'zip_note':'Postal ZIP comes from the source address; it is not a ZCTA point-in-polygon assignment.'},indent=2)+'\n')

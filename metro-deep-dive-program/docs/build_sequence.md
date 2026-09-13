@@ -39,12 +39,19 @@ where metric evidence can be inspected in context.
 
 ### Newly unblocked infrastructure work
 
-The engine is no longer a source-ingestion blocker. Build the first Q4
-daily-needs notebook from the POI handoff and explicitly decide whether it
-needs any physical infrastructure context. Separately, a first Q2
-straight-line job-proximity notebook can use existing job centers and tract
-prices without routing. Do not open routing, barrier, catchment, or corridor
-work merely to exercise the engine. Geography's next supporting slice is an
+The engine is no longer a source-ingestion blocker. Build the first Q2
+straight-line job-proximity notebook from existing job centers and tract prices,
+without routing — that notebook also establishes the shared access method. The Q4
+daily-needs notebook then builds on it from the POI handoff, deciding explicitly
+whether it needs any physical infrastructure context.
+
+Note the ordering change: Q4 was previously listed first here, but Q4 now re-runs
+Q2's access method with POI clusters as the center input, so Q2 comes first. Q4's
+own work — the daily-needs basket and category coverage — can be designed in
+parallel.
+
+Do not open routing, barrier, catchment, or corridor work merely to exercise the
+engine. Geography's next supporting slice is an
 analytical CBSA boundary; it is required before the validated infrastructure
 candidates become authoritative consumer layers or are considered for
 promotion.
@@ -84,22 +91,45 @@ questions remain distinct objects.
 Position routing decides which of these runs first for a market. The order
 below groups analyses so each one leaves a useful component for the next.
 
+**This order is set by `analyses/explanation/EXPLANATION_ANALYSES_PLAN.md`**,
+which is authoritative for the Explanation family. Three constraints from that
+plan shape the sequence below:
+
+- **Q2 defines the shared access method** — the operational 15-minute-city
+  definition, including what a job center is and how reach is measured. Q3, Q4,
+  and Q6 re-run that method with different center inputs, so Q2 precedes all
+  three. This is a deliberate exception to the promotion rule: five consumers are
+  known before any is written, so the method is specified once rather than
+  discovered on the third notebook.
+- **Q5 is merged into Q2.** They shared inputs and outputs and differed only in
+  dependent variable (housing units versus housing cost). One analysis, two
+  dependent variables.
+- **Corridor work depends on no engine.** Corridor Intelligence is a paused
+  prototype; corridors now emerge from the Q2/Q3/Q4 access work, and the corridor
+  read is a closing synthesis of those.
+
 | Order | Analysis notebook | Reuses | New or widened component, if required | First outputs to inspect |
 |---|---|---|---|---|
-| E1 | Regional role | Benchmarking, WAC/RAC, existing geo labels | Regional comparison method; minimal regional rollups | Regional comparison table, inflow/outflow and market-role views |
-| E2 | Q6 One metro? | Regional role components, WAC/RAC | Integration/polycentricity method | County integration table, sub-center comparison, market-structure map |
-| E3 | Q4 Daily-needs access | Ready Richmond POI handoff; validated Infrastructure candidate only where the method names physical context | Define the narrow daily-needs basket and access method; do not infer barrier or network rules from the engine | Amenity inventory, tract access distribution, Richmond access map |
-| E4 | Q1 Supply or demand | Existing housing inputs, Benchmarking | Housing structure/demand comparison method and reusable housing cut | Supply/demand quadrant, submarket comparison, diagnostic table |
-| E5 | Q3 Where growth lands | Existing tract population/housing histories | Tract vintage handling and growth-change method | Infill/greenfield classification table and tract map |
-| E6 | Q2 Job-proximity gradient | Existing job centers and tract prices; validated Infrastructure candidate for a named physical-context experiment | Start with a straight-line distance-based method; routing stays optional and is not an engine prerequisite | Price-distance curve, tract residuals, job-center map |
-| E7 | Q5 Afford to live near jobs | Q2, housing and labor inputs | Jobs-housing affordability method; close OEWS gap if still required | Residence/workplace mismatch table and affordability map |
-| E8 | Corridor exploration | Internal Structure plus Q4, Q2, or Trajectory evidence when routed | Investigate a named or observed corridor question; do not create a canonical boundary | Evidence map, comparison, and issue leads where warranted |
-| E9 | Parcel watch | Selected corridor or district, existing ROF parcel logic | MDD-specific screening only after a structural candidate is selected | Parcel candidate table and selected-area map |
-| E10 | Catchment | Existing Place Intelligence catchment, apportionment, and barrier method | No promotion work until an MDD analysis actually reuses it unchanged | Weighted catchment map and tract contribution table |
+| E1 | Catchment | Existing Place Intelligence catchment, apportionment, and barrier method | Port the property-analyzer method: geocoding, Euclidean rings, tract-ring weight tables | Weighted catchment map and tract contribution table |
+| E2 | Q1 Supply or demand | Existing housing inputs, Benchmarking | Housing structure/demand comparison method and reusable housing cut; an operational definition of `inexpensive` as a cost-to-wage function | Supply/demand quadrant, overheating index, submarket comparison, diagnostic table |
+| E3 | Q2 Job proximity, housing, and affordability | Existing job centers and tract prices, tract income, 2025 OEWS; validated Infrastructure candidate for a named physical-context experiment | **The shared access spine:** reusable job-center definition and the 15-minute operational definition. Straight-line first; routing stays optional and is not an engine prerequisite | Price-distance curve, regression equation, tract residuals, job-center map, affordability mismatch |
+| E4 | Regional role | Benchmarking, WAC/RAC, existing geo labels | Region-definition lenses, then regional comparison method and minimal regional rollups | Region lens comparison, regional comparison table, inflow/outflow and market-role views |
+| E5 | Q4 Daily-needs access | E3 access method; ready Richmond/Jacksonville POI handoff; validated Infrastructure candidate only where the method names physical context | Define the narrow daily-needs basket; apply the E3 access method with POI clusters as the center input | Amenity inventory, tract access distribution, Richmond access map |
+| E6 | Q3 Where growth lands | E3 access surfaces, existing tract population/housing histories | Tract vintage handling, growth-change method, and an operational infill/greenfield standard | Infill/greenfield classification table and tract map |
+| E7 | Q6 One metro? | E3 access method, Regional role components, WAC/RAC | Integration/polycentricity method; apply the E3 method with anchor cities as the center input | County integration table, anchor-city inventory, sub-center comparison, market-structure map |
+| E8 | Corridor opportunity read | E3, E5, E6 access and corridor-shaped outputs; Internal Structure; Trajectory where routed | Synthesis across evidence families; do not create a canonical boundary or a universal investment score | Evidence map, corridor comparison, and issue leads where warranted |
+| E9 | Parcel watch | Proposed parcel engine; existing ROF parcel logic; Catchment for point context | Gated on the parcel engine, **not** on a corridor. Analysis owns the underuse heuristic and ranking only | Parcel candidate table and selected-area map |
 
 For Richmond, E1–E3 are the current first-wave candidates, subject to the
-Position notebooks. E8 and E9 stay late because they depend on several earlier
-analyses rather than on one large up-front spatial build.
+Position notebooks. E8 stays late because it summarizes several earlier analyses.
+E9 stays late because it depends on the parcel engine; that track is independent
+of E8 and can run in parallel.
+
+**Parcel engine (proposed, not scaffolded).** E9 assumes an engine that owns
+county assessor acquisition, per-county adapters, scraped listing collection, and
+the normalized parcel schema. Free county/state sources are the default; a
+low-cost national service such as Regrid stays a short exploratory task during
+engine construction. See Section 12 of the Explanation plan.
 
 ### 3.3 Thematic
 
@@ -114,10 +144,10 @@ setup cost.
 | T3 | A10 Polarization | A1 industry surfaces | Wage-distribution inputs and method | Sector wage distributions and metro comparison |
 | T4 | Housing satellite | Existing housing inputs, Benchmarking | Reusable housing component dataset | National housing diagnostic set and market scorecard |
 | T5 | A2 Building lowers prices? | Housing satellite, Q1 method | Supply-response panel method | Permitting/price relationship and market cases |
-| T6 | A7 Who is squeezed? | Housing satellite, Q1/Q5 inputs | Burden-versus-income comparison | National squeeze typology and Richmond read |
+| T6 | A7 Who is squeezed? | Housing satellite, Q1 and Q2 affordability inputs | Burden-versus-income comparison | National squeeze typology and Richmond read |
 | T7 | A9 Converging or diverging? | Time-Series engine, Trajectory, Peers | Long-panel dispersion method | National convergence/divergence paths and peer cases |
 | T8 | A4 Remote work rewired? | WAC/RAC, industry and housing surfaces | WFH/work-geography panel | National WFH shifts and selected market structure views |
-| T9 | A5 How many downtowns? | Q6 integration/polycentricity, zone context | Downtown/sub-center typology | National center-count comparison and market maps |
+| T9 | A5 How many downtowns? | Q6 integration/polycentricity and the Q2 access method it runs on, zone context | Downtown/sub-center typology; reuse the shared 15-minute definition rather than growing a second one | National center-count comparison and market maps |
 | T10 | A3 Moving toward harm? | Q3 growth-change, existing hazard inputs | Hazard-growth comparison method | National hazard/growth quadrants and market maps |
 | T11 | A8 Geography of life expectancy | Health inputs, Q4 access context | Health-context comparison method | National health distribution and within-market context |
 | T12 | CBSA similarity study | Intelligence Framework, Peers | Methods review rather than a new data engine | Similarity distributions, sensitivity tables, peer-network examples |
@@ -150,12 +180,17 @@ Trajectory notebook is the next review point before the contract is frozen.
 Not globally ordered as standalone work (correctly Partial/Not-built, each is
 activated by a routed vertical slice): Theme engine interface, Industry
 theme datasets and crosswalks, POI Engine, Infrastructure Engine, daily-needs
-access method, Housing structure/demand method, Housing component datasets,
+basket, Housing structure/demand method, Housing component datasets,
 Standard thematic build method, Q6 polycentricity method, Tract growth-change
-method, Job-center proximity method, local-neighborhood mapping, Parcel
-screening logic, catchment/apportionment/barrier
-method, Zone model outputs, Regional comparison and role method, Shared
-benchmark and comparison datasets, Market-wide notebook config.
+method, local-neighborhood mapping, Parcel screening logic,
+catchment/apportionment/barrier method, Zone model outputs, Regional comparison
+and role method, Shared benchmark and comparison datasets, Market-wide notebook
+config.
+
+**One exception:** the job-center and 15-minute access method is *not* activated
+by a routed slice. It has five known consumers (Q2, Q3, Q4, Q6, Catchment) before
+any is written, so it is specified deliberately in Q2/E3 ahead of them rather
+than emerging from whichever slice happens to run first.
 
 ## All components (§6, full list)
 
@@ -182,11 +217,12 @@ enabling input, not itself the analytical product.
 | Standard thematic build method | method | High | Partial | Reusable workflow for A1–A10 and future themes | Act 2 Theme analysis slot → Thematic: A1–A10 (all) |
 | Q6 polycentricity and integration method | method | Medium | Partial | One Metro, market-structure interpretation, internal-center logic | Act 2 Social fabric analysis, Built environment analysis → Explanation: Q6; Thematic: A5 |
 | Tract growth-change method | method | Medium | Partial | Q3, growth maps, infill-vs-greenfield views | Act 2 Explanation question slot (Q3) → Explanation: Q3 |
-| Job-center proximity method | method | Medium | Partial | Q2, optional corridor-exploration context, internal opportunity comparisons | Act 2 job-proximity analysis → Explanation: Q2 |
+| Job-center proximity and 15-minute access method | method | **High** | Partial | **The shared access spine.** Defined once in Q2, then re-run by Q3, Q4, Q6, and Catchment with different center inputs; also feeds the corridor read and internal opportunity comparisons | Act 2 job-proximity analysis → Explanation: Q2, then Q3/Q4/Q6 |
 | Infrastructure Engine | engine | Medium | Ready for analysis integration; promotion gated | Richmond/Jacksonville validated core roads, rail, river/canal geometry with raw tags, QA, and a versioned read-only handoff. Internal Structure can show the physical skeleton and use it in optional corridor exploration. | Act 2 Built environment analysis and Internal Structure physical review → Explanation: Q2, Q4; Position: Internal structure |
 | Local-neighborhood mapping | geography product | Medium | Discovery not started | Sourced, vintaged neighborhood identifiers, geometry where supplied, and explicit tract/ZCTA relationships | Internal Structure orientation and neighborhood context → Position: Internal structure |
 | Corridor Intelligence prototype | prototype | Low | Paused after calibration | Preserved Jacksonville/Richmond method artifacts; no canonical mart or consumer contract | Method reference only; future work proceeds as analysis-local corridor exploration |
-| Parcel screening logic | method | Medium | Partial | Parcel Watch and parcel-level follow-through inside selected corridors or districts | Act 4 Parcel screening logic → Explanation: Parcel watch |
+| Parcel screening logic | method | Medium | Partial | Parcel Watch and parcel-level follow-through inside any selected area of interest. The screening heuristic stays with the analysis; acquisition and normalization belong to the proposed parcel engine | Act 4 Parcel screening logic → Explanation: Parcel watch |
+| Parcel engine | engine | Medium | **Proposed, not scaffolded** | County assessor acquisition, per-county adapters, scraped listings watch list, and the normalized parcel schema. Free county/state sources by default; a low-cost national service stays a short exploratory task | Gates Explanation: Parcel watch |
 | Catchment, apportionment, and barrier method | method | Medium | Exists | Catchment maps, tract weighting, barrier-aware variants, site-level supporting views | (none in §2) → Explanation: Catchment |
 | Market-wide notebook config | infra | Low | Not built | Shared market constants and lock-once notebook inputs | (none in §2) → (cross-cutting, no single analysis row) |
 

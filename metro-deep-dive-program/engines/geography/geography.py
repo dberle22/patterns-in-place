@@ -33,7 +33,7 @@ def temporal_edges(con, basis: AllocationBasis):
 
 
 def geometry_catalog(con, role: GeometryRole = "display"):
-    """Discover materialized role-tagged geometry without treating legacy shapes as governed."""
+    """Discover approved or materialized display geometry from the catalog."""
     return con.execute(
         "SELECT * FROM mart_geography.geometry_catalog WHERE geometry_role = ?",
         [role],
@@ -41,17 +41,18 @@ def geometry_catalog(con, role: GeometryRole = "display"):
 
 
 def get_geometry(con, table_name: str):
-    """Return an explicitly selected governed display geometry relation.
+    """Return an explicitly selected approved or governed display relation.
 
-    The catalog check makes table selection data-driven but prevents arbitrary SQL
-    identifiers. No geometry is implied when the on-demand builder has not run.
+    The catalog check makes table selection data-driven but prevents arbitrary
+    SQL identifiers. Approved seeded products and role-tagged materializations
+    are eligible; analysis geometry is never implied.
     """
     allowed = con.execute(
         "SELECT table_name FROM mart_geography.geometry_catalog WHERE geometry_role = 'display'"
     ).fetchall()
     allowed_names = {row[0] for row in allowed}
     if table_name not in allowed_names:
-        raise ValueError(f"{table_name!r} is not a materialized governed display table")
+        raise ValueError(f"{table_name!r} is not an approved display geometry table")
 
     return con.execute(f"SELECT * FROM geo.{table_name}")
 

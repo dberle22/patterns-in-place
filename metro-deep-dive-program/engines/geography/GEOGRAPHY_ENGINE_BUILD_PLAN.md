@@ -268,9 +268,10 @@ refactor and governance pass, not a broad geometry reinvention.
   `geo.states`, `geo.counties`, `geo.cbsas`, and `geo.tracts_all_us` intact.
 - [ ] Add full TIGER/Line analytical geometry only where a spatial consumer
   needs it; do not duplicate current display products.
-- [ ] Materialize a named consumer's scoped display table, reconcile its keys
-  to the identity registry, and migrate that consumer to the explicit display
-  role. No national geometry rebuild is scheduled.
+- [x] Register the existing current tract, county, and CBSA products as
+  approved read-only display geometry in `mart_geography.geometry_catalog`.
+  Their 2024 Census cartographic-boundary provenance and stable join keys are
+  documented without a national rebuild or a consumer migration.
 - [ ] Defer place, ZCTA, division, region, and US geometry until a named
   consumer requires it; derive higher-level shapes from states where needed.
 

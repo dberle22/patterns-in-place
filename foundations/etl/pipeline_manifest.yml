@@ -21,7 +21,7 @@ steps:
     depends_on:
       - seed_staging
     enabled: true
-    notes: Seed the minimal canonical geometry/reference tables from an existing DuckDB.
+    notes: Seed the canonical reference tables. geo.tracts_all_us, geo.counties, and geo.cbsas are approved read-only Census 2024 cartographic display geometry for market-analysis consumers; they are not analytical geometry.
 
   - id: tiger_display_geometry
     layer: geo
@@ -34,7 +34,7 @@ steps:
       - geo.cbsas_display
     depends_on: []
     enabled: false
-    notes: On-demand Census cartographic-boundary build. Requires GEOGRAPHY_TIGER_STATE_SCOPE; it does not replace legacy geo tables or build analytical geometry.
+    notes: On-demand Census cartographic-boundary build. Requires GEOGRAPHY_TIGER_STATE_SCOPE; it does not replace the approved seeded display products or build analytical geometry.
 
   - id: geo_crosswalks
     layer: silver

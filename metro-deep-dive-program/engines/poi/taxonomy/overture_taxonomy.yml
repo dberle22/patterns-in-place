@@ -1,0 +1,430 @@
+mapping_version: q4_overture_v3
+source_system: overture
+source_release: 2026-08-19.0
+taxonomy_version: overture_2026_08
+effective_date: 2026-09-11
+# Encodes taxonomy_category_layer_v1.md and taxonomy_sub_category_layer_v1.md.
+# Category and sub_category names are verbatim from those documents and are
+# stable identifiers: renaming one is a breaking change for Q4.
+#
+# Grain is source_category_basic, as the v1 docs assign. Rows the docs mark [T]
+# carry a `split` block keyed on source_taxonomy_primary; the split wins over
+# the row default. Rows the docs mark [U] use sub_category "Unspecified".
+#
+# Validate with: validate_taxonomy_rules.py --market richmond_va
+
+defaults:
+  unclassified_category: Unclassified
+  unspecified_sub_category: Unspecified
+
+rules:
+
+  # ---- Food & Drink -------------------------------------------------------
+  - {basic: restaurant, category: Food & Drink, sub_category: Restaurants}
+  - {basic: casual_eatery, category: Food & Drink, sub_category: Restaurants}
+  - {basic: fast_food_restaurant, category: Food & Drink, sub_category: Quick Service}
+  - {basic: food_truck_stand, category: Food & Drink, sub_category: Quick Service}
+  - {basic: food_court, category: Food & Drink, sub_category: Quick Service}
+  - {basic: coffee_shop, category: Food & Drink, sub_category: Cafes & Coffee}
+  - {basic: cafe, category: Food & Drink, sub_category: Cafes & Coffee}
+  - {basic: smoothie_juice_bar, category: Food & Drink, sub_category: Cafes & Coffee}
+  - {basic: non_alcoholic_beverage_venue, category: Food & Drink, sub_category: Cafes & Coffee}
+  - {basic: bar, category: Food & Drink, sub_category: Bars & Lounges}
+  - {basic: lounge, category: Food & Drink, sub_category: Bars & Lounges}
+  - {basic: alcoholic_beverage_venue, category: Food & Drink, sub_category: Bars & Lounges}
+  - {basic: brewery, category: Food & Drink, sub_category: "Breweries, Wineries & Distilleries"}
+  - {basic: winery, category: Food & Drink, sub_category: "Breweries, Wineries & Distilleries"}
+  - {basic: distillery, category: Food & Drink, sub_category: "Breweries, Wineries & Distilleries"}
+  - {basic: food_service, category: Food & Drink, sub_category: Catering & Food Services}
+  - {basic: food_and_drink, category: Food & Drink, sub_category: Unspecified}
+
+  # ---- Retail -------------------------------------------------------------
+  - {basic: food_and_beverage_store, category: Retail, sub_category: Grocery & Food Retail}
+  - {basic: farmers_market, category: Retail, sub_category: Grocery & Food Retail}
+  - {basic: market, category: Retail, sub_category: Grocery & Food Retail}
+  - {basic: convenience_store, category: Retail, sub_category: Convenience Stores}
+  - {basic: pharmacy_and_drug_store, category: Retail, sub_category: Pharmacy & Drug Stores}
+  - {basic: department_store, category: Retail, sub_category: General Merchandise}
+  - {basic: discount_store, category: Retail, sub_category: General Merchandise}
+  - {basic: superstore, category: Retail, sub_category: General Merchandise}
+  - {basic: warehouse_club_store, category: Retail, sub_category: General Merchandise}
+  - {basic: shopping_mall, category: Retail, sub_category: General Merchandise}
+  - {basic: kiosk, category: Retail, sub_category: General Merchandise}
+  - {basic: fashion_and_apparel_store, category: Retail, sub_category: Apparel & Accessories}
+  - {basic: hardware_home_and_garden_store, category: Retail, sub_category: "Home, Hardware & Garden"}
+  - {basic: office_supply_store, category: Retail, sub_category: "Home, Hardware & Garden"}
+  - {basic: electronics_store, category: Retail, sub_category: Electronics & Media}
+  - {basic: books_music_and_video_store, category: Retail, sub_category: Electronics & Media}
+  - {basic: musical_instrument_and_pro_audio_store, category: Retail, sub_category: Electronics & Media}
+  - {basic: specialty_store, category: Retail, sub_category: Specialty Retail}
+  - {basic: arts_crafts_and_hobby_store, category: Retail, sub_category: Specialty Retail}
+  - {basic: toys_and_games_store, category: Retail, sub_category: Specialty Retail}
+  - {basic: flowers_and_gifts_store, category: Retail, sub_category: Specialty Retail}
+  - {basic: animal_and_pet_store, category: Retail, sub_category: Specialty Retail}
+  - {basic: personal_care_and_beauty_store, category: Retail, sub_category: Specialty Retail}
+  - {basic: sporting_goods_store, category: Retail, sub_category: Specialty Retail}
+  - {basic: second_hand_store, category: Retail, sub_category: Resale & Secondhand}
+  - {basic: shopping, category: Retail, sub_category: Unspecified}
+  # Doc lists shopping_service under Services > Business & Professional.
+  - {basic: shopping_service, category: Services, sub_category: Business & Professional}
+
+  # ---- Healthcare ---------------------------------------------------------
+  - {basic: primary_care_or_general_clinic, category: Healthcare, sub_category: Primary & General Care}
+  - {basic: walk_in_clinic, category: Healthcare, sub_category: Primary & General Care}
+  - {basic: hospital, category: Healthcare, sub_category: Hospitals & Emergency}
+  - {basic: specialty_hospital, category: Healthcare, sub_category: Hospitals & Emergency}
+  - {basic: emergency_department, category: Healthcare, sub_category: Hospitals & Emergency}
+  - {basic: emergency_or_urgent_care_facility, category: Healthcare, sub_category: Hospitals & Emergency}
+  - {basic: urgent_care_clinic, category: Healthcare, sub_category: Hospitals & Emergency}
+  - {basic: specialized_health_care, category: Healthcare, sub_category: Specialty Care}
+  - {basic: specialized_medical_facility, category: Healthcare, sub_category: Specialty Care}
+  - {basic: surgery, category: Healthcare, sub_category: Specialty Care}
+  - {basic: pediatric_clinic, category: Healthcare, sub_category: Specialty Care}
+  - {basic: reproductive_perinatal_and_womens_care, category: Healthcare, sub_category: Specialty Care}
+  - {basic: outpatient_care_facility, category: Healthcare, sub_category: Specialty Care}
+  - {basic: physical_medicine_and_rehabilitation, category: Healthcare, sub_category: Specialty Care}
+  - {basic: dental_clinic, category: Healthcare, sub_category: Dental}
+  - {basic: vision_or_eye_care_clinic, category: Healthcare, sub_category: Vision}
+  - {basic: behavioral_or_mental_health_clinic, category: Healthcare, sub_category: Behavioral & Mental Health}
+  - {basic: diagnostics_imaging_or_lab_service, category: Healthcare, sub_category: Diagnostics & Labs}
+  - {basic: complementary_and_alternative_medicine, category: Healthcare, sub_category: Alternative & Complementary}
+  # Open question in both docs: Healthcare vs Residential. Docs say Healthcare.
+  # Source roots this to services_and_business, so this is a deliberate override.
+  - {basic: senior_living_facility, category: Healthcare, sub_category: Senior & Long-Term Care}
+  - {basic: health_care, category: Healthcare, sub_category: Unspecified}
+  - {basic: medical_service, category: Healthcare, sub_category: Unspecified}
+
+  # [T] Veterinary vs pet grooming. Doc: veterinary -> Healthcare, rest -> Personal Care.
+  - basic: animal_or_pet_service
+    category: Personal Care
+    sub_category: Pet Grooming & Boarding
+    split:
+      veterinarian: {category: Healthcare, sub_category: Veterinary}
+      animal_hospital: {category: Healthcare, sub_category: Veterinary}
+      emergency_pet_hospital: {category: Healthcare, sub_category: Veterinary}
+      pet_hospice: {category: Healthcare, sub_category: Veterinary}
+
+  # ---- Education ----------------------------------------------------------
+  - {basic: preschool, category: Education, sub_category: Early Childhood}
+  - {basic: kindergarten, category: Education, sub_category: Early Childhood}
+  - {basic: elementary_school, category: Education, sub_category: K-12}
+  - {basic: middle_school, category: Education, sub_category: K-12}
+  - {basic: high_school, category: Education, sub_category: K-12}
+  - {basic: college_university, category: Education, sub_category: Higher Education}
+  - {basic: campus_building, category: Education, sub_category: Higher Education}
+  - {basic: specialty_school, category: Education, sub_category: Specialty & Vocational}
+  - {basic: tutoring_service, category: Education, sub_category: Tutoring & Test Prep}
+  - {basic: educational_service, category: Education, sub_category: Tutoring & Test Prep}
+  - {basic: library, category: Education, sub_category: Libraries}
+  - {basic: school_district_office, category: Education, sub_category: Administration}
+  - {basic: place_of_learning, category: Education, sub_category: Unspecified}
+  - {basic: education, category: Education, sub_category: Unspecified}
+  - {basic: educational_facility, category: Education, sub_category: Unspecified}
+
+  # [T] Research: non-medical -> Education, medical -> Healthcare.
+  - basic: research_institute
+    category: Education
+    sub_category: Research
+    split:
+      medical_research_institute: {category: Healthcare, sub_category: Specialty Care}
+
+  # ---- Personal Care ------------------------------------------------------
+  # [T] The doc's stated granularity problem. Leaves resolve it.
+  - basic: personal_or_beauty_service
+    category: Personal Care
+    sub_category: Other Personal Services
+    split:
+      hair_salon: {sub_category: Hair & Barber}
+      hair_stylist: {sub_category: Hair & Barber}
+      barber: {sub_category: Hair & Barber}
+      kids_hair_salon: {sub_category: Hair & Barber}
+      hair_extensions: {sub_category: Hair & Barber}
+      hair_replacement: {sub_category: Hair & Barber}
+      hair_loss_center: {sub_category: Hair & Barber}
+      blow_dry_blow_out_service: {sub_category: Hair & Barber}
+      beauty_salon: {sub_category: Nail & Beauty}
+      nail_salon: {sub_category: Nail & Beauty}
+      skin_care_and_makeup: {sub_category: Nail & Beauty}
+      makeup_artist: {sub_category: Nail & Beauty}
+      permanent_makeup: {sub_category: Nail & Beauty}
+      esthetician: {sub_category: Nail & Beauty}
+      eyelash_service: {sub_category: Nail & Beauty}
+      eyebrow_service: {sub_category: Nail & Beauty}
+      threading_service: {sub_category: Nail & Beauty}
+      waxing: {sub_category: Nail & Beauty}
+      sugaring: {sub_category: Nail & Beauty}
+      hair_removal: {sub_category: Nail & Beauty}
+      laser_hair_removal: {sub_category: Nail & Beauty}
+      tanning_salon: {sub_category: Nail & Beauty}
+      spray_tanning: {sub_category: Nail & Beauty}
+      teeth_whitening: {sub_category: Nail & Beauty}
+      tattoo_and_piercing: {sub_category: Tattoo & Body Art}
+      tattoo: {sub_category: Tattoo & Body Art}
+      piercing: {sub_category: Tattoo & Body Art}
+  - {basic: wellness_service, category: Personal Care, sub_category: Spa & Massage}
+  - {basic: laundry_service, category: Personal Care, sub_category: Laundry & Dry Cleaning}
+  - {basic: psychic_advising, category: Personal Care, sub_category: Other Personal Services}
+  - {basic: astrological_advising, category: Personal Care, sub_category: Other Personal Services}
+
+  # ---- Recreation & Fitness ----------------------------------------------
+  - {basic: gym, category: Recreation & Fitness, sub_category: Gyms & Fitness}
+  - {basic: fitness_studio, category: Recreation & Fitness, sub_category: Gyms & Fitness}
+  # [T] doc: sport_or_fitness_facility where gym-like -> Gyms & Fitness.
+  - basic: sport_or_fitness_facility
+    category: Recreation & Fitness
+    sub_category: Sports Facilities
+    split:
+      fitness_trainer: {sub_category: Gyms & Fitness}
+      dance_studio: {sub_category: Gyms & Fitness}
+      gymnastics_center: {sub_category: Gyms & Fitness}
+      boxing_gym: {sub_category: Gyms & Fitness}
+      boxing_class: {sub_category: Gyms & Fitness}
+      cycling_class: {sub_category: Gyms & Fitness}
+      self_defense_class: {sub_category: Gyms & Fitness}
+  - {basic: sport_court, category: Recreation & Fitness, sub_category: Sports Facilities}
+  - {basic: sport_field, category: Recreation & Fitness, sub_category: Sports Facilities}
+  - {basic: sports_complex, category: Recreation & Fitness, sub_category: Sports Facilities}
+  - {basic: swimming_pool, category: Recreation & Fitness, sub_category: Sports Facilities}
+  - {basic: skating_rink, category: Recreation & Fitness, sub_category: Sports Facilities}
+  - {basic: golf_course, category: Recreation & Fitness, sub_category: Sports Facilities}
+  - {basic: country_club, category: Recreation & Fitness, sub_category: Sports Facilities}
+  - {basic: sport_or_recreation_club, category: Recreation & Fitness, sub_category: "Clubs, Leagues & Teams"}
+  - {basic: sport_league, category: Recreation & Fitness, sub_category: "Clubs, Leagues & Teams"}
+  - {basic: sport_team, category: Recreation & Fitness, sub_category: "Clubs, Leagues & Teams"}
+  - {basic: marina, category: Recreation & Fitness, sub_category: Outdoor Recreation}
+  - {basic: recreational_equipment_rental, category: Recreation & Fitness, sub_category: Outdoor Recreation}
+  - {basic: skate_park, category: Recreation & Fitness, sub_category: Outdoor Recreation}
+  - {basic: sports_and_recreation, category: Recreation & Fitness, sub_category: Unspecified}
+
+  # ---- Arts, Culture & Landmarks -----------------------------------------
+  - {basic: historic_site, category: "Arts, Culture & Landmarks", sub_category: Historic Sites & Monuments}
+  - {basic: monument, category: "Arts, Culture & Landmarks", sub_category: Historic Sites & Monuments}
+  - {basic: fort, category: "Arts, Culture & Landmarks", sub_category: Historic Sites & Monuments}
+  - {basic: lighthouse, category: "Arts, Culture & Landmarks", sub_category: Historic Sites & Monuments}
+  - {basic: sculpture_statue, category: "Arts, Culture & Landmarks", sub_category: Historic Sites & Monuments}
+  - {basic: museum, category: "Arts, Culture & Landmarks", sub_category: Museums & Science}
+  - {basic: planetarium, category: "Arts, Culture & Landmarks", sub_category: Museums & Science}
+  - {basic: science_attraction, category: "Arts, Culture & Landmarks", sub_category: Museums & Science}
+  - {basic: art_gallery, category: "Arts, Culture & Landmarks", sub_category: Galleries}
+  - {basic: performing_arts_venue, category: "Arts, Culture & Landmarks", sub_category: Performing Arts}
+  - {basic: theatre_venue, category: "Arts, Culture & Landmarks", sub_category: Performing Arts}
+  - {basic: cultural_center, category: "Arts, Culture & Landmarks", sub_category: Cultural & Creative Spaces}
+  - {basic: arts_and_crafts_space, category: "Arts, Culture & Landmarks", sub_category: Cultural & Creative Spaces}
+  - {basic: arts_and_entertainment, category: "Arts, Culture & Landmarks", sub_category: Unspecified}
+
+  # ---- Entertainment & Nightlife -----------------------------------------
+  - {basic: movie_theater, category: Entertainment & Nightlife, sub_category: Cinema}
+  - {basic: music_venue, category: Entertainment & Nightlife, sub_category: Live Music & Comedy}
+  - {basic: comedy_club, category: Entertainment & Nightlife, sub_category: Live Music & Comedy}
+  - {basic: nightlife_venue, category: Entertainment & Nightlife, sub_category: Nightlife}
+  - {basic: dance_club, category: Entertainment & Nightlife, sub_category: Nightlife}
+  - {basic: adult_entertainment_venue, category: Entertainment & Nightlife, sub_category: Nightlife}
+  - {basic: casino, category: Entertainment & Nightlife, sub_category: Gaming & Gambling}
+  - {basic: gaming_venue, category: Entertainment & Nightlife, sub_category: Gaming & Gambling}
+  - {basic: arcade, category: Entertainment & Nightlife, sub_category: Gaming & Gambling}
+  - {basic: amusement_park, category: Entertainment & Nightlife, sub_category: Attractions & Amusement}
+  - {basic: amusement_attraction, category: Entertainment & Nightlife, sub_category: Attractions & Amusement}
+  - {basic: zoo, category: Entertainment & Nightlife, sub_category: Attractions & Amusement}
+  - {basic: aquarium, category: Entertainment & Nightlife, sub_category: Attractions & Amusement}
+  - {basic: animal_attraction, category: Entertainment & Nightlife, sub_category: Attractions & Amusement}
+  - {basic: rodeo, category: Entertainment & Nightlife, sub_category: Attractions & Amusement}
+  - {basic: event_venue, category: Entertainment & Nightlife, sub_category: Event & Spectator Venues}
+  - {basic: festival_venue, category: Entertainment & Nightlife, sub_category: Event & Spectator Venues}
+  - {basic: fairgrounds, category: Entertainment & Nightlife, sub_category: Event & Spectator Venues}
+  - {basic: stadium_arena, category: Entertainment & Nightlife, sub_category: Event & Spectator Venues}
+
+  # ---- Parks & Nature -----------------------------------------------------
+  - {basic: park, category: Parks & Nature, sub_category: Parks & Public Space}
+  - {basic: public_plaza, category: Parks & Nature, sub_category: Parks & Public Space}
+  - {basic: public_fountain, category: Parks & Nature, sub_category: Parks & Public Space}
+  - {basic: playground, category: Parks & Nature, sub_category: Playgrounds & Dog Parks}
+  - {basic: dog_park, category: Parks & Nature, sub_category: Playgrounds & Dog Parks}
+  - {basic: recreational_trail_or_path, category: Parks & Nature, sub_category: Trails & Greenways}
+  - {basic: garden, category: Parks & Nature, sub_category: Gardens}
+  - {basic: national_park, category: Parks & Nature, sub_category: Protected Land}
+  - {basic: nature_reserve, category: Parks & Nature, sub_category: Protected Land}
+  - {basic: river, category: Parks & Nature, sub_category: Natural Features}
+  - {basic: lake, category: Parks & Nature, sub_category: Natural Features}
+  - {basic: mountain, category: Parks & Nature, sub_category: Natural Features}
+  - {basic: island, category: Parks & Nature, sub_category: Natural Features}
+  - {basic: beach, category: Parks & Nature, sub_category: Natural Features}
+  - {basic: forest, category: Parks & Nature, sub_category: Natural Features}
+  - {basic: land_feature, category: Parks & Nature, sub_category: Natural Features}
+  - {basic: geographic_entities, category: Parks & Nature, sub_category: Natural Features}
+
+  # ---- Lodging ------------------------------------------------------------
+  - {basic: hotel, category: Lodging, sub_category: Hotels & Motels}
+  - {basic: inn, category: Lodging, sub_category: Inns & B&Bs}
+  - {basic: bed_and_breakfast, category: Lodging, sub_category: Inns & B&Bs}
+  - {basic: resort, category: Lodging, sub_category: Resorts}
+  - {basic: private_lodging, category: Lodging, sub_category: Short-Term Rental}
+  - {basic: campground, category: Lodging, sub_category: Campgrounds & RV Parks}
+  - {basic: rv_park, category: Lodging, sub_category: Campgrounds & RV Parks}
+  - {basic: lodging, category: Lodging, sub_category: Unspecified}
+
+  # ---- Services -----------------------------------------------------------
+  - {basic: real_estate_service, category: Services, sub_category: Real Estate Services}
+  - {basic: housing_or_property_service, category: Services, sub_category: Real Estate Services}
+  - {basic: home_service, category: Services, sub_category: Home & Trade Services}
+  - {basic: building_or_construction_service, category: Services, sub_category: Home & Trade Services}
+  - {basic: professional_service, category: Services, sub_category: Business & Professional}
+  - {basic: corporate_or_business_office, category: Services, sub_category: Business & Professional}
+  - {basic: b2b_service, category: Services, sub_category: Business & Professional}
+  - {basic: b2b_office_and_professional_service, category: Services, sub_category: Business & Professional}
+  - {basic: b2b_science_and_technology_service, category: Services, sub_category: Business & Professional}
+  - {basic: b2b_energy_and_utility_service, category: Services, sub_category: Business & Professional}
+  - {basic: technical_service, category: Services, sub_category: Business & Professional}
+  - {basic: design_service, category: Services, sub_category: Business & Professional}
+  - {basic: printing_service, category: Services, sub_category: Business & Professional}
+  - {basic: security_service, category: Services, sub_category: Business & Professional}
+  - {basic: environmental_or_ecological_service, category: Services, sub_category: Business & Professional}
+  - {basic: attorney_or_law_firm, category: Services, sub_category: Legal Services}
+  - {basic: legal_service, category: Services, sub_category: Legal Services}
+  - {basic: media_service, category: Services, sub_category: Media & Communications}
+  - {basic: radio_station, category: Services, sub_category: Media & Communications}
+  - {basic: television_station, category: Services, sub_category: Media & Communications}
+  - {basic: telecommunications_service, category: Services, sub_category: Media & Communications}
+  - {basic: rental_service, category: Services, sub_category: Rental & Event Services}
+  - {basic: event_or_party_service, category: Services, sub_category: Rental & Event Services}
+  - {basic: travel_service, category: Services, sub_category: Travel Services}
+
+  # [T] financial_service: money services -> Financial Institutions,
+  # advisory/insurance -> Services. Doc's stated bank/advisory line.
+  - basic: financial_service
+    category: Services
+    sub_category: Financial & Insurance Services
+    split:
+      money_transfer_service: {category: Financial Institutions, sub_category: Money Services}
+      check_cashing_payday_loans: {category: Financial Institutions, sub_category: Money Services}
+      currency_exchange: {category: Financial Institutions, sub_category: Money Services}
+      installment_loans: {category: Financial Institutions, sub_category: Money Services}
+      gold_buyer: {category: Financial Institutions, sub_category: Money Services}
+      coin_dealer: {category: Financial Institutions, sub_category: Money Services}
+
+  # [T] family_service: childcare -> Education, counseling -> Healthcare.
+  # funeral_service has no home in either doc; flagged, not silently placed.
+  - basic: family_service
+    category: Community & Civic
+    sub_category: Youth & Family Services
+    split:
+      day_care_preschool: {category: Education, sub_category: Early Childhood}
+      child_care_and_day_care: {category: Education, sub_category: Early Childhood}
+      funeral_service: {category: Services, sub_category: UNRESOLVED_funeral}
+      cremation_service: {category: Services, sub_category: UNRESOLVED_funeral}
+
+  # ---- Automotive ---------------------------------------------------------
+  - {basic: auto_dealer, category: Automotive, sub_category: Dealers}
+  - {basic: vehicle_dealer, category: Automotive, sub_category: Dealers}
+  - {basic: automotive_service, category: Automotive, sub_category: Repair & Maintenance}
+  - {basic: vehicle_service, category: Automotive, sub_category: Repair & Maintenance}
+  - {basic: vehicle_parts_store, category: Automotive, sub_category: Parts & Accessories}
+  - {basic: gas_station, category: Automotive, sub_category: Fuel & Charging}
+  - {basic: fueling_station, category: Automotive, sub_category: Fuel & Charging}
+  - {basic: ev_charging_station, category: Automotive, sub_category: Fuel & Charging}
+
+  # ---- Industrial & Logistics --------------------------------------------
+  - {basic: manufacturer, category: Industrial & Logistics, sub_category: Manufacturing}
+  - {basic: industrial_facility_or_service, category: Industrial & Logistics, sub_category: Manufacturing}
+  - {basic: b2b_industrial_and_machine_service, category: Industrial & Logistics, sub_category: Manufacturing}
+  - {basic: supplier_or_distributor, category: Industrial & Logistics, sub_category: Wholesale & Distribution}
+  - {basic: wholesaler, category: Industrial & Logistics, sub_category: Wholesale & Distribution}
+  - {basic: storage_facility, category: Industrial & Logistics, sub_category: Warehousing & Storage}
+  - {basic: b2b_transportation_and_storage_service, category: Industrial & Logistics, sub_category: Warehousing & Storage}
+
+  # [T] shipping: postal -> Government, commercial -> Industrial.
+  - basic: shipping_or_delivery_service
+    category: Industrial & Logistics
+    sub_category: Shipping & Delivery
+    split:
+      post_office: {category: Government & Public Safety, sub_category: Postal}
+
+  # ---- Transportation -----------------------------------------------------
+  - {basic: airport, category: Transportation, sub_category: Air}
+  - {basic: air_transport_facility_or_service, category: Transportation, sub_category: Air}
+  - {basic: train_station, category: Transportation, sub_category: Rail & Transit}
+  - {basic: rail_facility_or_service, category: Transportation, sub_category: Rail & Transit}
+  - {basic: public_transit_facility_or_service, category: Transportation, sub_category: Rail & Transit}
+  - {basic: park_and_ride, category: Transportation, sub_category: Rail & Transit}
+  - {basic: parking, category: Transportation, sub_category: Parking}
+  - {basic: parking_garage, category: Transportation, sub_category: Parking}
+  - {basic: parking_lot, category: Transportation, sub_category: Parking}
+  - {basic: taxi_or_ride_share_service, category: Transportation, sub_category: Ground Transport Services}
+  - {basic: ground_transport_facility_or_service, category: Transportation, sub_category: Ground Transport Services}
+  - {basic: bridge, category: Transportation, sub_category: Road Infrastructure}
+  - {basic: toll_station, category: Transportation, sub_category: Road Infrastructure}
+  - {basic: travel_and_transportation, category: Transportation, sub_category: Unspecified}
+
+  # ---- Government & Public Safety ----------------------------------------
+  - {basic: government_office, category: Government & Public Safety, sub_category: Government Offices}
+  - {basic: government_department, category: Government & Public Safety, sub_category: Government Offices}
+  - {basic: embassy, category: Government & Public Safety, sub_category: Government Offices}
+  - {basic: police_station, category: Government & Public Safety, sub_category: Public Safety}
+  - {basic: fire_station, category: Government & Public Safety, sub_category: Public Safety}
+  - {basic: public_safety_service, category: Government & Public Safety, sub_category: Public Safety}
+  - {basic: courthouse, category: Government & Public Safety, sub_category: Courts & Corrections}
+  - {basic: jail_or_prison, category: Government & Public Safety, sub_category: Courts & Corrections}
+  - {basic: military_base, category: Government & Public Safety, sub_category: Military}
+  - {basic: military_site, category: Government & Public Safety, sub_category: Military}
+  - {basic: community_and_government, category: Government & Public Safety, sub_category: Unspecified}
+
+  # ---- Community & Civic --------------------------------------------------
+  - {basic: civic_organization, category: Community & Civic, sub_category: Civic & Nonprofit Organizations}
+  - {basic: social_or_community_service, category: Community & Civic, sub_category: Civic & Nonprofit Organizations}
+  - {basic: community_center, category: Community & Civic, sub_category: Community Centers}
+  - {basic: youth_organization, category: Community & Civic, sub_category: Youth & Family Services}
+  - {basic: food_bank, category: Community & Civic, sub_category: Food Assistance}
+  - {basic: labor_union, category: Community & Civic, sub_category: Labor & Political}
+  - {basic: political_organization, category: Community & Civic, sub_category: Labor & Political}
+  # Open question: docs say Community; source roots to arts_and_entertainment.
+  - {basic: social_club, category: Community & Civic, sub_category: Social Clubs}
+  # Open question: docs say Community; source roots to cultural_and_historic.
+  - {basic: cemetery, category: Community & Civic, sub_category: Cemeteries}
+
+  # ---- Religious Institutions --------------------------------------------
+  - {basic: christian_place_of_worship, category: Religious Institutions, sub_category: Christian}
+  - {basic: jewish_place_of_worship, category: Religious Institutions, sub_category: Jewish}
+  - {basic: muslim_place_of_worship, category: Religious Institutions, sub_category: Muslim}
+  - {basic: buddhist_place_of_worship, category: Religious Institutions, sub_category: Buddhist}
+  - {basic: hindu_place_of_worship, category: Religious Institutions, sub_category: Hindu}
+  - {basic: place_of_worship, category: Religious Institutions, sub_category: Other & Unspecified}
+  - {basic: religious_organization, category: Religious Institutions, sub_category: Other & Unspecified}
+
+  # ---- Financial Institutions --------------------------------------------
+  - {basic: bank_or_credit_union, category: Financial Institutions, sub_category: Banks & Credit Unions}
+  - {basic: atm, category: Financial Institutions, sub_category: ATMs}
+
+  # ---- Utilities ----------------------------------------------------------
+  - {basic: electric_utility_provider, category: Utilities, sub_category: Electric}
+  - {basic: water_utility_provider, category: Utilities, sub_category: Water}
+  - {basic: natural_gas_utility_provider, category: Utilities, sub_category: Natural Gas}
+  - {basic: public_utility, category: Utilities, sub_category: Unspecified}
+
+  # ---- Residential --------------------------------------------------------
+  - {basic: apartment, category: Residential, sub_category: Apartments}
+  - {basic: condominium, category: Residential, sub_category: Condominiums}
+
+  # ---- Agriculture --------------------------------------------------------
+  - {basic: farm, category: Agriculture, sub_category: Farms}
+  - {basic: agricultural_service, category: Agriculture, sub_category: Agricultural Services}
+
+  # ---- Not in either v1 doc ----------------------------------------------
+  # Present in the data, absent from both drafts. Assigned provisionally by
+  # source root; the validator reports them so a reviewer can confirm.
+  - {basic: building, category: Unclassified, sub_category: Unspecified, review: not_in_v1_docs}
+  - {basic: spiritual_advising, category: Personal Care, sub_category: Other Personal Services, review: not_in_v1_docs}
+  - {basic: ticket_office_or_booth, category: Entertainment & Nightlife, sub_category: Event & Spectator Venues, review: not_in_v1_docs}
+  - {basic: rural_attraction, category: Entertainment & Nightlife, sub_category: Attractions & Amusement, review: not_in_v1_docs}
+  - {basic: memorial_site, category: "Arts, Culture & Landmarks", sub_category: Historic Sites & Monuments, review: not_in_v1_docs}
+
+  # Surfaced by the Jacksonville run against a Richmond baseline. Absent from
+  # both v1 docs and from Richmond; assigned by source root, flagged for review.
+  - {basic: general_hospital, category: Healthcare, sub_category: Hospitals & Emergency, review: new_in_jacksonville}
+  - {basic: civic_center, category: Community & Civic, sub_category: Community Centers, review: new_in_jacksonville}
+  - {basic: makerspace, category: "Arts, Culture & Landmarks", sub_category: Cultural & Creative Spaces, review: new_in_jacksonville}
+  - {basic: street_art, category: "Arts, Culture & Landmarks", sub_category: Historic Sites & Monuments, review: new_in_jacksonville}
+  - {basic: castle, category: "Arts, Culture & Landmarks", sub_category: Historic Sites & Monuments, review: new_in_jacksonville}
+  - {basic: religious_landmark, category: Religious Institutions, sub_category: Other & Unspecified, review: new_in_jacksonville}
+  - {basic: ferry_service, category: Transportation, sub_category: Ground Transport Services, review: new_in_jacksonville}
+  - {basic: pier, category: Parks & Nature, sub_category: Natural Features, review: new_in_jacksonville}
+  - {basic: canal, category: Parks & Nature, sub_category: Natural Features, review: new_in_jacksonville}
+  - {basic: public_restroom, category: Government & Public Safety, sub_category: Unspecified, review: new_in_jacksonville}

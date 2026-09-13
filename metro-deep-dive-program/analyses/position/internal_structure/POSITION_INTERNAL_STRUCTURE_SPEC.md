@@ -1,13 +1,14 @@
 # Position Internal Structure Spec
 
-**Status:** Planned; Phase 7, Geography, POI, Infrastructure, and existing
+**Status:** Part 1 initial implementation; Phase 7, Geography, POI, Infrastructure, and existing
 job-center work provide the underlying capabilities. The next geography
 priority is sourced local-neighborhood mapping. Corridor Intelligence is
-paused; corridor exploration is optional analysis rather than an engine input.
+deprecated and is not an input to this analysis.
 
-**Default market:** Jacksonville, FL (`27260`)
+**Default market:** Richmond, VA (`40060`)
 
-**Primary surface:** `POSITION_INTERNAL_STRUCTURE_NOTEBOOK.py`
+**Primary surfaces:** `POSITION_INTERNAL_STRUCTURE_NOTEBOOK.py` (Part 1) and
+`POSITION_INTERNAL_STRUCTURE_PART2_NOTEBOOK.py` (Part 2)
 
 ## Goal
 
@@ -20,12 +21,10 @@ The notebook has two parts:
    the CBSA, counties, Census Places, tracts, ZCTAs, and Phase 7 zone types.
 2. **Activity, Infrastructure, and Structural Patterns** — examine how POIs,
    major anchors, employment centers, and physical networks relate to those
-   geographies and local-neighborhood mappings; explore a corridor only when a
-   specific market question makes it useful.
+   geographies and local-neighborhood mappings.
 
 Local neighborhoods provide orientation and narrative context, but do not
-replace tract or ZCTA taxonomies. Corridors remain useful as an exploratory
-lens, not an engine-produced or market-wide overlay. The primary question is:
+replace tract or ZCTA taxonomies. The primary question is:
 **How is this metro assembled, and how do its Places and systems relate?**
 
 The notebook is exploratory. It describes spatial anatomy and routes deeper
@@ -44,11 +43,9 @@ causation, or investment opportunity.
 | POI or anchor | A governed place record or selected major institution/activity anchor |
 | Employment center | Existing tract-level job-concentration evidence reused for orientation, not a commuting-flow claim |
 | Local neighborhood | A sourced, vintaged contextual geography related explicitly to tracts and ZCTAs |
-| Corridor exploration | An analysis-local view of a market question using neighborhoods, zones, activity, and Infrastructure; not a canonical boundary product |
 
 No one object substitutes for another. In particular, a Census Place boundary,
-POI cluster, zone type, and corridor can overlap without representing the same
-thing.
+POI cluster, and zone type can overlap without representing the same thing.
 
 ## Architecture Boundary
 
@@ -62,10 +59,10 @@ thing.
 | Internal Structure | Market-scoped joins, descriptive aggregation, cross-geography comparison, and exploratory display |
 | Issue layer | Featured-area selection, editorial names, stat blocks, opportunity framing, and publication styling |
 
-The notebook must not rerun Phase 7, invent functional Place boundaries,
-rewrite POI or Infrastructure classifications, or alter Corridor Intelligence
-membership. A repeated analytical method should be promoted only after reuse
-demonstrates that it belongs outside this notebook.
+The notebook must not rerun Phase 7, invent functional Place boundaries, or
+rewrite POI or Infrastructure classifications. A repeated analytical method
+should be promoted only after reuse demonstrates that it belongs outside this
+notebook.
 
 ## Inputs
 
@@ -131,8 +128,6 @@ Part 2 answers:
   anchors sit within the Place and zone structure?
 - How do roads, rail, waterways, airports, and ports organize or complicate
   the observed spatial pattern?
-- Where does a corridor-like pattern warrant exploration in relation to local
-  neighborhoods, Places, centers, zones, and Infrastructure?
 - What deeper questions should be routed to access, job-proximity,
   polycentricity, housing, or regional-role analyses?
 
@@ -145,7 +140,6 @@ Planned surfaces:
 | Major anchors and employment centers | Locate selected institutions and existing job-center evidence within the market hierarchy |
 | Infrastructure skeleton | Show approved roads, rail, waterways, airports, ports, and other named structural features |
 | Integrated market map | Combine selected Places, zones, anchors, centers, and infrastructure layers for exploratory review |
-| Optional corridor exploration | Investigate a named or observed corridor pattern with neighborhood, tract-zone, POI, employment-center, and Infrastructure context; do not create a canonical boundary by default |
 | Market synthesis and routing | Summarize the strongest structural observations and direct unresolved functional questions to their owning analyses |
 
 POI comparisons should keep raw counts, per-resident or area-normalized values,
@@ -153,16 +147,17 @@ and category shares distinct. The notebook should not create an activity-center
 classification in its first pass; it can compare existing job centers and
 visible POI concentrations descriptively.
 
-Corridor exploration remains analysis-local and may use a named corridor,
-source-provided alignment, or a documented visual question. It does not merge,
-split, or publish canonical candidate boundaries. The rest of the notebook
-does not depend on corridor work.
+POI-by-Place requires a direct governed point-to-Place assignment. Until
+Geography publishes that relationship, the notebook must display the gap and
+must not allocate point counts through tract population, housing, or land
+weights.
+
 
 ## Parameters
 
 | Parameter | Role |
 |---|---|
-| `cbsa_code` | Select one covered metro; Jacksonville is the default review market |
+| `cbsa_code` | Select one covered metro; Richmond is the default first-review market |
 | `geography_view` | Focus the map on Place, tract, or supporting ZCTA geography where available |
 | `place_id` | Inspect one Census Place without hiding the rest of the market |
 | `zone_type` | Focus Place/tract composition review without changing the model |
@@ -170,16 +165,15 @@ does not depend on corridor work.
 | `poi_measure` | Switch among count, category share, and a valid normalized measure |
 | `infrastructure_groups` | Choose from the declared Infrastructure consumer handoff |
 | `neighborhood_mapping_version` | Select a governed local-neighborhood source and vintage when available |
-| `corridor_focus` | Optional named corridor, alignment, or exploratory question; never a canonical candidate ID |
 
 Controls should be populated from live contracts rather than market-specific
 hard-coded lists.
 
 ## Outputs
 
-The primary output is one interactive Marimo notebook. Any later headless QA
-bundle should validate stable query and map expectations only; it is not
-required to begin the exploratory review.
+The primary output is two interactive Marimo notebooks, one for each part. Any
+later headless QA bundle should validate stable query and map expectations only;
+it is not required to begin the exploratory review.
 
 The notebook does not write replacement geography, tract-zone, POI,
 Infrastructure, employment-center, or structural-candidate products.
@@ -203,8 +197,6 @@ Infrastructure, employment-center, or structural-candidate products.
   commuting flows
 - local-neighborhood displays retain their declared source, vintage, and
   relationship basis
-- optional corridor exploration states its question, source alignment or focus,
-  and evidence inputs without claiming a canonical boundary
 - changing markets updates every displayed layer without writing to DuckDB or
   engine artifacts
 
@@ -222,8 +214,6 @@ Infrastructure, employment-center, or structural-candidate products.
   causation, or economic impact
 - local neighborhoods are contextual overlays, not replacements for tract or
   ZCTA taxonomies
-- corridor exploration is not the master description of the market or an
-  investment conclusion
 - claims about monocentricity, polycentricity, daily-needs access, commuting,
   housing demand, or job proximity belong to their named downstream analyses
 - formal Census Place names come from Geography; editorial area/candidate
@@ -235,7 +225,8 @@ Infrastructure, employment-center, or structural-candidate products.
 - algorithmically inventing a local neighborhood or submarket boundary system;
   sourced neighborhood mappings belong in Geography
 - building a new activity-center or downtown typology
-- defining a canonical Corridor Intelligence method inside the notebook
+- consuming the deprecated Corridor Intelligence engine or defining a
+  replacement corridor method inside the notebook
 - commuting-flow or causal market-integration claims
 - daily-needs access scoring, routing, travel time, or catchments
 - Investment Scores or parcel screening
@@ -246,6 +237,5 @@ Infrastructure, employment-center, or structural-candidate products.
 Internal Structure is ready for exploratory use when an analyst can select a
 covered metro, understand its hierarchy of counties and Census Places, compare
 Place and zone composition across tracts and ZCTAs, inspect how POIs,
-employment centers, and Infrastructure relate to that geography, review
-available corridor and district candidates as one structural lens, and route
+employment centers, and Infrastructure relate to that geography, and route
 unanswered functional questions without conflating the underlying objects.
