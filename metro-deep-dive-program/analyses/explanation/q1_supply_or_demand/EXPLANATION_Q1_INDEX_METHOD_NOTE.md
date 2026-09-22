@@ -1,6 +1,7 @@
 # Q1 — Epic 5 Index Method Note
 
-**Status:** Candidate method for review — not yet adopted
+**Status:** Exploratory candidate method; no standard Q1 index has been
+selected, and component-led market analysis remains required
 
 ## Working definition
 
@@ -13,6 +14,15 @@ The index should answer a narrow question: **which CBSA or county markets show
 the strongest combination of pressure, weak response, and worsening ability to
 pay?** It must not claim that the relationship proves causation or that every
 high-cost market is overheated.
+
+## Current use policy
+
+Use the composite only to locate markets in the national distribution, compare
+their component profiles, and prioritize deeper review while the alternatives
+are tested. Do not use it as a market conclusion, a causal claim, or a
+replacement for the raw component evidence.
+Every market-level interpretation must inspect momentum, renter burden and
+market access, demand, supply response, and relevant coverage/no-signal flags.
 
 ## Do not use a raw price-growth / unit-growth ratio
 
@@ -31,17 +41,21 @@ them into within-year percentile scores, and show their relationship directly:
   momentum plus low response is the direct visual expression of the proposed
   “prices rising faster than new units” idea.
 
-## Cost-to-income is a separate outcome family
+## Affordability outcomes are separate from market-price proxies
 
 Levels tell us whether housing is expensive now; changes tell us whether it is
 becoming less attainable. Keep renter and owner outcomes separate:
 
-- `rent_to_income_5yr_change`: change in annualized median gross rent divided
-  by median household income.
+- `pct_rent_burden_30plus_change_5yr`: change in the ACS share of renter
+  households spending 30% or more of income on rent. This is the primary renter
+  household-burden outcome.
+- `median_rent_to_all_hh_income_proxy_change_5yr`: change in annualized median
+  gross rent divided by ACS median income for all households. This is a market
+  price proxy, not a renter-household burden measure and has no 30% cutoff.
 - `value_to_income_5yr_change`: change in median home value divided by median
   household income.
-- `owner_cost_to_income_*_5yr_change`: optional parallel owner measures,
-  separately for owners with and without a mortgage.
+- `owner_cost_to_income_*_5yr_change`: optional existing-owner context,
+  separately for owners with and without a mortgage; not current-buyer cost.
 
 A market with rapid price growth but stable cost-to-income may have incomes
 catching up. A market with modest price growth and sharply worsening ratios can
@@ -57,7 +71,7 @@ and carries an input-count field.
 | Family | Initial inputs | Direction |
 |---|---|---|
 | Momentum | FHFA five-year HPI; ACS five-year rent growth; optional Zillow rent growth | Higher = more pressure |
-| Affordability deterioration | Five-year rent-to-income change; five-year value-to-income change; owner-cost ratio changes as labeled context | Higher = more deterioration |
+| Affordability deterioration | Five-year renter-burden change; five-year value-to-income change; owner-cost ratio changes as labelled context | Higher = more deterioration |
 | Demand | Five-year population growth; IRS net migration through 2022 as historical context | Higher = more pressure |
 | Supply constraint | Inverse five-year housing-unit growth; inverse five-year cumulative permits per starting unit; inverse vacancy rate | Higher = less response / tighter market |
 
@@ -88,17 +102,14 @@ markets, confirming the need for percentile normalization and a major-market
 primary universe.
 
 Richmond's first read demonstrates the intended separation: five-year HPI grew
-54.5%, housing stock grew 9.3%, rent-to-income rose 3.0%, and value-to-income
-rose 17.2%. Its price/owner-accessibility pressure is stronger than its renter
-cost-ratio deterioration, so it should not receive a one-dimensional label.
+54.5%, housing stock grew 9.3%, and value-to-income rose 17.2%. Epic 9 should
+evaluate its renter-burden change separately from the median-rent/all-household-
+income price proxy rather than using either as a one-dimensional label.
 
-## Next Epic 5 build steps
+## Remaining index research
 
-1. Add five-year housing-stock growth, cumulative permit response, and
-   renter/owner cost-ratio-change fields to the Q1 mart.
-2. Build the four component scores and explicit complete-family inclusion rule.
-3. Render momentum-versus-response and affordability-deterioration views.
-4. Compare equal-weight and two alternative weighting schemes against the
-   publisher overheating mart and known markets.
-5. Decide whether the composite is useful enough to retain; component-led
-   classification remains the fallback.
+Compare the equal-weight composite, its two scenario-weight variants, a
+component-led diagnosis, and the momentum-versus-supply matrix against the
+documented market reads. Select a standard only if it adds a stable,
+interpretable orientation signal; otherwise retain component-led analysis as
+the Q1 method.

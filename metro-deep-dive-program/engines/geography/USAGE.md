@@ -36,6 +36,20 @@ area, distance, or historical-boundary analysis; request a role-tagged
 `geo.<level>_analysis` table for those operations. Other legacy `geo.*` tables
 remain unapproved unless the catalog says otherwise.
 
+## Regional Role lenses
+
+Read `mart_geography.region_lens_membership` rather than recreating a regional
+boundary in a notebook. It includes `census_division`, `primary_state`,
+`primary_state_adjacent`, and `cbsa_centroid_250mi`; the last stores declared
+200-, 250-, and 300-mile parameter values plus `distance_miles`. Primary state
+uses the first state in the official CBSA label (`gold.dim_geo.state_fips`).
+
+`mart_geography.state_adjacency` is symmetric and land-only.
+`mart_geography.cbsa_centroids` is a geographic-proximity reference point, not
+a travel-time or commuting proxy. A consumer needing the approved full-TIGER
+CBSA boundary must explicitly request
+`get_geometry(con, "cbsas_analysis", role="analysis")`.
+
 ## QA boundary
 
 The current release has structural coverage and weight-sum audits. Full

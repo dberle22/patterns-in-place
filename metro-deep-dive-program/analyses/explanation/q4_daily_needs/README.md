@@ -1,67 +1,51 @@
-# Q4 — Daily-Needs Access
+# Q4 — Livability Amenities and POI Clusters
 
-**Build order:** E5 — re-runs the E3 access method with POI clusters as centers
+**Build order:** E5 — POI-first workbench for the Richmond and Jacksonville
+pilot markets.
 
-**Status:** Spec and build plan drafted; Epic 1 audit not yet run.
+**Status:** Epic 1 audit complete. The workbench, basket catalog, and cluster
+method remain to be built.
 
-**Question:** Which parts of a metro have practical proximity to a defensible
-basket of everyday needs?
+**Question:** How are livability amenities organized across a metro, what
+spatial amenity hubs and comparable amenity environments emerge, and what is
+the demographic and housing context around them?
 
-Purpose:
+Q4 starts with governed POI points, not tract scores. It will retain POI
+membership in reviewed spatial amenity hubs, group similar but noncontiguous
+hubs into amenity-environment typologies, and use tract measures as descriptive
+context. Those reusable outputs can support later corridor, catchment, housing,
+employment, and access analyses.
 
-- define a narrow, defensible daily-needs basket
-- apply Q2's access method with POI clusters as the center input
-- produce another way of building corridors, this time from POI types rather than
-  job centers
+## Scope boundary
 
-**Primary analytical unit:** tract, derived from governed POI points and an
-explicitly defined reach method.
+Q4 is the program's introductory 15-minute-city workbench. V1 can describe
+amenity concentration, diversity, and surrounding conditions. It cannot claim
+15-minute access, walkability, travel time, route quality, or barrier effects
+without a later declared network and barrier method.
 
-**National posture:** national method, local application. Market-pilot ready; not
-nationally ready.
+**Owns:** analysis basket definitions, POI-cluster construction, typologies,
+tract-context profiles, and Q2 employment comparison.
 
-## What this analysis owns, and what it borrows
+**Borrows from the POI Engine:** source identity, provenance, governed taxonomy,
+coordinates, and point assignment. It does not rewrite them locally.
 
-**Borrows from Q2:** the access method and the 15-minute operational definition.
-Adopt it unchanged where possible; where you deliberately vary it, say so and
-give the reason.
+**Borrows from Infrastructure:** roads, rail, and water as mapped context only.
 
-**Owns:** the amenity basket and the reach definition applied to it.
+**Borrows from Q2:** reviewed job-center and physical-proximity evidence only as
+a comparison layer. Q2 does not supply an access or 15-minute-city definition
+for Q4 to reuse.
 
-**Does not own:** POI source identity, provenance, classification, or assignment
-— those stay with the POI Engine. POI counts are inputs, not access.
+## Pilot outputs
 
-## Why this is a test of the shared method
-
-Q4 is the first analysis to run Q2's method against a genuinely different center
-construction. If POI-built clusters produce an incoherent result under that
-method, that is a finding about the method itself, not only about Q4. Treat a bad
-result here as informative rather than as a Q4 failure.
-
-## V0 method
-
-Use Richmond and Jacksonville to define the basket, coverage rules, and a simple
-proximity/reach measure. Review category coverage and urban-form sensitivity
-**before** acquiring or processing national POIs. Only after the basket and score
-survive the two-market test should the method scale nationally.
-
-The basket and category-coverage work can be designed in parallel with Q2, since
-it does not depend on the access method.
-
-## Open decisions for the spec
-
-- basket categories and the multi-category sufficiency rule
-- distance or reach method
-- scoring and caps; population weighting
-- urban/rural comparability
-- treatment of barriers
-- national source and run strategy
+- POI workbench and versioned basket catalog, starting with broad livability and
+  errands/essentials;
+- spatial amenity-hub inventory, geometry, and POI membership;
+- composition-based amenity-environment typologies;
+- cluster profiles and tract demographic/housing context; and
+- a method record, coverage flags, sensitivities, and a Q2 employment-context
+  comparison.
 
 See [EXPLANATION_Q4_DAILY_NEEDS_SPEC.md](EXPLANATION_Q4_DAILY_NEEDS_SPEC.md) for the
-analysis boundary and inputs, and
-[EXPLANATION_Q4_DAILY_NEEDS_BUILD_PLAN.md](EXPLANATION_Q4_DAILY_NEEDS_BUILD_PLAN.md) for
-the epic sequence. Both are provisional: Epic 1 is an audit of what already
-exists, and its findings are expected to reshape them.
-
-Section 5.6 of [EXPLANATION_ANALYSES_PLAN.md](../EXPLANATION_ANALYSES_PLAN.md)
-holds the family-level framing.
+analysis contract, [EXPLANATION_Q4_DAILY_NEEDS_BUILD_PLAN.md](EXPLANATION_Q4_DAILY_NEEDS_BUILD_PLAN.md)
+for the build sequence, and [EXPLANATION_Q4_AUDIT.md](EXPLANATION_Q4_AUDIT.md) for
+the completed audit.

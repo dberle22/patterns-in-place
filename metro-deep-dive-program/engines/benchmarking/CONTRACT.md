@@ -234,8 +234,10 @@ Preferred when straightforward:
 
 - `gold.dim_geo` is the canonical geography dimension for CBSA-to-division and
   CBSA-to-state lookup
-- `state_primary` is defined as the state containing the most county rows in
-  the target CBSA footprint, with ties broken by ascending `state_fips`
+- `state_primary` is the first state named in the official CBSA label, exposed
+  by `gold.dim_geo.state_fips` / `parent_state_fips`. This keeps Benchmarking
+  aligned with Geography for multi-state CBSAs; it is not based on county
+  count or population.
 - `state_member` creates one comparison set per state touched by the target
   CBSA footprint
 - the first benchmark universe should be metro CBSA rows, not all CBSA rows

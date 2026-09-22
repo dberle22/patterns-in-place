@@ -5,6 +5,8 @@ select
     count(*) as row_count,
     count(distinct geo_id) as geography_count,
     round(100.0 * avg(has_core_affordability_data::int), 1) as core_affordability_pct,
+    round(100.0 * avg((pct_rent_burden_30plus is not null)::int), 1) as renter_burden_30plus_pct,
+    round(100.0 * avg((pct_rent_burden_30plus_change_5yr is not null)::int), 1) as renter_burden_change_5yr_pct,
     round(100.0 * avg(has_five_year_population_growth::int), 1) as population_growth_5yr_pct,
     round(100.0 * avg(has_permit_data::int), 1) as permit_row_pct,
     round(100.0 * sum(case when has_permit_data then pop_total else 0 end)

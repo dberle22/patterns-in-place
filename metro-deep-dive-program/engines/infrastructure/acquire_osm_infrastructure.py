@@ -109,7 +109,7 @@ def configure_spatial(con: duckdb.DuckDBPyConnection) -> None:
 
 
 def resolve_boundary(con: duckdb.DuckDBPyConnection, market_id: str) -> dict[str, Any]:
-    """Resolve the current Geography CBSA identity and its available geometry role."""
+    """Resolve the governed analytical CBSA boundary required for clipping."""
 
     row = con.execute(
         """
@@ -122,11 +122,11 @@ def resolve_boundary(con: duckdb.DuckDBPyConnection, market_id: str) -> dict[str
             ST_YMax(g.geom) AS north,
             ST_AsWKB(g.geom) AS geometry_wkb,
             COALESCE(c.geometry_role, 'legacy_unclassified') AS geometry_role
-        FROM geo.cbsas g
+        FROM geo.cbsas_analysis g
         INNER JOIN mart_geography.identity_current i
             ON i.geo_level = 'cbsa' AND i.geo_id = g.cbsa_code
         LEFT JOIN mart_geography.geometry_catalog c
-            ON c.geo_level = 'cbsa' AND c.table_name = 'cbsas'
+            ON c.geo_level = 'cbsa' AND c.table_name = 'cbsas_analysis'
         WHERE g.cbsa_code = ?
         """,
         [market_id],

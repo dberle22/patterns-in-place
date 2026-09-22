@@ -39,7 +39,11 @@ columns:
     needs_confirmation: no
   - name: workers_total
     type: DOUBLE
-    definition: Total resident workers in the geography-year row from LODES RAC.
+    definition: Total private-sector resident workers in the geography-year row from LODES RAC JT02.
+    needs_confirmation: no
+  - name: workers_all_total
+    type: DOUBLE
+    definition: Total all-job resident-worker count in the geography-year row from LODES RAC JT00; detailed composition fields remain JT02.
     needs_confirmation: no
   - name: workers_age_29_or_younger
     type: DOUBLE

@@ -621,6 +621,30 @@ columns:
     type: DOUBLE
     definition: Ratio of resident workers to workplace jobs for the geography-year row.
     needs_confirmation: no
+  - name: jobs_all_total
+    type: DOUBLE
+    definition: Total all-job workplace count from LODES WAC JT00; existing jobs_total and composition fields remain JT02 private-sector measures.
+    needs_confirmation: no
+  - name: workers_all_total
+    type: DOUBLE
+    definition: Total all-job resident-worker count from LODES RAC JT00; existing workers_total and composition fields remain JT02 private-sector measures.
+    needs_confirmation: no
+  - name: jobs_all_minus_workers_all
+    type: DOUBLE
+    definition: Difference between all-job workplace and resident-worker totals.
+    needs_confirmation: no
+  - name: workers_all_minus_jobs_all
+    type: DOUBLE
+    definition: Difference between all-job resident-worker and workplace totals.
+    needs_confirmation: no
+  - name: jobs_all_to_workers_all_ratio
+    type: DOUBLE
+    definition: Ratio of all-job workplace totals to all-job resident-worker totals; null when the denominator is zero or unavailable.
+    needs_confirmation: no
+  - name: workers_all_to_jobs_all_ratio
+    type: DOUBLE
+    definition: Ratio of all-job resident-worker totals to all-job workplace totals; null when the denominator is zero or unavailable.
+    needs_confirmation: no
   - name: pct_point_gap_age_29_or_younger
     type: DOUBLE
     definition: Percentage-point difference between the WAC job share and the RAC worker share for the named composition slice.

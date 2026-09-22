@@ -1,119 +1,138 @@
-# Explanation Q2 — Job Proximity Build Plan
+# Explanation Q2 — Job-Center and Proximity Method Build Plan
 
-**Status:** Epic 1 complete; V0 method definition is next
+**Status:** Epic 3 initial analytical outcomes notebook complete; ready for
+review in Richmond before any second-market calibration.
 
-**This build gates Q3, Q4, and Q6.** Epic 2's output is consumed by three other
-analyses, so it deserves more care than a first notebook usually gets.
+**History:** The completed and superseded epic sequence is preserved in
+[EXPLANATION_Q2_JOB_PROXIMITY_BUILD_PLAN_PREVIOUS.md](EXPLANATION_Q2_JOB_PROXIMITY_BUILD_PLAN_PREVIOUS.md).
 
-## How this plan works
+## Build sequence
 
-**Epic 1 is an audit, and it comes first.** Its evidence narrows the immediate
-build to a Richmond-first physical-proximity V0. The shared access method,
-affordability match, and national calibration remain later decisions.
+Q2 owns a job-center method and its first housing/cost outcomes analysis. Build
+in this order:
 
-## Epic 1 — Audit the Inputs and the Existing Job-Center Work
+1. review national job concentration to understand the first center surface;
+2. select a reviewed job-center rule in a market-specific workbench;
+3. build one market-specific analytical notebook for housing, cost, and
+   affordability outcomes; and
+4. let Q3, Q4, and Q6 later reuse the reviewed proximity surface for their own
+   questions.
 
-- [x] Confirm LODES WAC/RAC grain, vintage, and coverage. Record plainly whether
-  more than one year exists.
-- [x] Extract the existing job-center method from the Industry explorer's D3
-  work: what defines a center today, what threshold or floor it uses, and where
-  that constant came from.
-- [x] Separate the reusable method from Streamlit and app-shaped assumptions.
-- [x] Confirm tract geometry availability and distance-safe spatial operations,
-  including projection handling.
-- [x] Confirm which ACS tract fields are populated for both dependent variables
-  — cost and units — and for income and burden.
-- [x] Confirm OEWS grain and how it can be related to tract evidence without
-  implying tract-level precision.
-- [x] Confirm whether any managed tract-grain price series exists.
-- [x] Review what Q1 produced and decide what to reuse.
-- [x] State plainly whether one year of LODES is sufficient for a defensible
-  center definition.
+Do not build national comparison notebooks for every job-center outcome before
+local runs establish that the method is worth calibrating nationally.
 
-**Done when:** we know what a center can honestly be built from, what prior art
-exists, and what the two dependent variables actually support. The spec is
-rewritten against those findings.
+## Completed foundation
 
-Record the audit in [EXPLANATION_Q2_AUDIT.md](EXPLANATION_Q2_AUDIT.md).
+- [x] Audit WAC/RAC, geometry, Q1 housing fields, OEWS, and price-series limits.
+- [x] Establish V0 as physical proximity, not routed 15-minute access or a
+  household-worker affordability method.
+- [x] Build `EXPLANATION_Q2_JOB_CONCENTRATION_NOTEBOOK.py` over named,
+  read-only 2023 WAC/RAC queries.
+- [x] Implement national WAC coverage, concentration, distribution, ratio, and
+  top-tract outputs.
 
-**Completed conclusion:** V0 is feasible as a Richmond-first, current-snapshot
-physical-proximity study. It does not yet establish a 15-minute access method
-or a household-to-worker affordability mismatch.
+## Epic 1 — Review national job concentration
 
-## Epic 2 — Define the V0 Proximity Method
+- [x] Review coverage, exclusions, eligible-CBSA rules, and the 2023 snapshot
+  limitation in `EXPLANATION_Q2_JOB_CONCENTRATION_NOTEBOOK.py`.
+- [x] Review Pareto curves, 50%/80% cutoffs, top-20%-tract job share, and
+  employment-geography metric behavior.
+- [x] Identify contrasting markets for method testing; do not rank markets or
+  promote a threshold from the national distributions.
+- [x] Record Richmond's national concentration context for the
+  market method notebook.
 
-*Provisional. Rewrite after Epic 1.* **This is the epic that matters.**
+**Done when:** national patterns inform the local review without selecting its
+job-center rule.
 
-- [ ] Define what a job center is: the construction rule, the threshold, and the
-  minimum a center must satisfy.
-- [ ] Define the V0 reach measure. Do not name it a 15-minute definition unless
-  a routed travel-time input is added and audited.
-- [ ] Define the origin point for tracts and the treatment of multiple centers.
-- [ ] Record the candidate rule, selected rule, exclusions, and Haversine
-  calculation in a method note that the notebook displays.
-- [ ] State which V0 choices are provisional and what evidence a shared method
-  would need before later analyses adopt it.
-- [ ] Sanity-check the definition against a second center construction on paper
-  before any consumer builds on it.
+**Completed review:** [EXPLANATION_Q2_NATIONAL_CONCENTRATION_REVIEW.md](EXPLANATION_Q2_NATIONAL_CONCENTRATION_REVIEW.md)
+records the cohort, Richmond context, two-signal exploratory screen, and
+recommended contrast sequence. The 1% market-job-share, 1.5 jobs-to-workers,
+and 2,500-job settings remain sensitivities, not an adopted rule.
 
-**Done when:** V0 has an inspectable center and proximity construction, without
-claiming to be the shared 15-minute definition.
+## Epic 2 — Complete the market job-center method workbench
 
-## Epic 3 — Build the Gradient
+- [x] Rework `EXPLANATION_Q2_PROXIMITY_METHOD_NOTEBOOK.py` to begin with the
+  selected market's national concentration context.
+- [x] Retain full tract maps for workplace jobs, CBSA job share, job density,
+  and jobs-to-resident-workers before any display filter.
+- [x] Make tract market-job share and jobs-to-workers the primary, independent
+  candidate signals. Retain an absolute-job floor as a required guardrail;
+  retain density and contiguous clusters as contextual/exploratory views.
+- [x] Show every rule's parameters, inventory, overlap, exclusions, and visible
+  fragmentation. Do not create a composite score or automatic center choice.
+- [x] Define a reviewed job-center record outside notebook state: version,
+  selected/rejected rule, selected tracts/districts, center origins,
+  nearest/multiple-center treatment, sensitivities, reviewer, and date.
+- [x] Publish named national candidate and tract-level proximity surfaces for
+  strict-core, recommended core-plus-one-hop, and no-share-sensitivity versions.
 
-*Provisional. Rewrite after Epic 1.*
+**Done when:** a reviewer can select or reject a transparent job-center method,
+and another notebook can consume the resulting proximity surface without
+recreating center selection.
 
-- [ ] Build the center inventory and selected-market center map.
-- [ ] Calculate straight-line distance from residential tracts to centers.
-- [ ] Build the binned distance curve for both dependent variables.
-- [ ] Estimate the gradient with regression; report coverage and residuals.
-- [ ] Add the tract residual map.
+**Completed publication:** the workbench and
+[EXPLANATION_Q2_JOB_CENTER_METHOD_RECORD.md](EXPLANATION_Q2_JOB_CENTER_METHOD_RECORD.md)
+are paired with the national `mart_explanation_q2` candidate, cluster,
+proximity, and method-catalog tables. Per-market reviewer approval still
+governs which version is primary in an outcomes read; it does not block reuse
+of the published sensitivity surfaces.
 
-**Done when:** the gradient is visible, its model is inspectable, and its
-residuals are mapped rather than hidden.
+## Epic 3 — Build the analytical job-center outcomes notebook
 
-## Epic 4 — Add Affordability (post-V0)
+- [x] Create `EXPLANATION_Q2_JOB_CENTER_OUTCOMES_NOTEBOOK.py`, parameterized
+  by CBSA and a reviewed job-center record.
+- [x] Read the reviewed tract-level proximity surface and Q1's 2024 tract
+  housing surface through named queries; do not recreate job-center selection
+  or Q1 transformations in notebook cells.
+- [x] Show the reviewed method, center inventory/map, national job context, and
+  outcome-specific coverage before analytical results.
+- [x] Build binned distance curves for median gross rent, median home value,
+  and housing units; retain household income, rent-to-income, and rent burden
+  as separately labeled affordability context.
+- [x] Fit disclosed descriptive models, show a primary-cost residual map, and
+  state a no-clear-signal result where warranted.
+- [x] Keep household income, LODES earnings bands, and OEWS wage context
+  separate; do not claim a household-worker affordability match.
+- [x] Keep center-selection controls out of this notebook and halt if the
+  job-center method has not been reviewed.
 
-*Provisional. Rewrite after Epic 1.*
+**Done when:** one analytical market notebook produces a reviewable job-center
+housing/cost result without mixing method selection and conclusion.
 
-- [ ] Add the job-center earnings profile from LODES earnings bands.
-- [ ] Add tract income and housing burden.
-- [ ] Add OEWS as labeled CBSA-grain context.
-- [ ] Define a household-versus-worker comparison standard before calculating
-  any affordability mismatch.
-- [ ] Build a mismatch distribution or residence-versus-workplace comparison
-  only if that standard supports it.
+**Completed implementation:** the new notebook reads the published Q2 mart
+through outcome-specific queries, defaults to Richmond's reviewed
+`recommended_core_one_hop` version, and retains strict-core/no-share as visible
+sensitivity views. It explicitly stops a selected version with no centers;
+Marimo static and full execution checks passed against the local mart.
 
-**Done when:** the affordability read is present without blending the three wage
-and income concepts or claiming a worker-household bridge that has not been
-defined.
+## Epic 4 — Hand off to later thematic notebooks
 
-## Epic 5 — National Calibration (post-V0)
+- [ ] Document the reviewed job-center proximity surface so Q3 can analyze
+  growth, Q4 can contextualize daily-needs access, and Q6 can assess
+  multi-anchor structure without recreating job-center selection.
+- [ ] Require each consumer to declare its outcome grain, time treatment,
+  controls, and interpretation independently.
+- [ ] Defer a broader market synthesis until multiple reviewed theme results
+  exist; it is not another Q2 notebook now.
 
-*Provisional. Rewrite after Epic 1.*
+## Epic 5 — National calibration and access promotion, only if earned
 
-- [ ] Run the method nationally to compare gradient shape and strength.
-- [ ] Add sensitivity to center selection, price source, and normalization.
-- [ ] Confirm the method produces a defensible `no clear signal` where it should.
+- [ ] Run the reviewed job-center method and one thematic comparison in a
+  second contrasting market.
+- [ ] Open a national job-center-versus-outcome calibration notebook only when
+  the local method and outcome definition survive those runs.
+- [ ] Test sensitivity and `no clear signal` behavior rather than producing a
+  national market ranking.
+- [ ] Evaluate a routed travel-time challenger once for the family before
+  promoting a 15-minute-access definition.
 
-**Done when:** the national run has tested the method rather than merely
-producing a ranking.
+## Guardrails
 
-## Epic 6 — Hand Off the Spine
-
-*Provisional. Rewrite after Epic 1.*
-
-- [ ] Publish the access definition in a form Q3, Q4, and Q6 can consume.
-- [ ] Record which parts are fixed and which are variable.
-- [ ] Decide whether the center surface should be promoted or stay analysis-local.
-- [ ] Note what a routed network method would need to beat.
-
-**Done when:** the next analysis can start without reverse-engineering this
-notebook.
-
-## What not to do
-
-- do not let the access definition live only in notebook code
-- do not infer travel or commuting from straight-line distance
-- do not blend household income, job earnings, and occupational wages
-- do not build two notebooks for the two dependent variables
+- Do not use housing, cost, income, burden, or growth to select job centers.
+- Do not build duplicate national notebooks when Q1 already owns the national
+  housing/cost question.
+- Do not infer travel, commuting, worker origins, or 15-minute access from
+  Haversine distance or RAC.
+- Do not blend household income, LODES earnings bands, and OEWS wages.
+- Do not run parallel DuckDB materializations for needed upstream data work.

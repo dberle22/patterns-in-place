@@ -1,8 +1,9 @@
 # Explanation Q6 — One Metro? Spec
 
-**Status:** Provisional — Epic 1 audit not yet run
+**Status:** V1 contract aligned after Epic 1 audit; implementation not started
 
-**Build order:** E7 — re-runs the E3 access method with anchor cities as centers
+**Build order:** E7 — applies Q2's physical-proximity method to Census Place
+anchor candidates
 
 **Primary surface:** `EXPLANATION_Q6_NOTEBOOK.py` (not yet written)
 
@@ -10,109 +11,119 @@
 
 **Initial method:** `q6_one_metro_v1`
 
-**Dependencies:** Regional Role components, LODES WAC/RAC, Q2's access method.
-LODES OD is required for the complete method and does not appear to exist.
+**Dependencies:** LODES WAC/RAC, Q2's reviewed job-center/proximity surface,
+and Geography's Census Place relationships. LODES OD is required for the
+county-integration half.
 
 ## How to read this spec
 
-**This spec is deliberately provisional.** Epic 1 is an audit that confirms what
-already exists, and its findings are expected to reshape everything below it.
-Where the audit contradicts this spec, the audit wins.
+**Epic 1 is complete.** This V1 contract reflects its findings. Later epics may
+refine thresholds after market review, but must retain the audit's evidence and
+method boundaries.
 
 ## Goal
 
-Determine whether a CBSA is really one metro — and if not, how many centers it
-has.
+Identify the Census Places that anchor a CBSA, describe the distinct roles its
+Places play, and determine whether the market has one anchor or several.
 
-## Two questions under one heading
+## Primary question and sourced context
 
-The scope is deliberately wider than the original county-integration framing:
+The primary question is: **Which Census Places anchor this CBSA, and how do the
+other Places relate to those anchors?**
 
-1. Do the CBSA's outlying counties belong to the same labor market, or are they
-   administratively attached with weak integration?
-2. **Does the metro have multiple anchor cities?** This is the more interesting
-   half.
-
-Widening the scope this way makes the question clearer, even though it is really
-more than one question. The two halves have different data readiness, and the
-spec should not pretend otherwise.
+The OMB 2023 CBSA-to-county crosswalk already classifies each member county as
+Central or Outlying. Q6 reports that official designation as county context; it
+does not reconstruct or challenge the federal metro delineation. OD flows may
+later describe Place relationships, but they are not a gate for reporting the
+official county status.
 
 ## How the second question is answered
 
-Run Q2's access method with anchor cities and candidate downtowns as the center
-input, and see how many coherent centers the metro actually supports. The
-surfaces to work from — **commute flows, job corridors, and amenity clusters** —
-are the same three that Q2 and Q4 produce. Q6 is largely a re-reading of those
-at metro scale, asking whether they resolve into one center or several.
+Start with every governed Census Place in the CBSA and build a comparable Place
+profile: population, income, housing, allocated workplace-job context, and
+relative scale within the metro. Associate candidate anchors with Q2's reviewed
+job-center components. Q6 adopts Q2's V0 centroid-to-centroid Haversine distance
+unchanged: it is physical proximity, not access, travel time, commuting
+behavior, or a 15-minute-city measure.
 
-This makes Q6 the third test of the shared access method, against a third center
-construction.
+OD flows, infrastructure, and POIs explain relationships and daily activity
+after their Place-grain interfaces are available. They are evidence layers, not
+a substitute for the Place hierarchy.
+
+This makes Q6 a further test of the shared physical-proximity spine, against a
+Place-based center construction.
 
 ## National posture: national method, local application
 
-Prototype nationally; do not claim integration until OD exists.
+Prototype one consistent Place-hierarchy method nationally, then explain the
+selected market locally.
 
 ## Preliminary read of what exists
 
-**Provisional. Epic 1 must confirm or correct all of this.**
+**Confirmed by Epic 1.**
 
 | Observation | Why it matters | What Epic 1 must settle |
 |---|---|---|
-| LODES WAC/RAC appear present at tract and county grain, 2023 only | County role, balance, and employment-center evidence are supported | Confirm grain and vintage |
-| **No LODES OD table appears to exist anywhere in the warehouse** | The functional-integration half of this question is genuinely blocked | Confirm, and record it as the gating dependency |
-| CBSA-to-county crosswalks appear present | Core and outlying counties can be identified | Confirm vintage and central/outlying flags |
-| Phase 7 zone surfaces appear present | Polycentric form has interpretation context | Confirm what they carry at tract and ZCTA grain |
-| Q2 will produce a center definition and access surfaces | The anchor-city half is supported once Q2 lands | Record exactly what Q6 adopts |
+| Official county status | `silver.xwalk_cbsa_county` is an OMB 2023 crosswalk with `county_flag` | Report Central/Outlying as sourced context; do not derive a competing classification |
+| Census Place profile | `gold.population_demographics` has direct 2024 Place rows; Geography has Place identity and tract-to-Place allocation edges | Build a Place hierarchy from named, comparable Place measures; label allocated measures |
+| Census Place identity and tract-to-Place allocation edges exist | Places can be the anchor-city unit without treating a tract as a city | Record the reviewed Place-to-component association rule |
+| Q2 publishes 2023 WAC candidate, cluster, and proximity surfaces | The anchor-city half can adopt physical proximity now | Retain the Q2 center-version sensitivity; do not call it access |
 
-The honest reading is that **half this analysis is buildable now and half is
-not.** The anchor-city question can proceed on WAC/RAC and Q2's method; the
-integration question waits on OD. The spec should keep them visibly separate
-rather than blending them into one weaker answer.
+The Place hierarchy and anchor-city analysis are buildable now from governed
+Place and Q2 surfaces. OD is a later relationship input, not a county-status
+gate. Direct POI-to-Place and Infrastructure-to-Place interfaces remain
+dependencies rather than candidates for approximation.
 
 ## Inputs
 
 | Input | Role |
 |---|---|
-| Regional Role comparison surfaces | Regional context |
-| County and tract LODES WAC/RAC | County role, balance, employment centers |
-| County industry mix | Industry similarity |
-| Q2 access method and center definition | The anchor-city read |
-| Q4 amenity clusters | Supporting center evidence |
+| Regional Role source and interpretation contract | Regional context; no completed output surface is required for V1 |
+| Direct ACS Place measures | Population, income, housing, and other Place profile measures |
+| Tract LODES WAC/RAC with Place allocation edges | Allocated workplace-job context, labeled as such |
+| Q2 reviewed job-center and physical-proximity surface | Supporting evidence for the anchor-city read |
+| Census Place identity and tract-to-Place allocation edges | Candidate-anchor inventory and component association |
+| OD flows | Later Place-to-Place work relationship evidence |
+| Direct POI-to-Place and Infrastructure-to-Place interfaces | Later activity and connection context; not yet published |
 | Phase 7 / Internal Structure context | Polycentric form description |
-| Required for the complete method: LODES OD | Functional integration — currently unavailable |
 
 ## V0 method
 
-Prototype county economic role, employment-center distribution, industry
-similarity, and polycentricity nationally. Treat these as **structural evidence,
-not a functional-integration score.** Add OD shares when available, then test
-how much each outlying county sends to the core and receives from the rest of
-the CBSA.
+Report the OMB 2023 Central/Outlying county designation as context. Rank and
+profile every covered Census Place within the selected CBSA using separately
+labeled levels and shares, not a composite score. Candidate anchors are then
+reviewed against population and income context, allocated workplace-job evidence,
+and association with distinct Q2 job-center components.
+
+Treat OD flows, infrastructure, and POIs as relationship evidence: OD can show
+Place-to-Place work connections; infrastructure can describe connection and
+barrier context; POIs can describe activity concentration once direct
+point-to-Place assignment exists. None determines anchor status alone.
 
 ## Minimum outputs
 
-County role table, county integration matrix after OD, employment-center map,
-core/outlying comparison, candidate anchor-city inventory with its access
-surfaces, sensitivity table for the integration rule, and an explicit
-`integrated`, `mixed`, `weak`, or `insufficient flow data` result.
+OMB county-status context table; Census Place hierarchy and profile table;
+Place ranking views for population, income, housing, and allocated workplace
+jobs; employment-center map; candidate-anchor inventory with physical-proximity
+evidence; Place relationship views as OD, infrastructure, and POI interfaces
+become available; and an anchor result (`one supported anchor`, `multiple
+supported anchors`, `mixed`, or `insufficient structure evidence`).
 
 ## Guardrails
 
-- do not claim commuting integration from WAC/RAC without OD
-- keep the two halves of the question visibly separate
-- return `insufficient flow data` honestly rather than substituting a weaker
-  proxy and calling it integration
-- do not silently diverge from Q2's access definition
+- do not infer Place commuting relationships from WAC/RAC without OD
+- do not turn the OMB county designation into a Q6-derived score
+- do not describe Q2 physical proximity as access or a 15-minute measure
 
 ## Open decisions
 
-- definition of the core
-- numerator and denominator for commuting shares
-- multidirectional versus core-directed integration
-- treatment of cross-CBSA flows
-- polycentricity measure and classification thresholds
+- minimum materiality rule for entering the Census Place candidate inventory
+- Place metric contract, including which measures are direct versus allocated
+- OD Place-to-Place flow contract and coverage treatment
+- direct POI-to-Place and Infrastructure-to-Place interfaces
 
 ## References
 
 - Section 5.2 of [EXPLANATION_ANALYSES_PLAN.md](../EXPLANATION_ANALYSES_PLAN.md)
 - [EXPLANATION_Q6_ONE_METRO_BUILD_PLAN.md](EXPLANATION_Q6_ONE_METRO_BUILD_PLAN.md)
+- [Epic 1 audit](EXPLANATION_Q6_AUDIT.md)

@@ -2,7 +2,7 @@
 
 **Build order:** E3 — **gates E5 (Q4), E6 (Q3), and E7 (Q6)**
 
-**Status:** Epic 1 audit complete; V0 method definition is next.
+**Status:** Epic 2 implementation complete; national-pattern review is next.
 
 **Question:** What does proximity to the market's major employment centers cost
 in housing value or rent, and can households with local incomes afford to live
@@ -10,9 +10,10 @@ there?
 
 Purpose:
 
-- establish the reusable definition of a job center
-- establish the operational 15-minute-city definition the rest of the family
-  re-runs
+- establish how workplace jobs concentrate across tracts nationally before
+  choosing any local center or district rule
+- explore and review local candidate job-center and district constructions only
+  after the national pattern is visible
 - estimate the price/rent gradient against distance, with coverage and residuals
 - compare tract housing cost and resident income against the earnings profile of
   nearby job centers
@@ -21,20 +22,21 @@ Purpose:
 ZCTA supports market-price trends when its distinct grain stays visible. CBSA
 occupational wages are context, not tract-level precision.
 
-**National posture:** national method, local application. The national run tests
-and calibrates the method rather than being the finding.
+**National posture:** national employment-concentration discovery first;
+Richmond-first geographic interpretation second. National proximity calibration
+comes only after a reviewed V0 rule has been tested locally.
 
 ## This analysis carries the shared access spine
 
-Its most important output is not the gradient. It is the reusable operational
-definition — what a center is, how reach is measured, what counts as access —
-that Q3, Q4, Q6, and Catchment re-run with different center inputs.
+Its most important early output is not the gradient. It is a national account
+of workplace-job concentration and a reviewable set of local candidate
+constructions that can eventually support a reusable operational definition —
+what a center is, how reach is measured, what counts as access.
 
-**Specify that definition to be adopted without reinterpretation.** A loose
-definition here gets expensive to unwind after three other analyses have consumed
-it. This is the one deliberate exception to the promotion rule: five consumers
-are known before any is written, so the method is specified once here rather than
-discovered on the third notebook.
+**Do not specify that definition before exploration.** The first notebook
+profiles national tract concentration; the second maps raw local job geography
+and competing candidate constructions. A reviewer then explicitly selects or
+rejects a V0 rule. Nothing is promoted to later analyses during that review.
 
 ## Merged analysis
 
@@ -46,15 +48,15 @@ issue-layer decision, not a reason to build two notebooks.
 
 ## V0 method, in order
 
-1. **Define job centers.** Required, not optional — four later analyses depend on
-   it.
-2. **Build tract gradients by physical proximity first**, network effects second.
-3. **Measure what varies across the gradient** — housing cost, housing units, and
-   simple counts like how many people live there.
-4. **Estimate the relationship** with regression, for both cost and units,
-   reporting coverage and residuals.
-5. **Layer in affordability** by comparing tract housing cost and resident income
-   against the earnings profile of nearby job centers.
+1. **Measure national tract concentration.** Build within-market Pareto curves
+   and 50%/80% concentration cutoffs from workplace jobs.
+2. **Profile the tract metrics.** Inspect total jobs, density, and
+   jobs-to-resident-workers without collapsing them into one score.
+3. **Explore local employment geography.** Map candidate tracts and adjacent
+   districts in a selected market before selecting a construction.
+4. **Build tract gradients by physical proximity**, network effects second.
+5. **Measure housing outcomes and affordability context** across the reviewed
+   proximity gradient, with coverage and residuals visible.
 
 Keep household income, individual job earnings, and occupational wages separate.
 Any modeled bridge between them must be explicit.
@@ -66,13 +68,15 @@ its current contract.
 
 ## Open decisions for the spec
 
-- center construction rule and the evidence required before a 15-minute method
-  can be defined
+- concentration measures and eligible-market rules for the national analysis
+- center/district construction rule and the evidence required before a
+  15-minute method can be defined
 - treatment of multiple centers; origin point for tracts
 - distance bins and model form
 - housing measure, controls, minimum observations
 - whether gradients are descriptive or adjusted
 - affordability standard; household-versus-worker unit
+- worker-origin analysis after LODES OD is available; RAC alone is insufficient
 - wage source hierarchy; tenure treatment; time alignment
 
 See [EXPLANATION_Q2_JOB_PROXIMITY_SPEC.md](EXPLANATION_Q2_JOB_PROXIMITY_SPEC.md) for the

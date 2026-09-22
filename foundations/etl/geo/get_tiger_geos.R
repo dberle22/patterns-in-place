@@ -74,6 +74,19 @@ write_display_geometry <- function(sf_object, target_table, boundary_vintage) {
   DBI::dbExecute(con, sprintf("UPDATE %s SET geom = ST_GeomFromWKB(geom_wkb)", target_table))
 }
 
+resolve_geo_id_column <- function(sf_object, candidates, geography_name) {
+  # Census cartographic products vary between GEOID and GEOID20 across vintage.
+  # Resolve once so consumers receive a stable canonical identifier column.
+  matched <- intersect(candidates, names(sf_object))
+  if (length(matched) == 0) {
+    stop(
+      sprintf("Could not find a GEOID field for %s; checked: %s", geography_name, paste(candidates, collapse = ", ")),
+      call. = FALSE
+    )
+  }
+  matched[[1]]
+}
+
 geometry_year <- as.integer(Sys.getenv("GEOGRAPHY_TIGER_YEAR", unset = "2024"))
 selected_states <- resolve_state_scope()
 all_states <- c(state.abb, "DC")
@@ -81,8 +94,9 @@ is_national_scope <- setequal(selected_states, all_states)
 sqm_per_sqmi <- 2589988.110336
 
 # Tracts are fetched per state because they are the large, consumer-oriented
-# product. A scoped request writes only geo.tracts_<state>_display.
-tracts_by_state <- lapply(selected_states, function(state_abbr) {
+# product. A submarket-only refresh can skip this existing product explicitly.
+build_tracts <- !identical(tolower(Sys.getenv("GEOGRAPHY_TIGER_SKIP_TRACTS", unset = "false")), "true")
+tracts_by_state <- if (build_tracts) lapply(selected_states, function(state_abbr) {
   message(glue::glue("Downloading {state_abbr} tract display geometry ({geometry_year})"))
   tracts <- tigris::tracts(state = state_abbr, cb = TRUE, year = geometry_year) |>
     dplyr::mutate(
@@ -104,11 +118,11 @@ tracts_by_state <- lapply(selected_states, function(state_abbr) {
     geometry_year
   )
   tracts
-})
+}) else list()
 
 # Nationwide display output is useful for broad maps, but only an explicit ALL
 # request refreshes it. Existing geo.tracts_all_us remains untouched here.
-if (is_national_scope) {
+if (is_national_scope && build_tracts) {
   write_display_geometry(
     dplyr::bind_rows(tracts_by_state),
     "geo.tracts_all_us_display",
@@ -134,6 +148,48 @@ if (identical(tolower(Sys.getenv("GEOGRAPHY_TIGER_REFERENCE", unset = "false")),
   write_display_geometry(states, "geo.states_display", geometry_year)
   write_display_geometry(counties, "geo.counties_display", geometry_year)
   write_display_geometry(cbsas, "geo.cbsas_display", geometry_year)
+}
+
+# ZCTA and Place display geometries support product-facing submarket maps. They
+# remain opt-in because a national ZCTA pull is materially larger than the core
+# tract build. A nationwide scope writes canonical tables for the reusable Q1
+# market selector; a scoped run writes state-specific Place tables only.
+if (identical(tolower(Sys.getenv("GEOGRAPHY_TIGER_SUBMARKET_REFERENCE", unset = "false")), "true")) {
+  # Census publishes cartographic-boundary ZCTAs only for the decennial 2020
+  # vintage at present; the table records that distinct display vintage.
+  zcta_geometry_year <- 2020L
+  message(glue::glue("Downloading ZCTA display geometry ({zcta_geometry_year})"))
+  zctas <- tigris::zctas(cb = TRUE, year = zcta_geometry_year)
+  zcta_id_column <- resolve_geo_id_column(zctas, c("GEOID20", "GEOID"), "ZCTA")
+  zctas <- zctas |>
+    dplyr::mutate(zcta_geoid = .data[[zcta_id_column]])
+
+  if (is_national_scope) {
+    write_display_geometry(zctas, "geo.zctas_display", zcta_geometry_year)
+  } else {
+    warning(
+      "ZCTA geometry is nationwide; run with GEOGRAPHY_TIGER_STATE_SCOPE=ALL to materialize geo.zctas_display.",
+      call. = FALSE
+    )
+  }
+
+  places_by_state <- lapply(selected_states, function(state_abbr) {
+    message(glue::glue("Downloading {state_abbr} Place display geometry ({geometry_year})"))
+    places <- tigris::places(state = state_abbr, cb = TRUE, year = geometry_year)
+    place_id_column <- resolve_geo_id_column(places, c("GEOID", "GEOID20"), "Place")
+    places |>
+      dplyr::mutate(place_geoid = .data[[place_id_column]], state_abbr = state_abbr)
+  })
+
+  if (is_national_scope) {
+    write_display_geometry(dplyr::bind_rows(places_by_state), "geo.places_display", geometry_year)
+  } else {
+    write_display_geometry(
+      dplyr::bind_rows(places_by_state),
+      sprintf("geo.places_%s_display", tolower(paste(selected_states, collapse = "_"))),
+      geometry_year
+    )
+  }
 }
 
 message("Built display geometry for: ", paste(selected_states, collapse = ", "))

@@ -602,7 +602,7 @@ tables:
     schema: gold
     table_name: economics_lodes_wide
     subject_areas: [labor, jobs, opportunity, spatial_mismatch]
-    description: LODES workplace and resident-worker mart with jobs-versus-workers mismatch metrics.
+    description: LODES private-sector workplace/resident-worker mart with parallel all-job headline mismatch metrics.
     grain: one row per geo_level + geo_id + year
     primary_key: [geo_level, geo_id, year]
     geo_id_field: geo_id
@@ -612,9 +612,9 @@ tables:
     supported_geo_levels: [division, state, cbsa, county, tract]
     sources:
       - source_id: LEHD_LODES_WAC
-        columns: [jobs_total, pct_jobs_earnings_high, pct_jobs_ind_professional_scientific_technical]
+        columns: [jobs_total, jobs_all_total, pct_jobs_earnings_high, pct_jobs_ind_professional_scientific_technical]
       - source_id: LEHD_LODES_RAC
-        columns: [workers_total]
+        columns: [workers_total, workers_all_total]
     upstream_dependencies:
       - silver.lehd_lodes_wac
       - silver.lehd_lodes_rac
@@ -628,6 +628,21 @@ tables:
         type: integer
         description: Total resident workers.
         source_id: LEHD_LODES_RAC
+        queryable: true
+      - column_name: jobs_all_total
+        type: integer
+        description: Total all-job workplace count; existing jobs_total remains private-sector.
+        source_id: LEHD_LODES_WAC
+        queryable: true
+      - column_name: workers_all_total
+        type: integer
+        description: Total all-job resident-worker count; existing workers_total remains private-sector.
+        source_id: LEHD_LODES_RAC
+        queryable: true
+      - column_name: jobs_all_to_workers_all_ratio
+        type: ratio
+        description: All-job workplace totals divided by all-job resident-worker totals.
+        source_id: LEHD_LODES_WAC
         queryable: true
       - column_name: jobs_to_workers_ratio
         type: ratio

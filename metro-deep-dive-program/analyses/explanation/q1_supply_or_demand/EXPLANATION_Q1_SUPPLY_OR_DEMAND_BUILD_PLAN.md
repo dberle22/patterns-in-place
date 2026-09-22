@@ -1,6 +1,7 @@
 # Explanation Q1 — Supply or Demand Build Plan
 
-**Status:** Epic 1 complete; mart build is next
+**Status:** Operational notebook build and foundational validation complete;
+two research closeout tracks remain
 
 ## Epic 1 — Audit inputs and prior art
 
@@ -100,9 +101,8 @@ without an unlabelled grain, source, or boundary-vintage change.
   metric-count rule, missing-data rule, and threshold sensitivity in SQL.
 - [x] Compare the new CBSA result with
   `mart_housing.overheating_matrix`; do not inherit its formula.
-- [ ] Test known markets and the no-signal path.
-- [ ] Decide which mart fields are stable enough for Q2, Q3, and the Housing
-  satellite, and whether a later Foundations migration is warranted.
+- [x] Document the candidate composite as exploratory only; defer selection of
+  a Q1 standard index to the deliberate deep dive in Epic 10.
 
 **Done when:** Q1 has either a validated, explicitly provisional diagnostic
 index or a documented decision that component-led classification is sufficient.
@@ -116,3 +116,143 @@ index or a documented decision that component-led classification is sufficient.
   wage series.
 - Do not make ZORI an inclusion requirement.
 - Do not adopt the publisher's overheating method implicitly.
+
+## Revision epics — approved metric-contract and notebook rebuild
+
+These epics preserve the initial work as an auditable foundation. They correct
+measure semantics and rebuild presentation/classification behavior; they do not
+silently rewrite the history of Epics 1–5.
+
+## Epic 6 — Correct the affordability contract and mart readers
+
+- [x] Replace the primary renter-affordability presentation/classification
+  measure with ACS `pct_rent_burden_30plus` and add its valid five-year change.
+- [x] Rename `renter_cost_to_income` everywhere it is presented to
+  `median-rent-to-all-household-income price proxy` (or an equivalent concise
+  label); document its all-household denominator.
+- [x] Deprecate `renter_inexpensive_30_flag` and
+  `renter_stress_test_50_flag`; no notebook classification or conclusion may
+  use either flag.
+- [x] Keep annualized median rent and owner costs in the mart. Label owner-cost
+  measures as existing-owner context and preserve mortgage status; do not use
+  them as current-buyer affordability measures.
+- [x] Add or update named readers for renter-burden level/change, value-to-
+  income change, fixed FHFA/ACS momentum measures, and their source years.
+- [x] Add a metric-contract table to the mart/notebook readers: source,
+  numerator, denominator, applicable grain, period, and prohibited inference.
+
+**Done when:** each displayed affordability field has a defensible household or
+market-access meaning, and no 30% threshold is applied to a median-rent/all-
+household-income proxy.
+
+## Epic 7 — Rebuild the national notebook as a decision sequence
+
+- [x] Start with the question, declared 2024 ACS snapshot, cohort/universe,
+  source coverage, exclusions, and metric contract.
+- [x] Present national distributions and maps by family before testing
+  relationships: renter burden, market access, momentum, supply response,
+  demand, and vacancy context.
+- [x] Make five-year FHFA HPI the canonical home-price momentum series and
+  five-year ACS gross-rent growth the parallel rent series. Keep Zillow results
+  as clearly labelled diagnostic context.
+- [x] Make momentum-versus-supply-response the primary overheating diagnostic;
+  distinguish permits (construction response) from housing-stock growth
+  (realized response).
+- [x] Show how affordability conditions interact with supply and demand without
+  claiming a causal relationship from a cross-sectional scatter.
+- [x] Move the candidate index after the component evidence and methodology
+  card; retain it only if it contributes information beyond component-led
+  findings.
+- [x] Use one declared primary CBSA universe for comparable visuals and put
+  small-market results in a labelled supplemental view rather than silently
+  mixing universes.
+
+**Done when:** a reader can understand the national housing conditions and the
+evidence for or against an index without reading the SQL or inferring a metric's
+meaning from a chart title.
+
+## Epic 8 — Rebuild the CBSA market notebook, starting with Richmond
+
+- [x] Replace free-text CBSA entry with the standard searchable dropdown
+  formatted as CBSA name plus code, defaulting to Richmond, VA (`40060`).
+- [x] Lead with a metric-definition note and broad CBSA/county trends using
+  native units in separate aligned panels; provide a separately labelled
+  standardized comparison only where useful.
+- [x] Replace the static tract-centroid scatter with a Marimo-supported
+  interactive tract map and table, including a metric selector, stable legend,
+  and hover detail.
+- [x] Limit tract choices to direct tract-valid measures and maintain explicit
+  vintage/allocation labels; never infer tract permits or prices from higher
+  grains.
+- [x] Repair the ZCTA context cell and test it using the selected CBSA.
+- [x] Rework tract classification using renter burden and valid direct
+  evidence; retain and explain `no clear signal`.
+- [x] Keep ZCTA price and Place permit evidence as context lenses, including
+  the overlap/coverage caveat.
+
+**Done when:** Richmond can be investigated from CBSA to tract without mixed
+units, a broken context view, or an unsupported affordability classification.
+
+## Epic 9 — Foundational validation and visualization review
+
+- [x] Add population-weighted major-CBSA benchmark lines and unweighted
+  25th–75th percentile bands to the broad-market trend charts.
+- [x] Replace local-base-year supply co-movement with a national-relative,
+  interquartile-range-scaled supply and demand context view.
+- [x] Add visible Tract → ZCTA → Place geography lenses, each with direct
+  affordability/vacancy context, an interactive map, and a transparent
+  descriptive conditions matrix.
+- [x] Add opt-in Census cartographic-boundary display geometry for ZCTAs
+  (2020 vintage) and Places (2024 vintage) to support those maps without
+  approximating their shapes from tract memberships.
+- [x] Add KPI-selectable momentum-versus-supply relationships and an
+  interactive CBSA/state-outline map so component and composite patterns can
+  be reviewed before index retention is decided.
+- [x] Reconcile 2024 displayed fields to their ACS-derived Gold sources for
+  Richmond, Tampa, and Shreveport. Renter burden, rent proxy, existing-owner
+  cost context, value-to-income, FHFA momentum, and population growth matched.
+- [x] Confirm every chart's data year/window and reject mixed-year comparisons
+  unless explicitly presented as later context.
+
+**Completed validation boundary:** foundational field reconciliation and chart
+period/window review are complete. The remaining market tests and index choice
+are now tracked as dedicated research work below.
+
+## Epic 10 — Deep dive on overheating composites
+
+- [ ] Compare component-led diagnosis, the equal-weight four-family composite,
+  two scenario-weight composites, and the momentum-versus-supply matrix.
+- [ ] Test whether rankings remain stable under reasonable metric, weight, and
+  threshold changes.
+- [ ] Compare candidate outputs with the publisher overheating mart as an
+  external benchmark, without inheriting its formula.
+- [ ] Decide whether Q1 adopts a standard index, retains a nonstandard
+  exploratory rank, or uses component-led diagnosis only.
+
+**Done when:** the Spec records an evidence-backed index decision and its
+appropriate scope, or explicitly records the decision not to standardize one.
+
+## Epic 11 — Document initial multi-market notebook reads
+
+- [ ] Run the notebooks for Richmond, contrasting momentum/demand markets,
+  and at least one no-signal case.
+- [ ] Record the observed components, geographic-lens evidence, data gaps,
+  and analyst interpretation for each market.
+- [ ] Confirm that the descriptive conditions matrices remain understandable
+  and do not imply causal claims at Tract, ZCTA, or Place grain.
+- [ ] Identify stable mart fields for Q2/Q3 or the Housing satellite and any
+  later Foundations migration candidates.
+
+**Done when:** Q1 has a concise, reviewable initial market-read record and a
+documented reuse recommendation.
+
+## Revision completion summary
+
+- **Epics 6–8:** rebuilt the Q1 mart readers and both notebooks around renter
+  burden, clearly labelled market-price proxies, fixed price/rent momentum
+  measures, native-unit market trends, and interactive tract evidence.
+- **Epic 9:** foundational validation complete: values reconcile to Gold,
+  chart periods/windows are confirmed, and the revised notebook design is
+  operational.
+- **Epics 10–11:** remaining deliberate index research and documented
+  multi-market reads. No standard Q1 index has been selected.

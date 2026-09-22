@@ -59,6 +59,7 @@ windowed as (
         lag(median_home_value, 5) over (partition by geo_level, geo_id order by year) as median_home_value_lag5,
         lag(median_owner_costs_mortgage, 5) over (partition by geo_level, geo_id order by year) as owner_costs_mortgage_lag5,
         lag(median_owner_costs_no_mortgage, 5) over (partition by geo_level, geo_id order by year) as owner_costs_no_mortgage_lag5,
+        lag(pct_rent_burden_30plus, 5) over (partition by geo_level, geo_id order by year) as pct_rent_burden_30plus_lag5,
         lag(hu_total, 5) over (partition by geo_level, geo_id order by year) as hu_total_lag5,
         sum(permits_total_units) over (
             partition by geo_level, geo_id order by year
@@ -73,7 +74,9 @@ windowed as (
 derived as (
     select
         *,
-        case when median_hh_income > 0 then annualized_median_rent / median_hh_income end as renter_cost_to_income,
+        -- This market-price proxy uses income for all ACS households, rather
+        -- than renter-household income. It must not use a burden threshold.
+        case when median_hh_income > 0 then annualized_median_rent / median_hh_income end as median_rent_to_all_hh_income_proxy,
         case when median_hh_income > 0 then annualized_owner_costs_mortgage / median_hh_income end as owner_cost_to_income_mortgage,
         case when median_hh_income > 0 then annualized_owner_costs_no_mortgage / median_hh_income end as owner_cost_to_income_no_mortgage,
         case when lag5_year = year - 5 and hu_total_lag5 > 0 then (hu_total - hu_total_lag5) / hu_total_lag5 end as housing_unit_growth_5yr,
@@ -82,7 +85,12 @@ derived as (
         case when lag5_year = year - 5 and median_hh_income_lag5 > 0 then (median_hh_income - median_hh_income_lag5) / median_hh_income_lag5 end as income_growth_5yr,
         case when lag5_year = year - 5 and annualized_median_rent_lag5 > 0 and median_hh_income_lag5 > 0 then
             (annualized_median_rent / median_hh_income) / (annualized_median_rent_lag5 / median_hh_income_lag5) - 1
-        end as rent_to_income_change_5yr,
+        end as median_rent_to_all_hh_income_proxy_change_5yr,
+        -- ACS B25070 is the renter-household burden measure; its conventional
+        -- 30% threshold therefore has a valid household-affordability meaning.
+        case when lag5_year = year - 5 and pct_rent_burden_30plus_lag5 is not null then
+            pct_rent_burden_30plus - pct_rent_burden_30plus_lag5
+        end as pct_rent_burden_30plus_change_5yr,
         case when lag5_year = year - 5 and median_home_value_lag5 > 0 and median_hh_income_lag5 > 0 then
             (median_home_value / median_hh_income) / (median_home_value_lag5 / median_hh_income_lag5) - 1
         end as value_to_income_change_5yr,
@@ -96,8 +104,6 @@ derived as (
 )
 select
     *,
-    renter_cost_to_income <= 0.30 as renter_inexpensive_30_flag,
-    renter_cost_to_income <= 0.50 as renter_stress_test_50_flag,
     permits_total_units is not null as has_permit_data,
     hpi_5yr_pct is not null or zhvi_annual_avg_yoy_pct is not null as has_price_context,
     pop_growth_5yr is not null as has_five_year_population_growth,

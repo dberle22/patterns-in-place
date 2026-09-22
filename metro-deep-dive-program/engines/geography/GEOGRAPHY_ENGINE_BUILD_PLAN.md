@@ -348,6 +348,78 @@ vintage, and interpretation risk are concrete.
 - [ ] Update `docs/build_sequence.md` and the classification workbook as tasks
   are completed.
 
+### 9. Build regional-lens interfaces for Regional Role
+
+Regional Role is the first named consumer of reusable state-adjacency and
+CBSA-proximity relationships. Build these interfaces in Geography, rather than
+in the analysis notebook, so Q6 and later regional comparisons consume the
+same declared memberships.
+
+- [x] Materialize approved analytical state and CBSA geometry at the current
+  boundary vintage. This is the narrow geometry addition required for state
+  land-boundary adjacency, CBSA centroids, and promotion of the existing
+  market-scoped Infrastructure serving candidates.
+- [x] Build `mart_geography.state_adjacency` as a symmetric, land-only state
+  relationship. Adjacency requires a shared border line of nonzero length: a
+  river boundary counts; ocean, Great Lake, and point-only contact do not.
+  Carry boundary vintage, source, and method version.
+- [x] Build `mart_geography.cbsa_centroids` from the approved analytical CBSA
+  geometry. Declare the centroid method and retain boundary vintage and source.
+- [x] Build `mart_geography.region_lens_membership` for `census_division`,
+  `primary_state`, `primary_state_adjacent`, and centroid-radius lenses. Use
+  `gold.dim_geo.state_fips`, whose primary-state rule is the first state named
+  in the official CBSA label; do not substitute county count or population.
+- [x] Store the centroid-radius parameter and calculated great-circle distance
+  so Regional Role can inspect 200-, 250-, and 300-mile membership without
+  recomputing geometry relationships in a notebook.
+- [x] Add Richmond and one multi-state-CBSA smoke check for primary-state,
+  adjacency, centroid-distance, key uniqueness, symmetry, and provenance.
+- [x] Update `CONTRACT.md`, `USAGE.md`, and the data dictionary with the new
+  regional-lens interface and its geometry limitations.
+
+**Done when:** Regional Role can read all four named lens memberships from
+`mart_geography` with declared source, boundary vintage, method version, and
+parameters; the analytical CBSA boundary is also available to promote a
+market-scoped Infrastructure context handoff.
+
+#### Epic 9 disposition (2026-09-21)
+
+- `geo.states_analysis` (51 state/DC rows) and `geo.cbsas_analysis` (935 rows)
+  now carry full 2023 Census TIGER/Line geometry for the declared relationships.
+- `mart_geography.state_adjacency` has 220 symmetric land-border edges;
+  `cbsa_centroids` has 935 declared equal-area centroids; and
+  `region_lens_membership` materializes all four lenses plus 200/250/300-mile
+  sensitivity rows with provenance.
+- Richmond lens memberships and Wheeling, WV-OH's West Virginia primary state
+  passed smoke checks. Membership keys are unique and every target/lens row has
+  exactly one target member.
+
+### 10. Build Place-to-CBSA membership for Q3 Where Growth Lands
+
+Q3 needs to identify Census Places associated with a metro without pretending
+that a Place is an exact child of a CBSA. This is a reusable Geography
+relationship: Places can span counties and CBSA boundaries, and unincorporated
+metro geography has no Place membership.
+
+- [ ] Build a 2020 `Place × CBSA` weighted membership relationship from the
+  governed block registry's Place assignment, exact county-to-CBSA membership,
+  and 2020 population, housing-unit, and land-area numerators.
+- [ ] Retain both directions of share, denominators, quality/coverage flags,
+  source, and Place/CBSA boundary vintages. This is an allocation/membership
+  surface, never an exact containment edge.
+- [ ] Publish a declared primary-CBSA association for each Place using its
+  largest 2020 population share, while keeping every secondary/split membership
+  available to consumers.
+- [ ] Document the consumer rule: direct Place measures are whole-Place values;
+  split Places need explicit allocation or a whole-Place caveat, and
+  unincorporated geography must remain visible in a metro read.
+- [ ] Add national cardinality/weight checks plus Richmond and a split-Place
+  smoke test; expose the result through `mart_geography`.
+
+**Done when:** a consumer can retrieve every Place associated with a CBSA,
+distinguish wholly associated and split Places, and apply a declared basis
+without local spatial joins or a false exact-parent claim.
+
 ## Next implementation sequence
 
 The national ZIP and foundation builds are complete. The remaining work proceeds
@@ -356,7 +428,9 @@ in this order:
 1. containment-first mart and `rollup()`;
 2. govern and refactor the existing geometry products;
 3. build allocation and temporal crosswalks; and
-4. finish the full helper interface and integrate program consumers.
+4. finish the full helper interface and integrate program consumers; and
+5. build the named regional-lens interfaces for Regional Role; and
+6. build Place-to-CBSA membership for Q3 Where Growth Lands.
 
 This sequence preserves a useful mart milestone while keeping `allocate()`,
 `harmonize()`, and geometry export unavailable until their required governed

@@ -9,6 +9,8 @@ WITH target_cbsa AS (
   SELECT
     geo_id AS target_geo_id,
     geo_name AS target_geo_name,
+    state_fips AS primary_state_fips,
+    state_name AS primary_state_name,
     parent_region_id,
     parent_division_id,
     parent_state_fips
@@ -78,19 +80,17 @@ geographic_sets AS (
   UNION ALL
 
   SELECT
-    CONCAT('cbsa:', t.target_geo_id, '|state_primary|', s.state_fips) AS comparison_set_id,
+    CONCAT('cbsa:', t.target_geo_id, '|state_primary|', t.primary_state_fips) AS comparison_set_id,
     'state_primary' AS comparison_set_type,
     'cbsa' AS target_geo_level,
     t.target_geo_id,
     t.target_geo_name,
-    CONCAT('Primary-state benchmark for ', s.state_name, ' (', s.state_fips, ')') AS comparison_label,
-    'All metro CBSA rows sharing the target CBSA primary state, defined as the state containing the most counties in the CBSA footprint.' AS comparison_description,
+    CONCAT('Primary-state benchmark for ', t.primary_state_name, ' (', t.primary_state_fips, ')') AS comparison_label,
+    'All metro CBSA rows sharing the target CBSA primary state, defined by the first state named in the official CBSA label.' AS comparison_description,
     'all_years' AS comparison_year_scope,
     'gold.dim_geo' AS membership_source
   FROM target_cbsa AS t
-  INNER JOIN target_cbsa_states AS s
-    ON t.target_geo_id = s.target_geo_id
-   AND s.state_rank_in_cbsa = 1
+  WHERE t.primary_state_fips IS NOT NULL
 
   UNION ALL
 

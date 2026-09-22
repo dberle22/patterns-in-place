@@ -28,5 +28,14 @@ consumer_contracts:
     status: ready_for_future_experiment
     allowed_use: "May spatially relate retained physical features to an analysis-owned method."
     prohibited_use: "Does not label barriers, calculate catchments, or identify corridors."
-adoptions: []
+  regional_role:
+    status: adopted_for_market_context
+    allowed_use: "Displays retained road, rail, and water-network features as market-scoped orientation context."
+    prohibited_use: "Does not infer routing, travel time, barriers, commuting, or a Regional Role score."
+adoptions:
+  - analysis: regional_role
+    market: richmond_va
+    market_id: "40060"
+    source_run_id: osm-infrastructure-40060-snapshot-2026-07-29-ea3dc9b69040
+    interface_version: infrastructure_consumer_v1
 # Populate only after a real analysis consumes this interface unchanged.

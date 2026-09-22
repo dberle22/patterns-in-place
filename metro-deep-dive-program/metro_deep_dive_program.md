@@ -2,7 +2,7 @@
 
 **Status:** Program structure locked; Position implementation and engine review in progress
 **Drafted:** 2026-08-22
-**Updated:** 2026-09-11
+**Updated:** 2026-09-20
 **Sits above:** `metro_deep_dive_build_approach.md`, `metro_deep_dive_template_guidance.md`, `analysis_program.md`, `deep_dive_question_bank.md`, `RESEARCH_TOOL_ROADMAP.md`, `zone_methodology_notes.md`
 **Does not replace:** any of the above. This document says how they relate and what gets built in what order.
 
@@ -68,7 +68,7 @@ them.
 | Layer | What it is | Unit of work | Rule |
 |---|---|---|---|
 | **Engines** (`engines/`) | Reusable computation: scoring, similarity, POI ingest and taxonomy, infrastructure, benchmarking, time series, geography | A component folder with a notebook, a `NOTES.md`, and a contract | Built only when an analysis calls it. Promoted to `foundations/` when two consumers use it unchanged. |
-| **Analyses** (`analyses/`) | Parameterized notebooks that run one question nationally or for one market so we can look | One notebook per question | Exploratory. Reusable queries and QA outputs are welcome; final issue outputs and presentation locks do not live here. |
+| **Analyses** (`analyses/`) | Reusable notebooks that investigate one question nationally or for a selected market | One documented analysis entry with the notebook roles its family requires | Exploratory. Reusable queries and QA outputs are welcome; final issue outputs and presentation locks do not live here. |
 | **Issues** (`issues/`) | Where the compelling parts of an analysis are selected, rendered to publisher spec, and written up | One folder per published piece | Owns every lock-once decision. Assembles acts from routed analyses. |
 
 Analyses are where new things get found. Issues are where the series stays
@@ -85,7 +85,7 @@ built once and reused across acts, questions, and themes.
 
 | Component type | What it is | Example shape |
 |---|---|---|
-| `engine` | A reusable computational system that produces a class of derived outputs | Intelligence Framework outputs, zone model outputs, theme engine interface |
+| `engine` | A reusable computational system that produces a class of derived outputs | Intelligence Framework outputs, zone model outputs, POI processing |
 | `shared method` | Reusable analytical logic applied across multiple questions or themes | comparison/benchmarking, regional role, job-proximity logic |
 | `shared dataset / mart` | A queryable output layer storing prepared inputs or derived results for downstream notebook work | trajectory mart, geo mart, benchmark datasets |
 | `supporting infrastructure` | Enabling inputs or platform pieces that make methods and marts possible without being the main analytical product | source extract caches, source registries, market config |
@@ -208,22 +208,26 @@ time or intra-market form.
 
 ### 3.3 Thematic — the Analysis Program (national grain, transposable)
 
-Each entry produces a **theme engine** that runs in two modes: `market: all`
-yields the national analytical build; `market: <cbsa>` yields that market's
-section. Same notebook, one parameter. The canonical order is national first,
-then market mode. Industry is the first instance of the interface; Housing and
-Migration follow its shape.
+Each entry has two analysis-layer notebooks: a national notebook that tests and
+narrates the cross-metro claim, and a separate parameterized market notebook
+that applies the reviewed method and standard deep-dive views to any covered
+CBSA. The canonical order is national first, then the reusable market notebook.
 
-Thematic work starts in `market: all` mode to understand the distribution,
-test the claim, and stabilize the shared method. It then runs in
-`market: <cbsa>` mode so the issue can select the locally relevant findings.
-The reusable part is the build method and theme-engine interface, not the
-choice of which theme a given market gets.
+An actual Richmond or other market story notebook belongs in `issues/`, where
+the strongest thematic findings can be combined with Position and Explanation
+evidence. Thematic notebooks are narrative internal research tools, not
+publication artifacts.
 
-| Entry | Themes crossed | Engine | Status |
+Shared queries, methods, and datasets should be reused across the national and
+market notebooks. A generic Theme Engine is not a prerequisite: promote a
+component only when repeated use establishes a stable interface. The family
+contract and entry-level plans live in
+`analyses/thematic/THEMATIC_ANALYSES_PLAN.md`.
+
+| Entry | Themes crossed | Primary foundation | Status |
 |---|---|---|---|
-| **A1 AI inversion** | Industry × People | Industry engine + NAICS→AIOE crosswalk | Active; Marimo |
-| A2 Building lowers prices? | Housing × People | Housing engine | Banked |
+| **A1 AI inversion** | Industry × People | Industry surfaces + reviewed SOC/NAICS exposure crosswalks | Active legacy work; provisional new-family spec |
+| A2 Building lowers prices? | Housing × People | Q1 housing components + supply/price panel | Banked; provisional spec |
 | A3 Moving toward harm? | Environment × People × Housing | Hazard × growth | Banked |
 | A4 Remote work rewired? | Work Geography × Housing × Industry | WFH series + LODES | Banked |
 | A5 How many downtowns? | Work Geography × Housing | Polycentricity from WAC | Banked |
@@ -232,10 +236,11 @@ choice of which theme a given market gets.
 | A8 Geography of life expectancy | Health × Housing × Social Fabric | `health_wide` | Banked |
 | A9 Converging or diverging? | People × Industry × Housing | Long-panel dispersion | Banked |
 | A10 Polarization | Industry × People | Sector wage distribution | Banked |
-| Housing satellite | Vacancy, costs, supply character, overheating heuristic | Housing engine | Satellite to Richmond acts; feeds A2, A7, Q1 |
-| CBSA similarity study | The cosine method itself | — | Standalone article; depends on the methods memo |
 
-"Also raised, not yet entries" stays as listed in `analysis_program.md`.
+The Housing satellite is supporting work for Q1, A2, and A7 rather than an
+eleventh Thematic entry. The CBSA similarity study remains an Intelligence /
+Position methods study. "Also raised, not yet entries" stays as listed in
+`analysis_program.md`.
 
 ---
 
@@ -273,9 +278,8 @@ Built only on call. Each gets a folder under `engines/` with a notebook, `NOTES.
 | Engine | First called by | Exists where (verify) |
 |---|---|---|
 | **Registries** — `market.yaml`; lock-once constants as data | Every analysis | Not built |
-| **Benchmarking** — one function: metric at grain → national / division / state / peer-set percentile and rank | Profile, Fingerprint, theme engines | Implemented in `engines/benchmarking/`, `mart_benchmarking`, and `foundations/benchmarking_py`; current national/geographic/peer-set comparisons are available. |
+| **Benchmarking** — one function: metric at grain → national / division / state / peer-set percentile and rank | Profile, Fingerprint, thematic analyses | Implemented in `engines/benchmarking/`, `mart_benchmarking`, and `foundations/benchmarking_py`; current national/geographic/peer-set comparisons are available. |
 | **Intelligence Framework** — scores, clusters, similarity, trajectory, zones | All Position analyses; later Corridor Intelligence | Implemented promoted marts and canonical contract in `engines/intelligence_framework/`; similarity/universe review remains an issue-publication gate. |
-| **Theme engine interface** — inputs, outputs, two run modes, one lock-once asset per theme | A1 / Industry | Industry D1/D3/D6 + A1 notebook |
 | **POI** — point-source ingest, identity and provenance, explicit taxonomy mappings, geographic assignment, and QA | Q4, Internal Structure activity review, and later access analyses | Implemented through Epic 5 in `engines/poi/`; Richmond and Jacksonville Overture are acquired, normalized, classified, and assigned to tract/county. A governed two-level taxonomy (22 categories, 117 sub-categories) is applied from one versioned seed and serves 96%+ of places per market; source detail is an optional third level. Marts key on `cbsa_code`, so markets accumulate rather than overwrite. Postal ZIP is source-address evidence; ZCTA geometry remains a Geography dependency. |
 | **Infrastructure** — governed roads, rail, and river/canal geometry with raw OSM evidence and QA | Corridor Intelligence, Q4 where needed, Q2, and Internal Structure's physical skeleton | Implemented through Epic 5 in `engines/infrastructure/` for Richmond and Jacksonville: reproducible source runs, narrow mappings, geometry QA, and a verified read-only consumer handoff. Promotion is gated on analytical CBSA geometry and two unchanged consumer uses. |
 | **Corridor Intelligence** — prototype within-market structural grouping | Optional Internal Structure corridor exploration | Paused after Jacksonville/Richmond calibration. Preserve artifacts for method reference; do not publish, promote, or make it a consumer dependency. |
@@ -392,24 +396,26 @@ routing brief:
 
 | Analysis | Why now |
 |---|---|
-| **A1 / Industry engine, all-market then Richmond mode** | Already active; sets the theme engine interface; produces §4 |
+| **A1 national notebook, then parameterized market notebook** | Legacy work is already active; the new scaffold separates the national finding from the reusable CBSA deep dive; produces §4 candidates |
 | **Q4 Daily-needs access** | Richmond POIs are ready and Infrastructure has a verified candidate handoff; define the narrow basket and access method, using physical context only if needed. |
 | **Q6 One metro?** | Character opener; WAC/RAC exist; differentiates the first post a reader sees |
 | **Regional role (partial)** | WAC/RAC only; OD stays deferred |
-| **Housing satellite → Q1** | Only if Position flags Livability divergence |
+| **Q1 housing components, with A2/A7 considered after their audits** | Only if Position flags Livability divergence or the national thematic work produces a strong Richmond hook |
 
 ### Step 2 — Build routed analyses
 
-For themes, build and inspect the national notebook first, then run the same
-analysis in Richmond mode. For Explanation questions, build the reusable
-question notebook and inspect its Richmond outputs. Open or widen an Engine
-component only when the analysis actually requires it.
+For themes, build and inspect the national notebook first, then build the
+separate parameterized market notebook and inspect Richmond as one selected
+CBSA. The actual Richmond story notebook remains issue-owned. For Explanation
+questions, build the reusable question notebook and inspect its Richmond
+outputs. Open or widen an Engine component only when the analysis actually
+requires it.
 
 ### Step 3 — Issue arc
 
 Publication order is separate from build order. The initial reader arc is:
 
-1. **Act 2 post — Industry makeup and exposure.** From A1 market mode. First lock: the exposure crosswalk.
+1. **Act 2 post — Industry makeup and exposure.** From the A1 parameterized market notebook, selected and assembled in the Richmond issue. First lock: the exposure crosswalk.
 2. **Act 1 post — Identity.** From Profile and Peers. Locks: radar slots, axis order, stat boxes. Cluster label and peer list only; frame scores held back.
 3. **Act 2 post — Fabric.** From Q4 and Q6. Lock: daily-needs POI definition.
 4. **Act 3 post — Dynamics.** From Trajectory plus routed Act 2 context.
@@ -428,7 +434,7 @@ Act 4 is not in the Richmond arc. Overview + Acts 1–3 is a valid first issue p
 ## 8. What locking each layer means
 
 - **Engines locked:** the named component boundaries, each with a one-paragraph contract on open; built only on call; promoted on second use.
-- **Analyses locked:** three families, the membership in Section 3, the routing rule in Section 4. New ideas get placed into a family or rejected. There is no fourth family.
+- **Analyses locked:** three families, the membership in Section 3, the routing rule in Section 4, and the Thematic national/parameterized-market/issue notebook boundary. New ideas get placed into a family or rejected. There is no fourth family.
 - **Issues locked:** the template as delivery shape; the lock-once list in Section 6 owned here; acts assembled from routed analyses.
 
 ## 9. Open before build

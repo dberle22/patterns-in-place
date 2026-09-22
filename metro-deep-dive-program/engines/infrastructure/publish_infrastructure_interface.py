@@ -66,7 +66,7 @@ def main() -> None:
         "artifact_uri": str(artifact.relative_to(REPO_ROOT)),
         "validation_manifest_uri": str((source_dir / "validated" / "osm_core_v1" / "validation_manifest.json").relative_to(REPO_ROOT)),
         "boundary_geometry_role": geometry_role,
-        "promotion_status": "candidate_only" if geometry_role != "analytical" else "eligible_for_consumer_promotion",
+        "promotion_status": "candidate_only" if geometry_role != "analysis" else "eligible_for_consumer_promotion",
         "adoptions": interface["adoptions"],
     }, indent=2))
 

@@ -69,5 +69,6 @@ Recommended first tables:
 - should `peer_set` summaries use mean, median, or both by default?
 - do we need a comparison-set registry table immediately, or can we begin with
   query views and promote later?
-- multi-state rule now implemented as two methods:
-  `state_primary` and `state_member`
+- multi-state rule uses two methods: `state_primary` is the first state named
+  in the official CBSA label (`gold.dim_geo.state_fips`), while `state_member`
+  retains one set for every state touched by the county footprint.

@@ -14,6 +14,8 @@
 
 ## Contract Summary
 - Input: `staging.lehd_lodes_rac`
+- `workers_total` and all composition fields are `JT02` private-sector measures;
+  `workers_all_total` is the parallel `JT00` all-jobs headline total.
 - Base geography: tract
 - Geography policy:
   - keep tract as the canonical Silver base geography
@@ -114,7 +116,7 @@ Expected geography pattern in Silver:
 
 ## Lineage
 1. [`foundations/etl/staging/get_lehd_lodes.R`](../../../etl/staging/get_lehd_lodes.R) lands the tract-level RAC staging table.
-2. [`foundations/etl/silver/lehd_lodes_silver.R`](../../../etl/silver/lehd_lodes_silver.R) normalizes the staged tract rows, renames the retained analytical fields, validates geography coverage, derives county / CBSA / state / division rollups from the tract base, and writes `silver.lehd_lodes_rac`.
+2. [`foundations/etl/silver/lehd_lodes_silver.R`](../../../etl/silver/lehd_lodes_silver.R) normalizes the staged tract rows, derives the all-job headline total alongside the private-sector payload, validates geography coverage, derives county / CBSA / state / division rollups from the tract base, and writes `silver.lehd_lodes_rac`.
 
 ## Known Gaps / To-Dos
 - Decide the exact industry rollup strategy for `CNS01-20`: preserve the full published matrix in Silver or collapse immediately to broader platform families.

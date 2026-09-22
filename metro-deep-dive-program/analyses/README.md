@@ -8,7 +8,8 @@ This includes:
   and Candidate Scan
 - `explanation/` question notebooks — Q1 through Q6, Regional Role, Corridor
   Opportunity Read, Parcel Watch, and Catchment
-- `thematic/` theme notebooks
+- [`thematic/`](thematic/THEMATIC_ANALYSES_README.md) national theme analyses
+  with separate reusable, parameterized market deep dives
 - `issue_builders/` reusable act-level builders that package standard outputs
 
 If a notebook is parameterized and reusable across markets, it should usually

@@ -6,7 +6,7 @@ with base as (
     left join gold.dim_geo d on d.geo_level = 'cbsa' and d.geo_id = b.geo_id
     where b.geo_level = 'cbsa' and b.year = 2024 and b.pop_total >= 100000
       and hpi_5yr_pct is not null and rent_growth_5yr is not null
-      and rent_to_income_change_5yr is not null and value_to_income_change_5yr is not null
+      and pct_rent_burden_30plus_change_5yr is not null and value_to_income_change_5yr is not null
       and pop_growth_5yr is not null and housing_unit_growth_5yr is not null
       and permits_5yr_per_1000_start_units is not null and vacancy_rate is not null
 ),
@@ -15,7 +15,7 @@ ranked as (
         *,
         percent_rank() over (order by hpi_5yr_pct) as hpi_momentum_score,
         percent_rank() over (order by rent_growth_5yr) as rent_momentum_score,
-        percent_rank() over (order by rent_to_income_change_5yr) as rent_affordability_score,
+        percent_rank() over (order by pct_rent_burden_30plus_change_5yr) as renter_burden_score,
         percent_rank() over (order by value_to_income_change_5yr) as value_affordability_score,
         percent_rank() over (order by pop_growth_5yr) as demand_score,
         1.0 - percent_rank() over (order by housing_unit_growth_5yr) as housing_constraint_score,
@@ -27,7 +27,7 @@ components as (
     select
         *,
         (hpi_momentum_score + rent_momentum_score) / 2.0 as momentum_component_score,
-        (rent_affordability_score + value_affordability_score) / 2.0 as affordability_deterioration_component_score,
+        (renter_burden_score + value_affordability_score) / 2.0 as affordability_deterioration_component_score,
         demand_score as demand_component_score,
         (housing_constraint_score + permit_constraint_score + vacancy_constraint_score) / 3.0 as supply_constraint_component_score
     from ranked
@@ -47,7 +47,8 @@ select
     geo_id as cbsa_code, geo_name as cbsa_name, cbsa_type_short, pop_total,
     hpi_5yr_pct, rent_growth_5yr, housing_unit_growth_5yr,
     permits_5yr_per_1000_start_units, vacancy_rate, pop_growth_5yr,
-    rent_to_income_change_5yr, value_to_income_change_5yr,
+    pct_rent_burden_30plus, pct_rent_burden_30plus_change_5yr,
+    median_rent_to_all_hh_income_proxy, value_to_income, value_to_income_change_5yr,
     momentum_component_score, affordability_deterioration_component_score,
     demand_component_score, supply_constraint_component_score,
     balanced_index, momentum_demand_index, affordability_supply_index,
@@ -55,9 +56,9 @@ select
     rank() over (order by momentum_demand_index desc) as momentum_demand_rank,
     rank() over (order by affordability_supply_index desc) as affordability_supply_rank,
     case
-        when renter_cost_to_income <= 0.30 and supply_constraint_component_score <= 0.40 then 'supply-supported affordability'
-        when renter_cost_to_income <= 0.30 and demand_component_score <= 0.40 then 'weak-demand affordability'
-        when renter_cost_to_income > 0.30 and momentum_component_score >= 0.60
+        when pct_rent_burden_30plus < 0.35 and supply_constraint_component_score <= 0.40 then 'supply-supported affordability'
+        when pct_rent_burden_30plus < 0.35 and demand_component_score <= 0.40 then 'weak-demand affordability'
+        when pct_rent_burden_30plus >= 0.50 and momentum_component_score >= 0.60
             and demand_component_score >= 0.60 and supply_constraint_component_score >= 0.60 then 'pressure/shortage'
         else 'mixed or no clear signal'
     end as component_classification

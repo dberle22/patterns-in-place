@@ -1,169 +1,188 @@
-# Explanation Q2 — Job Proximity, Housing, and Affordability Spec
+# Explanation Q2 — Job-Center and Proximity Method Spec
 
-**Status:** Revised after Epic 1 audit; V0 method definition is next
-
-**Build order:** E3 — **gates E5 (Q4), E6 (Q3), and E7 (Q6)**
-
-**Primary surface:** `EXPLANATION_Q2_NOTEBOOK.py` (not yet written)
+**Status:** Revised: Q2 is limited to job-center construction and its reusable
+proximity surface.
 
 **Default market:** Richmond, VA (`40060`)
 
-**Initial method:** `q2_job_proximity_v0`
+## Decision reflected in this spec
 
-**Dependencies:** LODES WAC/RAC, governed tract geometry, the Q1 2024 tract
-housing surface, and OEWS. No new engine is required for the first build.
+Q2 starts with **job centers only**. Its job is to establish a defensible,
+reviewed way to identify employment centers from workplace jobs and measure
+tract proximity to them. It does not define housing, growth, amenity, or other
+types of centers.
 
-## How to read this spec
+The resulting job-center inventory and tract-level proximity surface are then
+inputs to a market-specific analytical notebook that asks how proximity relates
+to housing supply, cost, affordability, and other approved tract outcomes. Q3,
+Q4, and Q6 may later reuse the same surface for their own distinct questions.
 
-This spec incorporates the completed Epic 1 audit. The audit is the source of
-truth for current input readiness and constraints. V0 is deliberately narrow:
-it tests physical proximity before any shared access definition is promoted.
+## Notebook architecture and order
 
-This analysis matters beyond its own result. It is the first test of a method
-that Q3, Q4, Q6, and Catchment may later re-run with different center inputs.
+| Step | Notebook | Purpose | Scope |
+|---|---|---|---|
+| 1 | `EXPLANATION_Q2_JOB_CONCENTRATION_NOTEBOOK.py` | Explore how WAC workplace jobs concentrate across tracts and CBSAs; establish national context and contrast markets. | National jobs only. |
+| 2 | `EXPLANATION_Q2_PROXIMITY_METHOD_NOTEBOOK.py` | In a selected market, compare transparent job-center candidates and record a human-reviewed job-center rule. | Market-specific method selection. |
+| 3 | `EXPLANATION_Q2_JOB_CENTER_OUTCOMES_NOTEBOOK.py` | Analyze reviewed job-center proximity against housing, cost, affordability, and other approved tract outcomes. | Market-specific Q2 findings. |
 
-## The shared access spine: V0 boundary
+The national job-concentration notebook should come first. It does not choose a
+center rule, but it prevents a threshold chosen in one market from quietly
+becoming a universal method. There is no need to build a national
+job-center-versus-housing, job-center-versus-cost, or job-center-versus-growth
+notebook now. A national comparison is a later calibration exercise, opened
+only after the local thematic runs show a stable, useful job-center method.
 
-Most of the numbered questions have the same broad shape:
+## Q2 method boundary
 
-> define centers → measure distance or access from them → measure what varies
-> across that gradient
+**Center input:** 2023 LODES WAC workplace jobs at tract grain.
 
-Q2 is the first test of that shape, using job centers as its center input.
+**Primary candidate signals:** tract share of CBSA workplace jobs and
+jobs-to-resident-workers. The first makes the candidate relevant to its market;
+the second identifies workplace-heavy tracts. An absolute-job floor remains a
+required guardrail against small-count signals. Job density is contextual, and
+contiguous qualifying tracts are an exploratory district view. Candidate flags
+remain independent; none is a selected center merely because it is a notebook
+default.
 
-| Analysis | Center input | Measured across the gradient |
+**Recommended V0 construction for review:** use the three signals to identify
+strict core seeds, then add only direct shared-edge neighbors that satisfy the
+absolute-job and jobs-to-workers guardrails. This one-hop extension lets a
+tract such as Richmond `51041100107` join a connected district despite narrowly
+missing the market-share gate, while avoiding unlimited outward growth. Strict
+core-only and no-market-share screens remain required sensitivities. The method
+record, not a notebook default, is the source of the final decision.
+
+## Published V0 job-center versions
+
+The three versions are published together so downstream analysis can show
+center-definition sensitivity instead of treating one default as an empirical
+fact. All use 2023 tract WAC, a 95% WAC-geometry-coverage CBSA cohort, a
+2,500-job guardrail, and a 1.5 jobs-to-resident-workers gate.
+
+| Version | Definition | Intended use |
 |---|---|---|
-| Q2 | Job centers from LODES WAC/RAC | Housing cost and housing units |
-| Q3 | Prior built footprint and existing centers | Growth: population, units, permits |
-| Q4 | POI clusters by category | Daily-needs access |
-| Q6 | Anchor cities / candidate downtowns | One center or several |
-| Catchment | A declared point | Whatever the point question asks |
+| `strict_core` | Also requires at least 1.0% of CBSA workplace jobs. | High-confidence core-seed sensitivity. |
+| `recommended_core_one_hop` | Strict cores plus one direct shared-edge neighbor that passes the job-floor and jobs-to-workers gates. Expansion never recurs. | Recommended V0 construction for market review and primary analytical presentation. |
+| `no_share_sensitivity` | Job-floor and jobs-to-workers gates only; market share omitted. | Check for plausible smaller or outlying centers obscured by a large market core. |
 
-The promoted definition must be adoptable without reinterpretation: center
-construction rule, reach measure, threshold, and minimum center requirements.
-V0 does not meet that promotion bar. It measures straight-line proximity and
-must not be described as a 15-minute, travel-time, or commuting method.
+`shared edge` means a nonzero shared tract boundary; corner-only contact does
+not create a component. This is more interpretable than a DBSCAN radius in V0.
+DBSCAN remains a later challenger for explicitly documented near-but-not-
+contiguous cases; it must not silently bridge low-employment gaps or barriers.
 
-## Merged analysis
+## Published national mart
 
-This absorbs the previous Q5, “Afford to Live Near Jobs.” The analyses share
-inputs and a spatial setup, but V0 does not claim a worker-to-household
-affordability match. It shows resident-household affordability and workplace
-earnings context separately until their comparison standard is defined.
+`build_q2_job_center_mart.py` materializes the following analysis-owned tables
+in `mart_explanation_q2`:
 
-## Goal
-
-Establish whether housing outcomes visibly vary with physical proximity to
-current job concentrations, and determine whether the center and proximity
-construction is strong enough to advance toward the family’s shared access
-method.
-
-## National posture
-
-V0 is a Richmond-first method test. A national run is post-V0 calibration, not
-a minimum output. It should begin only after the Richmond output has a stable
-center construction, exclusion rule, and no-clear-signal interpretation.
-
-## Audit-confirmed input posture
-
-| Observation | Why it matters | V0 disposition |
+| Table | Grain | Contents |
 |---|---|---|
-| LODES WAC/RAC are tract-first and 2023-only | Job locations are buildable; a center time series is not | Use WAC as one current snapshot. |
-| D3 ranks tracts above an adjustable default 2,500-job floor | It is display prior art, not center construction | Use its floor only as a named sensitivity candidate. |
-| Tract WKB and geometry exist, but no distance projection policy is documented | Raw planar distance would be unsafe | Use centroid-to-centroid Haversine miles. |
-| Q1 materializes 2024 tract housing, rent, income, burden, and unit fields | Both cost outcomes are available without duplicate transforms | Read Q1’s tract surface and report incomplete rows. |
-| OEWS is 2025 CBSA/state grain | It cannot imply tract wages | Use only as labeled metro context. |
-| No managed tract-level market-price series exists | Price appreciation is not a V0 outcome | Use ACS housing-cost levels, not a price trend. |
+| `job_center_candidates_v0` | CBSA × tract | Source measures, coverage metadata, the three version flags, center role, and recommended component ID. |
+| `job_center_clusters_v0` | CBSA × recommended component | Core/extension counts, job mass, market-job share, and whether the component has two or more tracts. |
+| `job_center_proximity_v0` | CBSA × tract × center version | Nearest candidate-center tract, candidate-center count, and centroid-to-centroid Haversine miles for each version. |
+| `job_center_method_catalog_v0` | method version | Fixed V0 parameters, version definitions, and promotion status. |
 
-## Inputs
+The national build uses an STRtree within each CBSA to find shared-edge pairs;
+it does not run the notebook's all-pairs tract loop nationwide. The published
+cohort contains 74,781 tract rows in 868 coverage-eligible CBSAs. Some smaller
+markets have no candidate under one or more versions; their proximity rows stay
+present with `has_center_candidate = false` and a null distance. That is a
+method result to review, not a zero-distance or no-job claim.
+
+The mart publishes candidate baselines, not a nationally adopted job-center
+classification. The analytical outcomes notebook should lead with the
+recommended version and report strict-core and no-share results as sensitivity.
+Any market-specific promotion remains recorded in
+`EXPLANATION_Q2_JOB_CENTER_METHOD_RECORD.md`.
+
+**V0 proximity:** Haversine miles from declared tract centroids to the nearest
+reviewed job-center origin. This is physical proximity—not travel time,
+commuting behavior, access, or a 15-minute-city measure.
+
+**Reusable Q2 output:** a versioned reviewed job-center specification, center
+inventory, map-ready center geometry/origins, coverage/exclusion result, and
+tract-level distance-to-nearest-job-center surface.
+
+## National job-concentration notebook
+
+`EXPLANATION_Q2_JOB_CONCENTRATION_NOTEBOOK.py` is the only immediate national
+notebook in this sequence. It must retain:
+
+- WAC coverage, eligible-CBSA cohort, exclusions, and 2023 snapshot caveat;
+- Pareto curves and tract shares required to reach 50% and 80% of jobs;
+- total-job, job-density, and jobs-to-resident-worker distributions with
+  denominator safeguards;
+- selected-market and contrast-market context; and
+- no market ranking or automatic local center selection.
+
+Its output is evidence for method review, not a national finding about housing
+or a universal threshold recommendation.
+
+## Market job-center method notebook
+
+`EXPLANATION_Q2_PROXIMITY_METHOD_NOTEBOOK.py` remains the job-center workbench.
+It must:
+
+1. begin with the selected market's national job-concentration context;
+2. map total workplace jobs, CBSA job share, job density, and
+   jobs-to-resident-workers before filtering;
+3. compare independent market-job-share, jobs-to-workers, and absolute-job
+   guardrail flags, along with their overlap, parameters, and visible omissions
+   or fragmentation;
+4. record the selected/rejected rule, center representation, centroid origin,
+   multiple-center treatment, retained sensitivities, reviewer, and date; and
+5. write or expose the reviewed job-center proximity surface for thematic
+   market notebooks.
+
+This notebook may show only enough housing or other local context to help a
+reviewer detect a clearly implausible job-center construction. It must not
+select centers using those outcomes or turn itself into the housing, cost, or
+growth analysis.
+
+## Analytical job-center outcomes notebook
+
+`EXPLANATION_Q2_JOB_CENTER_OUTCOMES_NOTEBOOK.py` is the third Q2 notebook. It
+is parameterized by CBSA and consumes the reviewed job-center record and its
+tract-level proximity surface. It is analytical rather than exploratory: it
+must not expose controls that alter center selection.
+
+V0 analyzes the Q1 tract outcomes that share a current, compatible surface:
+median gross rent, median home value, housing units, median household income,
+rent-to-income, and rent burden. It must show:
+
+- the reviewed job-center method, coverage, inventory/map, and selected
+  national job-concentration context;
+- outcome-specific complete-case coverage and source-year labels;
+- binned distance curves for rent, home value, and housing units;
+- disclosed descriptive models, a primary-cost residual map, and a `no clear
+  signal` conclusion when warranted; and
+- separate affordability context for household cost/income and center
+  earnings-band composition, without claiming a household-worker match.
+
+Growth, daily-needs, and metro-structure comparisons remain with Q3, Q4, and
+Q6 respectively because they require different time, source, and outcome
+contracts. A broader final market synthesis may later combine their reviewed
+results, but it is not a fourth Q2 notebook to build now.
+
+## Input posture and guardrails
 
 | Input | Role |
 |---|---|
-| LODES WAC at tract grain, 2023 | Workplace-concentration candidates and earnings-band composition |
-| LODES RAC at tract grain, 2023 | Resident-worker context only; not commute flows |
-| Governed tract geometry | Tract centroids for Haversine distance |
-| Q1 `supply_demand_base` tract fields, 2024 | Housing cost, units, household income, and burden |
-| OEWS at CBSA/state grain, 2025 | Occupational wage context only |
-| ZCTA price/rent series | Deferred from V0; no managed tract equivalent |
+| 2023 LODES WAC | Job-center input. |
+| 2023 LODES RAC | Resident-worker context only; not origin-destination flows. |
+| Governed tract geometry | Maps, contiguity, tract centroids, and Haversine distance. |
+| Q1 `supply_demand_base`, 2024 | A thematic housing/cost outcome surface, not a job-center input. |
+| 2025 CBSA/state OEWS | Labeled occupational-wage context only. |
 
-## V0 method, in order
-
-1. **Construct and disclose center candidates.** Start with workplace-job
-   concentration; show the 2,500-job D3 floor as one sensitivity case rather
-   than adopting it.
-2. **Measure physical proximity.** Calculate Haversine miles from tract centroids
-   to the nearest selected center. This is not travel, access, or 15 minutes.
-3. **Show the observed gradient.** Plot binned distance against median gross
-   rent, median home value, and housing units, with complete-case coverage
-   shown beside each outcome.
-4. **Fit descriptive models.** Estimate one disclosed, simple distance model per
-   outcome and show coefficients, observations, fit, and residuals. This is not
-   a causal housing-price estimate.
-5. **Keep affordability separate.** Show housing-cost-to-household-income and
-   rent burden by distance alongside center earnings-band composition. Do not
-   calculate a household-worker mismatch in V0.
-
-Household income, individual job earnings, and occupational wages remain
-separate measures. Any bridge between them must be explicit. Network distance
-or travel time is a later challenger tested once for the whole family rather
-than separately for each question.
-
-## V0 minimum outputs
-
-- Method and coverage note: 2023 WAC snapshot, 2024 ACS/Q1 outcomes, centroid
-  origin, Haversine calculation, exclusions, and the non-routing caveat.
-- Center-candidate table with the selected rule and the D3 2,500-job-floor
-  sensitivity result.
-- Selected-market center inventory and map.
-- One binned distance curve each for median gross rent, median home value, and
-  housing units.
-- One descriptive model table and one residual map for the selected primary
-  cost outcome; retain the other outcome models in the notebook table.
-- Distance-stratified housing-cost-to-household-income and rent-burden context,
-  with nearby-center earnings-band composition separately labeled.
-
-National calibration, price-source sensitivity, a residence-versus-workplace
-comparison, and a final 15-minute definition are post-V0 work.
-
-## Marimo notebook outline
-
-V0 builds one parameterized market notebook, `EXPLANATION_Q2_NOTEBOOK.py`,
-with Richmond (`40060`) as its first run. It reads named analysis queries and
-does not recreate their joins in notebook cells.
-
-1. **Purpose, parameters, and guardrails** — CBSA selector; scope statement
-   that V0 measures physical proximity, not travel time.
-2. **Input coverage and method** — actual source year, row counts, exclusions,
-   centroid/Haversine rule, and candidate center rules.
-3. **Center review** — candidate/sensitivity table, selected center inventory,
-   and center map. The analyst selects a rule here; no hidden default becomes a
-   shared method.
-4. **Distance-gradient evidence** — binned curves, descriptive model table,
-   and primary-cost residual map.
-5. **Affordability context** — distance-stratified household-cost measures;
-   separate nearby-center earnings-band and CBSA OEWS context.
-6. **Readout and handoff** — a result or no-clear-signal statement, limitations,
-   and the evidence required before promoting a shared access method.
-
-## Guardrails
-
-- do not infer travel, access, or commuting flows from straight-line proximity
-- do not treat Infrastructure as a routing network
-- do not blend household income, job earnings, and occupational wages
-- do not treat ZCTAs as postal delivery ZIPs
-- do not leave a promoted access definition implicit; later analyses must be
-  able to adopt it from the written spec
-
-## Post-V0 decisions
-
-- center construction rule, including contiguity and a primary cost outcome
-- distance bins, model form, controls, and minimum observations
-- whether a proximity result merits a routed travel-time challenger
-- affordability standard and household-versus-worker bridge
-- wage source hierarchy, tenure treatment, and time alignment
+- Do not use housing, cost, income, burden, or growth to select job centers.
+- Do not infer worker origins from RAC; that requires LODES OD.
+- Do not blend household income, LODES earnings bands, and OEWS wages.
+- Do not describe Haversine distance as a route, commute, travel time, or
+  15-minute access result.
 
 ## References
 
 - [Epic 1 audit](EXPLANATION_Q2_AUDIT.md)
 - [Build plan](EXPLANATION_Q2_JOB_PROXIMITY_BUILD_PLAN.md)
-- Sections 2.5 and 5.4 of [EXPLANATION_ANALYSES_PLAN.md](../EXPLANATION_ANALYSES_PLAN.md)
+- [Family plan](../EXPLANATION_ANALYSES_PLAN.md), especially Sections 2.5 and 5.4
+- [Feedback](../EXPLANATION_ANALYSES_FEEDBACK.md), especially the Q2 notes

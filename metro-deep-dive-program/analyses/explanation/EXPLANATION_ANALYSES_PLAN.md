@@ -2,17 +2,17 @@
 
 **Status:** Directional family plan; ready to split into analysis-level specs
 
-**Updated:** 2026-09-11
+**Updated:** 2026-09-22
 
-**Revision note:** This version incorporates `EXPLANATION_ANALYSES_FEEDBACK.md`.
-The material changes are: the 15-minute access method becomes a shared spine
-defined in Q2 and re-run by later questions with different center inputs; Q2 and
-Q5 merge into one analysis with two dependent variables; Corridor Intelligence is
-dropped as an engine dependency and Corridor Opportunity Read becomes a closing
-synthesis; Parcel Watch splits into a proposed parcel engine plus an analysis on
-top of it; Regional Role gains an explicit region-definition step ahead of its
-market-role and comparison work; and national scope becomes a per-analysis
-declaration rather than a uniform requirement.
+**Revision note:** This version incorporates `EXPLANATION_ANALYSES_FEEDBACK.md`
+and Q4's completed POI audit. Q2 and Q5 merge into one analysis with two
+dependent variables; Q4 becomes a POI-first livability-amenities workbench,
+rather than a rerun of Q2 access; Corridor Intelligence is dropped as an engine
+dependency and Corridor Opportunity Read becomes a closing synthesis; Parcel
+Watch splits into a proposed parcel engine plus an analysis on top of it;
+Regional Role gains an explicit region-definition step ahead of its market-role
+and comparison work; and national scope becomes a per-analysis declaration
+rather than a uniform requirement.
 
 **Program home:** `metro-deep-dive-program/metro_deep_dive_program.md`, Section 3.2
 
@@ -75,7 +75,8 @@ Each analysis therefore declares a **national posture** in its spec:
 | Posture | Meaning | Analyses |
 |---|---|---|
 | National analysis | The national run is itself a result worth reading and publishing | Q1 |
-| National method, local application | One declared method applied uniformly; the national run exists to test and calibrate the method, not to be the finding | Q2, Q3, Q4, Q6 |
+| National method, local application | One declared method applied uniformly; the national run exists to test and calibrate the method, not to be the finding | Q2, Q3, Q6 |
+| Two-market pilot | A declared method is tested on governed pilot markets before any broader scale-out | Q4 |
 | Market or point scoped | No national run is expected; reuse comes from consistent method and QA | Regional Role, Corridor Opportunity Read, Parcel Watch, Catchment |
 
 The two-mode notebook contract below remains the **starting scaffold** for the
@@ -116,7 +117,7 @@ the components work, then confirm it scales across markets.
 | Analysis | Primary mode | Reason |
 |---|---|---|
 | Regional Role | Selected market, run once per region definition | The market's role and its regional comparison are the subject; region definition is the setup that shapes both, so the market is read through several competing boundaries |
-| Corridor Opportunity Read | Selected market, synthesizing the preceding questions | It summarizes corridors that emerged from Q2/Q3/Q4 access work; it does not depend on a corridor engine |
+| Corridor Opportunity Read | Selected market, synthesizing the preceding questions | It can summarize corridor-shaped findings from Q2/Q3 and Q4's reviewed amenity hubs; it does not depend on a corridor engine |
 | Parcel Watch | Selected county, optionally filtered to an area of interest | Parcel schemas and coverage vary by county; the durable method is a standardized county adapter, which is engine work rather than notebook work |
 | Catchment | One or more selected points | It is a point-centered method; reuse comes from consistent weighting, metrics, and QA rather than an all-market ranking |
 
@@ -140,54 +141,41 @@ DuckDB remains the canonical data layer where managed tables already exist.
 Early analysis-specific logic may remain in notebook queries until a second
 consumer proves that it should become a shared method or mart.
 
-**One deliberate exception to the promotion rule.** The access/gradient spine in
-Section 2.5 has five known consumers before any of them is written. Waiting for
-a second consumer to prove reuse would mean discovering the shared method on the
-third notebook, after two have already grown incompatible versions. It is
-specified once, in Q2, by design.
+### 2.5 Spatial methods and the Q4 POI workbench
 
-### 2.5 The shared access spine
+Several questions use a related gradient shape:
 
-Most of the numbered questions run on the same underlying shape:
+> **define origins or centers → measure a declared spatial relationship →
+> measure what varies across it.**
 
-> **define centers → measure distance or access from them → measure what varies
-> across that gradient.**
+Q2's published job-center surface is Haversine physical proximity. It is not
+travel time, access, or an operational 15-minute-city definition. Q3 and
+Catchment may use compatible spatial conventions only where their own specs
+declare them.
 
-What changes between questions is the input used to construct the centers and
-the dependent variable measured across the gradient. This is the family's main
-source of reuse, and the 15-minute-city concept is the frame that connects it.
+Q4 has a distinct, POI-first shape:
 
-**The method is defined once, in Q2.** Q2 establishes the operational definition
-of a 15-minute city — what a center is, how reach is measured, what counts as
-access — using job centers as the center input. Later questions re-run that same
-method with a different center input:
+> **governed POI points → spatial amenity hubs → composition-based typologies →
+> tract context and employment comparison.**
 
-| Analysis | Center input | Measured across the gradient |
-|---|---|---|
-| Q2 | Job centers from LODES WAC/RAC | Housing cost and housing units |
-| Q3 | Prior built footprint and existing centers | Growth: population, units, permits |
-| Q4 | POI clusters by category | Daily-needs access |
-| Q6 | Anchor cities / candidate downtowns | Whether the metro has one center or several |
-| Catchment | A declared point | Whatever the point question asks |
+It is the program's introductory 15-minute-city workbench: it makes the
+amenity landscape visible before asserting whether residents can reach it. A
+later network/barrier method may connect the family’s spatial evidence, but no
+current analysis should imply that this access method already exists.
 
-This sequencing is deliberate and is itself a test. Re-running one method
-against several center-construction inputs tells us whether the 15-minute
-definition holds up, or whether it only works for job centers. If Q4's POI-built
-centers produce an incoherent result under Q2's method, that is a finding about
-the method, not only about Q4.
+Q6 remains adjacent: it uses Census Places as anchor candidates and Q2's
+physical-proximity/job-center evidence to determine whether one or several
+anchors are supported.
 
 **Consequences for the build:**
 
-- Q2 must be specified and built before Q3, Q4, and Q6. The spec order in
-  Section 8 reflects this.
-- Q2's spec must state the definition explicitly enough that a later question can
-  adopt it without reinterpretation: center construction rule, reach measure,
-  threshold, and what a "center" minimally requires.
-- Each later question declares which parts of the spine it adopts unchanged and
-  which it deliberately varies, with the reason.
-- Straight-line distance remains the v0 reach measure across all of them.
-  Network travel time is a single shared challenger, tested once, not
-  re-litigated per question.
+- Q4 can build its POI workbench independently of Q2. Its Q2 comparison opens
+  once reviewed job-center evidence is available.
+- Q2 must label Haversine results as physical proximity, not access.
+- Q4 may use Infrastructure as visual and descriptive context, but it cannot
+  claim routing, travel time, walkability, or barrier effects.
+- A shared access method belongs in a later named network/barrier effort, not
+  in a local reinterpretation of Q2 or Q4.
 
 ## 3. Current Readiness Snapshot
 
@@ -228,12 +216,12 @@ DuckDB, not only the older program status table.
 
 | Analysis | What can start now | Main gate before a complete answer | Planning status |
 |---|---|---|---|
-| Regional Role | Build the region-definition lenses, then the market-role and comparison surfaces, against a single market using Position, WAC/RAC, industry, geography, benchmarking, and IRS migration flows | LODES OD for a true commute shed; a manual megaregion layer if that lens is used | Start now; region definition is the first deliverable, role and comparison the payload |
-| Q6 One Metro? | National county balance, industry similarity, employment-center, and polycentricity prototype | LODES OD or an equivalent flow matrix for functional integration; Q2's access method for the anchor-city read | Prototype now; do not claim integration yet |
+| Regional Role | Build the Geography-owned regional-lens interfaces, then market-role and comparison surfaces against a single market using Position, WAC/RAC, industry, Geography, Benchmarking, Infrastructure context, and IRS migration flows | LODES OD for a true commute shed; megaregions remain deferred | Geography lenses first; role and comparison are the payload |
+| Q6 One Metro? | County structural evidence and a Census Place anchor-city prototype using Q2 physical proximity | LODES OD for functional integration; a reviewed Place-to-component association rule | Prototype now; do not claim integration yet |
 | Q1 Supply or Demand | National multi-grain housing diagnostic from existing Gold and Silver tables | A declared submarket unit, an operational definition of `inexpensive`, and rules for reconciling tract stock with Place/county permits and ZCTA price trends | Ready for a v0 spec and notebook |
-| Q2 Job-Proximity and Affordability | Straight-line v0 using existing tract job-center evidence, ACS tract home-value and rent levels, tract income, and 2025 OEWS; ZCTA price series for supporting trend context | A reusable job-center surface, the 15-minute operational definition, and a defensible income/wage/cost comparison | Ready for v0; carries the shared spine, so it gates Q3/Q4/Q6 |
-| Q3 Where Growth Lands | Input and coverage audit using tract population and housing histories | A 2010-to-2020 tract harmonization decision, an operational infill/greenfield definition, and Q2's access method | Geography/method slice first; then reuse Q2 |
-| Q4 Daily-Needs Access | Richmond and Jacksonville basket design and access-method pilot from governed POIs | National POI coverage, a validated basket, and Q2's access method applied to POI-built centers | Market-pilot ready; not nationally ready |
+| Q2 Job-Proximity and Affordability | Straight-line v0 using existing tract job-center evidence, ACS tract home-value and rent levels, tract income, and 2025 OEWS; ZCTA price series for supporting trend context | A reusable job-center surface and a defensible income/wage/cost comparison | Ready for v0; supplies physical-proximity evidence, not a shared access definition |
+| Q3 Where Growth Lands | Input and coverage audit using tract population and housing histories | A 2010-to-2020 tract harmonization decision and an operational infill/greenfield definition | Geography/method slice first; compare with Q2 proximity only where useful |
+| Q4 Livability Amenities and POI Clusters | Richmond and Jacksonville POI workbench, basket catalog, and hub/typology pilot | A reviewed cluster method, tract-context interface, and reusable POI serving handoff | Market-pilot ready; not nationally ready |
 | Corridor Opportunity Read | Nothing yet; it summarizes the questions above | Q2, Q3, and Q4 producing corridor-shaped results worth synthesizing | Last in sequence; no engine gate |
 | Parcel Watch | Audit the Jacksonville ROF workflow to inform the parcel engine's adapter contract | A parcel engine providing normalized assessor data and a listings watch list | Analysis is gated on the proposed engine, not on corridors |
 | Catchment | Wrap the existing Jacksonville method in a Marimo method notebook and test more than one point | Decide which current v0 assumptions remain: areal weighting, Euclidean rings, and water-adjusted companion rings | Ready to build first |
@@ -343,10 +331,10 @@ under each to see how the read changes.
 
 | # | Lens | Strength | Weakness |
 |---|---|---|---|
-| 1 | Census division | Easy to explain, understand, and produce | Edge markets fit badly — does Richmond belong to the South Atlantic, or to the DC/Maryland/Delaware orbit? |
-| 2 | State | Clear and legible | States can be small; a Delaware metro's state context is thin |
-| 3 | Nearby counties and metros | Often the most meaningful | Needs a real construction rule. Candidate: find state borders within X miles, then take CBSAs and counties from those states — using both state boundaries, which maps read well, and physical proximity |
-| 4 | Megaregions | Genuinely interesting framing; the eleven US megaregions | New to the repo, manual to bring in, and only works for markets inside one. Include as a labeled lens; do not block on it |
+| 1 | Census division | Easy to explain, understand, and produce | Edge markets can fit poorly |
+| 2 | Primary state | Clear and legible | States can be small; multi-state CBSAs use the first state named in their official CBSA label |
+| 3 | Primary state plus adjacent states | State-legible broader orbit | Requires a reusable, land-only state-adjacency relationship |
+| 4 | 250-mile CBSA proximity | Transparent geographic-proximity challenger | Requires declared CBSA centroids and must not be labelled travel time |
 
 **Functional labor sheds are an output of this analysis, not an input lens.**
 They were previously listed as a fourth definitional lens; they belong on the
@@ -375,13 +363,14 @@ Do not label WAC/RAC balance as inflow/outflow; that claim requires flows.
 - **Regional comparison** — comparison table and map placing the market in
   context. Select KPIs for the table and for map color. Closest to our Position
   products.
-- **Job/worker balance** — map of inflows and outflows. May or may not amount to
-  much; worth testing.
+- **Job/worker balance** — descriptive map/table of workplace jobs and resident
+  workers. It is not an inflow/outflow measure.
 - **Industry role comparison** — what the market specializes in versus the rest
   of the region. The most sensitive to region definition, and the best place to
   show how the read changes across lenses.
-- **IRS and LODES origin/destination** — maps of how people move in and out,
-  separating more permanent moves (IRS) from commuting patterns (LODES).
+- **IRS migration exchange** — CBSA summary context plus county flows rolled to
+  origin-CBSA × destination-CBSA exchange, retaining within-CBSA movement.
+  LODES commuting patterns wait for OD.
 - **Nearby metro comparison** — an extension of the benchmarks.
 - **Infrastructure map** — built environment and network comparison.
 - **Market role hypothesis** — written up manually from the above.
@@ -392,61 +381,53 @@ confirming it scales across markets. Consider splitting into a setup notebook
 that defines the region lenses and components, and a run notebook that executes
 the analysis for a market.
 
-**Later spec must lock:** the nearby-region construction rule (the X-mile border
-threshold), whether megaregions are in scope for v0, base/traded industry
-treatment, minimum migration-flow disclosure rule, and what evidence qualifies a
-role label.
+**Later spec must lock:** the initial KPI/sector set, minimum migration-flow
+disclosure rule, and manual role-evidence presentation. Geography owns the
+resolved adjacent-state and centroid-radius construction rules; megaregions are
+deferred to V2.
 
 ### 5.2 Q6 — One Metro?
 
-**Question:** Is this really one metro — and if not, how many centers does it
-have?
+**Question:** Which Census Places anchor this CBSA, and how do the other Places
+relate to those anchors?
 
-The scope here is deliberately wider than the original county-integration
-framing. Two related questions sit under it:
+OMB's Central/Outlying county designation is already carried in the governed
+CBSA-to-county crosswalk. Q6 reports it as sourced context rather than deriving
+a competing county-integration classification.
 
-1. Do the CBSA's outlying counties belong to the same labor market, or are they
-   administratively attached with weak integration?
-2. Does the metro have multiple anchor cities? This is the more interesting half.
+The analysis starts with every covered Census Place, ranks and profiles Places
+using direct and clearly labeled allocated measures, then reviews anchor
+candidates against Q2 physical-proximity/job-center evidence. It is not a
+15-minute or travel-access result.
 
-The second question uses the 15-minute-city method from Q2 as a proxy for the
-number of city centers: run Q2's access method with anchor cities / candidate
-downtowns as the center input, and see how many coherent centers the metro
-actually supports. Widening the scope this way makes the question clearer, even
-though it is really more than one question.
-
-**Primary analytical unit:** county within CBSA for the integration read;
-candidate centers and their access surfaces for the polycentricity read.
+**Primary analytical unit:** Census Place within CBSA. County status is
+sourced context, not a Q6 classification target.
 
 **Initial inputs:**
 
-- Regional Role comparison surfaces
-- county and tract LODES WAC/RAC
-- county industry mix and jobs/resident-workers balance
-- existing tract job-center evidence
+- direct ACS Census Place measures
+- tract LODES WAC/RAC with declared tract-to-Place allocation edges
+- Q2 reviewed tract job-center and physical-proximity evidence
+- Census Place identity and tract-to-Place allocation relationships
 - Phase 7/Internal Structure context where it helps describe polycentric form
-- required for the complete method: LODES OD county-to-county and tract-to-
-  workplace flow summaries
+- later: Place-to-Place OD flows, direct POI-to-Place, and
+  Infrastructure-to-Place interfaces
 
-**V0 method:** prototype county economic role, employment-center distribution,
-industry similarity, and polycentricity nationally. Treat these as structural
-evidence, not a functional-integration score. Add OD shares when available,
-then test how much each outlying county sends to the core and receives from the
-rest of the CBSA.
+**V0 method:** report OMB county status, build a Place hierarchy, and review
+anchor candidates against their direct demographic/economic profile, allocated
+workplace-job context, and distinct Q2 job-center components. OD,
+Infrastructure, and POI layers later explain Place relationships; none produces
+a composite anchor score.
 
-For the multi-anchor read, the outputs to work from are **commute flows, job
-corridors, and amenity clusters** — the same three surfaces that Q2 and Q4
-produce. Q6 is largely a re-reading of those at metro scale, asking whether they
-resolve into one center or several.
+**Minimum outputs:** OMB county-status context table; Place hierarchy and
+profile; ranking views for population, income, housing, and allocated workplace
+jobs; employment-center map; candidate-anchor inventory with physical-proximity
+evidence; and an anchor result (`one supported anchor`, `multiple supported
+anchors`, `mixed`, or `insufficient structure evidence`).
 
-**Minimum outputs:** county role table, county integration matrix after OD,
-employment-center map, core/outlying comparison, candidate anchor-city inventory
-with its access surfaces, sensitivity table for the integration rule, and an
-explicit `integrated`, `mixed`, `weak`, or `insufficient flow data` result.
-
-**Later spec must lock:** definition of the core, numerator and denominator for
-commuting shares, multidirectional versus core-directed integration, treatment
-of cross-CBSA flows, polycentricity measure, and classification thresholds.
+**Later work must lock:** Place metric/provenance contract, candidate materiality
+rule, OD Place-to-Place coverage treatment, and direct POI/Infrastructure Place
+interfaces.
 
 ### 5.3 Q1 — Supply or Demand
 
@@ -520,11 +501,11 @@ two notebooks.
 in housing value or rent, and can households with local incomes afford to live
 there?
 
-**This analysis carries the shared access spine.** Its most important output is
-not the gradient itself but the reusable operational definition of a 15-minute
-city — center construction, reach measure, threshold — that Q3, Q4, Q6, and
-Catchment re-run with different center inputs. Specify that definition to be
-adopted without reinterpretation.
+**This analysis publishes reviewed job-center physical proximity.** Its most
+important reusable output is a transparent job-center inventory and
+tract-to-center Haversine surface. It is not a 15-minute-city or access
+definition; later analyses may use it only as the comparison or context their
+own specs declare.
 
 **Primary analytical unit:** tract for job centers, housing level, and income;
 ZCTA can support market-price trends when its distinct grain remains visible.
@@ -560,11 +541,11 @@ challenger, not a prerequisite, and is tested once for the whole family rather
 than per question. Infrastructure may explain a visible anomaly but must not be
 treated as a routing network under its current contract.
 
-**Minimum outputs:** the reusable job-center and 15-minute definitions, national
-gradient summary, center inventory, selected-market center map, binned distance
-curve, the regression equation and model table, tract residual map, affordability
-mismatch distribution, residence-versus-workplace comparison, and sensitivity to
-center selection, price source, and normalization.
+**Minimum outputs:** a reusable job-center definition and physical-proximity
+surface, national gradient summary, center inventory, selected-market center
+map, binned distance curve, the regression equation and model table, tract
+residual map, affordability mismatch distribution, residence-versus-workplace
+comparison, and sensitivity to center selection, price source, and normalization.
 
 **Later spec must lock:** center selection rule and the 15-minute operational
 definition, treatment of multiple centers, origin point for tracts, distance
@@ -603,50 +584,53 @@ change table, and a residual/unclassified group.
 developed-footprint baseline, infill/greenfield/outer-center rules, treatment
 of large rural tracts, and negative/no-growth classes.
 
-### 5.6 Q4 — Daily-Needs Access
+### 5.6 Q4 — Livability Amenities and POI Clusters
 
-**Question:** Which parts of a metro have practical proximity to a defensible
-basket of everyday needs?
+**Question:** How are livability amenities organized across a metro, what
+spatial amenity hubs and comparable amenity environments emerge, and what is
+the demographic and housing context around them?
 
-**Primary analytical unit:** tract in the national and market summary, derived
-from governed POI points and an explicitly defined reach method.
+**Primary analytical unit:** retained governed POI point. Spatial amenity hubs
+and their POI membership are the principal derived output; tracts provide a
+reproducible context and aggregation surface rather than defining a cluster.
 
 **Initial inputs:**
 
-- declared POI Engine runs and governed taxonomy mappings
-- tract identity and geometry from Geography
-- population and selected demographic denominators
-- Place Intelligence method references
-- Infrastructure only if the selected access method names a barrier or
-  physical-context requirement
+- declared POI Engine runs, governed taxonomy mappings, point coordinates, and
+  tract/county assignment;
+- tract identity, geometry, population density, and selected housing/demographic
+  context;
+- Infrastructure as visual and descriptive context only; and
+- Q2 job-center evidence as an optional employment comparison layer.
 
-**V0 method:** use Richmond and Jacksonville to define a narrow daily-needs
-basket, coverage rules, and a simple proximity/reach measure. Review category
-coverage and urban-form sensitivity before acquiring or processing national
-POIs. Only after the basket and score survive the two-market test should the
-same method scale nationally.
+**V1 method:** use Richmond and Jacksonville to build a POI workbench and a
+versioned basket matrix, beginning with broad livability and
+errands/essentials. Construct and review direct point-pattern amenity hubs,
+then group similar but noncontiguous hubs into composition-based typologies.
+Profile these outputs with declared tract context and compare them descriptively
+with Q2 job-center evidence.
 
-POI counts are inputs, not access. The analysis owns the amenity basket and
-reach definition. The POI Engine continues to own source identity, provenance,
-classification, and assignment.
+POI counts can describe amenity composition and concentration, but alone do not
+establish resident access, amenity quality, or living standards. The POI Engine
+continues to own source identity, provenance, classification, and assignment.
 
-**Minimum outputs:** category/mapping coverage, amenity inventory, tract access
-components, selected-market access map and distribution, national comparison
-after scale-out, sensitivity to basket/reach choices, and an unavailable result
-where source coverage is inadequate.
+**Minimum outputs:** POI inventory and basket catalog; category/mapping coverage;
+reviewed hub inventory, geometry, and POI membership; typologies; cluster
+profiles and tract-context comparisons; infrastructure context; Q2 comparison;
+and method/coverage/sensitivity records.
 
-**Later spec must lock:** basket categories, multi-category sufficiency rule,
-distance or reach method, scoring and caps, population weighting, urban/rural
-comparability, treatment of barriers, and national source/run strategy.
+**Later spec must lock:** basket membership, point-pattern candidate methods and
+review thresholds, cluster geometry, tract-context association rule, typology
+features, context vintages, and criteria for broader-market scale-out. Network,
+barrier, walkability, and 15-minute-access claims are deferred.
 
 ### 5.7 Corridor Opportunity Read
 
 **Reframed.** This is no longer a standalone analysis sitting on top of a
 Corridor Intelligence engine. That engine is a paused prototype and has been
-dropped as a dependency. Corridors are instead emerging organically from the
-15-minute-city work in Q2, Q3, and Q4 — the access spine keeps producing
-corridor-shaped results. This analysis becomes the **closing synthesis** of the
-questions above, and should run last in the sequence.
+dropped as a dependency. Corridor-shaped findings may emerge from Q2/Q3 and
+Q4's reviewed amenity hubs; this analysis becomes the **closing synthesis** of
+the questions above and should run last in the sequence.
 
 **Question:** Taken together, what do the preceding analyses say about which
 corridors in this market deserve deeper attention, and why?
@@ -656,8 +640,8 @@ upstream questions, within one selected market.
 
 **Initial inputs:**
 
-- Q2 access, gradient, and affordability surfaces
-- Q4 POI clusters and daily-needs corridors
+- Q2 job-center proximity, gradient, and affordability surfaces
+- Q4 reviewed amenity hubs, typologies, and tract-context profiles
 - Q3 growth-location classification
 - Regional Role and Trajectory evidence where relevant
 - Internal Structure market anatomy
@@ -707,7 +691,8 @@ and optionally filtered or re-ranked within an area of interest.
 Countywide-first ranking is intentional: a countywide percentile makes the result
 reusable and keeps an area filter from defining the comparison universe after the
 fact. Note that the area filter is no longer a Corridor Intelligence candidate —
-it is any selected area, including one identified by Q2/Q4 access work.
+it is any selected area, including one identified by Q2 gradients or Q4 amenity
+hubs.
 
 **Relationship to Catchment:** Catchment is a separate analytical process. It
 does not build on Parcel Watch, but the two are used closely together — Catchment
@@ -769,8 +754,8 @@ good place to start the family.
 
 - It is how the family moves from broad question-style analyses toward specific
   properties — used closely with Parcel Watch, though not built on it.
-- It is the second half of the 15-minute-city work: Q2 identifies the center
-  point, and Catchment measures what is within X distance of it.
+- It can provide point-centered context for a selected Q4 amenity hub or any
+  other named point, without converting Euclidean rings into an access claim.
 
 **Initial inputs:**
 
@@ -809,32 +794,28 @@ reliability flags, barrier behavior, and trigger for a routed network method.
 
 | Shared capability | First Explanation consumer | Later reuse |
 |---|---|---|
-| **15-minute access method and center definition** | **Q2 (defined, not discovered)** | **Q3, Q4, Q6, Catchment, Corridor Opportunity Read** |
+| POI workbench, basket catalog, amenity hubs, and typologies | Q4 | Corridor Opportunity Read, Catchment, livability summaries, and later access work |
 | Regional comparison surfaces and region lenses | Regional Role | Q6, Q1–Q4 context, Act 3 regional comparisons |
 | LODES OD flow foundation | Q6 or Regional Role | commute sheds, work-geography themes |
 | Housing component cut | Q1 | Q2 affordability, Q3, Housing satellite, A2, A7 |
 | Reusable job-center surface | Q2 | Q6, Internal Structure, Corridor Opportunity Read |
 | Tract temporal harmonization | Q3 | other tract change analyses and hazard/growth themes |
-| Daily-needs basket and POI clusters | Q4 | Corridor Opportunity Read and livability summaries |
 | Normalized parcel schema and county adapter | Parcel engine (Section 12) | Parcel Watch, later parcel/site products |
 | Catchment contribution table | Catchment | Parcel Watch detail, site analyses, point-based issue views |
 
-The promotion rule holds for everything except the first row: keep first-use
-logic in the analysis and move it to a shared component or `foundations/` only
-after a second consumer uses the interface unchanged.
-
-The access method is the deliberate exception. Five consumers are known before
-any is written, so it is specified once in Q2 rather than discovered later. See
-Section 2.5.
+Keep first-use logic in the analysis and move it to a shared component or
+`foundations/` only after a second consumer uses the interface unchanged. Q4's
+cluster membership and method record are designed for that later reuse review;
+they are not promoted by assumption.
 
 ## 7. Proposed Build Sequence
 
 This sequence separates work that can produce a useful notebook now from work
 that should wait for a real upstream contract.
 
-The ordering constraint that drives this sequence is the access spine: **Q2
-defines the method that Q3, Q4, and Q6 re-run.** Q2 therefore moves ahead of its
-consumers.
+The main ordering constraint is Q2's job-center evidence for Q6 and the Q4
+comparison layer. Q4's POI workbench itself can proceed independently with its
+two governed pilot markets.
 
 ### Wave 0 — Confirm narrow shared inputs
 
@@ -853,30 +834,29 @@ consumers.
    property-analyzer work from the old Metro Deep Dive folder.
 2. **Q1 Supply or Demand:** strongest national-ready dataset base, the family's
    one true national analysis, and high reuse for housing themes.
-3. **Q2 Job Proximity, Housing, and Affordability:** straight-line proximity and
-   current housing measures — and, critically, **the 15-minute definition the
-   rest of the family will re-run.** Treat that definition as a Wave 1
-   deliverable, not a by-product.
+3. **Q2 Job Proximity, Housing, and Affordability:** straight-line physical
+   proximity and current housing measures, with a reviewed job-center surface
+   available for Q6 and Q4 comparison.
 4. **Regional Role v0:** build the region-definition lenses first, then the
    market-role and comparison surfaces, labeling commute-shed content as
    deferred.
 
 These can overlap in calendar time, but each DuckDB materialization or shared
-data-layer change should remain sequential. Q2's access definition should settle
-before Wave 2 opens.
+data-layer change should remain sequential.
 
-### Wave 2 — Analyses that re-run the spine or need one focused foundation gap
+### Wave 2 — POI pilot and focused foundation gaps
 
-1. **Q4 Daily-Needs Access:** two-market pilot on Richmond and Jacksonville. Lock
-   the basket, then apply Q2's access method with POI clusters as the center
-   input.
+1. **Q4 Livability Amenities and POI Clusters:** two-market pilot on Richmond
+   and Jacksonville. Build the POI workbench, basket catalog, reviewed amenity
+   hubs, typologies, and tract-context profiles.
 2. **Q3 Where Growth Lands:** open the tract harmonization and growth-class
-   method as one vertical slice, then read growth against Q2's access surfaces.
-3. **Q6 One Metro?:** reuse Regional Role and apply Q2's method with anchor
-   cities as the center input; add OD and integration thresholds before treating
-   the answer as complete.
-4. **Q4 national run:** acquire/process broader POI coverage only after the
-   two-market method review passes.
+   method as one vertical slice, then compare growth with Q2 physical-proximity
+   evidence where its own method calls for it.
+3. **Q6 One Metro?:** associate Census Place anchor candidates with Q2's
+   physical-proximity evidence; add OD and integration thresholds before
+   treating the county-integration answer as complete.
+4. **Q4 broader-market/national work:** acquire or process broader POI coverage
+   only after the two-market workbench and reusable interface review pass.
 
 ### Wave 3 — Synthesis and the parcel track
 
@@ -907,10 +887,11 @@ Recommended spec order:
 
 1. Catchment
 2. Q1 Supply or Demand
-3. **Q2 Job Proximity, Housing, and Affordability** — carries the shared access
-   definition, so it must precede items 4, 5, and 6
+3. **Q2 Job Proximity, Housing, and Affordability** — publishes reviewed
+   job-center physical-proximity evidence for its own outcomes and later
+   comparisons
 4. Regional Role
-5. Q4 Daily-Needs Access
+5. Q4 Livability Amenities and POI Clusters
 6. Q3 Where Growth Lands
 7. Q6 One Metro?
 8. Corridor Opportunity Read
@@ -918,15 +899,15 @@ Recommended spec order:
 
 Q5 no longer appears: it is merged into Q2.
 
-This is a requirements sequence, not a publication order. Position routing
-can pull a ready analysis forward for a particular market — with one exception:
-Q2's access definition should not be leapfrogged by Q3, Q4, or Q6, since they
-re-run it.
+This is a requirements sequence, not a publication order. Position routing can
+pull a ready analysis forward for a particular market. Q4's POI pilot can begin
+on its governed inputs; Q6 should not begin its anchor read before Q2 publishes
+its job-center/proximity surface.
 
 **Note on `docs/build_sequence.md`:** that document carries its own E1–E10
 Explanation ordering which predates these changes. It still lists Q5 separately,
-orders Q2 sixth (after Q3 and Q4, which now depend on it), and describes Parcel
-Watch as corridor-gated. It should be reconciled with this plan.
+orders Q2 sixth (after Q3 and Q4), and describes Parcel Watch as corridor-gated.
+It should be reconciled with this plan.
 
 ## 9. Decisions — Confirmed
 
@@ -936,9 +917,9 @@ These five were open in the previous version and are now settled:
    used for individual CBSA runs, with CBSA-specific outputs retained. The
    qualification: these notebooks establish and run a national *method*; they do
    not all produce a national *analysis*. See Section 2.2.
-2. **Regional lenses — confirmed.** Keep them distinct, and the geography engine
-   should control this long term. Functional labor shed moves from input lens to
-   output; megaregions are added as a labeled lens.
+2. **Regional lenses — confirmed.** Keep them distinct, and Geography owns the
+   reusable state-adjacency, CBSA-centroid, and membership interfaces. Functional
+   labor shed moves from input lens to output; megaregions are deferred to V2.
 3. **Parcel system of record — confirmed with a change.** Free county or state
    assessor sources are the default; a licensed source would require its own
    engine to build. Start with a manual file. A low-cost national service such as
@@ -952,9 +933,6 @@ These five were open in the previous version and are now settled:
 
 ### Still open
 
-- Whether megaregions are in scope for Regional Role v0, given manual sourcing
-  and partial national coverage.
-- The X-mile threshold in the nearby-counties region construction rule.
 - Which metrics belong in the standard Catchment profile.
 - Whether the parcel engine is scaffolded now or after this plan is reviewed
   (Section 12).
@@ -965,15 +943,17 @@ These five were open in the previous version and are now settled:
 - no new catch-all Spatial or Housing engine
 - no automated market routing or issue assembly
 - no national parcel acquisition before one county contract works
-- no national POI scale-out before Q4's basket and access method are reviewed
+- no broader-market or national POI scale-out before Q4's basket, cluster
+  method, and reusable interface are reviewed
 - no commuting-integration claims from WAC/RAC without OD
 - no revival of Corridor Intelligence as an engine dependency; corridor work is
-  analysis-local and emerges from the access spine
+  analysis-local and may draw on reviewed Q4 amenity hubs
 - no investment conclusion from a corridor read
 - no *assumption* of a paid parcel source, and no licensing commitment before a
   free-source path has been tried and costed against it
 - no promotion of the Place Intelligence app as the Catchment product
-- no divergent per-question reinvention of the 15-minute definition
+- no claim that physical proximity or POI concentration is 15-minute access
+  without a declared network and barrier method
 - no final issue graphics or prose
 
 ## 11. Primary References for Child Specs

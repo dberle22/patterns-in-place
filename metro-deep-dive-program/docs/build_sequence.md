@@ -6,11 +6,14 @@ for interactive browsing.
 
 Source: `metro-deep-dive-program/mdd_classification_workbook.md` — §2
 Issue→Analysis Map, §3 Analysis Inventory, §6 Reusable Component Build Map.
+The Thematic notebook architecture and A1–A10 boundary are superseded by
+`analyses/thematic/THEMATIC_ANALYSES_PLAN.md`; the workbook remains the source
+inventory until its HTML companion is deliberately regenerated.
 
 Sequencing rule: stabilize only the Engine or component needed by the next
-analysis, build that analysis as a parameterized notebook, and inspect its
-outputs. Keep analysis-specific logic in the analysis until another analysis
-needs it unchanged; that is the promotion trigger.
+analysis, build the notebook roles required by that analysis family, and
+inspect their outputs. Keep analysis-specific logic in the analysis until
+another analysis needs it unchanged; that is the promotion trigger.
 
 Issues come after the analysis layer. They are not part of this build sequence
 except as the reason an analysis is worth building.
@@ -133,28 +136,30 @@ engine construction. See Section 12 of the Explanation plan.
 
 ### 3.3 Thematic
 
-Every theme runs nationally first and then in market mode. The order follows
-shared component families so the first notebook in a family pays most of the
-setup cost.
+Every theme gets a national notebook first and a separate reusable,
+parameterized market notebook second. Actual Richmond or other market story
+notebooks remain in `issues/`. Every entry begins with the audit epic in its
+provisional build plan. The order below follows shared component families so
+the first implemented entry in a family pays most of the setup cost.
 
-| Order | Analysis notebook | Reuses | New or widened component, if required | First outputs to inspect |
+| Order | Analysis entry | Reuses | New or widened component, if required | First outputs to inspect |
 |---|---|---|---|---|
-| T1 | A1 AI inversion | Industry datasets, Benchmarking | Theme-engine interface and governed exposure crosswalk | National exposure distribution, sector comparison, Richmond read |
+| T1 | A1 AI inversion | Industry datasets, Benchmarking | Governed exposure crosswalk and first national/market notebook handoff | National exposure distribution, decomposition, parameterized Richmond read |
 | T2 | A6 Specialization predicts growth? | A1 industry surfaces, Benchmarking | Lagged LQ/growth method | National specialization-growth relationship and market cases |
-| T3 | A10 Polarization | A1 industry surfaces | Wage-distribution inputs and method | Sector wage distributions and metro comparison |
-| T4 | Housing satellite | Existing housing inputs, Benchmarking | Reusable housing component dataset | National housing diagnostic set and market scorecard |
-| T5 | A2 Building lowers prices? | Housing satellite, Q1 method | Supply-response panel method | Permitting/price relationship and market cases |
-| T6 | A7 Who is squeezed? | Housing satellite, Q1 and Q2 affordability inputs | Burden-versus-income comparison | National squeeze typology and Richmond read |
-| T7 | A9 Converging or diverging? | Time-Series engine, Trajectory, Peers | Long-panel dispersion method | National convergence/divergence paths and peer cases |
-| T8 | A4 Remote work rewired? | WAC/RAC, industry and housing surfaces | WFH/work-geography panel | National WFH shifts and selected market structure views |
-| T9 | A5 How many downtowns? | Q6 integration/polycentricity and the Q2 access method it runs on, zone context | Downtown/sub-center typology; reuse the shared 15-minute definition rather than growing a second one | National center-count comparison and market maps |
-| T10 | A3 Moving toward harm? | Q3 growth-change, existing hazard inputs | Hazard-growth comparison method | National hazard/growth quadrants and market maps |
-| T11 | A8 Geography of life expectancy | Health inputs, Q4 access context | Health-context comparison method | National health distribution and within-market context |
-| T12 | CBSA similarity study | Intelligence Framework, Peers | Methods review rather than a new data engine | Similarity distributions, sensitivity tables, peer-network examples |
+| T3 | A10 Polarization | A1/A6 industry surfaces, OEWS, QWI | Reviewed job/wage unit and polarization method | National job-growth/wage-position result and metro drivers |
+| T4 | A2 Building lowers prices? | Q1 housing components, Benchmarking | Supply-response panel method | Permitting/stock/price relationship and market paths |
+| T5 | A7 Who is squeezed? | Q1 and A2 components, income/wage inputs | Burden/price/income comparison | National affordability divergence and parameterized market read |
+| T6 | A9 Converging or diverging? | Time-Series engine, Trajectory, Peers | Long-panel dispersion method | National convergence/divergence paths and peer cases |
+| T7 | A4 Remote work rewired? | ACS WFH, current WAC/RAC, industry and housing surfaces | Reviewed WFH/work-geography panel | National WFH persistence and selected market structure views |
+| T8 | A5 How many downtowns? | Industry D3, Q2/Q6, Geography | Center/sub-center method | National center-structure comparison and market maps |
+| T9 | A3 Moving toward harm? | Hazard inputs, population/housing growth, Q3 where useful | Hazard-growth comparison method | National hazard/growth relationship and market overlap maps |
+| T10 | A8 Geography of life expectancy | Health, income, housing, social-fabric inputs | Health-context comparison method | National contextual relationship and within-market county variation |
 
 This is not a promise to finish all Thematic work before returning to
 Explanation. It is the reuse-aware order within the family. Routing and current
-issue needs decide how the two families interleave.
+issue needs decide how the two families interleave. The Housing satellite is
+supporting work for Q1/A2/A7 rather than a separate entry. The CBSA similarity
+study remains an Intelligence/Position methods study outside this sequence.
 
 ## Time-series / trajectory — expanded panel ready for analytics review
 
@@ -178,7 +183,7 @@ under the fixed-panel rule—not that they lack a trajectory. The Position /
 Trajectory notebook is the next review point before the contract is frozen.
 
 Not globally ordered as standalone work (correctly Partial/Not-built, each is
-activated by a routed vertical slice): Theme engine interface, Industry
+activated by a routed vertical slice): Thematic analysis contract, Industry
 theme datasets and crosswalks, POI Engine, Infrastructure Engine, daily-needs
 basket, Housing structure/demand method, Housing component datasets,
 Standard thematic build method, Q6 polycentricity method, Tract growth-change
@@ -208,11 +213,11 @@ enabling input, not itself the analytical product.
 | Time-series / trajectory engine and mart | engine | High | Implemented; review/freeze pending | Act 3 trend work, turn signals, candidate scan support, dynamic reads | Act 3 Tiered trajectory classifications, Turn-signal flags → Position: Trajectory |
 | Zone model outputs | engine | High | Exists; consumer contract review pending | Place/zone composition, tract/ZCTA views, Act 4 zone archetypes, and corridor substrate | Act 4 market anatomy, Zone archetype map, Zone composition benchmark bar, Zone interpretation summary → Position: Internal structure |
 | Regional comparison and role method | method | High | Partial | Regional role analyses, Q6 support, market-within-region interpretation | Act 2 Regional role analysis → Explanation: Regional role, Q6 |
-| Housing structure and demand comparison method | method | High | Partial | Q1, A2, A7, housing diagnostics, pressure maps | Act 2 Explanation question slot (Q1) → Explanation: Q1; Thematic: A2, A7, Housing satellite |
-| Housing component datasets | mart | High | Partial | Reusable supply/demand-side housing inputs | Act 2 Deeper market KPI-profile tables → Explanation: Q1; Thematic: A2, A7, Housing satellite |
+| Housing structure and demand comparison method | method | High | Partial | Q1, A2, A7, housing diagnostics, pressure maps | Act 2 Explanation question slot (Q1) → Explanation: Q1; Thematic: A2, A7 |
+| Housing component datasets | mart | High | Partial | Reusable supply/demand-side housing inputs | Act 2 Deeper market KPI-profile tables → Explanation: Q1; Thematic: A2, A7 |
 | Daily-needs access method | method | High | Partial | Q4, livability summaries, and optional context for a corridor exploration | Act 2 Access-amenities analysis, Built environment analysis → Explanation: Q4 and conditional corridor exploration |
 | POI Engine | engine | High | Ready for first analysis | Classified, provenance-rich Richmond place points with tract/county assignment and postal-ZIP evidence; governed categories support activity comparisons, anchors, and optional corridor exploration | Act 2 Access-amenities analysis and Internal Structure Place/zone/neighborhood activity review → Explanation: Q4; Position: Internal structure |
-| Theme engine interface | engine | High | Partial | Standard all-market and market-mode thematic builds | Act 2 Theme analysis slot, Industry-economic makeup analysis → Thematic: A1, A2–A10 |
+| Thematic analysis contract | method | High | Specified; first implementation pending | Separate national and parameterized market notebooks with a stable issue handoff | Act 2 Theme analysis slot, Industry-economic makeup analysis → Thematic: A1–A10 |
 | Industry theme datasets and crosswalks | mart | High | Partial | A1, A6, A10, industry comparisons, exposure analyses | Act 2 Industry-economic makeup analysis → Thematic: A1, A6, A10 |
 | Standard thematic build method | method | High | Partial | Reusable workflow for A1–A10 and future themes | Act 2 Theme analysis slot → Thematic: A1–A10 (all) |
 | Q6 polycentricity and integration method | method | Medium | Partial | One Metro, market-structure interpretation, internal-center logic | Act 2 Social fabric analysis, Built environment analysis → Explanation: Q6; Thematic: A5 |

@@ -1,11 +1,13 @@
 """Narrow, metric-safe query helpers for the governed geography mart."""
 
+from __future__ import annotations
+
 from pathlib import Path
 from typing import Literal
 
 
 AllocationBasis = Literal["population", "housing_units", "land_area"]
-GeometryRole = Literal["display"]
+GeometryRole = Literal["display", "analysis"]
 
 
 def allocation_edges(con, target_level: Literal["place", "zcta"], basis: AllocationBasis):
@@ -33,33 +35,34 @@ def temporal_edges(con, basis: AllocationBasis):
 
 
 def geometry_catalog(con, role: GeometryRole = "display"):
-    """Discover approved or materialized display geometry from the catalog."""
+    """Discover geometry carrying one explicit governed role."""
     return con.execute(
         "SELECT * FROM mart_geography.geometry_catalog WHERE geometry_role = ?",
         [role],
     )
 
 
-def get_geometry(con, table_name: str):
-    """Return an explicitly selected approved or governed display relation.
+def get_geometry(con, table_name: str, role: GeometryRole = "display"):
+    """Return an explicitly selected governed geometry relation.
 
     The catalog check makes table selection data-driven but prevents arbitrary
-    SQL identifiers. Approved seeded products and role-tagged materializations
-    are eligible; analysis geometry is never implied.
+    SQL identifiers. The caller must explicitly request analysis geometry; it
+    is never inferred from a display request.
     """
     allowed = con.execute(
-        "SELECT table_name FROM mart_geography.geometry_catalog WHERE geometry_role = 'display'"
+        "SELECT table_name FROM mart_geography.geometry_catalog WHERE geometry_role = ?",
+        [role],
     ).fetchall()
     allowed_names = {row[0] for row in allowed}
     if table_name not in allowed_names:
-        raise ValueError(f"{table_name!r} is not an approved display geometry table")
+        raise ValueError(f"{table_name!r} is not an approved {role} geometry table")
 
     return con.execute(f"SELECT * FROM geo.{table_name}")
 
 
-def export_geometry(con, table_name: str, output_path: str | Path) -> None:
-    """Write a selected governed display geometry table as a scoped Parquet artifact."""
-    geometry = get_geometry(con, table_name)
+def export_geometry(con, table_name: str, output_path: str | Path, role: GeometryRole = "display") -> None:
+    """Write a selected governed geometry table as a scoped Parquet artifact."""
+    geometry = get_geometry(con, table_name, role)
     # Execute the validated relation before COPY so the function fails before
     # creating an artifact if the selected materialization disappeared.
     geometry.fetch_record_batch(1)

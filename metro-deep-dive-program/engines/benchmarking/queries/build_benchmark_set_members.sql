@@ -11,7 +11,7 @@ WITH target_cbsa AS (
     geo_name AS target_geo_name,
     parent_region_id,
     parent_division_id,
-    parent_state_fips
+    state_fips AS primary_state_fips
   FROM patterns_in_place.gold.dim_geo
   WHERE geo_level = 'cbsa'
     AND is_metro = TRUE
@@ -38,6 +38,7 @@ member_cbsa AS (
     geo_name AS member_geo_name,
     parent_region_id,
     parent_division_id,
+    state_fips AS primary_state_fips,
     parent_state_fips
   FROM patterns_in_place.gold.dim_geo
   WHERE geo_level = 'cbsa'
@@ -95,7 +96,7 @@ division_members AS (
 ),
 state_primary_members AS (
   SELECT
-    CONCAT('cbsa:', t.target_geo_id, '|state_primary|', s.state_fips) AS comparison_set_id,
+    CONCAT('cbsa:', t.target_geo_id, '|state_primary|', t.primary_state_fips) AS comparison_set_id,
     'state_primary' AS comparison_set_type,
     'cbsa' AS target_geo_level,
     t.target_geo_id,
@@ -106,11 +107,9 @@ state_primary_members AS (
     CASE WHEN t.target_geo_id = m.member_geo_id THEN 'target' ELSE 'comparison' END AS member_role,
     'gold.dim_geo' AS membership_source
   FROM target_cbsa AS t
-  INNER JOIN target_cbsa_states AS s
-    ON t.target_geo_id = s.target_geo_id
-   AND s.state_rank_in_cbsa = 1
   INNER JOIN member_cbsa AS m
-    ON s.state_fips = m.parent_state_fips
+    ON t.primary_state_fips = m.primary_state_fips
+  WHERE t.primary_state_fips IS NOT NULL
 ),
 state_member_members AS (
   SELECT

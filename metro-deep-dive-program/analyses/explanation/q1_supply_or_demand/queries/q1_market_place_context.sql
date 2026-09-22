@@ -15,8 +15,9 @@ with market_places as (
     group by edge.target_geo_id
 )
 select q.geo_id as place_id, q.geo_name, q.pop_total, q.permits_total_units,
-       q.permits_per_1000_housing_units, q.renter_cost_to_income,
-       q.vacancy_rate, market_places.contributing_tract_count,
+       q.permits_per_1000_housing_units, q.pct_rent_burden_30plus,
+       q.median_rent_to_all_hh_income_proxy, q.vacancy_rate, q.pop_growth_5yr,
+       market_places.contributing_tract_count,
        market_places.allocation_quality
 from market_places
 join mart_explanation_q1.supply_demand_base q

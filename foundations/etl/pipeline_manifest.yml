@@ -248,6 +248,17 @@ steps:
       - seed_staging
     enabled: true
 
+  - id: lehd_lodes_od_staging
+    layer: staging
+    script: foundations/etl/staging/get_lehd_lodes_od.R
+    outputs:
+      - staging.lehd_lodes_od_county
+      - staging.lehd_lodes_od_coverage
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+    enabled: true
+
   - id: lehd_qwi_staging
     layer: staging
     script: foundations/etl/staging/get_lehd_qwi.R
@@ -521,6 +532,17 @@ steps:
       - silver.lehd_lodes_rac
     depends_on:
       - lehd_lodes_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: lehd_lodes_od
+    layer: silver
+    script: foundations/etl/silver/lehd_lodes_od_silver.R
+    outputs:
+      - silver.lehd_lodes_od_county
+      - silver.lehd_lodes_od_coverage
+    depends_on:
+      - lehd_lodes_od_staging
       - geo_crosswalks
     enabled: true
 

@@ -2,7 +2,8 @@
 
 **Build order:** E4 — independent track; does not depend on the access spine
 
-**Status:** Spec and build plan drafted; Epic 1 audit not yet run.
+**Status:** Epics 1–5 complete. The V1 contract, Geography prerequisite, and
+read-only evidence workbench are implemented; no Regional Role mart exists.
 
 **Question:** How does this market fit into its broader region economically,
 demographically, and functionally?
@@ -35,8 +36,11 @@ unsettled. Four lenses, each acting as a filter, run to see how the read changes
 |---|---|---|
 | Census division | Easy to explain and produce | Edge markets fit badly |
 | State | Clear and legible | States can be small |
-| Nearby counties and metros | Often the most meaningful | Needs a real construction rule |
-| Megaregions | Interesting framing | Manual, partial coverage; do not block on it |
+| Primary state plus adjacent states | State-legible broader orbit | Requires a reusable land-adjacency relationship |
+| 250-mile CBSA proximity | Transparent geographic-proximity challenger | Requires declared CBSA centroids |
+
+Megaregions are deferred to V2. Functional labor sheds remain an output once
+LODES OD exists, not an input lens.
 
 Functional labor sheds are an **output** of this analysis, not an input lens.
 
@@ -67,10 +71,9 @@ Do not label WAC/RAC balance as inflow/outflow; that claim requires flows.
 ## Open decisions for the spec
 
 - the nearby-region construction rule (the X-mile border threshold)
-- whether megaregions are in scope for v0
-- base/traded industry treatment
 - minimum migration-flow disclosure rule
-- what evidence qualifies a role label
+
+V1 role labels remain analyst-authored rather than automatic classifications.
 
 See [EXPLANATION_REGIONAL_ROLE_SPEC.md](EXPLANATION_REGIONAL_ROLE_SPEC.md) for the
 analysis boundary and inputs, and

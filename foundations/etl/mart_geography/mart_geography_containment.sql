@@ -107,41 +107,51 @@ create or replace view mart_geography.geometry_catalog as
 select table_name,
        regexp_extract(table_name, '^tracts_([a-z]{2})_display$', 1) as state_scope,
        case
+         when table_name like '%_analysis' then 'analysis'
          when table_name in ('tracts_all_us', 'counties', 'cbsas')
            or table_name like '%_display' then 'display'
          else 'legacy_unclassified'
        end as geometry_role,
        case
+         when table_name in ('states_analysis', 'cbsas_analysis') then '2023_tiger_line'
          when table_name in ('tracts_all_us', 'counties', 'cbsas')
            then '2024_census_cartographic_boundary'
          when table_name like '%_display' then 'recorded_in_table'
          else 'unknown_legacy_vintage'
        end as boundary_vintage_status,
        case
+         when table_name = 'states_analysis' then 'state'
+         when table_name = 'cbsas_analysis' then 'cbsa'
          when table_name like 'tracts%' then 'tract'
          when table_name like 'states%' then 'state'
          when table_name like 'counties%' then 'county'
          when table_name like 'cbsas%' then 'cbsa'
        end as geo_level,
        case
+         when table_name = 'states_analysis' then 'state_fips'
+         when table_name = 'cbsas_analysis' then 'cbsa_code'
          when table_name = 'tracts_all_us' then 'tract_geoid'
          when table_name = 'counties' then 'county_geoid'
          when table_name = 'cbsas' then 'cbsa_code'
          else null
        end as stable_join_key,
        case
+         when table_name in ('states_analysis', 'cbsas_analysis') then 'Census TIGER/Line 2023 via tigris'
          when table_name in ('tracts_all_us', 'counties', 'cbsas')
            then 'Census cartographic boundary via tigris; source year 2024'
          when table_name like '%_display' then 'Recorded in table metadata'
          else 'Unknown legacy source'
        end as source_vintage,
        case
+         when table_name in ('states_analysis', 'cbsas_analysis') then 'materialized_analysis'
          when table_name in ('tracts_all_us', 'counties', 'cbsas')
            then 'approved_read_only_display'
          when table_name like '%_display' then 'materialized_display'
          else 'legacy_unclassified'
        end as consumer_status,
        case
+         when table_name in ('states_analysis', 'cbsas_analysis') then
+           'Approved only for declared state adjacency, CBSA centroid, and scoped downstream spatial work at the recorded boundary vintage; do not substitute it for display geometry or a different vintage.'
          when table_name in ('tracts_all_us', 'counties', 'cbsas') then
            'Map display and geometry export only; not analytical geometry, not a boundary-vintage authority, and not valid for spatial allocation, containment, area, or distance calculations.'
          when table_name like '%_display' then
@@ -153,7 +163,7 @@ where table_schema = 'geo'
   and (
     table_name in ('states', 'counties', 'cbsas', 'tracts_all_us',
                    'states_display', 'counties_display', 'cbsas_display',
-                   'tracts_all_us_display')
+                   'tracts_all_us_display', 'states_analysis', 'cbsas_analysis')
     or regexp_matches(table_name, '^tracts_[a-z]{2}_display$')
   );
 

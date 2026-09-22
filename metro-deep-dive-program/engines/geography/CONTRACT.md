@@ -1,8 +1,9 @@
 # Geography Engine Contract
 
-Status: Epics 2–7 implemented. The existing national tract, county, and CBSA
-cartographic products are approved as read-only display geometry; analytical
-geometry remains intentionally on-demand.
+Status: Epics 2–7 and the Regional Role regional-lens interface are implemented.
+The existing national tract, county, and CBSA cartographic products are approved
+as read-only display geometry. Full TIGER/Line state and CBSA geometry is now
+materialized narrowly for the declared Regional Role relationships.
 
 ## Governing decisions
 
@@ -57,6 +58,9 @@ TIGER/Line geometry remain on-demand.
 | `geo.<level>_analysis` | Full TIGER/Line geometry, keyed by level, ID, and boundary vintage |
 | `geo.<level>_display` | Census cartographic display geometry, keyed identically |
 | `mart_geography.*` | Read-only current/vintaged identity, relationship, geometry-catalog, and audit views |
+| `mart_geography.state_adjacency` | Symmetric state-to-state land-border edges at the recorded boundary vintage |
+| `mart_geography.cbsa_centroids` | One declared equal-area geometric centroid per CBSA and boundary vintage |
+| `mart_geography.region_lens_membership` | Target metro CBSA × declared lens × parameter × member metro CBSA |
 
 ## Source and vintage contract
 
@@ -95,6 +99,24 @@ themselves remain unchanged and read-only. A consumer that requires those
 operations needs a role-tagged `geo.<level>_analysis` product. No separate
 geometry materialization is required for the approved display use.
 
+### Regional Role analytical geometry and lenses
+
+`geo.states_analysis` and `geo.cbsas_analysis` are full 2023 Census TIGER/Line
+products, downloaded through `tigris` by
+`foundations/etl/geo/build_regional_lens_geography.R`. They are role-tagged
+analytical geometry and are not replacements for display layers. The build also
+publishes `state_adjacency`, `cbsa_centroids`, and `region_lens_membership`.
+
+`state_adjacency` has symmetric nonzero shared-boundary-line edges; ocean,
+Great Lake, and point-only contact do not qualify. `cbsa_centroids` stores
+equal-area (`EPSG:5070`) geometric centroids as WGS84 reference points.
+`region_lens_membership` covers `census_division`, `primary_state`,
+`primary_state_adjacent`, and `cbsa_centroid_250mi`, with 200-, 250-, and
+300-mile radius parameter rows and calculated distance. Primary state always
+comes from `gold.dim_geo.state_fips`, the first state named in the official
+CBSA label—not county count or population. All surfaces retain source,
+boundary vintage, and method version.
+
 `foundations/etl/geo/get_tiger_geos.R` is an on-demand cartographic display
 builder. It requires `GEOGRAPHY_TIGER_STATE_SCOPE`; a state-scoped run writes
 only `geo.tracts_<state>_display` with `geometry_role = 'display'` and a
@@ -114,9 +136,8 @@ creates full TIGER/Line analytical geometry.
   `land_area`; it carries `quality_flag`.
 - `harmonize()` restates from an older boundary vintage to the latest approved
   target and carries `change_type`.
-- `get_geometry()` discovers and returns an approved or materialized `display`
-  table only; it does not create analysis shapes or silently substitute an
-  unapproved legacy product.
+- `get_geometry()` requires an explicit `display` or `analysis` role; it does
+  not silently substitute an unapproved legacy product or display shape.
 - `export_geometry()` produces scoped local artifacts only.
 
 No helper may imply that a rate, median, or index is additive.

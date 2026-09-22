@@ -8,16 +8,20 @@
 
 ## Decision summary
 
-Q2 can begin as a Richmond-first V0 using workplace-trace jobs, tract-centroid
-straight-line distance, and current ACS housing and household-income measures.
-It cannot honestly claim a 15-minute travel-time result, a time series of job
-centers, or a worker-to-household affordability match. Those are later method
-decisions, not gaps to conceal in V0.
+Q2 can begin with a national 2023 workplace-job concentration study, followed
+by Richmond-first local exploration using tract-centroid straight-line distance
+and current ACS housing and household-income measures. It cannot honestly claim
+a 15-minute travel-time result, a time series of job centers, worker origins,
+or a worker-to-household affordability match. Those are later method decisions,
+not gaps to conceal in V0.
 
-V0 should use one market notebook and the smallest inspectable output set:
-center candidates and selection sensitivity, a center inventory/map, distance
-curves, descriptive model results, and a separately labeled affordability
-context view. National calibration, network routing, and a final shared
+V0 should use a national concentration notebook followed by two Richmond-first
+notebooks. The national surface identifies tract concentration patterns without
+ranking markets or selecting a rule. The market surface maps raw tract jobs and
+compares local center/district candidates without selecting one automatically.
+The evidence surface consumes an explicitly reviewed V0 rule to produce the
+center inventory/map, distance curves, descriptive model results, and
+separately labeled affordability context. Network routing and a final shared
 15-minute definition remain out of scope until the first market result makes a
 case for them.
 
@@ -121,8 +125,9 @@ trends.
 ## Required spec and build-plan changes
 
 1. Reframe V0 as straight-line job proximity, not a 15-minute definition.
-2. Replace the former broad minimum-output list with a Richmond-first minimum
-   output set; defer national calibration and network routing.
+2. Replace the former broad minimum-output list with a national concentration
+   surface, a Richmond-first local exploration surface, and a later evidence
+   surface; defer national proximity calibration and network routing.
 3. Reuse Q1's 2024 tract housing surface rather than rebuilding ACS measures.
 4. Treat the D3 2,500-job floor as a sensitivity case, not a center rule.
 5. Keep affordability context separate from workplace earnings until a later
