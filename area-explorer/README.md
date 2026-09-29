@@ -52,3 +52,10 @@ For the internal app, Intelligence data is read from `mart_intelligence.*` when 
 
 - **Deep Dive Research Tool** (`metro-deep-dive/RESEARCH_TOOL_ROADMAP.md`) — place-first research surface; pick a metro and see its full profile. Different entry point, different purpose.
 - **Chatbot / Publisher** (`publisher/`) — question-first entry point. NL → SQL → chart pipeline.
+
+## Open questions on return
+
+Area Explorer is paused. These questions were raised in June 2026 and haven't been settled:
+
+- Does `cbsa_public` get deployed publicly, and for which primary user: investor, researcher or curious reader?
+- How should the apps handle CBSAs with thin coverage (smaller markets, missing BEA or BLS series)?

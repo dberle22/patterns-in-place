@@ -66,3 +66,21 @@ docs/
   the current operating guide.
 - When a contract changes, update `data_model.md`, `sql/ddl/001_gold_tables.sql`,
   the relevant pipeline/app code, and focused tests together.
+
+## Open Questions On Return
+
+Stoop is paused; the public Stoop Explore link is still live. These questions were raised in June 2026 and haven't been settled.
+
+**Stoop Explore**
+
+- Should Livability (transit, walkability) come into Explore alongside Character?
+- When do we expand beyond NYC, and how do we pick the second city?
+
+**Stoop Search** (not built)
+
+- Is Search a separate app or an expanded mode of Explore? What's the flow between them?
+- Zillow or StreetEasy for NYC listings, and do we need both?
+- What does a listing score say: "good for someone like you" or "in a good neighborhood"?
+- Are Livability and Opportunity scored at the NTA level, the listing level, or both?
+- What is the shortlist: a saved list, a comparison table, or a shareable link?
+- Does Search need a user profile, or does it start with filters only?
