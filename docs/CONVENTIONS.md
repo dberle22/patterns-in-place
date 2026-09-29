@@ -87,7 +87,13 @@ When two docs could answer the same question, one of them owns it and the other 
 | Topic | Owner |
 |---|---|
 | Folder map, area status, DB path, Python environments | Root [README.md](../README.md) |
+| What we're building, the thinking model, principles | [OVERVIEW.md](OVERVIEW.md) |
+| Data flow, warehouse schemas, folder dependencies | [ARCHITECTURE.md](ARCHITECTURE.md) |
+| Vocabulary | [GLOSSARY.md](GLOSSARY.md) |
+| Repo-wide and product-wide decisions | [decisions/](decisions/README.md) |
 | Agent behaviour and coding rules | [AGENTS.md](../AGENTS.md) |
 | Documentation rules | This file |
+| Per-table definitions | `foundations/data_dictionary/` |
+| Metric and model definitions | `foundations/semantic_layer/` |
 
-This table grows as the other `docs/` files are written.
+Status and roadmap owners are added when `docs/STATUS.md` and `docs/ROADMAP.md` are written.

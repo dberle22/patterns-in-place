@@ -344,8 +344,8 @@ The Intelligence frames (Livability and Opportunity scores) are complete and ava
 - [2026-06] Two-track content strategy defined: technical writing (how it's built) + data analysis writing (what it finds)
 - [2026-06] Publisher workflow documented: 7-step process, post output format, backlog written
 - [2026-06] Backlog written: Track 1 and Track 2 post ideas catalogued in `publisher/content/publisher_backlog.md`
-- [2026-06] Outreach strategy mapped: `OUTREACH_TRACKER.md` — five lanes, sequenced action plan, per-target lead artifacts
-- [2026-06] Tech landscape mapped: `TECH_LANDSCAPE_MAP.md` — communities, contributable projects, positioning per category
+- [2026-06] Outreach strategy mapped: `docs/strategy/OUTREACH_TRACKER.md` — five lanes, sequenced action plan, per-target lead artifacts
+- [2026-06] Tech landscape mapped: `docs/strategy/TECH_LANDSCAPE_MAP.md` — communities, contributable projects, positioning per category
 
 ### Ahead
 
@@ -467,8 +467,8 @@ Track J (Publishing & Distribution)
 | [`publisher/PUBLISHER_ROADMAP.md`](publisher/PUBLISHER_ROADMAP.md) | Publisher product roadmap — three products (Data Stories, Chart Engine, Chatbot), milestones, sequencing, distribution |
 | [`publisher/MIGRATION.md`](publisher/MIGRATION.md) | Publisher migration plan, path fixes, verification gates, future cleanup |
 | [`stoop/MIGRATION.md`](stoop/MIGRATION.md) | Stoop migration plan, verification gates, long-term Points pipeline roadmap |
-| [`OUTREACH_TRACKER.md`](OUTREACH_TRACKER.md) | Five distribution lanes, per-target leads and timing, sequenced action plan |
-| [`TECH_LANDSCAPE_MAP.md`](TECH_LANDSCAPE_MAP.md) | Community map, contributable OSS projects, positioning by category |
+| [`docs/strategy/OUTREACH_TRACKER.md`](docs/strategy/OUTREACH_TRACKER.md) | Five distribution lanes, per-target leads and timing, sequenced action plan |
+| [`docs/strategy/TECH_LANDSCAPE_MAP.md`](docs/strategy/TECH_LANDSCAPE_MAP.md) | Community map, contributable OSS projects, positioning by category |
 
 ---
 

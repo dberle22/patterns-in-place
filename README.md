@@ -18,6 +18,7 @@ Read this file first. Agent behaviour rules are in [AGENTS.md](AGENTS.md).
 | `area-explorer/` | Streamlit CBSA explorer apps. | Paused | [README.md](area-explorer/README.md) |
 | `publisher/` | NL-to-SQL chatbot, chart-a-day pipeline, editorial content. Has shipped work. | Paused | [README.md](publisher/README.md) |
 | `stoop/` | NYC neighborhood explorer. The public app link is still live. | Paused | [docs/README.md](stoop/docs/README.md) |
+| `docs/` | Repo-wide context: overview, architecture, glossary, conventions, decisions. | Active | [OVERVIEW.md](docs/OVERVIEW.md) |
 | `scripts/` | Repo-level launchers (e.g. `start_research_tool.sh`). | — | — |
 | `config/` | Local R environment helper. | — | — |
 
@@ -25,9 +26,19 @@ Read this file first. Agent behaviour rules are in [AGENTS.md](AGENTS.md).
 
 **Local only (gitignored):** `notes/` is an old Obsidian vault of early strategy notes. It is being reviewed and retired; don't treat it as a current source of truth.
 
+## Context docs
+
+| To understand | Read |
+|---|---|
+| What we're building and how we think about places | [docs/OVERVIEW.md](docs/OVERVIEW.md) |
+| Data flow, warehouse schemas, which folder reads what | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
+| Vocabulary (frames, acts, marts, zones) | [docs/GLOSSARY.md](docs/GLOSSARY.md) |
+| Decisions not to re-argue | [docs/decisions/](docs/decisions/README.md) |
+| How to write and maintain docs | [docs/CONVENTIONS.md](docs/CONVENTIONS.md) |
+
 ## Where current plans live
 
-Repo-wide context docs are being rebuilt in `docs/`. So far that covers [docs/CONVENTIONS.md](docs/CONVENTIONS.md): how docs are named, headed, kept current and archived. Until the rest exists:
+A single status table and roadmap are still to be written in `docs/`. Until then:
 
 - Strategy across all areas: [ROADMAP.md](ROADMAP.md) and [PLATFORM_ROADMAP.md](PLATFORM_ROADMAP.md). Both were last updated in July 2026 and don't cover the public panel or the MDD program.
 - Metro Deep Dive: [metro_deep_dive_program.md](metro-deep-dive-program/metro_deep_dive_program.md) and [build_sequence.md](metro-deep-dive-program/docs/build_sequence.md).
