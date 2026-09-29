@@ -119,9 +119,10 @@ The evidence should proceed from observed geography to interpretation:
 
 1. **Coverage and method panel:** comparison years, ACS vintages, tract
    harmonization coverage/quality, and reliability treatment.
-2. **Metro growth ledger:** total population and housing-unit change, then the
-   shares attributable to counties, named Places, and the remaining
-   unincorporated/split geography.
+2. **Metro growth ledger:** total population and housing-unit change, with
+   exact county components. Direct Place results remain a separate named-
+   location lens rather than a ledger component, because split Places cannot be
+   summed to a CBSA without a declared allocation.
 3. **Native-grain location lenses:** harmonized tract map/table; direct county
    change table; Place change table with its association and coverage labels.
 4. **Pattern reads:** concentration versus dispersion, growth near existing

@@ -1,6 +1,7 @@
 # Explanation Q4 — Livability Amenities and POI Clusters Spec
 
-**Status:** Revised after Epic 1 audit; ready to define the POI-first pilot.
+**Status:** Revised after Epic 1 audit; Epic 3 has produced a provisional
+all-mapped-POI hub candidate and sensitivity. Basket-specific work remains open.
 
 **Build order:** E5 — a POI-first workbench that produces reviewed amenity
 clusters and cluster context. It does not depend on a Q2 access method.
@@ -122,6 +123,33 @@ check—must be confirmed before this becomes a reusable cross-analysis service.
 - Q2 job-center comparison view; and
 - a method record with cluster parameters, sensitivity versions, reviewer,
   date, limitations, and `unavailable` results where coverage is inadequate.
+
+## Notebook flow and review gate
+
+`EXPLANATION_Q4_NOTEBOOK.py` is a read-only analyst workbench, not a static
+report or final editorial surface. Its flow must make the POI evidence legible
+before any cluster or tract interpretation:
+
+1. **Orientation:** state the source vintage, scope, intended use, and explicit
+   non-claims about access, walkability, travel time, and barriers.
+2. **Controls:** select pilot market and analysis basket. Controls may alter a
+   declared display or exploratory candidate, but never source taxonomy.
+3. **Coverage:** show mapped versus unclassified POIs, point-assignment
+   coverage, and the difference between a true zero and incomplete coverage.
+4. **Basket contract:** show the exact governed categories and subcategories
+   included in the selected analysis-owned basket.
+5. **POI inventory map:** expose the selected basket as a filterable point map.
+6. **Composition:** show category and subcategory counts before interpreting
+   spatial concentration.
+7. **Hub review:** after the basket-specific hub rerun, show candidate geometry,
+   POI membership, sensitivity versions, and hub-level detail.
+8. **Later analytical views:** add composition-based typologies, tract-context
+   profiles, and Q2 employment comparison only in their respective epics.
+
+The current notebook implements steps 1–6. The existing all-mapped-POI hub
+output is a pre-basket baseline, not the final hub view in step 7. Review the
+notebook's flow and usability before a basket-specific hub rerun or any Epic 4
+or Epic 5 work begins.
 
 ## Guardrails
 

@@ -42,8 +42,9 @@ The inspected DuckDB baseline has the following nationwide current coverage:
 The baseline lacked `silver.block_registry`, `silver.dim_geo`, typed crosswalk
 tables, a `mart_geography` schema, Place/ZCTA geometry, and analytical
 TIGER/Line geometry. Identity, containment, allocation, temporal, and mart
-surfaces are now materialized; Place/ZCTA display geometry and analytical
-TIGER/Line geometry remain on-demand.
+surfaces are now materialized. Place display geometry remains on-demand;
+`geo.places_analysis` is the national analytical product for named spatial
+consumers, with bounded state scopes retained for refresh and validation.
 
 ## Locked future managed surfaces
 
@@ -54,6 +55,8 @@ TIGER/Line geometry remain on-demand.
 | `silver.xwalk_containment` | Child-to-parent exact edges; no weight column |
 | `silver.xwalk_allocation` | One row per source, target, basis, and vintage; weight plus denominator and quality |
 | `silver.xwalk_temporal` | Historical-to-current edges with basis, weight, and change type |
+| `silver.xwalk_place_membership` | Place-to-County/CBSA weighted membership, with both Place and target shares |
+| `silver.place_primary_cbsa_association` | Population-share primary-CBSA selection label; never containment |
 | `silver.xwalk_zip_{tract,county,cbsa}` | Versioned HUD-USPS ZIP allocations; temporary `xwalk_zcta_*` compatibility views |
 | `geo.<level>_analysis` | Full TIGER/Line geometry, keyed by level, ID, and boundary vintage |
 | `geo.<level>_display` | Census cartographic display geometry, keyed identically |
@@ -125,6 +128,33 @@ Set `GEOGRAPHY_TIGER_REFERENCE=true` only when state, county, and CBSA display
 products are needed. It never replaces the legacy `geo.*` products and never
 creates full TIGER/Line analytical geometry.
 
+### Census Place analytical geometry
+
+`geo.places_analysis` is the governed Place spatial product. It is built by
+`foundations/etl/geo/build_places_analysis.R` from full Census TIGER/Line via
+`tigris::places(..., cb = FALSE)`, never from `geo.places_display` or block
+assignments. The build requires a comma-separated
+`GEOGRAPHY_PLACE_ANALYSIS_STATE_SCOPE` such as `VA`, or `ALL` for the national
+product. It downloads states sequentially; `ALL` writes the complete governed
+table, while a bounded scope is a declared validation or refresh footprint. The
+table records its TIGER/Line boundary vintage, source authority, WGS84
+interchange CRS (`EPSG:4326`), and measurement CRS (`EPSG:5070`).
+
+Use WGS84 geometry for interchange and transform both operands to EPSG:5070
+for area or length (for example,
+`ST_Transform(geom, 'EPSG:4326', 'EPSG:5070', true)`). `assign_point_to_place()` returns `within`, `boundary`,
+`overlap`, or `no_place`: a strict interior match is `within`; a touched
+boundary is `boundary`; more than one candidate is `overlap`; and an
+unincorporated/outside point is the valid `no_place` outcome. Invalid source
+geometry fails the build rather than being repaired or hidden. Line and polygon
+overlays return every intersecting Place and do not infer exclusive membership.
+
+The build records unique Place-key/vintage, geometry-validity, and selected
+state-coverage checks in `geo.places_analysis_qa`. When Virginia is in scope,
+it also runs Richmond point-in-polygon and line-intersection smoke checks using
+`geo.places_analysis` itself. `mart_geography.geometry_catalog` exposes this
+surface as `consumer_ready_analysis` once materialized.
+
 ## Operations
 
 - The containment-first `rollup()` interface is implemented as transparent
@@ -136,6 +166,9 @@ creates full TIGER/Line analytical geometry.
   `land_area`; it carries `quality_flag`.
 - `harmonize()` restates from an older boundary vintage to the latest approved
   target and carries `change_type`.
+- Place-to-County and Place-to-CBSA are block-derived weighted membership
+  relationships. They retain all split rows and both directions of share;
+  primary-CBSA association is a declared population-share label only.
 - `get_geometry()` requires an explicit `display` or `analysis` role; it does
   not silently substitute an unapproved legacy product or display shape.
 - `export_geometry()` produces scoped local artifacts only.

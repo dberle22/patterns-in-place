@@ -204,6 +204,9 @@ classified layer and review queues without defining an analysis basket.
   the source address as supporting resolution evidence. ZCTA point assignment
   remains blocked on a governed ZCTA geometry surface.
 - [x] Add other geography labels only when a consumer needs them.
+- [x] Add direct Census Place assignment through `geo.places_analysis`, with
+  explicit unincorporated, boundary-ambiguous, and invalid outcomes plus
+  source/category/result coverage QA.
 - [x] Materialize run, category, coordinate, duplicate, and geography coverage
   summaries.
 - [x] Add map-ready review samples without making display artifacts canonical.
@@ -213,6 +216,8 @@ Epic 5 completed 2026-09-08 for the available governed geography interface.
 `assign_poi_geography.py` assigns tracts and counties by point-in-polygon and
 retains source-address postal ZIP values. ZCTA geometry is a Geography Engine
 dependency and is explicitly not represented as a false point assignment.
+The Place extension was completed 2026-09-22 using direct analytical
+point-in-polygon assignment, never a tract-to-Place allocation.
 
 ### 6. Support the first analysis
 

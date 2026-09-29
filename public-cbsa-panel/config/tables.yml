@@ -1,0 +1,77 @@
+# Draft public contract for v2026.1. The exporter must read only these fields.
+# Field-level provenance, formulas, and observed coverage live in
+# audit/public_column_lineage.csv; that ledger is the review record for this file.
+release:
+  title: "Patterns in Place: Metro & Micro Panel"
+  version: v2026.1
+  # Foundations refresh, field review, and coverage review are complete. This status is carried
+  # into manifest.json so the Zenodo candidate does not misstate its approval state.
+  status: approved_for_publication
+  geographic_universe: "935 current metropolitan and micropolitan CBSAs"
+  lineage_ledger: audit/public_column_lineage.csv
+
+tables:
+  cbsa_county_crosswalk:
+    source_table: silver.xwalk_cbsa_county
+    grain: "one row per current county-to-CBSA membership"
+    primary_key: [county_geoid, cbsa_code]
+    static_vintage: 2023
+    columns:
+      - {name: county_geoid, source: county_geoid, type: VARCHAR, required: true, max_null_rate: 0.0}
+      - {name: county_name, source: county_name, type: VARCHAR, required: true, max_null_rate: 0.0}
+      - {name: state_fips, source: state_fips, type: VARCHAR, required: true, max_null_rate: 0.0}
+      # State abbreviation comes from the governed state reference crosswalk joined by state FIPS.
+      - {name: state_abbr, source: xwalk_county_state.state_abbr, type: VARCHAR, required: true, max_null_rate: 0.0}
+      - {name: state_name, source: state_name, type: VARCHAR, required: true, max_null_rate: 0.0}
+      - {name: cbsa_code, source: cbsa_code, type: VARCHAR, required: true, max_null_rate: 0.0}
+      - {name: cbsa_name, source: cbsa_name, type: VARCHAR, required: true, max_null_rate: 0.0}
+      - {name: cbsa_type, source: cbsa_type, type: VARCHAR, required: true, max_null_rate: 0.0}
+      - {name: cbsa_type_short, source: "case on cbsa_type", type: VARCHAR, required: true, max_null_rate: 0.0}
+      - {name: county_role, source: county_flag, type: VARCHAR, required: true, max_null_rate: 0.0}
+      # Reuse gold.dim_geo's established first-title-suffix rule for multistate CBSAs.
+      - {name: primary_state_abbr, source: gold.dim_geo.state_abbr, type: VARCHAR, required: true, max_null_rate: 0.0}
+      - {name: primary_state_fips, source: gold.dim_geo.state_fips, type: VARCHAR, required: true, max_null_rate: 0.0}
+      - {name: crosswalk_vintage, source: vintage, type: INTEGER, required: true, max_null_rate: 0.0}
+
+  economics_industry_wide:
+    source_table: gold.economics_industry_wide
+    row_filter: "geo_level = 'cbsa'"
+    grain: "one row per CBSA-year"
+    primary_key: [geo_level, geo_id, year]
+    columns:
+      - {name: geo_level, source: geo_level, type: VARCHAR, required: true, max_null_rate: 0.0}
+      - {name: geo_id, source: geo_id, type: VARCHAR, required: true, max_null_rate: 0.0}
+      - {name: geo_name, source: geo_name, type: VARCHAR, required: true, max_null_rate: 0.0}
+      - {name: year, source: year, type: INTEGER, required: true, max_null_rate: 0.0}
+      - {name: acs_ind_total_emp, source: acs_ind_total_emp, type: DOUBLE, required: true, max_null_rate: 0.0}
+      - {name: pct_acs_ind_manufacturing, source: pct_acs_ind_manufacturing, type: DOUBLE, required: true, max_null_rate: 0.0}
+      - {name: pct_acs_ind_professional, source: pct_acs_ind_professional, type: DOUBLE, required: true, max_null_rate: 0.0}
+      - {name: pct_acs_ind_educ_health, source: pct_acs_ind_educ_health, type: DOUBLE, required: true, max_null_rate: 0.0}
+      - {name: pct_acs_ind_arts_accomm_food, source: pct_acs_ind_arts_accomm_food, type: DOUBLE, required: true, max_null_rate: 0.0}
+      - {name: acs_industry_concentration_hhi, source: acs_industry_concentration_hhi, type: DOUBLE, required: true, max_null_rate: 0.0}
+      # County-derived BEA shares remain optional because conservative suppression varies by
+      # industry and year. The release manifest and coverage report disclose that variation.
+      - {name: bea_real_gdp_total, source: real_gdp_total, type: DOUBLE, required: false}
+      - {name: pct_bea_real_gdp_manufacturing, source: pct_real_gdp_manufacturing, type: DOUBLE, required: false}
+      - {name: pct_bea_real_gdp_professional, source: pct_real_gdp_professional, type: DOUBLE, required: false}
+      - {name: pct_bea_real_gdp_edu_health, source: pct_real_gdp_edu_health, type: DOUBLE, required: false}
+
+  affordability_wide:
+    source_table: gold.affordability_wide
+    row_filter: "geo_level = 'cbsa'"
+    grain: "one row per CBSA-year"
+    primary_key: [geo_level, geo_id, year]
+    columns:
+      - {name: geo_level, source: geo_level, type: VARCHAR, required: true, max_null_rate: 0.0}
+      - {name: geo_id, source: geo_id, type: VARCHAR, required: true, max_null_rate: 0.0}
+      - {name: geo_name, source: geo_name, type: VARCHAR, required: true, max_null_rate: 0.0}
+      - {name: year, source: year, type: INTEGER, required: true, max_null_rate: 0.0}
+      - {name: median_gross_rent, source: median_gross_rent, type: DOUBLE, required: true, max_null_rate: 0.0}
+      - {name: annualized_median_rent, source: annualized_median_rent, type: DOUBLE, required: true, max_null_rate: 0.0}
+      - {name: median_home_value, source: median_home_value, type: DOUBLE, required: true, max_null_rate: 0.0}
+      - {name: median_hh_income, source: median_hh_income, type: DOUBLE, required: true, max_null_rate: 0.0}
+      - {name: rent_to_income, source: rent_to_income, type: DOUBLE, required: true, max_null_rate: 0.0}
+      - {name: value_to_income, source: value_to_income, type: DOUBLE, required: true, max_null_rate: 0.0}
+      # HUD FMR source periods are fiscal years; final coverage comes from the Foundations handoff.
+      - {name: hud_fmr_2br, source: fmr_2br, type: DOUBLE, required: false}
+      - {name: hud_fmr_2br_gap_vs_acs_median_rent, source: fmr_gap_2br_vs_median_rent, type: DOUBLE, required: false}

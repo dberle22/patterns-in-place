@@ -57,7 +57,10 @@ from weighted tract-to-Place/ZCTA allocations and 2010-to-2020 tract temporal
 edges. ACS ZCTA data is Census ZCTA-native; USPS ZIP is an identifier-only
 source bridge through versioned HUD-USPS crosswalks, not a geometry dimension.
 Display geometry is an on-demand cartographic product; full analytical
-TIGER/Line geometry is not a default platform dependency.
+TIGER/Line geometry is not a default platform dependency. The named-consumer
+exception is national Census Place geometry: `geo.places_analysis` is the
+2024 full-TIGER/Line product for governed point assignment and overlays, with
+WGS84 interchange geometry and EPSG:5070 measurement policy.
 
 ---
 

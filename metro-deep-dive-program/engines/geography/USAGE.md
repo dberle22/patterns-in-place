@@ -14,6 +14,18 @@ HUD-USPS `silver.xwalk_zip_*` allocation tables and must name an address basis.
   `population`, `housing_units`, or `land_area` basis. Preserve `quality_flag`.
 - 2010 tract values restated to 2020 use `mart_geography.temporal_edges` with
   an explicit basis. Preserve `change_type` and `quality_flag`.
+- Place-to-County and Place-to-CBSA use
+  `mart_geography.place_to_{county,cbsa}_membership` with an explicit
+  population, housing-unit, or land-area basis. They are weighted membership,
+  never exact containment. `target_share_in_place` is the share of a Place in
+  the selected County/CBSA; `place_share_in_target` is the share of that
+  County/CBSA in the Place.
+- `mart_geography.place_primary_cbsa_association` selects the CBSA with the
+  largest 2020 population share for each Place. It is a selection label only:
+  use `association_status` and the complete membership surface to retain
+  split, partial, and no-CBSA associations. Direct Place measures may be used
+  whole only for `whole_cbsa_membership`; otherwise allocate explicitly or
+  retain a whole-Place caveat.
 - Rates, medians, percentages, and indices are not additive. Reconstruct them
   from appropriate numerator/denominator inputs rather than summing values.
 
@@ -35,6 +47,25 @@ are not valid for point containment, overlays/intersections, allocation,
 area, distance, or historical-boundary analysis; request a role-tagged
 `geo.<level>_analysis` table for those operations. Other legacy `geo.*` tables
 remain unapproved unless the catalog says otherwise.
+
+### Census Place spatial assignment
+
+For POI, Infrastructure, and Q6 spatial work, request
+`get_geometry(con, "places_analysis", role="analysis")`; never substitute
+`geo.places_display`. Build the bounded product with
+`GEOGRAPHY_PLACE_ANALYSIS_STATE_SCOPE=ALL Rscript
+foundations/etl/geo/build_places_analysis.R`. The table stores WGS84 geometry
+for interchange. Transform to its recorded `EPSG:5070` analytical CRS before
+calculating length or area, for example
+`ST_Transform(geom, 'EPSG:4326', 'EPSG:5070', true)`.
+
+`assign_point_to_place(con, longitude, latitude)` is the governed WGS84
+point-assignment interface. Its statuses are `within`, `boundary`, `overlap`,
+and `no_place`; the last is expected for unincorporated territory and must not
+be coerced to a nearby Place. `place_line_intersections(con, wkb)` returns all
+Places intersected by a WGS84 line or polygon. Inspect
+`geo.places_analysis_qa` after each build; Virginia-scoped builds include
+Richmond point and line smoke checks.
 
 ## Regional Role lenses
 

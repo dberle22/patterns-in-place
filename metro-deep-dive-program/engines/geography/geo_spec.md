@@ -283,7 +283,7 @@ Named open issues in the current question bank and analysis program that this tr
 | Q2 — What does proximity to jobs cost? | "requires the tract→place crosswalk to be readable; price data grain may not match tract grain and the join needs a stated method" | `allocate()` with declared basis; HUD ZIP contract for price data |
 | Q3 — Where is growth actually landing? | "tract boundary changes across vintages must be handled explicitly or the change series is unreliable" | `harmonize()` with `change_type` |
 | A5 | "tract→place crosswalk for readability" | `allocate()` |
-| D2 / D3 place overlay | "current repo only exposes place identifiers and `silver.xwalk_cbsa_primary_city`, not place polygons" | Vintaged `dim_geo` + place geometry |
+| D2 / D3 place overlay | National `geo.places_analysis` now exposes governed 2024 Census TIGER/Line Place polygons. | Use `mart_geography.geometry_catalog` and the explicit analysis role; do not use display geometry for overlays. |
 | Open dataset release | `geo_dim` is one of the three tables planned for public release | Vintaging must land before publication, or v1 ships a known defect |
 
 The last row is the sequencing constraint worth noting: publishing an unvintaged `geo_dim` under a DOI creates a versioned public artifact with the silent-failure problem baked in.

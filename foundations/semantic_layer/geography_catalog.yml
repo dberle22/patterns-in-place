@@ -94,11 +94,12 @@ geo_levels:
     supported_in_mvp: true
     stability_class: continuous
     boundary_authority: Census Boundary and Annexation Survey / TIGER/Line
-    available_vintages: [2020]
+    available_vintages: [2020, 2024]
     default_vintage: 2020
     geometry_roles: [analysis, display]
     notes:
       - Place parent relationships remain intentionally restricted in the current contract.
+      - "geo.places_analysis is a full TIGER/Line spatial product; use it for point assignment and overlays, never geo.places_display."
 
   - geo_level: zcta
     display_name: ZCTA

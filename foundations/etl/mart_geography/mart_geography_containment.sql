@@ -98,6 +98,42 @@ select audit_name, boundary_vintage, source_unit_count,
        zero_denominator_source_count, max_weight_sum_deviation
 from silver.geography_allocation_audit;
 
+-- Place membership is an explicitly weighted relationship derived from Census
+-- blocks, not an exact hierarchy. The target-share and place-share columns
+-- answer different questions and remain available for each declared basis.
+create or replace view mart_geography.place_membership as
+select place_geoid, target_geo_id, target_geo_level,
+       place_boundary_vintage, target_boundary_vintage, weight_basis,
+       target_numerator, place_denominator, target_denominator,
+       target_share_in_place, place_share_in_target, allocated_place_share,
+       membership_status, quality_flag, primary_cbsa_code,
+       primary_population_share, is_primary_cbsa, source
+from silver.xwalk_place_membership;
+
+create or replace view mart_geography.place_to_county_membership as
+select * from mart_geography.place_membership
+where target_geo_level = 'county';
+
+create or replace view mart_geography.place_to_cbsa_membership as
+select * from mart_geography.place_membership
+where target_geo_level = 'cbsa';
+
+-- Primary association is a population-share selection aid. It never turns a
+-- split Place into exact CBSA containment; consumers retain membership rows.
+create or replace view mart_geography.place_primary_cbsa_association as
+select place_geoid, primary_cbsa_code, primary_population_share,
+       cbsa_coverage_share, cbsa_count, association_status,
+       place_boundary_vintage, cbsa_boundary_vintage, selection_basis, source
+from silver.place_primary_cbsa_association;
+
+create or replace view mart_geography.place_membership_audit as
+select target_geo_level, weight_basis, place_count,
+       place_with_membership_count, place_without_membership_count,
+       whole_place_count, split_place_count, partial_place_count,
+       undefined_place_count, max_allocation_gap, place_boundary_vintage,
+       target_boundary_vintage
+from silver.geography_place_membership_audit;
+
 -- Geometry discovery separates the approved, seeded display products from
 -- future role-tagged materializations. The three approved products were built
 -- by the former Census cartographic-boundary `tigris(..., cb = TRUE, year =
@@ -114,6 +150,7 @@ select table_name,
        end as geometry_role,
        case
          when table_name in ('states_analysis', 'cbsas_analysis') then '2023_tiger_line'
+         when table_name = 'places_analysis' then 'recorded_in_table'
          when table_name in ('tracts_all_us', 'counties', 'cbsas')
            then '2024_census_cartographic_boundary'
          when table_name like '%_display' then 'recorded_in_table'
@@ -122,6 +159,7 @@ select table_name,
        case
          when table_name = 'states_analysis' then 'state'
          when table_name = 'cbsas_analysis' then 'cbsa'
+         when table_name = 'places_analysis' then 'place'
          when table_name like 'tracts%' then 'tract'
          when table_name like 'states%' then 'state'
          when table_name like 'counties%' then 'county'
@@ -130,6 +168,7 @@ select table_name,
        case
          when table_name = 'states_analysis' then 'state_fips'
          when table_name = 'cbsas_analysis' then 'cbsa_code'
+         when table_name = 'places_analysis' then 'place_geoid'
          when table_name = 'tracts_all_us' then 'tract_geoid'
          when table_name = 'counties' then 'county_geoid'
          when table_name = 'cbsas' then 'cbsa_code'
@@ -137,6 +176,7 @@ select table_name,
        end as stable_join_key,
        case
          when table_name in ('states_analysis', 'cbsas_analysis') then 'Census TIGER/Line 2023 via tigris'
+         when table_name = 'places_analysis' then 'Recorded in table metadata; state-scoped Census TIGER/Line via tigris'
          when table_name in ('tracts_all_us', 'counties', 'cbsas')
            then 'Census cartographic boundary via tigris; source year 2024'
          when table_name like '%_display' then 'Recorded in table metadata'
@@ -144,6 +184,7 @@ select table_name,
        end as source_vintage,
        case
          when table_name in ('states_analysis', 'cbsas_analysis') then 'materialized_analysis'
+         when table_name = 'places_analysis' then 'consumer_ready_analysis'
          when table_name in ('tracts_all_us', 'counties', 'cbsas')
            then 'approved_read_only_display'
          when table_name like '%_display' then 'materialized_display'
@@ -152,6 +193,8 @@ select table_name,
        case
          when table_name in ('states_analysis', 'cbsas_analysis') then
            'Approved only for declared state adjacency, CBSA centroid, and scoped downstream spatial work at the recorded boundary vintage; do not substitute it for display geometry or a different vintage.'
+         when table_name = 'places_analysis' then
+           'Use for declared Place point assignment and line/polygon overlays only. WGS84 geometry is interchange geometry; transform to the table-recorded analytical CRS for area or length. No Place match is a valid result, and display geometry is never a substitute.'
          when table_name in ('tracts_all_us', 'counties', 'cbsas') then
            'Map display and geometry export only; not analytical geometry, not a boundary-vintage authority, and not valid for spatial allocation, containment, area, or distance calculations.'
          when table_name like '%_display' then
@@ -163,7 +206,7 @@ where table_schema = 'geo'
   and (
     table_name in ('states', 'counties', 'cbsas', 'tracts_all_us',
                    'states_display', 'counties_display', 'cbsas_display',
-                   'tracts_all_us_display', 'states_analysis', 'cbsas_analysis')
+                   'tracts_all_us_display', 'states_analysis', 'cbsas_analysis', 'places_analysis')
     or regexp_matches(table_name, '^tracts_[a-z]{2}_display$')
   );
 

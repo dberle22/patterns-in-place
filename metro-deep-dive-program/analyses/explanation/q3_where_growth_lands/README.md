@@ -1,57 +1,46 @@
 # Q3 — Where Growth Lands
 
-**Build order:** E6 — re-runs the E3 access method against the prior built
-footprint
+**Build order:** E6
 
-**Status:** Spec and build plan drafted; Epic 1 audit not yet run.
+**Status:** Geography dependency and Epics 1–4 complete; pending Epic 5 review.
 
-**Question:** Is recent population and housing growth landing in infill areas,
-greenfield edges, already-developed outer centers, or nowhere?
+**Question:** Where are population and housing-unit gains or losses landing
+within a metro?
 
 Purpose:
 
 - restate comparable population and housing-unit counts on a declared tract
   vintage
-- establish an operational infill/greenfield standard
-- classify where growth is actually landing, and relate permits to population
-  growth
+- show concentration, county, and named-Place patterns without assigning an
+  infill/greenfield class
+- retain permits as native-grain context only
 
-**Primary analytical unit:** harmonized tract, interpreted against the prior
-built footprint and market edge.
+**Primary analytical unit:** harmonized 2020 Census tract.
 
 **National posture:** national method, local application.
 
-## Relationship to the access spine
+## Build and read
 
-Q3 is close kin to Q2, but measures growth against historic density and built
-environment rather than cost against distance. It reads growth against Q2's
-access surfaces: what are the new 15-minute areas, and is growth happening inside
-them or outside them?
+Run `python3 build_q3_growth_location_mart.py` to materialize the
+analysis-owned `mart_explanation_q3` surfaces, then open
+`EXPLANATION_Q3_NOTEBOOK.py`. The mart consumes Geography's governed temporal,
+containment, and Place-membership relationships without placing ACS metrics in
+the Geography mart.
 
-## Two prerequisites before the analysis proper
+The 5- and 10-year comparisons are the interpretive core. The 1- and 3-year
+ACS 5-year-release comparisons are descriptive watchlist signals, not
+independent annual growth estimates.
 
-1. **Tract harmonization.** Restate counts on a declared vintage — the 2010-to-
-   2020 decision is a real piece of work, best opened as its own vertical slice.
-2. **An infill/greenfield standard.** `Infill` and `greenfield` must be measured
-   conditions, not labels inferred from whether a tract looks central on a map.
+## Relationship to Q2
 
-Only then does the analysis — how growth rates and permits compare against that
-standard — become tractable.
-
-## Open decisions for the spec
-
-- comparison years and harmonization basis
-- growth floor
-- developed-footprint baseline
-- infill/greenfield/outer-center rules
-- treatment of large rural tracts
-- negative and no-growth classes
+Q2 physical proximity is optional explanatory context. It is not an access,
+travel-time, commuting, or 15-minute result, and Q3 does not need it to make
+its primary growth-location read.
 
 See [EXPLANATION_Q3_WHERE_GROWTH_LANDS_SPEC.md](EXPLANATION_Q3_WHERE_GROWTH_LANDS_SPEC.md) for the
 analysis boundary and inputs, and
 [EXPLANATION_Q3_WHERE_GROWTH_LANDS_BUILD_PLAN.md](EXPLANATION_Q3_WHERE_GROWTH_LANDS_BUILD_PLAN.md) for
-the epic sequence. Both are provisional: Epic 1 is an audit of what already
-exists, and its findings are expected to reshape them.
+the epic sequence.
 
 Section 5.5 of [EXPLANATION_ANALYSES_PLAN.md](../EXPLANATION_ANALYSES_PLAN.md)
 holds the family-level framing.

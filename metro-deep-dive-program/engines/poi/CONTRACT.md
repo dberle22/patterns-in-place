@@ -95,9 +95,17 @@ explicitly active decisions that take precedence over an automated rule.
 Only retained records with valid coordinates are eligible for assignment.
 Assignments call the Geography Engine and retain `geo_level`, `geo_id`,
 `boundary_vintage`, assignment method, and assignment status. The first
-required levels are tract, county, and ZCTA. A source-provided postal ZIP is address evidence, not a Census ZCTA assignment or geography identity.
+required levels are tract, county, and ZCTA. Census Place is additionally
+available through national `geo.places_analysis` for a consumer that declares
+direct Place assignment; never substitute display geometry or address-city
+text. One strict-interior polygon match is `assigned`; no match is the valid
+`no_census_place` outcome (including unincorporated territory); a boundary
+touch or multiple candidates is `boundary_ambiguous`; and an invalid point is
+`invalid_or_unassignable`. A source-provided postal ZIP is address evidence,
+not a Census ZCTA assignment or geography identity.
 
 Before a consumer uses a run, its QA surface must show coordinate validity,
 identity duplicates, mapped/unmapped/ambiguous/overridden counts, counts by
-source and governed category, market and tract assignment coverage, and
-review samples for high-volume, sparse, and ambiguous categories.
+source and governed category, market, tract, and Place assignment coverage,
+and review samples for high-volume, sparse, and ambiguous categories. Place QA
+must retain `no_census_place` as a coverage outcome rather than a zero count.

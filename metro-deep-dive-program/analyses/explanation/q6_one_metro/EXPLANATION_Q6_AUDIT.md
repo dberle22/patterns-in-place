@@ -16,7 +16,9 @@ built in this epic.
 | Named anchor cities | `silver.xwalk_cbsa_primary_city` supplies OMB principal-city identities. | Use it as one orientation field, but start analysis from every covered Census Place. |
 | Q2 dependency | `mart_explanation_q2` publishes reviewed job-center candidates, clusters, and tract proximity for 2023 WAC. Its V0 distance is centroid-to-centroid Haversine miles. | Adopt physical proximity unchanged. It is not access, travel time, commuting, or a 15-minute result. |
 | Regional Role dependency | Its audit and V1 contract are complete, but its reusable regional-lens and workbench surfaces are not complete. | Reuse its source/interpretation contracts when useful; do not make Q6 wait for an output that does not yet exist. |
-| POI and Infrastructure evidence | No direct Place-grain assignment is currently published. | Do not allocate point counts; add after Geography publishes direct Place assignment. |
+| Place analytical geometry | Geography publishes national 2024 `geo.places_analysis` for direct point assignment and line/polygon overlap. | Require that analysis product; never use display geometry for membership. |
+| POI and Infrastructure evidence | Infrastructure publishes retained-feature Place overlaps; POI publishes direct retained-point Census Place assignments. | Use both as separately labeled context; count only direct `assigned` POIs and retain `no_census_place` separately. |
+| LODES OD | `silver.lehd_lodes_od_county` and its coverage table now materialize available-state 2023 county-home × county-work flows. | Reuse for county context if useful; publish a separate Place-to-Place surface from block-native OD before making Place flow claims. |
 
 ## County status is sourced context
 
@@ -50,15 +52,12 @@ the hierarchy even when it is not an anchor candidate.
 
 ## OD ingestion decision
 
-LODES OD should now be ingested as shared Foundations work. The source contract
-already documents the state-based `main` and `aux` OD families, block-native
-home/work IDs, and 2023 LODES 8 coverage. The initial work should decide,
-through a one-state profile and row/size estimates, whether a national
-Place-to-Place aggregate can be the durable managed surface. It must preserve
-work and home Place direction, source state/part, job type, year, and coverage
-flags, while avoiding persistent block-to-block storage unless profiling proves
-it necessary. County aggregation may be retained only when it is a low-cost
-shared companion surface.
+The shared OD foundation now materializes available-state 2023 county-home ×
+county-work flows with coverage metadata. It cannot be disaggregated to Places.
+The next OD decision is therefore a separate Place-to-Place surface from the
+block-native source/crosswalk path. It must preserve home/work Place direction,
+source state/part, job type, year, and coverage flags, while avoiding persistent
+block-to-block storage unless profiling proves it necessary.
 
 The bounded handoff is in
 [LODES_OD_INGEST_AGENT_SCOPE.md](LODES_OD_INGEST_AGENT_SCOPE.md).
@@ -66,9 +65,9 @@ The bounded handoff is in
 ## Buildable now and blocked
 
 The Place hierarchy and anchor-city classification are buildable after their
-stated Q2 and Geography inputs are available. OD, POI, and Infrastructure are
-later relationship evidence; their absence does not block the primary Q6
-analysis.
+stated Q2 and Geography inputs are available. Infrastructure physical context
+is now available; direct POI context is also available. OD remains later relationship evidence whose absence
+does not block the primary Q6 analysis.
 
 ## References
 

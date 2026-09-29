@@ -161,6 +161,248 @@ dbExecute(con, "
   FROM audited
 ")
 
+# Census Places are not administrative children of counties or CBSAs. Build
+# their relationships from 2020 blocks and retain all overlaps as weighted
+# membership rows. County-to-CBSA membership is current OMB 2023 membership,
+# while the Place and county numerators remain 2020 Census geography.
+dbExecute(con, "
+  CREATE OR REPLACE TABLE silver.xwalk_place_membership AS
+  WITH place_blocks AS (
+    SELECT concat(state_fips, place_geoid) AS place_geoid, county_geoid,
+           population_2020, housing_units_2020, land_area_sqm
+    FROM silver.block_registry
+    WHERE place_geoid IS NOT NULL
+  ),
+  place_totals AS (
+    SELECT place_geoid, sum(population_2020) AS population_denominator,
+           sum(housing_units_2020) AS housing_units_denominator,
+           sum(land_area_sqm) AS land_area_denominator
+    FROM place_blocks GROUP BY 1
+  ),
+  county_targets AS (
+    SELECT county_geoid AS target_geo_id, 'county' AS target_geo_level,
+           sum(population_2020) AS population_denominator,
+           sum(housing_units_2020) AS housing_units_denominator,
+           sum(land_area_sqm) AS land_area_denominator
+    FROM silver.block_registry GROUP BY 1, 2
+  ),
+  current_cbsa_counties AS (
+    SELECT DISTINCT county_geoid, cbsa_code
+    FROM silver.xwalk_cbsa_county
+  ),
+  cbsa_targets AS (
+    SELECT cbsa.cbsa_code AS target_geo_id, 'cbsa' AS target_geo_level,
+           sum(block.population_2020) AS population_denominator,
+           sum(block.housing_units_2020) AS housing_units_denominator,
+           sum(block.land_area_sqm) AS land_area_denominator
+    FROM silver.block_registry AS block
+    INNER JOIN current_cbsa_counties AS cbsa USING (county_geoid)
+    GROUP BY 1, 2
+  ),
+  county_membership AS (
+    SELECT place_geoid, county_geoid AS target_geo_id, 'county' AS target_geo_level,
+           sum(population_2020) AS population_numerator,
+           sum(housing_units_2020) AS housing_units_numerator,
+           sum(land_area_sqm) AS land_area_numerator
+    FROM place_blocks GROUP BY 1, 2, 3
+  ),
+  cbsa_membership AS (
+    SELECT block.place_geoid, cbsa.cbsa_code AS target_geo_id, 'cbsa' AS target_geo_level,
+           sum(block.population_2020) AS population_numerator,
+           sum(block.housing_units_2020) AS housing_units_numerator,
+           sum(block.land_area_sqm) AS land_area_numerator
+    FROM place_blocks AS block
+    INNER JOIN current_cbsa_counties AS cbsa USING (county_geoid)
+    GROUP BY 1, 2, 3
+  ),
+  membership AS (
+    SELECT * FROM county_membership UNION ALL SELECT * FROM cbsa_membership
+  ),
+  target_totals AS (
+    SELECT * FROM county_targets UNION ALL SELECT * FROM cbsa_targets
+  ),
+  basis_rows AS (
+    SELECT membership.place_geoid, membership.target_geo_id, membership.target_geo_level,
+           2020 AS place_boundary_vintage,
+           CASE WHEN membership.target_geo_level = 'county' THEN 2020 ELSE 2023 END AS target_boundary_vintage,
+           'population' AS weight_basis, membership.population_numerator AS target_numerator,
+           place.population_denominator AS place_denominator,
+           target.population_denominator AS target_denominator
+    FROM membership
+    JOIN place_totals AS place USING (place_geoid)
+    JOIN target_totals AS target USING (target_geo_id, target_geo_level)
+    UNION ALL
+    SELECT membership.place_geoid, membership.target_geo_id, membership.target_geo_level,
+           2020, CASE WHEN membership.target_geo_level = 'county' THEN 2020 ELSE 2023 END,
+           'housing_units', membership.housing_units_numerator,
+           place.housing_units_denominator, target.housing_units_denominator
+    FROM membership
+    JOIN place_totals AS place USING (place_geoid)
+    JOIN target_totals AS target USING (target_geo_id, target_geo_level)
+    UNION ALL
+    SELECT membership.place_geoid, membership.target_geo_id, membership.target_geo_level,
+           2020, CASE WHEN membership.target_geo_level = 'county' THEN 2020 ELSE 2023 END,
+           'land_area', membership.land_area_numerator,
+           place.land_area_denominator, target.land_area_denominator
+    FROM membership
+    JOIN place_totals AS place USING (place_geoid)
+    JOIN target_totals AS target USING (target_geo_id, target_geo_level)
+  ),
+  weighted AS (
+    SELECT *, target_numerator / nullif(place_denominator, 0) AS target_share_in_place,
+           target_numerator / nullif(target_denominator, 0) AS place_share_in_target
+    FROM basis_rows
+  ),
+  audited AS (
+    SELECT *, sum(coalesce(target_share_in_place, 0)) OVER place_window AS allocated_place_share,
+           max(coalesce(target_share_in_place, 0)) OVER place_window AS dominant_target_share,
+           count(*) OVER place_window AS target_count
+    FROM weighted
+    WINDOW place_window AS (PARTITION BY place_geoid, target_geo_level, weight_basis)
+  ),
+  primary_cbsa AS (
+    SELECT place_geoid, target_geo_id AS primary_cbsa_code,
+           target_share_in_place AS primary_population_share
+    FROM (
+      SELECT *, row_number() OVER (
+        PARTITION BY place_geoid ORDER BY target_share_in_place DESC, target_geo_id
+      ) AS association_rank
+      FROM audited
+      WHERE target_geo_level = 'cbsa' AND weight_basis = 'population'
+        AND target_share_in_place IS NOT NULL
+    )
+    WHERE association_rank = 1
+  )
+  SELECT audited.place_geoid, audited.target_geo_id, audited.target_geo_level,
+         audited.place_boundary_vintage, audited.target_boundary_vintage,
+         audited.weight_basis, audited.target_numerator, audited.place_denominator,
+         audited.target_denominator, audited.target_share_in_place,
+         audited.place_share_in_target, audited.allocated_place_share,
+         CASE
+           WHEN audited.place_denominator = 0 THEN 'undefined'
+           WHEN audited.allocated_place_share < 0.999999 THEN 'partial'
+           WHEN audited.target_count = 1 THEN 'whole'
+           ELSE 'split'
+         END AS membership_status,
+         CASE
+           WHEN audited.place_denominator = 0 THEN 'undefined'
+           WHEN audited.allocated_place_share < 0.999999 THEN 'partial'
+           WHEN audited.target_count = 1 THEN 'exact'
+           WHEN audited.dominant_target_share >= 0.95 THEN 'clean'
+           ELSE 'split'
+         END AS quality_flag,
+         primary_assoc.primary_cbsa_code,
+         primary_assoc.primary_population_share,
+         audited.target_geo_level = 'cbsa'
+           AND audited.weight_basis = 'population'
+           AND audited.target_geo_id = primary_assoc.primary_cbsa_code AS is_primary_cbsa,
+         'CENSUS_2020_PL94_171_BAF + OMB_2023_COUNTY_CBSA' AS source
+  FROM audited
+  LEFT JOIN primary_cbsa AS primary_assoc USING (place_geoid)
+")
+
+# Every Census Place receives a declared primary-CBSA record, including Places
+# with no current CBSA block membership. A primary association is a label for
+# selection only; it does not collapse or erase split membership rows.
+dbExecute(con, "
+  CREATE OR REPLACE TABLE silver.place_primary_cbsa_association AS
+  WITH places AS (
+    SELECT DISTINCT concat(state_fips, place_geoid) AS place_geoid
+    FROM silver.block_registry WHERE place_geoid IS NOT NULL
+  ),
+  population_summary AS (
+    SELECT place_geoid, count(*) AS cbsa_count,
+           max(place_denominator) AS population_denominator,
+           max(allocated_place_share) AS cbsa_coverage_share
+    FROM silver.xwalk_place_membership
+    WHERE target_geo_level = 'cbsa' AND weight_basis = 'population'
+    GROUP BY 1
+  ),
+  primary_membership AS (
+    SELECT place_geoid, primary_cbsa_code, primary_population_share
+    FROM silver.xwalk_place_membership
+    WHERE is_primary_cbsa
+  )
+  SELECT places.place_geoid, primary_assoc.primary_cbsa_code,
+         primary_assoc.primary_population_share, coalesce(summary.cbsa_coverage_share, 0.0) AS cbsa_coverage_share,
+         coalesce(summary.cbsa_count, 0) AS cbsa_count,
+         CASE
+           WHEN coalesce(summary.cbsa_count, 0) = 0 THEN 'no_cbsa_membership'
+           WHEN summary.population_denominator = 0 THEN 'undefined_population_basis'
+           WHEN primary_assoc.primary_cbsa_code IS NULL THEN 'no_cbsa_membership'
+           WHEN summary.cbsa_coverage_share < 0.999999 THEN 'partial_cbsa_membership'
+           WHEN summary.cbsa_count = 1 THEN 'whole_cbsa_membership'
+           ELSE 'split_cbsa_membership'
+         END AS association_status,
+         2020 AS place_boundary_vintage, 2023 AS cbsa_boundary_vintage,
+         'population' AS selection_basis,
+         'CENSUS_2020_PL94_171_BAF + OMB_2023_COUNTY_CBSA' AS source
+  FROM places
+  LEFT JOIN population_summary AS summary USING (place_geoid)
+  LEFT JOIN primary_membership AS primary_assoc USING (place_geoid)
+")
+
+# These national structural diagnostics make complete, split, partial, and
+# unassociated Place memberships inspectable without pretending the rows are
+# exact containment edges.
+dbExecute(con, "
+  CREATE OR REPLACE TABLE silver.geography_place_membership_audit AS
+  WITH places AS (
+    SELECT DISTINCT concat(state_fips, place_geoid) AS place_geoid
+    FROM silver.block_registry WHERE place_geoid IS NOT NULL
+  ),
+  catalog AS (
+    SELECT target_geo_level, weight_basis
+    FROM silver.xwalk_place_membership GROUP BY 1, 2
+  ),
+  place_summary AS (
+    SELECT place_geoid, target_geo_level, weight_basis,
+           max(membership_status) AS membership_status,
+           max(allocated_place_share) AS allocated_place_share
+    FROM silver.xwalk_place_membership
+    GROUP BY 1, 2, 3
+  )
+  SELECT catalog.target_geo_level, catalog.weight_basis,
+         count(*) AS place_count,
+         count(summary.place_geoid) AS place_with_membership_count,
+         count(*) - count(summary.place_geoid) AS place_without_membership_count,
+         count(CASE WHEN summary.membership_status = 'whole' THEN 1 END) AS whole_place_count,
+         count(CASE WHEN summary.membership_status = 'split' THEN 1 END) AS split_place_count,
+         count(CASE WHEN summary.membership_status = 'partial' THEN 1 END) AS partial_place_count,
+         count(CASE WHEN summary.membership_status = 'undefined' THEN 1 END) AS undefined_place_count,
+         max(CASE WHEN summary.membership_status <> 'undefined'
+                  THEN abs(summary.allocated_place_share - 1.0) END) AS max_allocation_gap,
+         2020 AS place_boundary_vintage,
+         CASE WHEN catalog.target_geo_level = 'county' THEN 2020 ELSE 2023 END AS target_boundary_vintage
+  FROM places
+  CROSS JOIN catalog
+  LEFT JOIN place_summary AS summary
+    ON places.place_geoid = summary.place_geoid
+   AND catalog.target_geo_level = summary.target_geo_level
+   AND catalog.weight_basis = summary.weight_basis
+  GROUP BY 1, 2
+")
+
+# Fail fast on type and selection regressions. Split Places must remain rows,
+# while a Place with a CBSA membership must have exactly one population-based
+# primary association.
+duplicate_memberships <- dbGetQuery(con, "
+  SELECT count(*) AS n FROM (
+    SELECT place_geoid, target_geo_id, target_geo_level, weight_basis, count(*) AS row_count
+    FROM silver.xwalk_place_membership
+    GROUP BY 1, 2, 3, 4 HAVING count(*) > 1
+  )
+")$n[[1]]
+if (duplicate_memberships != 0) stop("Place membership build produced duplicate typed edges.", call. = FALSE)
+
+missing_primary <- dbGetQuery(con, "
+  SELECT count(*) AS n
+  FROM silver.place_primary_cbsa_association
+  WHERE cbsa_count > 0 AND association_status <> 'undefined_population_basis'
+    AND primary_cbsa_code IS NULL
+")$n[[1]]
+if (missing_primary != 0) stop("A Place with CBSA membership has no primary association.", call. = FALSE)
+
 # Coverage records make gaps and denominator failures queryable. They are
 # structural evidence only; downstream metric QA remains intentionally deferred.
 dbExecute(con, "

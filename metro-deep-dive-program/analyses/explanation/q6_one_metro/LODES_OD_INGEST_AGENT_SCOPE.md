@@ -1,10 +1,11 @@
-# LODES OD Ingestion — Agent Scope
+# LODES OD Place Relationship Surface — Agent Scope
 
 ## Objective
 
-Add the smallest validated shared LODES OD surface that lets Q6 describe
-Place-to-Place work relationships inside and beyond a selected CBSA. This is
-Foundations data-layer work, not a Q6 notebook implementation.
+Add the smallest validated Place-to-Place LODES OD surface that lets Q6 describe
+work relationships inside and beyond a selected CBSA. County-to-county OD is
+already materialized; this is a separate Foundations extension, not a Q6
+notebook implementation.
 
 ## Starting facts
 
@@ -19,7 +20,7 @@ Foundations data-layer work, not a Q6 notebook implementation.
 
 ## Required work
 
-1. Read the current LODES source contract and WAC/RAC staging/silver path.
+1. Read the current LODES source contract and the county OD staging/silver path.
 2. Profile one state’s 2023 `JT02` / `S000` OD `main` and `aux` files: schema,
    rows, compressed/uncompressed size, source coverage, block-to-Place match
    rate, and duplicate behavior.
@@ -29,8 +30,8 @@ Foundations data-layer work, not a Q6 notebook implementation.
 4. Propose the layer contract before coding: staging grain, Silver grain,
    keys, measures, direction fields, provenance, null/suppression treatment,
    and coverage flags. The preferred target is a home-Place × work-Place × year
-   flow surface for 2023 `JT02` / `S000`. Explain whether a county companion is
-   low-cost enough to retain for other consumers.
+   flow surface for 2023 `JT02` / `S000`. The current county companion already
+   exists; do not rebuild it.
 5. Implement only after the contract is reviewed. Process state files
    sequentially; validate that `main` plus `aux` have no accidental overlap,
    retain cross-state destinations, and reconcile Place totals to the source

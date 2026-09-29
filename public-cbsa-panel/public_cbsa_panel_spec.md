@@ -1,12 +1,12 @@
-# Patterns in Place: Public CBSA Panel Release Spec
+# Patterns in Place: Metro & Micro Panel Release Spec
 
-**Status:** Draft · **Last updated:** 2026-09-20 · **Owner:** Dan
+**Status:** Scoped for Phase 0 · **Last updated:** 2026-09-23 · **Owner:** Dan
 
 ## Purpose
 
 Publish a small, well documented, citable slice of the Patterns in Place Gold layer as an open CBSA panel, so that the harmonization work is visible and reusable by other people.
 
-The product is not the underlying data. ACS, BEA and HUD are all publicly available. The product is the harmonization: 401 CBSAs on a single grain of `(geo_level, geo_id, geo_name, year)`, with the crosswalk decisions, CBSA vintage rebasing and derived metric formulas written down. Framed for an outside reader: this is the join you do not want to do.
+The product is not the underlying data. ACS, BEA, HUD, and Census geography files are publicly available. The product is the harmonization: a current-vintage county-to-CBSA crosswalk and two CBSA-year panels covering all 935 current CBSAs, with the crosswalk decisions, source vintages, and derived metric formulas written down. Framed for an outside reader: this is the join you do not want to do.
 
 ### Goals
 
@@ -34,22 +34,34 @@ The product is not the underlying data. ACS, BEA and HUD are all publicly availa
 
 ## Release contents (v2026.1)
 
-Three tables. One is the spine, one is differentiated, one is the download driver.
+Three tables. One makes county-to-CBSA reconciliation straightforward, one is differentiated, and one is the download driver. This is a deliberately narrow first release: no Zillow, Census BFS/CBP, BLS QCEW, permits, vacancy/occupancy, or HUD CHAS burden measures.
 
 | Table | Role | Source Gold table | Upstream | Why it ships |
 | --- | --- | --- | --- | --- |
-| `geo_dim` | Spine | `silver.xwalk_*` + CBSA membership | Census TIGER, county to CBSA 2023 | Lets anyone join their own county data up to the CBSA panel. Puts the crosswalk work on display. |
-| `economics_industry_wide` | Differentiated | `gold.economics_industry_wide` | BEA | Sector shares and HHI at CBSA grain, consistently built across 401 metros. Nobody publishes this clean. Substrate for the first analysis. |
-| `affordability_wide` | Download driver | `gold.affordability_wide` | ACS, HUD FMR | Rent to income, value to income, FMR gap. Cross domain and derived. The table journalists will actually use. |
+| `cbsa_county_crosswalk` | Geographic bridge | `silver.xwalk_*` + CBSA membership | Census/OMB current CBSA delineation | One static county-to-CBSA membership table with county/state identity, county role, CBSA type, and primary state. Lets anyone join county data to the panel. |
+| `economics_industry_wide` | Differentiated | `gold.economics_industry_wide` | ACS, BEA | ACS employment mix plus BEA real GDP and three GDP-industry shares at CBSA-year grain. Substrate for the first analysis. |
+| `affordability_wide` | Download driver | `gold.affordability_wide` | ACS, HUD FMR | Rent-to-income, value-to-income, annualized rent, and FMR gap at CBSA-year grain. |
+
+### Locked v1 boundaries
+
+- **Geography:** all 935 current CBSAs, including metropolitan and micropolitan areas. `cbsa_county_crosswalk` is static, has no year field, and is not a historical membership series.
+- **Crosswalk fields:** county and state identifiers/names; CBSA code, name, official type, and short metro/micro type; central/core versus outlying county role; and deterministic primary state. The primary state is the first state suffix in the official CBSA name; full multi-state membership remains visible in the county rows.
+- **Industry allowlist:** geographic identifiers; ACS employment total, four broad industry shares, and ACS industry HHI; BEA real GDP total and three broad industry shares. BEA GDP concentration HHI is deferred because its conservative-suppression coverage is too sparse.
+- **Affordability allowlist:** geographic identifiers; ACS median gross rent, annualized rent, median home value, median household income, rent-to-income, and value-to-income; HUD two-bedroom FMR and the FMR-to-median-rent gap.
+- **Explicit exclusions:** Zillow/ZHVI/ZORI and any Zillow-derived calculation; BEA RPP and metro real-personal-income fields; BEA GDP concentration HHI; BFS; CBP; QCEW; permits; vacancy and occupancy; HUD CHAS burden measures; and all other Gold columns absent from the allowlist.
+
+The Phase 0 lineage audit may correct a proposed field name or remove a field whose lineage cannot be documented, but it may not add an excluded source or field to v1.
 
 ### Zillow removal
 
-Zillow is out of the public release entirely. Before build, audit `gold.affordability_wide` for any ZHVI or ZORI derived columns. If `value_to_income_ratio` is built on ZHVI, rebuild it on ACS median home value (`B25077`) for the public table. Keep the Zillow version internal and unreleased. The public build should have no Zillow dependency in its lineage at all, not just no Zillow columns in the output.
+Zillow is out of the public release entirely. Before build, audit `gold.affordability_wide` for any ZHVI or ZORI derived columns. Confirm that public `value_to_income` is built on ACS median home value (`B25077`); rebuild the public calculation if necessary. Keep any Zillow-based version internal and unreleased. The public build should have no Zillow dependency in its lineage at all, not just no Zillow columns in the output.
 
 ### Held back from v1
 
 | Table | Reason |
 | --- | --- |
+| BFS, CBP, and QCEW extensions | Valuable but add Census/BLS documentation and source-vintage surface. Revisit after the first release receives feedback. |
+| HUD CHAS, permits, vacancy, and occupancy extensions | Useful affordability context, but widen the panel and introduce uneven or non-annual coverage. Revisit after v1. |
 | `economics_labor_wide` | LAUS unemployment is easy to get from BLS directly. Documentation burden without scarcity. |
 | `economics_gdp_wide` | Headline metro GDP is a straightforward BEA pull. Superseded by the industry table for our purposes. |
 | `housing_core_wide` | Zillow entanglement plus high column count. Candidate for v2 after the Zillow audit. |
@@ -60,59 +72,44 @@ Zillow is out of the public release entirely. Before build, audit `gold.affordab
 
 ### Coverage
 
-To confirm during build and state explicitly in the README: year range per table, CBSA count per year, and whether the panel is balanced. CBSA definitions change between vintages, so the panel is almost certainly unbalanced at the edges. That is fine, but it has to be documented, not discovered.
+To confirm during build and state explicitly in the README: year range per table, CBSA count per year, whether the panel is balanced, and coverage/vintage for every public column. The crosswalk remains static at the selected current delineation vintage; fact-table source coverage can differ by column and must be documented rather than hidden.
 
-## Repo scaffolding
+## Internal release workspace and eventual public repo
 
-A new standalone public repo, separate from `metro_deep_dive`. The platform repo stays private. This repo contains the export build, the docs, and nothing else.
+A new internal workspace lives in this private monorepo first. It builds directly from the private Gold DuckDB so the first release can ship quickly. Once the export contract is proven, its public-safe code and documentation move to a standalone public repository. The private platform remains private.
 
-Working name: `pip-cbsa-panel`.
+The public project title is **Patterns in Place: Metro & Micro Panel**. The public repository and canonical data slug are `pip-metro-micro-panel`. The technical documentation uses “CBSA” where precision matters; public-facing copy leads with “metropolitan and micropolitan areas.”
 
 ```markdown
-pip-cbsa-panel/
-├── README.md                  # what it is, grain, coverage, quickstart, license, citation
-├── METHODOLOGY.md             # crosswalks, CBSA vintage rebasing, ACS interpretation, formulas
-├── CHANGELOG.md               # one section per release
-├── RELEASES.md                # per source vintage status and next upstream release date
-├── LICENSE                    # CC-BY-4.0
-├── CITATION.cff               # GitHub citation widget + Zenodo pickup
-├── docs/
-│   ├── geo_dim.md
-│   ├── economics_industry_wide.md
-│   └── affordability_wide.md
+public-cbsa-panel/
+├── README.md                  # internal scope, release checklist, and public-repo handoff
+├── spec/
+│   └── v2026.1_scope.md       # frozen v1 grains, allowlists, exclusions, and acceptance criteria
+├── audit/
+│   ├── lineage.md
+│   └── public_column_lineage.csv
+├── config/
+│   └── tables.yml             # public table + column allowlist, descriptions, null thresholds
 ├── build/
 │   ├── export.py              # Gold DuckDB -> public Parquet + bundled .duckdb
-│   ├── tables.yml             # table + column allowlist, renames, descriptions
 │   ├── validate.py            # contract checks, fails the build
 │   └── coverage_report.py     # generates validation/coverage_report.md
-├── validation/
-│   └── coverage_report.md     # generated, committed, diffable per release
-├── examples/
-│   ├── quickstart.sql
-│   ├── quickstart.py
-│   └── quickstart.R
-├── .github/workflows/
-│   └── release.yml            # tag -> build, validate, upload, Zenodo
-└── data/v2026.1/              # gitignored locally, published to Source Cooperative
-    ├── geo_dim.parquet
-    ├── economics_industry_wide.parquet
-    ├── affordability_wide.parquet
-    ├── pip_cbsa_panel.duckdb
-    └── manifest.json          # file hashes, row counts, build timestamp, source vintages
+├── templates/                 # public README, methodology, and table-document templates
+└── output/                    # gitignored release artifacts
 ```
 
 ### Conventions
 
 - Table and column names in the public release are snake_case and frozen. A rename is a breaking change and gets a major version.
-- `tables.yml` is the single source of truth for what is public. The exporter never reads a table not listed there. This is the guard that keeps internal columns, including anything Zillow derived, out of the release by construction.
-- Every table carries `geo_level`, `geo_id`, `geo_name`, `year` as the leading columns, in that order.
-- Every table carries a `source_vintage` column or, where a single value applies to the whole table, a documented table level vintage in `manifest.json`.
+- `config/tables.yml` is the single source of truth for what is public. The exporter never reads a table not listed there. This is the guard that keeps internal columns, including anything Zillow derived, out of the release by construction.
+- The two fact tables carry `geo_level`, `geo_id`, `geo_name`, `year` as the leading columns, in that order. The static crosswalk carries its county and CBSA key fields first and has no `year`.
+- `manifest.json` records table-level and column-level source vintages. A `source_vintage` output column is used only when a value truly varies by row.
 - Parquet files use ZSTD compression and are written as a single file per table, not partitioned. At this row count partitioning adds friction for readers and buys nothing.
 - `manifest.json` is machine readable and is what a downstream user or a future refresh job checks against.
 
 ## Documentation spec
 
-The data dictionary already exists in `schemas/data_dictionary/layers/gold/`. Most of this is a rendering job, not a writing job. Generate `docs/*.md` from the dictionary YAML where possible so the docs cannot drift from the schema.
+The data dictionary already exists in `foundations/data_dictionary/layers/gold/`. Most of this is a rendering job, not a writing job. Generate `docs/*.md` from the dictionary YAML where possible so the docs cannot drift from the schema.
 
 ### README.md
 
@@ -129,15 +126,15 @@ Quickstart, verbatim in the README:
 
 ```sql
 INSTALL httpfs; LOAD httpfs;
-SELECT * FROM read_parquet('https://data.source.coop/<org>/pip-cbsa-panel/v2026.1/affordability_wide.parquet') LIMIT 10;
+SELECT * FROM read_parquet('https://data.source.coop/<publisher>/pip-metro-micro-panel/v2026.1/affordability_wide.parquet') LIMIT 10;
 ```
 
 ### METHODOLOGY.md
 
 This is the document that carries the credibility. Sections:
 
-- **CBSA definition and vintage.** Which delineation vintage, why 2023 county membership, how earlier years are rebased onto it, and what that does to comparability across the panel.
-- **Crosswalk construction.** How county to CBSA mapping is built, how splits and merges are handled, what happens to counties with no CBSA.
+- **CBSA definition and vintage.** Which current delineation vintage is released, its 935-CBSA universe, and the fact that the crosswalk is static rather than a historical membership series.
+- **Crosswalk construction.** How county-to-CBSA membership and central/core versus outlying status are built, how multistate CBSAs receive a deterministic primary state, and what happens to counties with no CBSA.
 - **ACS interpretation.** Five year rolling estimates, what `year` means (end year of the window), why overlapping windows mean year over year deltas are not independent observations.
 - **Suppression and missingness.** How suppressed or unreliable estimates are represented, and whether margins of error are carried.
 - **Derived metric formulas.** Every computed column written out as a formula, not prose.
@@ -162,7 +159,7 @@ The `Upstream variable` column is the one that separates this from every other s
 
 ### Coverage report
 
-`validation/coverage_report.md` is generated by `build/coverage_report.py` and committed with each release. Contents: row count by table by year, distinct CBSA count by year, null rate by column by year, and min/max/median for numeric columns.
+`validation/coverage_report.md` is generated by `build/coverage_report.py` and committed with each release. For fact tables it includes row count and distinct CBSA count by year, null rate by column by year, and min/max/median for numeric columns. For the static crosswalk it reports total memberships, distinct counties, distinct CBSAs, and null rates.
 
 This is a small build with outsized payoff. Null rates by year make suppression and coverage gaps visible up front instead of something a user finds three hours in. It is also diffable between releases, which is how you catch an upstream schema change.
 
@@ -226,7 +223,7 @@ flowchart TD
   A[Upstream check job] --> B{New vintage?}
   B -- no --> C[Update RELEASES.md checked date]
   B -- yes --> D[Run ingest to Gold]
-  D --> E[Run export.py against tables.yml]
+  D --> E[Run export.py against config/tables.yml]
   E --> F[Run validate.py]
   F -- fail --> G[Open issue, stop]
   F -- pass --> H[Generate coverage report]
@@ -248,10 +245,10 @@ Leave the ingest itself manual for now. It already exists, it runs rarely, and a
 
 `validate.py` fails the build on any of these:
 
-- Primary key not unique on `(geo_level, geo_id, year)`.
-- A column present in the output that is not declared in `tables.yml`.
+- A fact-table primary key is not unique on `(geo_level, geo_id, year)`, or a crosswalk membership key is not unique on its declared county-to-CBSA fields.
+- A column present in the output that is not declared in `config/tables.yml`.
 - Any lineage reference to a Zillow source table.
-- Null rate on a required column above a per column threshold declared in `tables.yml`.
+- Null rate on a required column above a per-column threshold declared in `config/tables.yml`.
 - CBSA count for any year outside an expected band.
 - A column type change versus the previous release manifest.
 - Row count change versus previous release beyond a declared tolerance, unless a new year is being added.
@@ -278,7 +275,7 @@ The core rule: a dataset alone is a link nobody clicks. A dataset attached to a 
 | NICAR-L (IRE data journalism listserv) | Plain text post, quickstart query inline | Data reporters hunt for clean metro panels constantly. Fast, blunt feedback on documentation. |
 | Bluesky urban econ cluster | Finding first, chart, dataset link last | Urban Institute, Brookings Metro, Furman staff plus the independent writers. A dataset post from an unknown gets ignored. A finding gets reshared. |
 | Cloud-Native Geospatial Forum | Crosswalk and Parquet architecture writeup | Separate, genuinely publishable piece. Reaches the practitioners most likely to reuse the spine. |
-| Hacker News | Only if the hook is the one liner | "401 metros, one DuckDB query, no signup" is the framing. Skip if it feels forced. |
+| Hacker News | Only if the hook is the one liner | "935 CBSAs, one DuckDB query, no signup" is the framing. Skip if it feels forced. |
 | LinkedIn | Methodology post, later | Professional audience, wrong first audience for a dataset drop. |
 
 ### Post assets to produce
@@ -306,31 +303,31 @@ Blocking. Nothing else starts until this is clean.
 
 - Trace lineage for every column in `gold.affordability_wide` and `gold.economics_industry_wide` back to source.
 - Flag any column derived from ZHVI or ZORI.
-- Rebuild `value_to_income_ratio` on ACS `B25077` median home value if it currently uses ZHVI.
+- Confirm `value_to_income` uses ACS `B25077` median home value rather than Zillow; rebuild the public calculation if necessary.
 - Produce a written lineage table: public column, upstream source, upstream variable.
 
 **Acceptance:** a lineage report listing every public column with its upstream source, and zero Zillow references.
 
-### Phase 1: Scaffolding
+### Phase 1: Internal workspace and public contract
 
-- Create `pip-cbsa-panel` repo with the directory structure above.
-- Write `tables.yml` with the full column allowlist, renames, descriptions and null thresholds for all three tables.
-- Stub all markdown files with headings.
+- Create the internal `public-cbsa-panel/` workspace described above.
+- Write `config/tables.yml` with the audited column allowlists, renames, descriptions, source-vintage metadata, and null thresholds for all three tables.
+- Prepare public documentation templates, but do not create or name the public repository until the naming decision is made.
 
-**Acceptance:** repo structure exists, `tables.yml` declares every column intended for release.
+**Acceptance:** workspace structure exists and `config/tables.yml` declares every column intended for release.
 
 ### Phase 2: Export and validate
 
-- `export.py`: reads the Gold DuckDB, applies `tables.yml`, writes Parquet plus the bundled `.duckdb` plus `manifest.json`.
+- `export.py`: reads the Gold DuckDB, applies `config/tables.yml`, writes Parquet plus the bundled `.duckdb` plus `manifest.json`.
 - `validate.py`: implements the validation contract in full.
 - `coverage_report.py`: generates the markdown coverage report.
 - Single command runs all three.
 
-**Acceptance:** one command produces a complete `data/v2026.1/` directory, validation passes, and the exporter refuses to emit any column absent from `tables.yml`.
+**Acceptance:** one command produces a complete gitignored release-output directory, validation passes, and the exporter refuses to emit any column absent from `config/tables.yml`.
 
 ### Phase 3: Documentation
 
-- Generate `docs/*.md` from the data dictionary YAML plus `tables.yml`, following the per table template.
+- Generate `docs/*.md` from the data dictionary YAML plus `config/tables.yml`, following the per-table template.
 - Write `METHODOLOGY.md` by hand. This one is not generated.
 - Write `README.md`, `RELEASES.md`, `CHANGELOG.md`, `CITATION.cff`, `LICENSE`.
 - Write the three quickstart examples in `examples/`.
@@ -363,14 +360,15 @@ These need an answer before or during build. Most are cheap to settle.
 
 | # | Decision | Default if undecided |
 | --- | --- | --- |
-| 1 | Publishing identity: personal name, or a Patterns in Place org | Patterns in Place as publisher, personal name as author in `CITATION.cff`. Keeps the byline credential while giving the project its own surface. |
-| 2 | Repo name | `pip-cbsa-panel` |
-| 3 | Geo levels in the release: CBSA only, or CBSA plus county and state | CBSA only for v1. County multiplies row count and documentation surface for a marginal audience gain. |
-| 4 | Does `geo_dim` include geometry, or identifiers only | Identifiers only. Geometry means a separate GeoParquet decision and a much larger file. Link to TIGER instead. |
-| 5 | Are ACS margins of error carried | No for v1, documented as a known limitation. Carrying MOEs roughly doubles the column count. |
-| 6 | Year range | Whatever is fully covered across all three tables with no partial years at the edges. Confirm during Phase 0. |
-| 7 | Which analysis ships in week 1 | Industry concentration from `economics_industry_wide`, since it uses the differentiated table and the finding is already partly formed. |
-| 8 | Does the chatbot get pointed at the public tables | No. Keep the chatbot on the internal warehouse. Coupling them creates a release constraint neither product needs. |
+| 1 | Public project and repository name | Resolved: **Patterns in Place: Metro & Micro Panel**, with `pip-metro-micro-panel` as the public repository and canonical data slug. |
+| 2 | Publishing identity | Personal GitHub, Source Cooperative, and Zenodo accounts; “Patterns in Place” is the project brand and Dan is the cited author. A future organization can be added without changing v1 authorship. |
+| 3 | Geographic bridge | Resolved: static current-vintage `cbsa_county_crosswalk`, with no geometry and no year dimension. It covers county-to-CBSA membership, state identity, county role, CBSA type, and primary state. |
+| 4 | CBSA universe | Resolved: all 935 current CBSAs, including metropolitan and micropolitan areas. |
+| 5 | Public source boundary | Resolved: ACS, BEA, HUD FMR, and Census/OMB geography only. Zillow, BFS, CBP, QCEW, permits, vacancy/occupancy, and CHAS are held back. |
+| 6 | Are ACS margins of error carried | No for v1, documented as a known limitation. Carrying MOEs roughly doubles the column count. |
+| 7 | Year coverage | Determine from audited column coverage. Retain different column windows when useful, with explicit per-column vintages and null behavior. |
+| 8 | Which analysis ships in week 1 | Industry concentration from `economics_industry_wide`, since it uses the differentiated table and the finding is already partly formed. |
+| 9 | Does the chatbot get pointed at the public tables | No. Keep the chatbot on the internal warehouse. Coupling them creates a release constraint neither product needs. |
 
 ### Risks
 
@@ -380,4 +378,4 @@ These need an answer before or during build. Most are cheap to settle.
 
 ### Handoff to Code
 
-Start at Phase 0. The lineage audit determines whether `affordability_wide` needs a rebuild, and that answer changes the shape of Phases 1 through 3. Do not scaffold the repo before the audit is done.
+Start at Phase 0. The lineage audit determines whether the public `value_to_income` calculation needs a rebuild and confirms the full allowlist. The internal workspace may hold scope and audit documentation now; do not build public release code or create the public repository before the audit is complete.

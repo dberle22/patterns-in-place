@@ -88,6 +88,21 @@ cartographic-boundary provenance and `tract_geoid` join key. Corridor and
 other market-analysis consumers may use it directly for map display and scoped
 exports; that approval does not make it analytical geometry.
 
+## Census Place analytical geometry (2026-09-22)
+
+The Geography Engine now materializes `geo.places_analysis`: 32,041 unique
+2024 Census TIGER/Line Places across all 50 states and DC. The product retains
+WGS84 interchange geometry, declares EPSG:5070 for length/area operations,
+and is discoverable as `consumer_ready_analysis` in
+`mart_geography.geometry_catalog`.
+
+Its build records unique Place/vintage, geometry-validity, and state-coverage
+checks, plus Richmond point-in-polygon and line-intersection smoke checks.
+Consumers use `assign_point_to_place()` or `place_line_intersections()` and
+must retain the explicit `within`, `boundary`, `overlap`, or `no_place` result.
+This does not publish POI or Infrastructure Place relationships; those engines
+remain responsible for their own governed assignment or overlap surfaces.
+
 ## Local-neighborhood mapping direction (2026-09-09)
 
 The program is pausing Corridor Intelligence as a canonical grouping engine.

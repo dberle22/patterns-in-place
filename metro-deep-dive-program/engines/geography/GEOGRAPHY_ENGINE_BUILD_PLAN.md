@@ -420,6 +420,35 @@ metro geography has no Place membership.
 distinguish wholly associated and split Places, and apply a declared basis
 without local spatial joins or a false exact-parent claim.
 
+### 11. Publish Census Place analytical geometry for Q6, POI, and Infrastructure
+
+- [x] Add the state-scoped `geo.places_analysis` build from full Census
+  TIGER/Line, keyed by Place GEOID and recorded boundary vintage; retain WGS84
+  WKB/geometry for interchange and declare EPSG:5070 for area and length.
+- [x] Register it in `mart_geography.geometry_catalog` as
+  `consumer_ready_analysis`, distinct from `geo.places_display`.
+- [x] Define governed point outcomes (`within`, `boundary`, `overlap`, and
+  `no_place`) and line/polygon intersection behavior in the Python interface
+  and usage contract.
+- [x] Support both bounded refreshes and an `ALL` national materialization;
+  download state sources sequentially and write one governed Place table.
+- [x] Add build-time unique-key/vintage, validity, coverage, and Virginia
+  Richmond point/line smoke checks.
+
+#### Epic 11 disposition (2026-09-22)
+
+- `build_places_analysis.R` is an on-demand full-TIGER/Line build. It supports
+  a bounded validation scope and the sequential national materialization, and
+  writes `geo.places_analysis` and its auditable QA table without changing
+  cartographic Place display geometry.
+- POI, Infrastructure, and Q6 have one governed geometry name, source-vintage
+  field, measurement-CRS policy, and explicit no-match/boundary outcomes.
+- The Virginia validation build passed before national materialization; its
+  source/download and spatial-operation pattern is the national method.
+- The national 2024 materialization contains 32,041 unique Places across all
+  50 states and DC. Its identity/vintage, geometry-validity, state-coverage,
+  and Richmond point/line checks all passed.
+
 ## Next implementation sequence
 
 The national ZIP and foundation builds are complete. The remaining work proceeds

@@ -1,7 +1,7 @@
 # Explanation Q4 — Livability Amenities and POI Clusters Build Plan
 
-**Status:** Epic 1 complete. The next build is a POI-first, two-market
-workbench—not a Q2-derived access score.
+**Status:** Epics 1–3 complete. The first hub candidate build uses all mapped
+POIs; Epic 2 now provides basket-specific workbench views for review.
 
 **Pilot markets:** Richmond, VA (`40060`) and Jacksonville, FL (`27260`)
 
@@ -36,47 +36,69 @@ evidence and the revised scope.
 
 ## Epic 2 — Build the POI Workbench and Basket Catalog
 
-- [ ] Define the POI-level workbench contract: retained point identity,
+- [x] Define the POI-level workbench contract: retained point identity,
   source/run provenance, governed category/subcategory, mapping/review state,
   coordinates, and tract assignment.
-- [ ] Define versioned basket membership over the governed taxonomy, beginning
+- [x] Define versioned basket membership over the governed taxonomy, beginning
   with broad livability and errands/essentials.
-- [ ] Build coverage and category-composition views for both pilot markets.
-- [ ] Retain unclassified and excluded POIs as visible coverage states.
-- [ ] Verify the consumer-facing POI interface/run status for both markets
-  before treating the workbench as reusable outside Q4.
+- [x] Build coverage and category-composition views for both pilot markets.
+- [x] Retain unclassified and excluded POIs as visible coverage states.
+- [x] Verify the consumer-facing POI interface/run status for both markets:
+  direct pilot artifacts are usable in Q4 but not yet a promoted shared mart.
+- [x] Build the read-only Marimo workbench for market/basket review before
+  advancing to cluster profiles or typologies.
 
-**Done when:** a reviewer can filter and map the governed POI inventory by
-category and basket, and can distinguish an observed zero from incomplete
-classification or source coverage.
+**Done:** [q4_amenity_baskets.yml](q4_amenity_baskets.yml) declares the basket
+catalog; [EXPLANATION_Q4_NOTEBOOK.py](EXPLANATION_Q4_NOTEBOOK.py) is the review
+surface; and [`outputs/q4_poi_workbench_v1/`](outputs/q4_poi_workbench_v1/)
+contains the POI, membership, coverage, composition, and catalog artifacts.
+
+The initial workbench contains 52,550 Richmond and 74,279 Jacksonville broad-
+livability POIs, plus 3,859 and 4,782 errands/essentials POIs respectively.
+It retains 2,054 Richmond and 3,336 Jacksonville unclassified POIs as visible
+coverage states.
 
 ## Epic 3 — Construct and Review Spatial Amenity Hubs
 
-- [ ] Explore direct POI point-pattern cluster candidates and record each
-  method's parameters and sensitivity versions.
-- [ ] Build map-ready candidate hub geometry and POI-to-cluster membership.
-- [ ] Review cluster membership, category mix, fragmentation, and implausible
-  bridges against the POI and infrastructure map.
-- [ ] Apply explicit human review to select or reject a V1 hub construction.
-- [ ] Publish a versioned amenity-hub inventory and method record.
+*Completed before Epic 2 by mistake. Its all-mapped-POI candidate remains a
+pre-basket spatial baseline; do not treat it as the final basket-specific hub
+construction without a later rerun and review.*
 
-**Done when:** each selected hub has transparent POI membership, a declared
-construction rule, sensitivity evidence, and a reviewer-approved status.
+- [x] Explore direct POI point-pattern cluster candidates and record each
+  method's parameters and sensitivity versions.
+- [x] Build map-ready candidate hub geometry and POI-to-cluster membership.
+- [x] Review membership reconciliation, category-mix surfaces, candidate scale,
+  and fragmentation; retain SVG maps for later visual domain review.
+- [x] Select `grid_250m_min_20` for the first workbench review and retain
+  `grid_500m_min_60` as a sensitivity. This is not a basket-specific or
+  cross-analysis promotion.
+- [x] Publish a versioned amenity-hub inventory, method record, and review.
+
+**Done:** [`outputs/q4_amenity_hub_grid_v1/`](outputs/q4_amenity_hub_grid_v1/)
+contains the candidate geometry, POI membership, category mix, maps, and
+manifest. [EXPLANATION_Q4_AMENITY_HUB_METHOD_RECORD.md](outputs/q4_amenity_hub_grid_v1/EXPLANATION_Q4_AMENITY_HUB_METHOD_RECORD.md)
+and [EXPLANATION_Q4_AMENITY_HUB_REVIEW.md](EXPLANATION_Q4_AMENITY_HUB_REVIEW.md)
+record the construction and selection.
 
 ## Epic 4 — Profile Hubs and Build Amenity-Environment Typologies
 
-- [ ] Define the cluster-composition features used for typology; keep these
+- [x] Define the cluster-composition features used for typology; keep these
   noncontiguous composition groups distinct from geographic hubs.
-- [ ] Build cluster profiles for basket coverage, category mix, diversity, and
+- [x] Build cluster profiles for basket coverage, category mix, diversity, and
   visible infrastructure context.
-- [ ] Choose and document the cluster-to-tract context association rule.
-- [ ] Build the tract context matrix using declared population density, income,
+- [x] Choose and document the cluster-to-tract context association rule.
+- [x] Build the tract context matrix using declared population density, income,
   poverty, rent burden, rents/values, housing, household, and demographic
   measures with source vintages and complete-case coverage.
-- [ ] Produce descriptive cluster-context comparisons without causal claims.
+- [x] Produce descriptive cluster-context comparisons without causal claims.
 
 **Done when:** reviewers can inspect both where a hub is and what kind of
 amenity environment it represents, alongside transparent tract context.
+
+**Done:** `outputs/q4_epic4_profiles_v1/` contains category/subcategory
+profiles, dominant-category typologies, POI-member tract associations, and
+latest-year descriptive housing/demographic context. The association rule is
+membership-based, not a tract catchment or resident-access assumption.
 
 ## Epic 5 — Compare, Review, and Decide What Reuses
 

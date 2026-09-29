@@ -26,6 +26,7 @@ This file tracks where each staging script gets its data and what is needed to r
 | `get_opportunity_insights_social_capital.R` | CSV download | Opportunity Insights Social Capital Atlas county and ZIP CSV releases hosted via Humdata; no API key required |
 | `get_tea.R` | CSV download | Texas Education Agency |
 | `../geo/get_tiger_geos.R` | API (`tigris`) | On-demand Census cartographic display geometry; requires an explicit state scope and no key |
+| `../geo/build_places_analysis.R` | API (`tigris`) | National 2024 Census TIGER/Line Place analytical geometry; set `GEOGRAPHY_PLACE_ANALYSIS_STATE_SCOPE=ALL` for the sequential national build, or a bounded state scope for refresh/validation |
 | `get_usda_food_atlas.R` | XLSX / ZIP download | USDA ERS Food Access Research Atlas current public release is 2019; ArcGIS REST service available for schema / QA |
 | `get_usda_ers_typology.R` | CSV / XLSX download | USDA ERS `2023` Rural-Urban Continuum Codes and `2025` County Typology Codes; public downloads plus methodology pages; no API key required; note the Connecticut geography mismatch between planning regions and legacy counties when modeling Silver |
 | `get_zillow.R` | CSV download | Zillow Research Data |

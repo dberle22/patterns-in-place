@@ -19,11 +19,12 @@ Start with:
 
 ## Current state
 
-Epics 1–5 are complete for the current Richmond path. The engine acquires a
+Epics 1–5 are complete for Richmond and Jacksonville. The engine acquires a
 source-faithful cache, normalizes source identity and provenance, applies the
-first governed taxonomy mapping, and assigns retained points to governed tract
-and county geometry with QA. First-analysis adoption and the Jacksonville
-portability check remain open.
+first governed taxonomy mapping, and assigns retained points to governed tract,
+county, and Census Place geometry with QA. Place results are direct analytical
+point assignments; `no_census_place` and boundary ambiguity remain visible.
+First-analysis adoption remains open.
 
 ## Ownership
 

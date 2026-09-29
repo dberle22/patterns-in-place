@@ -14,6 +14,14 @@ Place membership, tract-vintage harmonization inputs, and governed geometry.
 - the 2020 tract relationship file for land-area intersections; and
 - TIGER/Line (analysis) and Census cartographic boundary (display) files.
 
+## Published Place analytical product
+
+`geo.places_analysis` is the national 2024 Census TIGER/Line Place product.
+It is keyed by Census Place GEOID and boundary vintage, stores WGS84 geometry
+for interchange, and declares EPSG:5070 for length and area. It is the only
+governed Place geometry for point assignment and line/polygon overlays;
+cartographic `geo.places_display` remains display-only.
+
 Files are acquired and staged one state at a time. The block registry stores
 tabular IDs, memberships, counts, and areas; it never stores block polygons.
 

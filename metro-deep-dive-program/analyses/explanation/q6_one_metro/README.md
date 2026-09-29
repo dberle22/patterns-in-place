@@ -2,7 +2,9 @@
 
 **Build order:** E7 — applies Q2 physical proximity to Census Place anchors
 
-**Status:** Epic 1 audit complete; implementation not started.
+**Status:** Complete. The read-only workbench includes the Place hierarchy,
+anchor-decision sensitivity, and OD, POI, and Infrastructure relationship
+context without combining them into an anchor score.
 
 **Question:** Which Census Places anchor this metro, and how do its other Places
 relate to those anchors?
@@ -32,7 +34,9 @@ Start with the full Census Place inventory, profile Place population, income,
 housing, and allocated workplace-job context, then associate candidates with
 Q2's reviewed job-center components. Q6 adopts Q2's V0 Haversine distance as
 physical proximity, not access, travel time, commuting behavior, or a
-15-minute result. OD, POI, and Infrastructure are later relationship evidence.
+15-minute result. OD is later relationship evidence. POI activity context uses
+direct retained-point assignments, with unincorporated coverage shown
+separately; see [the Q6 POI query](sql/q6_poi_context.sql).
 
 ## Guardrail
 
@@ -44,7 +48,7 @@ anchor score.
 
 - minimum materiality rule for Census Place candidates
 - Place metric contract, including direct versus allocated measures
-- OD Place-to-Place flow coverage and direct POI/Infrastructure Place interfaces
+- OD Place-to-Place flow coverage
 
 See [EXPLANATION_Q6_ONE_METRO_SPEC.md](EXPLANATION_Q6_ONE_METRO_SPEC.md) for the
 analysis boundary and inputs; the [Epic 1 audit](EXPLANATION_Q6_AUDIT.md) records

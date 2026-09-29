@@ -3,8 +3,8 @@
 **Build order:** E5 — POI-first workbench for the Richmond and Jacksonville
 pilot markets.
 
-**Status:** Epic 1 audit complete. The workbench, basket catalog, and cluster
-method remain to be built.
+**Status:** Epics 1–3 are complete. The POI workbench and its first basket
+catalog are ready for review; hub construction remains a pre-basket baseline.
 
 **Question:** How are livability amenities organized across a metro, what
 spatial amenity hubs and comparable amenity environments emerge, and what is

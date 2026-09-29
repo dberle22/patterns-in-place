@@ -8,7 +8,7 @@
 - Current verified public format as of `June 22, 2026`: `LODES 8.4`, with state-based files under `https://lehd.ces.census.gov/data/lodes/LODES8/`
 - Current verified year coverage in the live Census docs: `2002-2023` for most states
 - Native geography in the public files: census block, with provider-supplied crosswalks to tract, county, CBSA, ZIP, and other higher geographies
-- Scope in Foundations: WAC/RAC are aggregated to tract; OD is materialized as a 2023 national county-home to county-work surface with explicit provider coverage.
+- Scope in Foundations: WAC/RAC are aggregated to tract; OD has county and Place 2023 surfaces with explicit provider coverage. Tract-pair OD is built only for a declared CBSA scope.
 - Documentation goal: confirm the real LODES file families, current coverage window, and the narrowest viable first-pass ingest scope before writing staging code
 
 LODES is the LEHD product that gives Foundations an employment-side geography layer below county. WAC tells us what jobs are located in a block, RAC tells us where workers live, and OD links the two. That makes LODES the labor-market companion to tract-scale ACS neighborhood profiling.
@@ -23,7 +23,7 @@ This is a topic-level child spec for the LEHD family. QWI and J2J should remain 
 | --- | --- | --- | --- |
 | LEHD LODES workplace area characteristics | `staging__lehd_lodes_wac.md` | `silver.lehd_lodes_wac` | joined into `gold.economics_lodes_wide` |
 | LEHD LODES residence area characteristics | `staging__lehd_lodes_rac.md` | `silver.lehd_lodes_rac` | joined into `gold.economics_lodes_wide` |
-| LEHD LODES origin-destination flows | `staging.lehd_lodes_od_county` | `silver.lehd_lodes_od_county` plus coverage | no Gold output |
+| LEHD LODES origin-destination flows | county and Place OD staging surfaces | county and Place Silver flows plus coverage | no Gold output |
 
 ---
 
@@ -176,9 +176,13 @@ retains `JT00` all jobs and `JT02` private jobs as separate measures, and
 publishes source-asset coverage alongside the fact table. Alaska and Michigan
 are recorded as provider-unavailable for 2023; absent coverage is never zero.
 
-**Deferred OD expansion note**
+**Place and tract OD note**
 
-The managed county OD contract deliberately defers a block or tract-pair mart. Any future expansion should:
+The managed Place OD contract aggregates each block-native asset before staging
+and retains `no_census_place` endpoints. The national contract deliberately
+continues to defer block or tract-pair marts. The reusable commute-shed engine
+builds a declared CBSA's tract pairs incrementally instead. Any future
+expansion should:
 
 - pull state-based `od` files with explicit `state_part` handling
 - preserve both `w_geocode` and `h_geocode`
@@ -211,7 +215,8 @@ The narrowest viable scope for Track `23.2` is:
 - `job_type = "JT02"` all private jobs
 - `segment = "S000"` if we want one full-payload file per state and family
 - block-native download, then tract aggregation in staging
-- county OD is available; tract-pair and block-pair OD remain deferred
+- county and Place OD are available; tract-pair OD is CBSA-scoped and
+  block-pair OD remains deferred
 
 Why `JT02` first:
 

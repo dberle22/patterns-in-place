@@ -33,11 +33,10 @@ The run identifier is derived from market, dated snapshot, and PBF checksum.
 A repeat run refuses to overwrite the matching artifact unless the operator
 explicitly passes `--overwrite`; this behavior was confirmed for Richmond.
 
-The current Geography lookup supplies the 2023 CBSA identity but labels the
-available `geo.cbsas` geometry `legacy_unclassified`. The manifest carries that
-role explicitly. It is sufficient for the source-run clip diagnostic but must
-be replaced by the Geography analytical geometry before a validated serving
-layer is promoted.
+The original source-run used `geo.cbsas` while it was `legacy_unclassified`.
+Geography now publishes 2023 full-TIGER/Line `geo.cbsas_analysis`; a serving
+refresh must use that governed analytical boundary for clipping and QA rather
+than the legacy diagnostic geometry.
 
 ## Epic 3 completed 2026-09-08
 

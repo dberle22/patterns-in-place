@@ -78,8 +78,9 @@ zone types intersect without relying on corridors or POI overlays.
 - [x] Add an integrated tract-cluster, selected-POI, and selected-
   Infrastructure orientation map.
 - [x] Add Richmond/Jacksonville input-coverage review and routing guidance.
-- [x] Keep POI-by-Place unavailable until Geography publishes a direct
-  point-to-Place assignment; do not allocate point counts with tract weights.
+- [x] Keep POI-by-Place unavailable until the POI Engine publishes a direct
+  point-to-Place assignment from `geo.places_analysis`; do not allocate point
+  counts with tract weights.
 
 ### Epic 3 — Add Activity and Physical Structure — complete
 

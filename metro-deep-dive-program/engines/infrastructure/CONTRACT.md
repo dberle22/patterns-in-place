@@ -1,11 +1,11 @@
 # Infrastructure Engine Contract
 
 Status: Epics 1–5 complete on 2026-09-08. Product names below are logical
-names, not yet materialized DuckDB table names. Epic 2 records the current
-Geography geometry role as `legacy_unclassified`; it is a clipped source-run
-boundary, not a substitute for a future materialized analytical CBSA geometry.
-The Epic 4 artifacts are geometry-validated serving candidates, not promoted
-consumer-serving layers, until Geography supplies that analytical geometry.
+names, not yet materialized DuckDB table names. Epic 2 recorded the former
+`legacy_unclassified` CBSA source-run boundary; Geography now publishes
+`geo.cbsas_analysis` for governed CBSA clipping and QA. The Epic 4 artifacts
+remain serving candidates until this engine republishes them against that
+declared analytical boundary.
 
 ## Contract boundary
 
@@ -30,6 +30,8 @@ feature.
 | `infrastructure_mapping_rule` | one versioned source-tag rule | Explicit governed `feature_group` and `feature_type` decision, rationale, status, and rule evidence |
 | `infrastructure_feature` | one retained source feature × mapping version × market boundary | Validated, clipped analytical geometry with governed classification and run provenance |
 | `infrastructure_display_feature` | one retained serving feature × display derivative | Optional simplified geometry; never replaces analytical geometry |
+| `infrastructure_feature_place_overlap` | source run × source record × Census Place × Place boundary vintage | Positive-measure analytical intersection, with separate line length or polygon area and full retained-feature provenance |
+| `infrastructure_place_summary` | source run × Census Place × feature group/type/form × Place boundary vintage | Auditable rollup of feature-overlap measures; line length and surface area remain separate columns |
 | `infrastructure_qa_*` | run × applicable feature/mapping/geometry group | Source accounting, coverage, validity, rejection, mapping, and review samples |
 
 ## Core feature record
@@ -133,6 +135,11 @@ use a bbox only to acquire a covering source extract. It must not assign
 tracts, counties, ZIPs, or ZCTAs; those are Geography operations requested by
 a consumer.
 
+For a declared Place-overlap consumer, use national `geo.places_analysis` and
+its recorded EPSG:5070 measurement policy. Retain every intersecting Place and
+the overlap method/vintage; do not use Place display geometry or infer an
+exclusive Place relationship from a line/polygon intersection.
+
 ## Provenance, topology, and QA
 
 Each source run declares source system, provider, source release or dated
@@ -152,6 +159,31 @@ the market boundary, row accounting, identity completeness/duplicates,
 geometry type/CRS/emptiness/validity/repair outcomes, clipped/outside counts,
 mapping status and unmapped-tag distributions, overlapping or duplicate
 feature diagnostics where material, and map-ready review samples.
+
+## Census Place overlap interface
+
+`build_place_overlap.py` requires Geography's `geo.places_analysis` and its
+passing QA surface. It uses only that role-tagged analytical geometry and
+transforms both Place and retained feature geometry to the Place product's
+declared measurement CRS. It never measures display geometry.
+
+The feature-overlap artifact has one row only for a positive-measure
+intersection at `source_run_id × source_record_key × place_geoid ×
+place_boundary_vintage`. Lines carry `overlap_length_m`; surfaces carry
+`overlap_area_sqm`; the other measure is null. The clipped overlap geometry,
+feature classification, retained-record status, source-run provenance, Place
+geometry authority, CRSs, and method version stay on each row. A separate
+summary groups those rows by Place and `feature_group`, `feature_type`, and
+`feature_form`; it never adds length and area together.
+
+No-overlap is a coverage result, not a zero-valued overlap row. QA records the
+scoped Places and retained features, those with measurable overlap, and those
+without it. For each overlapping feature, QA unions its Place-clipped portions
+before comparing them to the retained source geometry; a nonzero unallocated
+portion is valid context, while an excess beyond the declared precision
+tolerance fails reconciliation. This interface is physical context only: it
+does not identify barriers, connectivity, travel time, access, or anchor
+status.
 
 ## Consumer handoff
 

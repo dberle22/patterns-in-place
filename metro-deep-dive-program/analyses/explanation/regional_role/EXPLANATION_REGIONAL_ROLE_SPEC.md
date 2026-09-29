@@ -93,7 +93,7 @@ replace those governed relationships.
 | `gold.economics_lodes_wide` and LODES WAC/RAC | 2023 workplace jobs, resident workers, earnings bands, and broad industry composition. | Describe jobs-versus-workers only; never call the difference inflow or outflow. WAC coverage is less complete than RAC in some geographies. |
 | `gold.migration_wide` and `silver.irs_migration_summary` | Existing county, CBSA, and state IRS inflow, outflow, and net-migration context. | Coverage is 2012–2022; these summary surfaces do not identify partner CBSAs. |
 | `silver.irs_migration_flows` | County origin-destination migration flows, rollable to origin-CBSA × destination-CBSA for partner-metro exchange: returns, exemptions/people, and AGI. | Coverage is 2012–2022; values can be suppressed or null, especially AGI. Clearly label it as household tax-return migration, not commuting. |
-| Infrastructure consumer interface | Market-scoped roads, rail, and water-network context from a validated Infrastructure run. | V1 may use it for a contextual map once Geography supplies the approved analytical CBSA boundary required to promote the serving candidate. It is not a routing or access input. |
+| Infrastructure consumer interface | Market-scoped roads, rail, and water-network context from a validated Infrastructure run. | Geography now supplies the approved analytical CBSA boundary; V1 may use context after Infrastructure republishes its serving candidate against that boundary. It is not a routing or access input. |
 | Geography display geometry | Maps of declared result surfaces. | Display only; do not use for adjacency, distance, or area calculations. |
 
 ## V1 workbench structure

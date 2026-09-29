@@ -18,7 +18,7 @@ from pathlib import Path
 import duckdb
 
 from normalize_overture_places import latest_source_run
-from acquire_overture_places import ENGINE_DIR, database_path, sql_literal
+from acquire_overture_places import ENGINE_DIR, configure_extensions, database_path, sql_literal
 
 
 def main() -> None:
@@ -44,6 +44,9 @@ def main() -> None:
         raise FileNotFoundError('Missing POI artifacts: ' + ', '.join(missing))
 
     with duckdb.connect(str(database_path(args.db_path))) as con:
+        # Load spatial before reading parquet so source-place geometry retains
+        # its GEOMETRY type instead of arriving as an opaque BLOB on a refresh.
+        configure_extensions(con, 'local.parquet')
         con.execute('CREATE SCHEMA IF NOT EXISTS mart_poi')
         for table, path in artifacts.items():
             source = f'read_parquet({sql_literal(str(path))})'

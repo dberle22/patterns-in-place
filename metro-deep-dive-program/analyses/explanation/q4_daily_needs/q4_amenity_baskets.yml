@@ -1,0 +1,79 @@
+version: q4_amenity_baskets_v2
+status: pilot
+baskets:
+  broad_livability:
+    label: Broad livability
+    description: Everyday commercial, civic, social, educational, health, and recreational amenities; excludes production, utility, and residential land uses.
+    categories:
+      - Arts, Culture & Landmarks
+      - Community & Civic
+      - Education
+      - Entertainment & Nightlife
+      - Financial Institutions
+      - Food & Drink
+      - Government & Public Safety
+      - Healthcare
+      - Parks & Nature
+      - Personal Care
+      - Recreation & Fitness
+      - Religious Institutions
+      - Retail
+      - Services
+      - Transportation
+  errands_essentials:
+    label: Errands and essentials
+    description: A narrow convenience basket for routine food, pharmacy, healthcare, financial, postal, and household-service errands.
+    sub_categories:
+      - Grocery & Food Retail
+      - Convenience Stores
+      - Pharmacy & Drug Stores
+      - Primary & General Care
+      - Hospitals & Emergency
+      - Banks & Credit Unions
+      - Money Services
+      - Postal
+      - Laundry & Dry Cleaning
+      - Food Assistance
+  proximity_amenities:
+    label: Proximity amenities
+    description: Everyday errands, shopping, schools, personal care, fitness, recreation, and nearby food uses that residents may value living close to; not an access measure.
+    sub_categories:
+      - Grocery & Food Retail
+      - Convenience Stores
+      - Pharmacy & Drug Stores
+      - General Merchandise
+      - Home, Hardware & Garden
+      - Apparel & Accessories
+      - Electronics & Media
+      - Specialty Retail
+      - Resale & Secondhand
+      - Primary & General Care
+      - Hospitals & Emergency
+      - Banks & Credit Unions
+      - Money Services
+      - Postal
+      - Laundry & Dry Cleaning
+      - Food Assistance
+      - K-12
+      - Early Childhood
+      - Higher Education
+      - Libraries
+      - Tutoring & Test Prep
+      - Hair & Barber
+      - Nail & Beauty
+      - Other Personal Services
+      - Spa & Massage
+      - Gyms & Fitness
+      - Sports Facilities
+      - Outdoor Recreation
+      - Parks & Public Space
+      - Restaurants
+      - Quick Service
+      - Cafes & Coffee
+  employment_places:
+    label: Employment places
+    description: Workplace-oriented service, government, and industrial POI context; not employment counts, a job-center inventory, or a measure of where jobs land.
+    categories:
+      - Services
+      - Government & Public Safety
+      - Industrial & Logistics

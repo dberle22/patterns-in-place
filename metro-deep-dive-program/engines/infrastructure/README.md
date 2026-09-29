@@ -16,7 +16,8 @@ Start with:
 
 ## Current state
 
-Epics 1–5 are complete. The market-parameterized builder reads the declared
+Epics 1–5 are complete, and the Census Place overlap handoff is available for
+the bounded Richmond validation run. The market-parameterized builder reads the declared
 cached OSM asset, records PBF and GeoPackage checksums, clips core candidates
 to the Geography CBSA boundary, and writes a deterministic local source run
 with a manifest and rejected-identity stream. The current Geography geometry
@@ -69,6 +70,18 @@ access, Q2 routing, barriers, catchments, corridors, or districts; those remain
 owned by their named downstream methods. Corridor Intelligence may assign
 grouping-specific roles to these features without rewriting their source
 classification.
+
+Build physical Place context after Geography materializes `geo.places_analysis`:
+
+```sh
+python3 metro-deep-dive-program/engines/infrastructure/build_place_overlap.py --market richmond_va
+```
+
+This writes local, source-run-scoped feature-overlap and Place-summary Parquet
+artifacts plus coverage, geometry, duplicate-key, and reconciliation QA. It
+uses Geography's analytical Place geometry and its declared measurement CRS;
+it does not create zero rows for Place or feature no-overlap cases, nor does it
+interpret roads, rail, or water as access, connectivity, barriers, or anchors.
 
 ## Explore a market
 

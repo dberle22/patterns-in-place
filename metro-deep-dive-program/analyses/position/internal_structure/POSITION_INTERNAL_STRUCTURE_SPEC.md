@@ -147,8 +147,9 @@ and category shares distinct. The notebook should not create an activity-center
 classification in its first pass; it can compare existing job centers and
 visible POI concentrations descriptively.
 
-POI-by-Place requires a direct governed point-to-Place assignment. Until
-Geography publishes that relationship, the notebook must display the gap and
+POI-by-Place requires a direct governed point-to-Place assignment. Geography
+now supplies national `geo.places_analysis`; until the POI Engine publishes its
+assignment surface from that product, the notebook must display the gap and
 must not allocate point counts through tract population, housing, or land
 weights.
 
