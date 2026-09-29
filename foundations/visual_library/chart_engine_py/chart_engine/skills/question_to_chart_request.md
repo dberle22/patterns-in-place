@@ -124,7 +124,7 @@ than improvise.**
   cases surface in the QA batch runner
 - Benchmark source expansion — national median today; regional/peer
   cluster benchmarks once `intelligence_catalog.yml` benchmark_strategy
-  entries are calibrated (see `INTELLIGENCE_LAYER_ROADMAP.md` Phase 7)
+  entries are calibrated (see `docs/methodology/intelligence_framework/`)
 - Title phrasing templates — one per `question_type`, tuned against
   actual publisher output review, same feedback loop as the existing
   Insight Summary skill

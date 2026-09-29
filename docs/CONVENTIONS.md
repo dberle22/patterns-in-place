@@ -94,6 +94,7 @@ When two docs could answer the same question, one of them owns it and the other 
 | What we're building, the thinking model, principles | [OVERVIEW.md](OVERVIEW.md) |
 | Data flow, warehouse schemas, folder dependencies | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Vocabulary | [GLOSSARY.md](GLOSSARY.md) |
+| How analytical methods work (strategy, not field definitions) | [methodology/](methodology/intelligence_framework/README.md) |
 | Repo-wide and product-wide decisions | [decisions/](decisions/README.md) |
 | Agent behaviour and coding rules | [AGENTS.md](../AGENTS.md) |
 | Documentation rules | This file |

@@ -9,7 +9,7 @@ The semantic layer is the contract between the data warehouse and every product 
 The warehouse holds facts. The semantic layer answers three questions that facts alone can't answer:
 
 1. **What does this column mean?** (`metric_catalog.yml`) — display name, unit format, which themes it belongs to, whether it can be used in growth calculations, and any caveats about coverage or interpretation.
-2. **How do metrics combine into scores?** (`intelligence_catalog.yml`) — the full scoring and clustering models for the three Intelligence frames (Character, Livability, Opportunity) plus the Cross-Frame combined model, including KPI polarity, model roles, subject weights, and calibration status.
+2. **How do metrics combine into scores?** (`intelligence_catalog.yml`) — the full scoring and clustering models for the three Intelligence frames (Character, Livability, Opportunity) plus the Cross-Frame combined model, including KPI polarity, model roles, subject weights, and calibration status. The strategy and methods behind these models are documented in `docs/methodology/intelligence_framework/`; this catalog holds only the machine-readable definitions.
 3. **How does the product surface this to a user?** (`theme_catalog.yml`, `question_catalog.yml`, `query_templates.yml`, `chart_rules.yml`) — topic groupings, pre-built question patterns, SQL execution templates, and chart selection rules.
 
 ---

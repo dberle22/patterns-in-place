@@ -104,4 +104,4 @@ exploration/  ──(promote when it proves out)──→  foundations/
 | Vocabulary | [GLOSSARY.md](GLOSSARY.md) |
 | Decisions not to re-argue | [decisions/](decisions/README.md) |
 | The Metro Deep Dive program | [metro_deep_dive_program.md](../metro-deep-dive-program/metro_deep_dive_program.md) |
-| The Intelligence Framework method | [intelligence_framework_overview.md](../exploration/intelligence_framework/docs/intelligence_framework_overview.md) |
+| The Intelligence Framework method | [methodology/intelligence_framework/](methodology/intelligence_framework/README.md) |

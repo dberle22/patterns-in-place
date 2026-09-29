@@ -3,7 +3,7 @@
 **Status:** Paused (since 2026-07). Resume plan: `docs/ROADMAP.md` → Resuming a paused area.
 **Updated:** 2026-09-29 (status header only; content unchanged since 2026-06-19)
 
-*Last updated: 2026-06-19. This document is the product spec and build roadmap for all Area Explorer apps. It supersedes the brief notes in `README.md`. Tactical Intelligence Layer work lives in `INTELLIGENCE_LAYER_ROADMAP.md`.*
+*Last updated: 2026-06-19. This document is the product spec and build roadmap for all Area Explorer apps. It supersedes the brief notes in `README.md`. Intelligence Framework method lives in `docs/methodology/intelligence_framework/` (the old `INTELLIGENCE_LAYER_ROADMAP.md` is archived).*
 
 ---
 

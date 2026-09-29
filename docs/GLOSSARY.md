@@ -52,7 +52,7 @@ Shared vocabulary across the repo. When a term appears in any doc or code commen
 
 ## Intelligence Framework
 
-Full method: [intelligence_framework_overview.md](../exploration/intelligence_framework/docs/intelligence_framework_overview.md).
+Full method: [methodology/intelligence_framework/](methodology/intelligence_framework/README.md).
 
 | Term | Meaning |
 |---|---|

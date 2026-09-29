@@ -9,7 +9,7 @@ It is intentionally smaller than the full mart column inventory.
 
 - DuckDB schema: `mart_intelligence`
 - Long-form method reference:
-  `exploration/intelligence_framework/docs/intelligence_framework_overview.md`
+  `docs/methodology/intelligence_framework/intelligence_framework_overview.md`
 
 ## Current Promoted Tables
 

@@ -2,7 +2,7 @@
 
 *Last updated: 2026-09-08*
 
-Full methodology reference: `exploration/intelligence_framework/docs/zone_methodology_notes.md`
+Full methodology reference: `docs/methodology/intelligence_framework/zone_methodology_notes.md` (moved from `exploration/intelligence_framework/docs/` on 2026-09-29)
 
 ---
 

@@ -1,7 +1,7 @@
 # Three Intelligence frames, one shared method
 
 **Date:** 2026-06
-**Source:** `INTELLIGENCE_LAYER_ROADMAP.md`; `exploration/intelligence_framework/docs/intelligence_framework_overview.md` §1
+**Source:** `docs/archive/2026-09_intelligence_layer_roadmap/INTELLIGENCE_LAYER_ROADMAP.md`; [intelligence_framework_overview.md](../methodology/intelligence_framework/intelligence_framework_overview.md) §1; the locked architecture is in [ARCHITECTURE.md](../methodology/intelligence_framework/ARCHITECTURE.md)
 
 ## Decision
 

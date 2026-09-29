@@ -35,10 +35,10 @@ Details and next steps per area: [docs/STATUS.md](docs/STATUS.md). **Status mean
 | What we're building and how we think about places | [docs/OVERVIEW.md](docs/OVERVIEW.md) |
 | Data flow, warehouse schemas, which folder reads what | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 | Vocabulary (frames, acts, marts, zones) | [docs/GLOSSARY.md](docs/GLOSSARY.md) |
+| How the Intelligence Framework works | [docs/methodology/intelligence_framework/](docs/methodology/intelligence_framework/README.md) |
 | Decisions not to re-argue | [docs/decisions/](docs/decisions/README.md) |
 | How to write and maintain docs | [docs/CONVENTIONS.md](docs/CONVENTIONS.md) |
 
-Intelligence Framework methodology is still in `exploration/intelligence_framework/docs/`, with its history in [INTELLIGENCE_LAYER_ROADMAP.md](INTELLIGENCE_LAYER_ROADMAP.md); both are moving as part of the docs overhaul.
 
 ## Warehouse
 

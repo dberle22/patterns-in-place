@@ -30,7 +30,7 @@ Those outputs answer four recurring questions:
 - where do the three frame stories agree versus conflict?
 
 The long-form methodological reference still lives in
-`exploration/intelligence_framework/docs/intelligence_framework_overview.md`.
+`docs/methodology/intelligence_framework/intelligence_framework_overview.md`.
 This folder translates that work into the smaller downstream contract the
 Metro Deep Dive program should actually read.
 
