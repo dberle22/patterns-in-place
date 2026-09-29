@@ -98,7 +98,8 @@ exploration/  ──(promote when it proves out)──→  foundations/
 
 | To understand | Read |
 |---|---|
-| Current status of each area | Root [README.md](../README.md) |
+| Current status of each area | [STATUS.md](STATUS.md) |
+| What's next, and in what order | [ROADMAP.md](ROADMAP.md) |
 | Warehouse, marts and data flow | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Vocabulary | [GLOSSARY.md](GLOSSARY.md) |
 | Decisions not to re-argue | [decisions/](decisions/README.md) |

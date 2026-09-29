@@ -1,7 +1,7 @@
 # Monorepo and a single warehouse
 
 **Date:** 2026-05
-**Source:** `PLATFORM_ROADMAP.md` (Track A, Done)
+**Source:** `docs/archive/2026-09_platform_roadmaps/PLATFORM_ROADMAP.md` (Track A, Done)
 
 ## Decision
 

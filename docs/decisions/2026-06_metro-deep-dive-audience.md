@@ -1,7 +1,7 @@
 # Metro Deep Dive audience
 
 **Date:** 2026-06
-**Source:** `DEEP_DIVE_EXPLORATION.md`, Part 1
+**Source:** `docs/archive/2026-09_deep_dive_exploration/DEEP_DIVE_EXPLORATION.md`, Part 1
 
 ## Decision
 

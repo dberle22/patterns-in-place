@@ -22,11 +22,11 @@ The platform is analytically ready. The gap has always been output, not ideas or
 | Stream | What it is | Cadence | Where |
 |---|---|---|---|
 | **Chart a day** | One chart, one finding, a short post. The heartbeat that shows the project is active. | Daily when running | X, Bluesky |
-| **Metro Deep Dive** | One market serialized act by act; each act stands alone and adds up to the full picture. The flagship. | One market over 6–8 weeks | Substack |
+| **Metro Deep Dive** | The flagship. Currently a multi-part [series on New York State](../decisions/2026-09_ny-series-first.md): state primer, regional and metro deep dives, rankings. Each piece stands alone and adds up to the whole. | Piece by piece | Substack |
 | **Public releases** | Citable data releases such as the [public CBSA panel](../../public-cbsa-panel/README.md). | Per release | Public repo, Zenodo, Substack announcement |
 | **Technical posts** | How the platform was built. Written only after a milestone ships. | When a gate clears | Substack, LinkedIn, Hacker News for launches |
 
-The streams feed each other: each Deep Dive act produces 2–3 charts for chart a day in the same week, and a national finding introduced in a Deep Dive can become a standalone Data Take.
+The streams feed each other: each Deep Dive piece produces 2–3 charts for chart a day in the same week, and a national finding introduced in a Deep Dive can become a standalone Data Take.
 
 **Technical posts are gated**, so we only write about things that have proven themselves in public:
 
@@ -52,7 +52,7 @@ The streams feed each other: each Deep Dive act produces 2–3 charts for chart 
 
 | Format | Length | Visuals | Use it for | Template |
 |---|---|---|---|---|
-| **Metro Deep Dive** | Serialized by act | Fixed spine plus flex | One market, full narrative | Governed by the [MDD program](../../metro-deep-dive-program/metro_deep_dive_program.md) and its [fixed spine](../decisions/2026-07_deep-dive-fixed-spine.md) |
+| **Metro Deep Dive** | Series of standalone pieces | Fixed spine plus flex for metro pieces | A state, region or market, full narrative | Governed by the [MDD program](../../metro-deep-dive-program/metro_deep_dive_program.md) and its [fixed spine](../decisions/2026-07_deep-dive-fixed-spine.md) |
 | **Opportunity List** | 800–1,200 words | 1–3 plus a list of 5–12 places | A filter applied across places | [opportunity_list.md](../../publisher/content/templates/opportunity_list.md) |
 | **Data Take** | 500–900 words | Exactly 1 | One question, one finding, one argument | [data_take.md](../../publisher/content/templates/data_take.md) |
 | **Technical Deep Dive** | 1,200–2,000 words | Code plus 1–2 diagrams | A real build decision and its trade-offs | [technical_deep_dive.md](../../publisher/content/templates/technical_deep_dive.md) |

@@ -14,7 +14,7 @@ Apply these rules to new docs and to old docs **as you touch them**. Don't sweep
 Each top-level area (and each major subfolder with its own purpose, e.g. `foundations/etl/`) has a `README.md` with these sections, in this order:
 
 1. **What it is**, in two sentences.
-2. **Status**: Active, Paused or Legacy, and the date it was last worked on. The labels must match the root [README.md](../README.md) folder map.
+2. **Status**: Active, Paused or Legacy, and the date it was last worked on. The labels must match [STATUS.md](STATUS.md) and the root [README.md](../README.md) folder map.
 3. **How to run it**: commands from the repo root, which Python environment, and which environment variables.
 4. **Key docs**, in reading order.
 5. **Depends on / depended on by**: which folders it reads from and which read from it.
@@ -86,7 +86,11 @@ When two docs could answer the same question, one of them owns it and the other 
 
 | Topic | Owner |
 |---|---|
-| Folder map, area status, DB path, Python environments | Root [README.md](../README.md) |
+| Folder map, DB path, Python environments | Root [README.md](../README.md) |
+| Where each area stands and its next step | [STATUS.md](STATUS.md); the root README's status labels must match it |
+| Strategy and sequencing across areas | [ROADMAP.md](ROADMAP.md) |
+| Area task lists | Each area's `ROADMAP.md` or build plan, linked from STATUS |
+| Publishing strategy | [strategy/PUBLISHING.md](strategy/PUBLISHING.md) |
 | What we're building, the thinking model, principles | [OVERVIEW.md](OVERVIEW.md) |
 | Data flow, warehouse schemas, folder dependencies | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Vocabulary | [GLOSSARY.md](GLOSSARY.md) |
@@ -96,4 +100,3 @@ When two docs could answer the same question, one of them owns it and the other 
 | Per-table definitions | `foundations/data_dictionary/` |
 | Metric and model definitions | `foundations/semantic_layer/` |
 
-Status and roadmap owners are added when `docs/STATUS.md` and `docs/ROADMAP.md` are written.
