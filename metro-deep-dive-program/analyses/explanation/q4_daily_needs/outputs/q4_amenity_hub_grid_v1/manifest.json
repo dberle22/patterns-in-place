@@ -1,0 +1,22 @@
+{
+  "method_version": "q4_amenity_hub_grid_v1",
+  "built": "2026-09-22",
+  "candidate_status": "selected_for_workbench_with_sensitivity",
+  "candidate_universe": "retained mapped POIs; no analysis basket declared yet",
+  "source_runs": {
+    "richmond_va": "metro-deep-dive-program/engines/poi/outputs/richmond_va/overture-places-40060-2026-08-19-0-20260908T110747Z",
+    "jacksonville_fl": "metro-deep-dive-program/engines/poi/outputs/jacksonville_fl/overture-places-27260-2026-08-19-0-20260909T093431Z"
+  },
+  "artifacts": {
+    "q4_amenity_hub_candidates.geojson": "46b0d38d58bee2613dbaf7eca835b9e445472178776b053fa15ddc72282f4272",
+    "q4_amenity_hub_candidates.parquet": "07fca7be2f65982acceca0a85d45943312f01d034f1379f747b4960c5a06fd4b",
+    "q4_amenity_hub_category_mix.parquet": "39543e98ae2434205d1fb10b45a860dc9424aadfb5794aeecf2905fe9af0613a",
+    "q4_amenity_hub_membership.parquet": "e0c14cc56d9f2587d2a58f0d3da9bc35078d6c0626cd66c1563015d1e06bd0f9",
+    "q4_amenity_hub_review_jacksonville_fl_grid_250m_min_20.svg": "614154acce4575cdc6d2e509324c0d52f9145c86b7cd71104471592d51f5cd31",
+    "q4_amenity_hub_review_jacksonville_fl_grid_500m_min_60.svg": "acb5eabec5a65c7430cb1bb98f11c664ce4c076b6dd70f56f198856e8a53bf58",
+    "q4_amenity_hub_review_richmond_va_grid_250m_min_20.svg": "f6310d99db8ad32dd0458e063bbf528c5f490b48215ac82e2595d12ab4c25267",
+    "q4_amenity_hub_review_richmond_va_grid_500m_min_60.svg": "52ac769d6eb32f2d46c1d5e2a64b29aff668568e4d99e8a9ea2d00bdfa3b3893"
+  },
+  "hub_count": 972,
+  "membership_count": 123764
+}

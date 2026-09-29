@@ -11,7 +11,7 @@ target_zctas AS (
     zip_geoid AS geo_id,
     zip_pref_state,
     rel_weight_pop
-  FROM silver.xwalk_zcta_cbsa
+  FROM silver.xwalk_zip_cbsa
   WHERE cbsa_geoid = (SELECT cbsa_code FROM params)
 ),
 zcta_points AS (
@@ -21,7 +21,7 @@ zcta_points AS (
       NULLIF(SUM(zt.rel_weight_pop), 0) AS lon,
     SUM(zt.rel_weight_pop * ST_Y(ST_PointOnSurface(ST_GeomFromText(g.geom_wkt)))) /
       NULLIF(SUM(zt.rel_weight_pop), 0) AS lat
-  FROM silver.xwalk_zcta_tract zt
+  FROM silver.xwalk_zip_tract zt
   JOIN foundation.market_tract_geometry g
     ON zt.tract_geoid = g.tract_geoid
   WHERE g.cbsa_code = (SELECT cbsa_code FROM params)
@@ -36,7 +36,7 @@ zcta_base AS (
     CAST(p.year AS VARCHAR) || '_snapshot' AS time_window,
     p.pop_total AS size_value,
     'ZCTA population' AS size_label,
-    'gold.population_demographics + silver.xwalk_zcta_cbsa + silver.xwalk_zcta_tract + foundation.market_tract_geometry' AS source,
+    'gold.population_demographics + silver.xwalk_zip_cbsa + silver.xwalk_zip_tract + foundation.market_tract_geometry' AS source,
     CAST(p.year AS VARCHAR) AS vintage,
     tz.zip_pref_state AS color_group,
     p.pop_total >= quantile_cont(p.pop_total, 0.85) OVER () AS label_flag,

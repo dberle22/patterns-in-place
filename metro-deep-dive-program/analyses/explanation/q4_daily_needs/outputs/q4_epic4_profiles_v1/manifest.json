@@ -1,0 +1,8 @@
+{
+  "status": "pilot_artifacts_direct_not_promoted",
+  "association_rule": "member POI tract assignment",
+  "typology_method": "dominant category >= 35% else mixed composition",
+  "context_source": "gold.housing_core_wide latest tract year",
+  "hub_profiles": 1591,
+  "tract_associations": 2337
+}

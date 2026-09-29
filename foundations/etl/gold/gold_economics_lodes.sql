@@ -164,7 +164,12 @@ joined as (
     rac.pct_workers_ind_arts_entertainment_recreation,
     rac.pct_workers_ind_accommodation_food,
     rac.pct_workers_ind_other_services,
-    rac.pct_workers_ind_public_administration
+    rac.pct_workers_ind_public_administration,
+
+    -- Keep the all-job headline totals available without redefining any
+    -- existing private-sector WAC/RAC columns or composition measures.
+    wac.jobs_all_total,
+    rac.workers_all_total
   from wac
   full outer join rac
     on wac.geo_level = rac.geo_level
@@ -174,7 +179,9 @@ joined as (
 )
 
 select
-  *,
+  -- Excluding the two new base totals here preserves the existing Gold column
+  -- order; the all-job family is appended after every current column below.
+  joined.* exclude (jobs_all_total, workers_all_total),
   jobs_total - workers_total as jobs_minus_workers,
   workers_total - jobs_total as workers_minus_jobs,
   jobs_total / nullif(workers_total, 0) as jobs_to_workers_ratio,
@@ -208,5 +215,11 @@ select
   pct_jobs_ind_arts_entertainment_recreation - pct_workers_ind_arts_entertainment_recreation as pct_point_gap_ind_arts_entertainment_recreation,
   pct_jobs_ind_accommodation_food - pct_workers_ind_accommodation_food as pct_point_gap_ind_accommodation_food,
   pct_jobs_ind_other_services - pct_workers_ind_other_services as pct_point_gap_ind_other_services,
-  pct_jobs_ind_public_administration - pct_workers_ind_public_administration as pct_point_gap_ind_public_administration
+  pct_jobs_ind_public_administration - pct_workers_ind_public_administration as pct_point_gap_ind_public_administration,
+  jobs_all_total,
+  workers_all_total,
+  jobs_all_total - workers_all_total as jobs_all_minus_workers_all,
+  workers_all_total - jobs_all_total as workers_all_minus_jobs_all,
+  jobs_all_total / nullif(workers_all_total, 0) as jobs_all_to_workers_all_ratio,
+  workers_all_total / nullif(jobs_all_total, 0) as workers_all_to_jobs_all_ratio
 from joined

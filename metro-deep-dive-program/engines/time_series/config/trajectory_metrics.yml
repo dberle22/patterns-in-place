@@ -1,0 +1,189 @@
+engine:
+  method_version: trajectory_pilot_v1
+  universe:
+    base_year: 2024
+    min_population: 100000
+    excluded_name_suffix: ", PR"
+  windows:
+    five_year:
+      years: 5
+      start_year: 2018
+      end_year: 2023
+      minimum_observations: 4
+    one_year:
+      years: 1
+      start_year: 2022
+      end_year: 2023
+      minimum_observations: 2
+  scoring:
+    minimum_topics_per_frame: 2
+    position_low_max: 40
+    position_high_min: 60
+    signal_thresholds: [80, 90, 95]
+    production_signal_threshold: 80
+
+# Every metric has one plainly declared source, transformation, direction rule,
+# and window panel. Character is deliberately non-normative at frame level.
+metrics:
+  - metric_id: diversity_index
+    metric_label: Diversity index
+    frame_id: character
+    topic_id: demographic_composition
+    source_table: population_demographics
+    source_column: diversity_index
+    transform: identity
+    polarity: neutral
+    windows: [five_year]
+
+  - metric_id: pct_age_over_64
+    metric_label: Population age 65 and over
+    frame_id: character
+    topic_id: age_structure
+    source_table: population_demographics
+    source_column: pct_age_over_64
+    transform: identity
+    polarity: neutral
+    windows: [five_year]
+
+  - metric_id: pop_weighted_density_sqmi
+    metric_label: Population-weighted density
+    frame_id: character
+    topic_id: built_form
+    source_table: transport_built_form_wide
+    source_column: pop_weighted_density_sqmi
+    transform: log
+    polarity: neutral
+    windows: [five_year]
+
+  - metric_id: pct_ba_plus
+    metric_label: Adults with a bachelor's degree or higher
+    frame_id: character
+    topic_id: educational_composition
+    source_table: population_demographics
+    source_column: pct_ba_plus
+    transform: identity
+    polarity: neutral
+    windows: [five_year]
+
+  - metric_id: value_to_income
+    metric_label: Home value-to-income ratio
+    frame_id: livability
+    topic_id: housing_affordability
+    source_table: housing_core_wide
+    source_column: value_to_income
+    transform: identity
+    polarity: negative
+    windows: [five_year]
+
+  - metric_id: pct_rent_burden_30plus
+    metric_label: Rent-burdened renter households
+    frame_id: livability
+    topic_id: housing_affordability
+    source_table: housing_core_wide
+    source_column: pct_rent_burden_30plus
+    transform: identity
+    polarity: negative
+    windows: [five_year]
+
+  - metric_id: pct_uninsured_adults
+    metric_label: Uninsured adults
+    frame_id: livability
+    topic_id: health_access
+    source_table: health_wide
+    source_column: pct_uninsured_adults
+    transform: identity
+    polarity: negative
+    windows: [five_year]
+
+  - metric_id: aqi_median
+    metric_label: Median air quality index
+    frame_id: livability
+    topic_id: environmental_quality
+    source_table: environment_wide
+    source_column: aqi_median
+    transform: identity
+    polarity: negative
+    windows: [five_year]
+
+  - metric_id: pct_unemployment_rate
+    metric_label: Unemployment rate
+    frame_id: opportunity
+    topic_id: labor_market
+    source_table: economics_labor_wide
+    source_column: pct_unemployment_rate
+    transform: identity
+    polarity: negative
+    windows: [five_year, one_year]
+
+  - metric_id: lfpr
+    metric_label: Labor-force participation rate
+    frame_id: opportunity
+    topic_id: labor_market
+    source_table: economics_labor_wide
+    source_column: lfpr
+    transform: identity
+    polarity: positive
+    windows: [five_year, one_year]
+
+  - metric_id: qcew_private_avg_wkly_wage
+    metric_label: Private-sector average weekly wage
+    frame_id: opportunity
+    topic_id: earnings
+    source_table: economics_industry_wide
+    source_column: qcew_private_avg_wkly_wage
+    transform: log
+    polarity: positive
+    windows: [five_year, one_year]
+
+  - metric_id: bfs_business_application_rate_per_1000_establishments
+    metric_label: Business applications per 1,000 establishments
+    frame_id: opportunity
+    topic_id: business_formation
+    source_table: economics_industry_wide
+    source_column: bfs_business_application_rate_per_1000_establishments
+    transform: identity
+    polarity: positive
+    windows: [five_year, one_year]
+
+  # Direct recurring-series expansion. Coverage remains visible per metric;
+  # derived-change and context-only fields are intentionally excluded.
+  - {metric_id: pct_black_nh, metric_label: Black non-Hispanic share, frame_id: character, topic_id: race_ethnicity, source_table: population_demographics, source_column: pct_black_nh, transform: identity, polarity: neutral, windows: [five_year]}
+  - {metric_id: pct_asian_nh, metric_label: Asian non-Hispanic share, frame_id: character, topic_id: race_ethnicity, source_table: population_demographics, source_column: pct_asian_nh, transform: identity, polarity: neutral, windows: [five_year]}
+  - {metric_id: pct_hispanic, metric_label: Hispanic share, frame_id: character, topic_id: race_ethnicity, source_table: population_demographics, source_column: pct_hispanic, transform: identity, polarity: neutral, windows: [five_year]}
+  - {metric_id: pct_foreign_born, metric_label: Foreign-born share, frame_id: character, topic_id: nativity, source_table: migration_wide, source_column: pct_foreign_born, transform: identity, polarity: neutral, windows: [five_year]}
+  - {metric_id: irs_net_migration_rate, metric_label: IRS net migration rate, frame_id: character, topic_id: residential_mobility, source_table: migration_wide, source_column: irs_net_migration_rate, transform: identity, polarity: neutral, windows: [five_year]}
+  - {metric_id: pct_moved_diff_st, metric_label: Moved from a different state share, frame_id: character, topic_id: residential_mobility, source_table: migration_wide, source_column: pct_moved_diff_st, transform: identity, polarity: neutral, windows: [five_year]}
+  - {metric_id: pct_moved_abroad, metric_label: Moved from abroad share, frame_id: character, topic_id: residential_mobility, source_table: migration_wide, source_column: pct_moved_abroad, transform: identity, polarity: neutral, windows: [five_year]}
+  - {metric_id: social_associations_per_10k, metric_label: Social associations per 10k, frame_id: character, topic_id: social_associations, source_table: health_wide, source_column: social_associations_per_10k, transform: log, polarity: neutral, windows: [five_year]}
+  - {metric_id: pct_struct_multifam, metric_label: Multifamily housing share, frame_id: character, topic_id: built_form, source_table: housing_core_wide, source_column: pct_struct_multifam, transform: identity, polarity: neutral, windows: [five_year]}
+
+  - {metric_id: pov_rate, metric_label: Poverty rate, frame_id: livability, topic_id: poverty_context, source_table: economics_income_wide, source_column: pov_rate, transform: identity, polarity: negative, windows: [five_year]}
+  - {metric_id: permits_per_1000_housing_units, metric_label: Permits per 1,000 housing units, frame_id: livability, topic_id: housing_supply, source_table: housing_core_wide, source_column: permits_per_1000_housing_units, transform: identity, polarity: positive, windows: [five_year]}
+  - {metric_id: permits_share_units_5_plus, metric_label: Large multifamily permit share, frame_id: livability, topic_id: housing_supply, source_table: housing_core_wide, source_column: permits_share_units_5_plus, transform: identity, polarity: positive, windows: [five_year]}
+  - {metric_id: pct_struct_mobile, metric_label: Mobile home share, frame_id: livability, topic_id: housing_structure, source_table: housing_core_wide, source_column: pct_struct_mobile, transform: identity, polarity: negative, windows: [five_year]}
+  - {metric_id: pct_struct_small_mf, metric_label: Small multifamily share, frame_id: livability, topic_id: housing_structure, source_table: housing_core_wide, source_column: pct_struct_small_mf, transform: identity, polarity: positive, windows: [five_year]}
+  - {metric_id: pct_struct_mid_mf, metric_label: Mid-size multifamily share, frame_id: livability, topic_id: housing_structure, source_table: housing_core_wide, source_column: pct_struct_mid_mf, transform: identity, polarity: positive, windows: [five_year]}
+  - {metric_id: premature_death_rate, metric_label: Premature death rate, frame_id: livability, topic_id: health_outcomes, source_table: health_wide, source_column: premature_death_rate, transform: identity, polarity: negative, windows: [five_year]}
+  - {metric_id: mental_health_provider_ratio, metric_label: Mental health provider ratio, frame_id: livability, topic_id: health_access, source_table: health_wide, source_column: mental_health_provider_ratio, transform: identity, polarity: negative, windows: [five_year]}
+  - {metric_id: drug_overdose_death_rate, metric_label: Drug overdose death rate, frame_id: livability, topic_id: health_outcomes, source_table: health_wide, source_column: drug_overdose_death_rate, transform: identity, polarity: negative, windows: [five_year]}
+  - {metric_id: preventable_hospital_stay_rate, metric_label: Preventable hospital stay rate, frame_id: livability, topic_id: health_outcomes, source_table: health_wide, source_column: preventable_hospital_stay_rate, transform: identity, polarity: negative, windows: [five_year]}
+  - {metric_id: firearm_fatality_rate, metric_label: Firearm fatality rate, frame_id: livability, topic_id: safety, source_table: health_wide, source_column: firearm_fatality_rate, transform: identity, polarity: negative, windows: [five_year]}
+  - {metric_id: motor_vehicle_crash_rate, metric_label: Motor vehicle crash death rate, frame_id: livability, topic_id: safety, source_table: health_wide, source_column: motor_vehicle_crash_rate, transform: identity, polarity: negative, windows: [five_year]}
+  - {metric_id: pct_commute_walk, metric_label: Walk commute share, frame_id: livability, topic_id: transport_access, source_table: transport_built_form_wide, source_column: pct_commute_walk, transform: identity, polarity: positive, windows: [five_year]}
+  - {metric_id: pct_commute_wfh, metric_label: Work-from-home commute share, frame_id: livability, topic_id: transport_access, source_table: transport_built_form_wide, source_column: pct_commute_wfh, transform: identity, polarity: neutral, windows: [five_year]}
+  - {metric_id: vacancy_rate, metric_label: Housing vacancy rate, frame_id: livability, topic_id: housing_slack, source_table: housing_core_wide, source_column: vacancy_rate, transform: identity, polarity: neutral, windows: [five_year]}
+  - {metric_id: pct_hh_0_vehicles, metric_label: Zero-vehicle household share, frame_id: livability, topic_id: transport_access, source_table: transport_built_form_wide, source_column: pct_hh_0_vehicles, transform: identity, polarity: negative, windows: [five_year]}
+  - {metric_id: pct_no_internet_access, metric_label: No internet access share, frame_id: livability, topic_id: digital_access, source_table: social_infra_wide, source_column: pct_no_internet_access, transform: identity, polarity: negative, windows: [five_year]}
+  - {metric_id: pop_weighted_density_sqmi_livability, metric_label: Population-weighted density, frame_id: livability, topic_id: built_form, source_table: transport_built_form_wide, source_column: pop_weighted_density_sqmi, transform: log, polarity: positive, windows: [five_year]}
+  - {metric_id: fema_risk_score, metric_label: FEMA risk score, frame_id: livability, topic_id: climate_risk, source_table: environment_wide, source_column: fema_risk_score, transform: identity, polarity: negative, windows: [five_year]}
+
+  - {metric_id: irs_net_migration_rate_opportunity, metric_label: IRS net migration rate, frame_id: opportunity, topic_id: migration_and_wealth, source_table: migration_wide, source_column: irs_net_migration_rate, transform: identity, polarity: positive, windows: [five_year, one_year]}
+  - {metric_id: irs_net_agi, metric_label: IRS net AGI flow, frame_id: opportunity, topic_id: migration_and_wealth, source_table: migration_wide, source_column: irs_net_agi, transform: identity, polarity: positive, windows: [five_year, one_year]}
+  - {metric_id: permits_per_1000_housing_units_opportunity, metric_label: Permits per 1,000 housing units, frame_id: opportunity, topic_id: permit_activity, source_table: housing_core_wide, source_column: permits_per_1000_housing_units, transform: identity, polarity: positive, windows: [five_year, one_year]}
+  - {metric_id: permits_share_units_5_plus_opportunity, metric_label: Large multifamily permit share, frame_id: opportunity, topic_id: permit_activity, source_table: housing_core_wide, source_column: permits_share_units_5_plus, transform: identity, polarity: positive, windows: [five_year, one_year]}
+  - {metric_id: industry_concentration_hhi, metric_label: Industry concentration HHI, frame_id: opportunity, topic_id: industry_structure, source_table: economics_industry_wide, source_column: industry_concentration_hhi, transform: identity, polarity: negative, windows: [five_year]}
+  - {metric_id: cbp_estabs_per_1000_residents, metric_label: Establishments per 1,000 residents, frame_id: opportunity, topic_id: establishment_density, source_table: economics_industry_wide, source_column: cbp_estabs_per_1000_residents, transform: identity, polarity: positive, windows: [five_year, one_year]}
+  - {metric_id: lq_professional, metric_label: Professional services location quotient, frame_id: opportunity, topic_id: specialization, source_table: economics_industry_wide, source_column: lq_professional, transform: log, polarity: neutral, windows: [five_year, one_year]}
+  - {metric_id: lq_information, metric_label: Information location quotient, frame_id: opportunity, topic_id: specialization, source_table: economics_industry_wide, source_column: lq_information, transform: log, polarity: neutral, windows: [five_year, one_year]}
+  - {metric_id: lq_manufacturing, metric_label: Manufacturing location quotient, frame_id: opportunity, topic_id: specialization, source_table: economics_industry_wide, source_column: lq_manufacturing, transform: log, polarity: neutral, windows: [five_year, one_year]}
+  - {metric_id: pct_real_gdp_information, metric_label: Information GDP share, frame_id: opportunity, topic_id: industry_structure, source_table: economics_industry_wide, source_column: pct_real_gdp_information, transform: identity, polarity: positive, windows: [five_year, one_year]}

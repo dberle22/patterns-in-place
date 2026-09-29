@@ -72,7 +72,9 @@ staging_metrics <- county_base %>%
 county_totals <- county_base %>%
   group_by(table, code, geo_level, geo_id, geo_name, 
            period, line_desc_clean, metric_key) %>%
-  summarize(value = sum(value, na.rm = TRUE)) %>%
+  # A suppressed county cell makes the corresponding aggregate unavailable;
+  # do not silently convert BEA suppression into a zero contribution.
+  summarize(value = if (all(!is.na(value))) sum(value) else NA_real_) %>%
   ungroup()
 
 
@@ -104,7 +106,7 @@ cbsa_rebase_totals <- county_totals %>%
 cbsa_totals <- cbsa_rebase_totals %>%
   group_by(table, code, cbsa_code, cbsa_name, 
            period, line_desc_clean, metric_key) %>%
-  summarize(value = sum(value, na.rm = TRUE)) %>%
+  summarize(value = if (all(!is.na(value))) sum(value) else NA_real_) %>%
   ungroup() %>%
   mutate(geo_level = "cbsa") %>%
   select(table, code, geo_level, geo_id = cbsa_code, geo_name = cbsa_name,

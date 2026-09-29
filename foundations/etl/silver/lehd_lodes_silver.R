@@ -137,6 +137,9 @@ build_lodes_base <- function(stage_df, lodes_kind = c("wac", "rac")) {
       release_format_version = as.character(.data$release_format_version),
       source = if (identical(lodes_kind, "wac")) "LEHD LODES WAC" else "LEHD LODES RAC",
       total = as.double(.data$C000),
+      # `C000` remains the established private-job total. `C000_all` is the
+      # compact JT00 addition; the detailed composition fields stay JT02.
+      total_all = as.double(.data$C000_all),
       age_29_or_younger = as.double(.data$CA01),
       age_30_54 = as.double(.data$CA02),
       age_55_plus = as.double(.data$CA03),
@@ -303,6 +306,7 @@ build_lodes_silver <- function(stage_table, lodes_kind = c("wac", "rac")) {
       release_format_version = .data$release_format_version,
       source = .data$source,
       total = .data$total,
+      total_all = .data$total_all,
       age_29_or_younger = .data$age_29_or_younger,
       age_30_54 = .data$age_30_54,
       age_55_plus = .data$age_55_plus,
@@ -518,7 +522,8 @@ build_lodes_silver <- function(stage_table, lodes_kind = c("wac", "rac")) {
       -"source"
     ) %>%
     dplyr::rename(
-      jobs_total = total,
+        jobs_total = total,
+        jobs_all_total = total_all,
       jobs_age_29_or_younger = age_29_or_younger,
         jobs_age_30_54 = age_30_54,
         jobs_age_55_plus = age_55_plus,
@@ -620,6 +625,7 @@ build_lodes_silver <- function(stage_table, lodes_kind = c("wac", "rac")) {
       ) %>%
       dplyr::rename(
         workers_total = total,
+        workers_all_total = total_all,
         workers_age_29_or_younger = age_29_or_younger,
         workers_age_30_54 = age_30_54,
         workers_age_55_plus = age_55_plus,

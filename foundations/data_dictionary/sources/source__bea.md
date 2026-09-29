@@ -3,7 +3,7 @@
 ## 1. Overview
 
 - Source: U.S. Bureau of Economic Analysis
-- Access pattern: API via `bea.R`
+- Access pattern: Regional API plus BEA's versioned bulk archive for the county-first GDP refresh
 - Primary credential dependency: `BEA_KEY`
 - Scope in Foundations: BEA Regional data supplies economic output, personal income, and regional price parity datasets that land in a shared staging schema and are then modeled into Silver long and wide tables.
 - Documentation goal: this file is the source-level spec for BEA as a provider. Topic-level variation is documented within each section below.
@@ -64,7 +64,7 @@ Shared staging columns across the main BEA metric families:
 
 | Topic group | Staging families | Coverage shape |
 | --- | --- | --- |
-| CAGDP | `staging__bea_cagdp2`, `staging__bea_cagdp9` | three geography slices each: CBSA, county, state |
+| CAGDP | `staging__bea_cagdp2`, `staging__bea_cagdp9`, `staging.bea_gdp_industry_price_index` | CAGDP2 county archive through 2024 plus national annual value-added price indexes; direct CBSA files are benchmark-only |
 | CAINC | `staging__bea_cainc1`, `staging__bea_cainc4` | three geography slices each: CBSA, county, state |
 | CAINC5N | dedicated `staging.bea_cainc5n` fact table plus `staging.bea_cainc5n_line_codes` reference table | live staging includes county, state, and U.S. rows from the Regional API; industry detail is published as earnings lines rather than parallel wages/supplements rows |
 | MARPP | `staging__bea_marpp` | two geography slices: CBSA and state |
@@ -85,7 +85,7 @@ Common BEA handoff pattern:
 
 | Topic group | Silver handoff | Special path |
 | --- | --- | --- |
-| CAGDP | `CAGDP2` staging -> `silver.bea_regional_cagdp2_long` / `_wide`; `CAGDP9` staging -> `silver.bea_regional_cagdp9_long` / `_wide` | CBSA rows are rebuilt from county totals in the Silver scripts |
+| CAGDP | `CAGDP2` staging -> `silver.bea_regional_cagdp2_long` / `_wide`; county CAGDP2 plus GDP-by-Industry prices -> `silver.bea_regional_cagdp9_long` / `_wide` | Current-dollar CBSA GDP is a conservative county sum. Real CBSA GDP uses the BEA Fisher chain method with 2017 as the reference year; direct CBSA CAGDP9 is retained only as a 2017–2023 benchmark. County-equivalent changes in Connecticut make the first chained year after the 2024 break unavailable where continuity cannot be established. |
 | CAINC | `CAINC1` staging -> `silver.bea_regional_cainc1_long` / `_wide`; `CAINC4` staging -> `silver.bea_regional_cainc4_long` / `_wide` | `CAINC1` explicitly derives `pi_per_capita`; `CAINC4` drops `pi_per_capita` from the detail flow |
 | CAINC5N | dedicated staging -> `silver.bea_cainc5n` | the curated Silver contract keeps one row per `geo_level + geo_id + period + industry_key`; broad industry rows carry `earnings_total`, while `wages_salaries`, `supplements`, and derived `compensation_total` are populated only on the `all_industries` row because BEA does not publish parallel industry-detail compensation rows in `CAINC5N` |
 | MARPP | `MARPP` staging -> `silver.bea_regional_marpp_long` / `_wide` | state and CBSA only; wide output depends on curated metric-key mapping from the reference tables |
@@ -120,6 +120,8 @@ Additional BEA-wide transform notes:
 
 - Primary BEA ingest entrypoint:
   [../../etl/staging/get_bea.R](../../etl/staging/get_bea.R)
+- County-first GDP refresh entrypoint:
+  [../../etl/staging/get_bea_county_gdp.R](../../etl/staging/get_bea_county_gdp.R). It records the BEA 2026-02-05 county GDP release and retrieval timestamp in staging; values marked suppressed remain missing through the rollup.
 - Planned CAINC5N first-pass ingest note:
   although CAINC5N lives in the same BEA Regional API family, the approved first-pass implementation should use a dedicated staging entrypoint (for example `get_bea_cainc5n.R`) rather than extending `get_bea.R` immediately.
   This is an intentional safety choice so the new CAINC5N path can be validated end to end without risking regressions in the existing BEA refresh.

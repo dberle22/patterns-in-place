@@ -52,6 +52,9 @@ Table count: 52
 - [x] `xwalk_county_state`
 - [x] `xwalk_state_region`
 - [x] `xwalk_tract_county`
+- [x] `xwalk_zip_cbsa`
+- [x] `xwalk_zip_county`
+- [x] `xwalk_zip_tract`
 - [x] `xwalk_zcta_cbsa`
 - [x] `xwalk_zcta_county`
 - [x] `xwalk_zcta_tract`

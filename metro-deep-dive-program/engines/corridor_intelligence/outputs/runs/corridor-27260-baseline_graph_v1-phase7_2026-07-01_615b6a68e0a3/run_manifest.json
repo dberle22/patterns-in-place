@@ -1,0 +1,28 @@
+{
+  "cbsa_code": "27260",
+  "geometry_role": "legacy_cartographic_tract_geometry_v1",
+  "geometry_vintage_status": "unknown_legacy_vintage",
+  "market": "jacksonville_fl",
+  "method_version": "corridor_baseline_v1",
+  "parameter_profile": "baseline_graph_v1",
+  "phase7_build_id": "phase7_2026-07-01_615b6a68e0a3",
+  "publication_status": "epic_2_review_artifact_not_duckdb_published",
+  "run_id": "corridor-27260-baseline_graph_v1-phase7_2026-07-01_615b6a68e0a3",
+  "tract_accounting": {
+    "bounded_nearby": {
+      "core_tract_count": 246,
+      "input_tract_count": 340,
+      "unassigned_tract_count": 94
+    },
+    "dbscan_challenger": {
+      "core_tract_count": 11,
+      "input_tract_count": 340,
+      "unassigned_tract_count": 329
+    },
+    "strict_adjacency": {
+      "core_tract_count": 246,
+      "input_tract_count": 340,
+      "unassigned_tract_count": 94
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "method_version": "q4_amenity_hub_basket_matrix_v1",
+  "status": "pilot_artifacts_direct_not_promoted",
+  "baskets": [
+    "proximity_amenities",
+    "errands_essentials",
+    "employment_places"
+  ],
+  "candidates": [
+    "grid_250m_min_20",
+    "grid_250m_min_10",
+    "grid_500m_min_60"
+  ],
+  "hub_count": 1591,
+  "membership_count": 73958
+}

@@ -27,6 +27,7 @@ on.exit(DBI::dbDisconnect(con, shutdown = TRUE), add = TRUE)
 lodes_default_year <- 2023L
 lodes_default_version <- "LODES8"
 lodes_default_job_type <- "JT02"
+lodes_all_jobs_type <- "JT00"
 lodes_default_segment <- "S000"
 lodes_state_scopes_default <- c(tolower(state.abb), "dc")
 
@@ -469,8 +470,30 @@ collect_lodes_type_staging <- function(
 }
 
 # 3. Download, validate, aggregate, and bind the approved state files ----
-lodes_wac_staging <- collect_lodes_type_staging("wac")
-lodes_rac_staging <- collect_lodes_type_staging("rac")
+# The existing wide tables remain private-sector (`JT02`) surfaces.  We add
+# only the all-jobs headline total from `JT00`, rather than duplicating every
+# demographic and industry field under a second ownership universe.
+attach_all_jobs_total <- function(private_df, all_jobs_df) {
+  all_jobs_total <- all_jobs_df %>%
+    dplyr::select(
+      .data$tract_geoid,
+      .data$year,
+      C000_all = .data$C000,
+      source_file_all = .data$source_file,
+      source_createdate_all = .data$source_createdate
+    )
+
+  private_df %>%
+    dplyr::left_join(all_jobs_total, by = c("tract_geoid", "year"))
+}
+
+lodes_wac_private <- collect_lodes_type_staging("wac")
+lodes_wac_all <- collect_lodes_type_staging("wac", job_type = lodes_all_jobs_type)
+lodes_rac_private <- collect_lodes_type_staging("rac")
+lodes_rac_all <- collect_lodes_type_staging("rac", job_type = lodes_all_jobs_type)
+
+lodes_wac_staging <- attach_all_jobs_total(lodes_wac_private, lodes_wac_all)
+lodes_rac_staging <- attach_all_jobs_total(lodes_rac_private, lodes_rac_all)
 
 # 4. Contract checks ----
 validate_lodes_stage <- function(df, table_name) {
@@ -511,6 +534,16 @@ validate_lodes_stage <- function(df, table_name) {
   if (nrow(total_jobs_rows) > 0) {
     stop(
       glue("{table_name} contains {nrow(total_jobs_rows)} rows with missing or negative C000 totals."),
+      call. = FALSE
+    )
+  }
+
+  missing_all_jobs_rows <- df %>%
+    dplyr::filter(is.na(.data$C000_all) | .data$C000_all < 0)
+
+  if (nrow(missing_all_jobs_rows) > 0) {
+    stop(
+      glue("{table_name} contains {nrow(missing_all_jobs_rows)} missing or negative JT00 totals."),
       call. = FALSE
     )
   }

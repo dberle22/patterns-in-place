@@ -39,7 +39,11 @@ columns:
     needs_confirmation: no
   - name: jobs_total
     type: DOUBLE
-    definition: Total jobs in the geography-year row from LODES WAC.
+    definition: Total private-sector jobs in the geography-year row from LODES WAC JT02.
+    needs_confirmation: no
+  - name: jobs_all_total
+    type: DOUBLE
+    definition: Total all-job count in the geography-year row from LODES WAC JT00; detailed composition fields remain JT02.
     needs_confirmation: no
   - name: jobs_age_29_or_younger
     type: DOUBLE

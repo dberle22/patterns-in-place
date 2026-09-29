@@ -27,7 +27,11 @@ The main Phase 7 implementation choices are now locked:
 - **Skip GMM by default at tract scale:** Sprint 2 now treats GMM as optional because the full-tract pass is expensive and lower-value analytically than the hard labels, centroids, and percentile outputs at this grain.
 - **Use the final decision-point zone names in the tract output:** The canonical `zone_type` labels are now `Entry-Market Neighborhoods`, `Emerging Knowledge Districts`, `Knowledge Corridor`, `Established Residential`, `Mixed-Income Middle Neighborhoods`, `Working Neighborhoods`, and `Commercial Core / Jobs Center`.
 - **Roll ZCTAs from tract composition, not a separate model:** The ZCTA layer is a population-weighted summary of tract assignments using `silver.xwalk_zcta_tract`, with a `Mixed Zone` label when no single tract type exceeds `50%` of the weighted population mix.
-- **Keep DBSCAN corridor work optional:** Market-level corridor detection remains a Deep Dive workflow, not part of the canonical tract or ZCTA marts.
+- **Keep corridor work outside Phase 7:** DBSCAN remains proposal evidence, not
+  part of the canonical tract or ZCTA marts. The active Corridor Intelligence
+  spec combines same-zone cores with governed Geography, Infrastructure,
+  aggregate POI evidence, and conservative bridges, then classifies corridor
+  versus district form.
 
 ## Method Overview
 

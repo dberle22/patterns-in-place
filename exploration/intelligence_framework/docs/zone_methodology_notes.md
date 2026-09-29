@@ -1,8 +1,17 @@
 # Zone Methodology Notes
 
-*Last updated: 2026-07-01*
+*Last updated: 2026-09-08*
 
-This document is the canonical methodology reference for Phase 7: the Zone Methodology. It captures the design decisions, data architecture, algorithmic choices, and literature anchors that govern how Patterns in Place classifies sub-metro areas into zone types and corridors.
+This document is the canonical methodology reference for Phase 7: the Zone Methodology. It captures the design decisions, data architecture, algorithmic choices, and literature anchors that govern how Patterns in Place classifies sub-metro areas into zone types.
+
+**Corridor ownership update (`2026-09-08`):** The Stage 2 DBSCAN material below
+is retained as starting evidence, not a locked method. Current planning lives
+in `metro-deep-dive-program/engines/corridor_intelligence/`. The active contract
+uses same-zone cores, governed Geography and Infrastructure, aggregate POI
+composition, and conservative bridge tracts, then classifies candidates as
+corridors or districts. It uses a shared versioned market method with
+deterministic engine-owned IDs; opportunity selection and editorial names
+remain downstream.
 
 ---
 
@@ -12,7 +21,7 @@ Phase 7 produces two complementary analytical products from a single tract-level
 
 1. **National zone types** — a consistent label set assigned to every tract in the current full tract base carried by the Phase 7 Gold build, with CBSA context attached through the tract-to-county-to-CBSA crosswalk. Labels mean the same thing everywhere. A "Knowledge Corridor" tract in Jacksonville is directly comparable to a "Knowledge Corridor" tract in Richmond VA or Chicago. This is the primary output and the foundation for cross-market Deep Dive comparisons.
 
-2. **Per-market corridor detection** — within each Deep Dive market, adjacent or near-adjacent tracts sharing the same zone type are grouped into named corridors. Corridors are a secondary visual layer for Deep Dive maps and narrative. They do not define the zone type; they identify where clusters of same-type tracts are geographically concentrated within a specific market.
+2. **Per-market corridor proposal evidence** — the original design grouped adjacent or near-adjacent tracts sharing the same zone type. The separate Corridor Intelligence Engine now owns method selection, Infrastructure and aggregate POI evidence, bridge membership, corridor/district form, IDs, and QA; the DBSCAN details below remain a challenger design for Jacksonville calibration and Richmond validation.
 
 A third derivative layer exists for presentation only:
 
@@ -39,7 +48,7 @@ A third derivative layer exists for presentation only:
 - `zone_type_prob_k1 … zone_type_prob_kN` — GMM soft membership probabilities
 - Full KPI vector (standardized) retained for interpretation
 
-### Stage 2 — Per-market corridor detection (DBSCAN)
+### Stage 2 — Original per-market DBSCAN proposal
 
 **Grain:** One row per tract, filtered to a single CBSA. Run independently for each Deep Dive market.
 

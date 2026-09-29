@@ -1,6 +1,6 @@
 # Phase 7 — Zone Methodology: Sprint Plan
 
-*Last updated: 2026-07-01*
+*Last updated: 2026-09-08*
 
 Full methodology reference: `exploration/intelligence_framework/docs/zone_methodology_notes.md`
 
@@ -13,9 +13,14 @@ Phase 7 builds the sub-metro zone classification system. It produces:
 1. **National zone types** — every tract in the current full tract base gets a nationally consistent label
 2. **Tract intelligence mart promotion** — the canonical tract output is materialized to `mart_intelligence.intelligence_zones`
 3. **ZCTA rollup** — tract labels are rolled up to ZCTAs for presentation and downstream lookup use
-4. **Optional deep-dive corridor workflow** — per-market DBSCAN corridor detection remains available for true market deep dives, but it is no longer a Phase 7 completion gate
+4. **Optional deep-dive corridor evidence** — the former per-market DBSCAN proposal is retained as starting evidence for the separate Corridor Intelligence Engine; it is not a Phase 7 completion gate or a locked solution
 
-Sprint 0 through Sprint 4 are now complete for the canonical Phase 7 deliverable. The tract and ZCTA zone surfaces are both materialized in `mart_intelligence`, while DBSCAN corridor work remains optional for true Deep Dive markets.
+Sprint 0 through Sprint 4 are now complete for the canonical Phase 7 deliverable. The tract and ZCTA zone surfaces are both materialized in `mart_intelligence`; corridor implementation now belongs to the separate Corridor Intelligence Engine, with this plan's DBSCAN work retained as proposal evidence.
+
+The active engine design is documented in
+`metro-deep-dive-program/engines/corridor_intelligence/`. It uses same-zone
+cores plus governed Geography, Infrastructure, aggregate POI composition, and
+conservative bridge rules, and distinguishes corridors from districts.
 
 ---
 
@@ -200,9 +205,19 @@ Review the four published frameworks and document alignment/divergence:
 
 ## Sprint 3 — Optional Deep Dive Validation Workflow
 
-**Status:** Optional / not required for Phase 7 closeout  
+**Status:** Superseded as the implementation home; retained as proposal evidence
 **Depends on:** Sprint 2 (national model complete and labeled)  
 **Goal:** Provide a reusable market-level validation workflow for true Deep Dive work. This sprint is intentionally decoupled from the Phase 7 tract and ZCTA deliverables.
+
+**Ownership handoff (`2026-09-08`):** Implementation planning now lives in
+`metro-deep-dive-program/engines/corridor_intelligence/`. The shared method
+uses same-zone cores within one CBSA, may admit conservative and explicit
+bridge tracts, and can use governed Infrastructure and aggregate POI evidence.
+It distinguishes corridor and district form, allows candidates to cross county
+lines, and exposes any early-market parameter tuning. The DBSCAN formula,
+county/type/rank name, and per-market calibration below are historical proposal
+details to test, not instructions to implement unchanged. Systematic IDs are
+engine-owned; editorial names and opportunity selection remain downstream.
 
 ### 3.1 — Deep Dive corridor runner
 

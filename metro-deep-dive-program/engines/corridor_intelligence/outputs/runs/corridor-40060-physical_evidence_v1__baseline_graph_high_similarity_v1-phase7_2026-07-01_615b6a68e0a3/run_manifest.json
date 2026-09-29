@@ -1,0 +1,35 @@
+{
+  "cbsa_code": "40060",
+  "geometry_role": "legacy_cartographic_tract_geometry_v1",
+  "geometry_vintage_status": "unknown_legacy_vintage",
+  "infrastructure_source_run_id": "osm-infrastructure-40060-snapshot-2026-07-29-ea3dc9b69040",
+  "market": "richmond_va",
+  "method_version": "corridor_physical_evidence_v1",
+  "parameter_profile": "physical_evidence_v1__baseline_graph_high_similarity_v1",
+  "phase7_build_id": "phase7_2026-07-01_615b6a68e0a3",
+  "poi_source_run_id": "overture-places-40060-2026-08-19-0-20260908T110747Z",
+  "publication_status": "epic_3_review_artifact_not_duckdb_published",
+  "run_id": "corridor-40060-physical_evidence_v1__baseline_graph_high_similarity_v1-phase7_2026-07-01_615b6a68e0a3",
+  "tract_accounting": {
+    "bounded_nearby": {
+      "core_tract_count": 253,
+      "input_tract_count": 332,
+      "unassigned_tract_count": 79
+    },
+    "dbscan_challenger": {
+      "core_tract_count": 40,
+      "input_tract_count": 332,
+      "unassigned_tract_count": 292
+    },
+    "physical_evidence": {
+      "core_tract_count": 258,
+      "input_tract_count": 332,
+      "unassigned_tract_count": 57
+    },
+    "strict_adjacency": {
+      "core_tract_count": 253,
+      "input_tract_count": 332,
+      "unassigned_tract_count": 79
+    }
+  }
+}

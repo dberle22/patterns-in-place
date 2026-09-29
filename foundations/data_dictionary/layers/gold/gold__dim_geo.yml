@@ -180,9 +180,10 @@ lineage:
   build_asset: etl/gold/gold_dim_geo.sql
 notes:
   - This is a serving-layer dimension table, not a time-series fact table.
-  - Place and zcta are intentionally excluded from the first release until dedicated parent crosswalks are added.
+  - Place and ZCTA identities are governed in `silver.dim_geo` and exposed through `mart_geography`; they intentionally do not extend this backward-compatible Gold serving table.
+  - USPS ZIP is not a `dim_geo` level. ZIP-keyed source data uses versioned HUD-USPS allocation tables and must select an address-ratio basis.
   - primary_city_name is reserved in the schema for future enrichment but is null in the first release.
   - USDA ERS classification fields are populated only on county rows; CBSA rollups are intentionally deferred to a future explicit Gold transform.
 backlog:
-  - Add a canonical place-to-county and place-to-state crosswalk, then extend gold.dim_geo with place rows.
-  - Add a canonical zcta hierarchy strategy, likely via weighted zcta-to-county and zcta-to-cbsa rollups, before extending gold.dim_geo with zcta rows.
+  - Migrate a named downstream consumer from `gold.dim_geo` to `mart_geography.identity_current` when it needs Place or ZCTA identities.
+  - Materialize scoped display geometry only for a named map consumer; do not add Place/ZCTA rows to Gold solely to support geometry.

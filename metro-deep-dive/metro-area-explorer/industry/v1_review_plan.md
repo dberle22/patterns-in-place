@@ -1,8 +1,18 @@
 # Industry Explorer — v1 Review Fix Plan
 
-**Last updated:** 2026-08-09
+**Last updated:** 2026-08-22
 **Scope:** Remediation plan following the first full walkthrough of the Industry section explorer (D1–D6), Richmond as spotlight market
 **Primary goal:** Give an agent a concrete execution plan to close the v1 review findings without re-deriving the review from chat history
+
+## Current status snapshot
+
+As of Saturday, August 22, 2026, the live Streamlit workbook is effectively a five-deliverable `v1` workbench:
+
+- Complete in the live workbook: Phase 0 archive, Phase 1 correctness pass, Phase 2 reading blockers, Richmond-only Phase 3 tract legibility fix, Phase 5 workbench instruments
+- Structurally complete but intentionally de-scoped from the workbook: Phase 4 D6 shell removal
+- Still open: Phase 6 final validation / visual QA / spec closeout, plus any longer-term follow-on work that was explicitly deferred
+
+This means the next practical work is review and closeout, not another major feature build.
 
 ## Phase 0 — Baseline archive
 

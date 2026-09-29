@@ -1,0 +1,27 @@
+# Logical DuckDB products for the first release. Field names are fixed before
+# grouping implementation so downstream code can depend on a narrow interface.
+schema: mart_corridor_intelligence
+interface_version: corridor_duckdb_v1
+tables:
+  corridor_run:
+    grain: one market x input set x method version
+    primary_key: run_id
+    required_fields: [run_id, cbsa_code, phase7_build_id, tract_geometry_vintage, tract_geometry_role, infrastructure_source_run_id, infrastructure_mapping_version, poi_source_run_id, poi_mapping_version, method_version, parameter_profile, code_version, created_at, input_tract_count, core_tract_count, bridge_tract_count, unassigned_tract_count, excluded_tract_count]
+  structural_membership:
+    grain: one Phase 7 tract x run x method variant
+    primary_key: [run_id, method_variant, tract_geoid]
+    required_fields: [run_id, method_variant, tract_geoid, cbsa_code, original_zone_type, membership_status, candidate_id, membership_stage, exclusion_reason, evidence_summary]
+  structural_candidate:
+    grain: one structural candidate x run x method variant
+    primary_key: [run_id, method_variant, candidate_id]
+    required_fields: [run_id, method_variant, candidate_id, cbsa_code, primary_zone_type, candidate_form, core_tract_count, bridge_tract_count, total_tract_count, coherence_status]
+  structural_edge_evidence:
+    grain: one evaluated undirected tract relationship x run x method variant
+    primary_key: [run_id, method_variant, tract_geoid_low, tract_geoid_high]
+    required_fields: [run_id, method_variant, tract_geoid_low, tract_geoid_high, geographic_relation, phase7_similarity, same_zone_baseline_decision, infrastructure_evidence, poi_evidence, final_decision, decision_stage]
+invariants:
+  - structural_membership has one row for every eligible or excluded Phase 7 tract in its run
+  - membership_status is core, bridge, unassigned, or excluded
+  - a core member original_zone_type equals its candidate primary_zone_type
+  - a bridge member has explicit edge evidence and never changes original_zone_type
+  - candidate_id is derived from cbsa_code, primary_zone_type, and sorted member tract_geoids

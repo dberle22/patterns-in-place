@@ -1,6 +1,6 @@
 WITH target_zctas AS (
   SELECT DISTINCT zip_geoid AS geo_id
-  FROM metro_deep_dive.silver.xwalk_zcta_cbsa
+  FROM metro_deep_dive.silver.xwalk_zip_cbsa
   WHERE cbsa_geoid = '48900'
 ),
 endpoints AS (

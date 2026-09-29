@@ -8,7 +8,7 @@
 
 ## Contract Summary
 - Materialized table: `lehd_lodes_rac`
-- Current first-pass scope: latest-year `LODES8` RAC, `JT02` all-private jobs, `S000` total segment
+- Current first-pass scope: `JT02` private-worker wide payload plus `JT00` all-job headline total from latest-year `LODES8` RAC.
 - Grain: one row per `tract_geoid + year`
 - Common key columns used across the table: `state`, `state_fips`, `county_geoid`, `cbsa_code`, `tract_geoid`, `year`, `lodes_type`, `job_type`, `segment`
 - Current managed time coverage: one annual snapshot; current expected first managed year is `2023`
@@ -32,6 +32,7 @@
 - Time and source slices: `year`, `lodes_type`, `job_type`, `segment`
 - Provenance: `release_vintage`, `release_format_version`, `source_createdate`, `xwalk_createdate`, `source_file`
 - Core worker totals: `C000`
+- All-job headline total: `C000_all` (`JT00`); detailed fields remain `JT02`
 - Worker age bands: `CA01`, `CA02`, `CA03`
 - Worker earnings bands: `CE01`, `CE02`, `CE03`
 - Broad industry sectors: `CNS01` through `CNS20`

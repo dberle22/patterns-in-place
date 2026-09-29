@@ -76,6 +76,9 @@ This lets downstream logic answer prompts like “metros” without inferring fr
 
 - Add `place` rows once a canonical place-to-county and place-to-state crosswalk is added to the repo.
 - Add `zcta` rows after we decide the canonical weighted hierarchy strategy for zcta-to-county and zcta-to-cbsa relationships.
-- Decide whether multi-state CBSAs should also expose a deterministic “primary state” separate from the current single-state-only logic.
+- CBSA `state_fips`, `state_name`, and `state_abbr` use the first state suffix
+  in the official CBSA name as a deterministic primary state for multi-state
+  CBSAs (for example, `WV` for Wheeling, WV-OH). The full multi-state footprint
+  remains represented by `state_count` and the county-to-CBSA crosswalk.
 - USDA ERS classifications are intentionally county-only in `gold.dim_geo`; any future CBSA summaries should be derived separately in Gold from county rows with explicit common-backbone-only rollup rules.
 - Consider promoting this table into broader semantic-layer support for chatbot planning and dashboard filtering.

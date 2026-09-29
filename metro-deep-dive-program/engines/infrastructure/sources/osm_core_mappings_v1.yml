@@ -1,0 +1,45 @@
+# Initial, deliberately narrow OSM mapping for the Infrastructure Engine.
+# Rules act on source fields retained in the Epic 2 cache; `source_tags` stays
+# beside every output so these choices remain reviewable.
+mapping_version: osm_core_v1
+rules:
+  - rule_id: osm_highway_core_v1
+    source_group: road
+    source_types: [motorway, motorway_link, trunk, trunk_link, primary, primary_link, secondary, secondary_link, tertiary, tertiary_link]
+    source_layer: lines
+    feature_group: road
+    feature_form: linear
+    review_status: approved_core
+    evidence: "OSM highway is one of the declared core road classes"
+  - rule_id: osm_rail_core_v1
+    source_group: rail
+    source_types: [rail, light_rail, subway]
+    source_layer: lines
+    feature_group: rail
+    feature_form: linear
+    review_status: approved_core
+    evidence: "OSM railway is one of the declared core rail classes"
+  - rule_id: osm_water_river_line_v1
+    source_group: water_network
+    source_types: [river]
+    source_layer: lines
+    feature_group: water_network
+    feature_form: linear
+    review_status: approved_core
+    evidence: "OSM waterway=river"
+  - rule_id: osm_water_canal_line_v1
+    source_group: water_network
+    source_types: [canal]
+    source_layer: lines
+    feature_group: water_network
+    feature_form: linear
+    review_status: approved_core
+    evidence: "OSM waterway=canal"
+  - rule_id: osm_water_river_surface_v1
+    source_group: water_network
+    source_types: [river]
+    source_layer: multipolygons
+    feature_group: water_network
+    feature_form: surface
+    review_status: approved_core
+    evidence: "OSM natural=water and water=river, or waterway=riverbank"

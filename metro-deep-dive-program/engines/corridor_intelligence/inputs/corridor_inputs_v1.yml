@@ -1,0 +1,123 @@
+# Executable input declaration for the first Corridor Intelligence build.
+# This is intentionally a preflight contract: it names every input and rejects
+# legacy geometry rather than letting a grouping run infer a substitute.
+interface_version: corridor_inputs_v1
+phase7:
+  relation: mart_intelligence.intelligence_zones
+  build_id: phase7_2026-07-01_615b6a68e0a3
+  source_artifact: exploration/intelligence_framework/phase_7_zone_methodology/outputs/zone_scores.parquet
+  source_sha256: 615b6a68e0a3149952012f6f08e118f9405944742a04266a315b5afbd5e5feeb
+  tract_universe: 2020 Census tracts
+  required_fields:
+    - tract_geoid
+    - cbsa_code
+    - cbsa_name
+    - county_geoid
+    - county_name
+    - zone_type
+    - zone_kmeans_cluster
+    - zone_type_name_status
+    - selected_k_for_run
+    - character_score
+    - livability_score
+    - opportunity_score
+    - composite_score
+    - cbsa_character_percentile
+    - cbsa_livability_percentile
+    - cbsa_opportunity_percentile
+    - cbsa_composite_percentile
+  similarity_fields:
+    - character_score
+    - livability_score
+    - opportunity_score
+    - composite_score
+geometry:
+  owner: Geography Engine
+  source_relation: geo.tracts_all_us
+  geometry_role: legacy_cartographic_tract_geometry_v1
+  geometry_vintage_status: unknown_legacy_vintage
+  geo_level: tract
+  cbsa_boundary_vintage: 2023
+  required_fields:
+    - tract_geoid
+    - geom
+    - aland_m2
+  acceptance_rule: >-
+    Every Phase 7 tract represented in the selected CBSA must have exactly one
+    non-null geometry in the declared source relation. The relation and its
+    legacy-vintage status are run provenance, not inferred metadata.
+  future_promotion: >-
+    Geography may later replace this declared input with a registered analytical
+    tract product after an unchanged consumer migration. That is not a blocker
+    for the first Corridor Intelligence build.
+infrastructure:
+  owner: Infrastructure Engine
+  required_geometry_role: legacy_cartographic_tract_geometry_v1
+  required_mapping_version: osm_core_v1
+  allowed_features:
+    - feature_group: road
+      feature_types: [motorway, motorway_link, trunk, trunk_link, primary, primary_link]
+      corridor_role: spine_or_connector_candidate
+      rule: >-
+        May strengthen an already plausible same-zone relationship when a
+        declared shared alignment or connected sequence is present. Link types
+        inherit their parent-road role and are never an independent spine.
+    - feature_group: rail
+      feature_types: [rail, light_rail, subway]
+      corridor_role: separation_candidate
+      rule: >-
+        May weaken a relationship only through an explicit crossing or
+        separation test; rail is not a universal barrier.
+    - feature_group: water_network
+      feature_types: [river, canal]
+      corridor_role: separation_or_anchor_candidate
+      rule: >-
+        May weaken a relationship at an unbridged division or strengthen a
+        named waterfront alignment; water is not a universal barrier.
+  ignored_until_versioned: [secondary, tertiary, airport, port, warehouse, industrial_footprint, water_surface]
+poi:
+  owner: POI Engine
+  required_geometry_role: legacy_cartographic_tract_geometry_v1
+  required_mapping_version: q4_overture_v1
+  eligible_categories: [grocery, pharmacy, hospital, school, university]
+  aggregate_features: [tract_count, tract_area_rate, category_composition_share]
+  minimum_coverage:
+    tract_assignment: all retained, valid eligible-category records are assigned to a governed tract
+    mapping: every eligible category has a mapped, reviewed rule in the declared mapping version
+    denominator: tract_area_rate is unavailable unless analytical tract area is declared from the governed geometry
+    sensitivity: every POI-informed run publishes an otherwise-identical no-POI result
+  prohibited_uses:
+    - individual_poi_membership_decisions
+    - poi_only_connections
+    - poi_only_bridge_justification
+markets:
+  jacksonville_fl:
+    cbsa_code: "27260"
+    cbsa_name: Jacksonville, FL
+    expected_phase7_tracts: 340
+    tract_geometry_status: verified_existing_geometry
+    infrastructure:
+      source_run_id: osm-infrastructure-27260-snapshot-2026-08-01-0fc0cea5c456
+      mapping_version: osm_core_v1
+      feature_artifact: metro-deep-dive-program/engines/infrastructure/outputs/jacksonville_fl/osm-infrastructure-27260-snapshot-2026-08-01-0fc0cea5c456/validated/osm_core_v1/infrastructure_feature.parquet
+      validation_manifest: metro-deep-dive-program/engines/infrastructure/outputs/jacksonville_fl/osm-infrastructure-27260-snapshot-2026-08-01-0fc0cea5c456/validated/osm_core_v1/validation_manifest.json
+    poi:
+      source_run_id: overture-places-27260-2026-08-19-0-20260909T093431Z
+      mapping_version: q4_overture_v1
+      classified_artifact: metro-deep-dive-program/engines/poi/outputs/jacksonville_fl/overture-places-27260-2026-08-19-0-20260909T093431Z/classified/poi_classified_place.parquet
+      tract_assignment_artifact: metro-deep-dive-program/engines/poi/outputs/jacksonville_fl/overture-places-27260-2026-08-19-0-20260909T093431Z/geography/poi_geography_assignment.parquet
+  richmond_va:
+    cbsa_code: "40060"
+    cbsa_name: Richmond, VA
+    expected_phase7_tracts: 332
+    tract_geometry_status: verified_existing_geometry
+    infrastructure:
+      source_run_id: osm-infrastructure-40060-snapshot-2026-07-29-ea3dc9b69040
+      mapping_version: osm_core_v1
+      feature_artifact: metro-deep-dive-program/engines/infrastructure/outputs/richmond_va/osm-infrastructure-40060-snapshot-2026-07-29-ea3dc9b69040/validated/osm_core_v1/infrastructure_feature.parquet
+      validation_manifest: metro-deep-dive-program/engines/infrastructure/outputs/richmond_va/osm-infrastructure-40060-snapshot-2026-07-29-ea3dc9b69040/validated/osm_core_v1/validation_manifest.json
+    poi:
+      source_run_id: overture-places-40060-2026-08-19-0-20260908T110747Z
+      mapping_version: q4_overture_v1
+      classified_artifact: metro-deep-dive-program/engines/poi/outputs/richmond_va/overture-places-40060-2026-08-19-0-20260908T110747Z/classified/poi_classified_place.parquet
+      tract_assignment_artifact: metro-deep-dive-program/engines/poi/outputs/richmond_va/overture-places-40060-2026-08-19-0-20260908T110747Z/geography/poi_geography_assignment.parquet

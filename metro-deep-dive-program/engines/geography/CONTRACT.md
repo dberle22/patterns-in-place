@@ -1,0 +1,185 @@
+# Geography Engine Contract
+
+Status: Epics 2–7 and the Regional Role regional-lens interface are implemented.
+The existing national tract, county, and CBSA cartographic products are approved
+as read-only display geometry. Full TIGER/Line state and CBSA geometry is now
+materialized narrowly for the declared Regional Role relationships.
+
+## Governing decisions
+
+- `silver.dim_geo` is the future vintaged identity authority. Its key is
+  (`geo_level`, `geo_id`, `boundary_vintage`); `data_year` and
+  `source_release_year` are distinct fields.
+- `gold.dim_geo` remains the backward-compatible, current-only serving
+  dimension. It is not the historical identity authority.
+- Exact containment, weighted allocation, and temporal harmonization are
+  separate table types and separate query operations.
+- `zip` and `zcta` are distinct levels. The existing `xwalk_zcta_*` tables are
+  HUD-USPS ZIP crosswalks and will become `xwalk_zip_*`; compatibility views
+  retain their old names during migration.
+- ZCTA-native data, including ACS, joins to the Census ZCTA identity directly.
+  USPS ZIP is retained only as a versioned source-identifier bridge through
+  HUD-USPS allocation tables; it is not a `dim_geo` identity or geometry.
+- Census 2020 PL 94-171 plus block assignment files are the block-registry
+  authority. LODES is reconciliation-only.
+
+## Existing warehouse baseline
+
+The inspected DuckDB baseline has the following nationwide current coverage:
+
+| Surface | Rows | Status |
+|---|---:|---|
+| `gold.dim_geo` | 88,356 | Current-only IDs for US, region, division, state, CBSA, county, and tract |
+| `silver.xwalk_tract_county` | 84,121 | Exact current tract-to-county; TIGRIS 2023 |
+| `silver.xwalk_county_state` | 3,235 | Exact current county-to-state; TIGRIS 2023 |
+| `silver.xwalk_cbsa_county` | 1,915 | Exact-subset county-to-CBSA; OMB 2023 |
+| `silver.xwalk_zcta_*` | 291,494 | HUD-USPS ZIP allocations, vintage 2025 Q1; misnamed |
+| `geo.tracts_all_us` | 84,119 | Approved read-only tract display geometry; Census cartographic boundary source year 2024 |
+| `geo.counties` | 3,235 | Approved read-only county display geometry; Census cartographic boundary source year 2024 |
+| `geo.cbsas` | 935 | Approved read-only CBSA display geometry; Census cartographic boundary source year 2024 |
+| `geo.states` | 56 | Retained legacy cartographic geometry; not part of this approval |
+
+The baseline lacked `silver.block_registry`, `silver.dim_geo`, typed crosswalk
+tables, a `mart_geography` schema, Place/ZCTA geometry, and analytical
+TIGER/Line geometry. Identity, containment, allocation, temporal, and mart
+surfaces are now materialized. Place display geometry remains on-demand;
+`geo.places_analysis` is the national analytical product for named spatial
+consumers, with bounded state scopes retained for refresh and validation.
+
+## Locked future managed surfaces
+
+| Surface | Grain / rule |
+|---|---|
+| `silver.dim_geo` | (`geo_level`, `geo_id`, `boundary_vintage`) identity history |
+| `silver.block_registry` | (`block_geoid`, `boundary_vintage`), no block geometry |
+| `silver.xwalk_containment` | Child-to-parent exact edges; no weight column |
+| `silver.xwalk_allocation` | One row per source, target, basis, and vintage; weight plus denominator and quality |
+| `silver.xwalk_temporal` | Historical-to-current edges with basis, weight, and change type |
+| `silver.xwalk_place_membership` | Place-to-County/CBSA weighted membership, with both Place and target shares |
+| `silver.place_primary_cbsa_association` | Population-share primary-CBSA selection label; never containment |
+| `silver.xwalk_zip_{tract,county,cbsa}` | Versioned HUD-USPS ZIP allocations; temporary `xwalk_zcta_*` compatibility views |
+| `geo.<level>_analysis` | Full TIGER/Line geometry, keyed by level, ID, and boundary vintage |
+| `geo.<level>_display` | Census cartographic display geometry, keyed identically |
+| `mart_geography.*` | Read-only current/vintaged identity, relationship, geometry-catalog, and audit views |
+| `mart_geography.state_adjacency` | Symmetric state-to-state land-border edges at the recorded boundary vintage |
+| `mart_geography.cbsa_centroids` | One declared equal-area geometric centroid per CBSA and boundary vintage |
+| `mart_geography.region_lens_membership` | Target metro CBSA × declared lens × parameter × member metro CBSA |
+
+## Source and vintage contract
+
+| Need | Authority | Locked treatment |
+|---|---|---|
+| Current tract/counties | Census 2020 tabulation geography | Current production tract backbone is 2020; 2023 current crosswalk is a migration input only |
+| Block memberships and weights | 2020 PL 94-171 + Place BAF + ZCTA/block relationship | Ingest state by state: PL population/housing records plus Place BAF assignments. The national Census ZCTA-to-block relationship file supplies complete 2020 ZCTA membership. Do not ingest block polygons. |
+| 2010→2020 tract harmonization | Census block relationship files | Derive population/HU allocation by carrying decennial block counts through block intersections; use relationship-file intersection land area for land basis. |
+| CBSA current boundary | OMB Bulletin 23-01 (July 2023) | Store every bulletin as its own vintage. A later approved bulletin adds rows and changes the mart's `is_current` selection; it never overwrites history. |
+| ZIP allocation | HUD-USPS quarterly files | Preserve release quarter, address-ratio basis, source denominator where published, and `99999` non-CBSA handling. |
+| Display geometry | Census cartographic boundary | Use 1:500,000 as the default tract-map display product; permit 1:5,000,000 only for nationwide overview maps. |
+
+The national 2020 tract relationship file is approximately 18 MB, but block
+inputs are state-based and substantially larger. Download, stage, validate, and
+materialize one state at a time; DuckDB writes remain sequential.
+
+## Geometry build policy
+
+### Approved current display products
+
+`geo.tracts_all_us`, `geo.counties`, and `geo.cbsas` are approved existing
+products for market-analysis consumers that need read-only map display geometry
+or a scoped geometry export. They were produced from the 2024 Census
+cartographic-boundary files through `tigris` with `cb = TRUE`. Their stable
+join keys are respectively `tract_geoid` (11-digit Census tract GEOID),
+`county_geoid` (5-digit county GEOID), and `cbsa_code` (5-digit CBSA code).
+Use those keys to join a metric or `mart_geography.identity_current`; do not
+join on names.
+
+The approval is deliberately narrow. These products are display geometry, not
+an analytical-boundary authority: do not use them for point containment,
+intersections or allocation weights, area or distance calculations, or to
+establish historical boundary equivalence. Their 2024 cartographic source
+vintage is recorded in `mart_geography.geometry_catalog`, while the tables
+themselves remain unchanged and read-only. A consumer that requires those
+operations needs a role-tagged `geo.<level>_analysis` product. No separate
+geometry materialization is required for the approved display use.
+
+### Regional Role analytical geometry and lenses
+
+`geo.states_analysis` and `geo.cbsas_analysis` are full 2023 Census TIGER/Line
+products, downloaded through `tigris` by
+`foundations/etl/geo/build_regional_lens_geography.R`. They are role-tagged
+analytical geometry and are not replacements for display layers. The build also
+publishes `state_adjacency`, `cbsa_centroids`, and `region_lens_membership`.
+
+`state_adjacency` has symmetric nonzero shared-boundary-line edges; ocean,
+Great Lake, and point-only contact do not qualify. `cbsa_centroids` stores
+equal-area (`EPSG:5070`) geometric centroids as WGS84 reference points.
+`region_lens_membership` covers `census_division`, `primary_state`,
+`primary_state_adjacent`, and `cbsa_centroid_250mi`, with 200-, 250-, and
+300-mile radius parameter rows and calculated distance. Primary state always
+comes from `gold.dim_geo.state_fips`, the first state named in the official
+CBSA label—not county count or population. All surfaces retain source,
+boundary vintage, and method version.
+
+`foundations/etl/geo/get_tiger_geos.R` is an on-demand cartographic display
+builder. It requires `GEOGRAPHY_TIGER_STATE_SCOPE`; a state-scoped run writes
+only `geo.tracts_<state>_display` with `geometry_role = 'display'` and a
+`boundary_vintage`. `ALL` additionally writes the national tract display table.
+Set `GEOGRAPHY_TIGER_REFERENCE=true` only when state, county, and CBSA display
+products are needed. It never replaces the legacy `geo.*` products and never
+creates full TIGER/Line analytical geometry.
+
+### Census Place analytical geometry
+
+`geo.places_analysis` is the governed Place spatial product. It is built by
+`foundations/etl/geo/build_places_analysis.R` from full Census TIGER/Line via
+`tigris::places(..., cb = FALSE)`, never from `geo.places_display` or block
+assignments. The build requires a comma-separated
+`GEOGRAPHY_PLACE_ANALYSIS_STATE_SCOPE` such as `VA`, or `ALL` for the national
+product. It downloads states sequentially; `ALL` writes the complete governed
+table, while a bounded scope is a declared validation or refresh footprint. The
+table records its TIGER/Line boundary vintage, source authority, WGS84
+interchange CRS (`EPSG:4326`), and measurement CRS (`EPSG:5070`).
+
+Use WGS84 geometry for interchange and transform both operands to EPSG:5070
+for area or length (for example,
+`ST_Transform(geom, 'EPSG:4326', 'EPSG:5070', true)`). `assign_point_to_place()` returns `within`, `boundary`,
+`overlap`, or `no_place`: a strict interior match is `within`; a touched
+boundary is `boundary`; more than one candidate is `overlap`; and an
+unincorporated/outside point is the valid `no_place` outcome. Invalid source
+geometry fails the build rather than being repaired or hidden. Line and polygon
+overlays return every intersecting Place and do not infer exclusive membership.
+
+The build records unique Place-key/vintage, geometry-validity, and selected
+state-coverage checks in `geo.places_analysis_qa`. When Virginia is in scope,
+it also runs Richmond point-in-polygon and line-intersection smoke checks using
+`geo.places_analysis` itself. `mart_geography.geometry_catalog` exposes this
+surface as `consumer_ready_analysis` once materialized.
+
+## Operations
+
+- The containment-first `rollup()` interface is implemented as transparent
+  `mart_geography.rollup_*` views, not a metric-aggregating function. Current
+  tract-to-CBSA output exposes both `tract_boundary_vintage = 2020` and
+  `cbsa_boundary_vintage = 2023`.
+- `rollup()` accepts declared containment edges only.
+- `allocate()` requires an explicit basis: `population`, `housing_units`, or
+  `land_area`; it carries `quality_flag`.
+- `harmonize()` restates from an older boundary vintage to the latest approved
+  target and carries `change_type`.
+- Place-to-County and Place-to-CBSA are block-derived weighted membership
+  relationships. They retain all split rows and both directions of share;
+  primary-CBSA association is a declared population-share label only.
+- `get_geometry()` requires an explicit `display` or `analysis` role; it does
+  not silently substitute an unapproved legacy product or display shape.
+- `export_geometry()` produces scoped local artifacts only.
+
+No helper may imply that a rate, median, or index is additive.
+
+## Containment-first mart
+
+The current implementation exposes `identity_current`, `identity_vintaged`,
+`exact_relationships`, exact rollup views, `zip_allocation_catalog`,
+`allocation_edges`, `temporal_edges`, allocation/identity audit views, and a
+geometry catalog in `mart_geography`. The Python relationship helpers and SQL
+examples preserve explicit basis selection. They deliberately do not aggregate
+metrics: a rate-safe consumer must reconstruct its numerator and denominator.

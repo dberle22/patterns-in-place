@@ -21,7 +21,30 @@ steps:
     depends_on:
       - seed_staging
     enabled: true
-    notes: Seed the minimal canonical geometry/reference tables from an existing DuckDB.
+    notes: Seed the canonical reference tables. geo.tracts_all_us, geo.counties, and geo.cbsas are approved read-only Census 2024 cartographic display geometry for market-analysis consumers; they are not analytical geometry.
+
+  - id: tiger_display_geometry
+    layer: geo
+    script: foundations/etl/geo/get_tiger_geos.R
+    outputs:
+      - geo.tracts_<state>_display
+      - geo.tracts_all_us_display
+      - geo.states_display
+      - geo.counties_display
+      - geo.cbsas_display
+    depends_on: []
+    enabled: false
+    notes: On-demand Census cartographic-boundary build. Requires GEOGRAPHY_TIGER_STATE_SCOPE; it does not replace the approved seeded display products or build analytical geometry.
+
+  - id: places_analysis_geometry
+    layer: geo
+    script: foundations/etl/geo/build_places_analysis.R
+    outputs:
+      - geo.places_analysis
+      - geo.places_analysis_qa
+    depends_on: []
+    enabled: false
+    notes: Full Census TIGER/Line Place analytical geometry. Requires GEOGRAPHY_PLACE_ANALYSIS_STATE_SCOPE; a bounded scope or ALL downloads states sequentially and writes one governed national table.
 
   - id: geo_crosswalks
     layer: silver
@@ -33,11 +56,137 @@ steps:
       - silver.xwalk_county_state
       - silver.xwalk_state_region
       - silver.xwalk_tract_county
-      - silver.xwalk_zcta_cbsa
-      - silver.xwalk_zcta_county
-      - silver.xwalk_zcta_tract
     depends_on:
       - seed_staging
+    enabled: true
+
+  - id: hud_usps_zip_crosswalk_staging
+    layer: staging
+    script: foundations/etl/staging/get_hud_usps_zip_crosswalk.R
+    outputs:
+      - staging.hud_usps_zip_county
+      - staging.hud_usps_zip_cbsa
+      - staging.hud_usps_zip_tract
+    depends_on:
+      - seed_staging
+    enabled: true
+
+  - id: bea_county_gdp_staging
+    layer: staging
+    script: foundations/etl/staging/get_bea_county_gdp.R
+    outputs:
+      - staging.bea_regional_county_cagdp2
+      - staging.bea_gdp_industry_price_index
+    depends_on:
+      - seed_staging
+    enabled: true
+    notes: Downloads BEA's 2026-02-05 CAGDP2 county bulk vintage through 2024 and annual national value-added price indexes for the county-first CBSA GDP calculation.
+
+  - id: hud_fmr_history_staging
+    layer: staging
+    script: foundations/etl/staging/get_hud_fmr_history.R
+    outputs:
+      - staging.hud_fmr_county
+    depends_on:
+      - seed_staging
+    enabled: true
+    notes: Normalizes HUD's FMR history file for FY2012–FY2027; periods are fiscal years and county-subdivision repeats are checked before county materialization.
+
+  - id: zip_crosswalks
+    layer: silver
+    script: foundations/etl/silver/zip_crosswalks_silver.R
+    outputs:
+      - silver.xwalk_zip_county
+      - silver.xwalk_zip_cbsa
+      - silver.xwalk_zip_tract
+      - silver.xwalk_zcta_county
+      - silver.xwalk_zcta_cbsa
+      - silver.xwalk_zcta_tract
+    depends_on:
+      - hud_usps_zip_crosswalk_staging
+    enabled: true
+
+  - id: census_2020_block_registry_staging
+    layer: staging
+    script: foundations/etl/staging/get_census_2020_block_registry.R
+    outputs:
+      - staging.census_pl2020_blocks
+    depends_on:
+      - seed_staging
+    enabled: true
+    notes: National state-sequential Census PL 94-171 and Place-assignment build.
+
+  - id: census_2020_zcta_block_relationship
+    layer: staging
+    script: foundations/etl/staging/get_census_2020_zcta_block_relationship.R
+    outputs:
+      - staging.census_zcta_block_2020
+    depends_on:
+      - census_2020_block_registry_staging
+    enabled: true
+    notes: National Census relationship file that supplies complete ZCTA membership.
+
+  - id: census_2010_2020_block_relationship
+    layer: staging
+    script: foundations/etl/staging/get_census_2010_2020_block_relationship.R
+    outputs:
+      - staging.census_pl2010_blocks
+      - staging.census_block_relationship_2010_2020
+      - staging.census_tract_relationship_2010_2020
+    depends_on: []
+    enabled: true
+    notes: State-sequential 2010 PL block counts and Census temporal relationship inputs.
+
+  - id: geography_foundation
+    layer: silver
+    script: foundations/etl/silver/geography_foundation_silver.R
+    outputs:
+      - silver.block_registry
+      - silver.dim_geo
+      - silver.xwalk_containment
+      - silver.geography_coverage_audit
+    depends_on:
+      - census_2020_block_registry_staging
+      - census_2020_zcta_block_relationship
+      - census_2010_2020_block_relationship
+      - geo_crosswalks
+    enabled: true
+
+  - id: geography_allocations
+    layer: silver
+    script: foundations/etl/silver/geography_allocations_silver.R
+    outputs:
+      - silver.xwalk_allocation
+      - silver.xwalk_temporal
+      - silver.geography_allocation_audit
+      - silver.xwalk_place_membership
+      - silver.place_primary_cbsa_association
+      - silver.geography_place_membership_audit
+    depends_on:
+      - geography_foundation
+      - census_2010_2020_block_relationship
+    enabled: true
+
+  - id: mart_geography_containment
+    layer: mart
+    script: foundations/etl/mart_geography/mart_geography_containment.sql
+    outputs:
+      - mart_geography.identity_current
+      - mart_geography.identity_vintaged
+      - mart_geography.exact_relationships
+      - mart_geography.rollup_tract_to_county
+      - mart_geography.rollup_county_to_cbsa
+      - mart_geography.rollup_tract_to_cbsa
+      - mart_geography.zip_allocation_catalog
+      - mart_geography.coverage_audit
+      - mart_geography.allocation_edges
+      - mart_geography.temporal_edges
+      - mart_geography.allocation_coverage_audit
+      - mart_geography.geometry_catalog
+    depends_on:
+      - geography_foundation
+      - geography_allocations
+      - zip_crosswalks
     enabled: true
 
   - id: opportunity_zones_staging
@@ -131,6 +280,28 @@ steps:
       - staging.lehd_lodes_rac
     depends_on:
       - seed_staging
+    enabled: true
+
+  - id: lehd_lodes_od_staging
+    layer: staging
+    script: foundations/etl/staging/get_lehd_lodes_od.R
+    outputs:
+      - staging.lehd_lodes_od_county
+      - staging.lehd_lodes_od_coverage
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: lehd_lodes_od_place_staging
+    layer: staging
+    script: foundations/etl/staging/get_lehd_lodes_od_place.R
+    outputs:
+      - staging.lehd_lodes_od_place
+      - staging.lehd_lodes_od_place_coverage
+    depends_on:
+      - seed_staging
+      - geo_crosswalks
     enabled: true
 
   - id: lehd_qwi_staging
@@ -409,6 +580,28 @@ steps:
       - geo_crosswalks
     enabled: true
 
+  - id: lehd_lodes_od
+    layer: silver
+    script: foundations/etl/silver/lehd_lodes_od_silver.R
+    outputs:
+      - silver.lehd_lodes_od_county
+      - silver.lehd_lodes_od_coverage
+    depends_on:
+      - lehd_lodes_od_staging
+      - geo_crosswalks
+    enabled: true
+
+  - id: lehd_lodes_od_place
+    layer: silver
+    script: foundations/etl/silver/lehd_lodes_od_place_silver.R
+    outputs:
+      - silver.lehd_lodes_od_place
+      - silver.lehd_lodes_od_place_coverage
+    depends_on:
+      - lehd_lodes_od_place_staging
+      - geo_crosswalks
+    enabled: true
+
   - id: lehd_qwi
     layer: silver
     script: foundations/etl/silver/lehd_qwi_silver.R
@@ -499,6 +692,7 @@ steps:
       - silver.bea_regional_cagdp2_wide
     depends_on:
       - seed_staging
+      - bea_county_gdp_staging
       - geo_crosswalks
       - bea_metric_dictionary
     enabled: true
@@ -511,6 +705,7 @@ steps:
       - silver.bea_regional_cagdp9_wide
     depends_on:
       - seed_staging
+      - bea_county_gdp_staging
       - geo_crosswalks
       - bea_metric_dictionary
     enabled: true
@@ -590,6 +785,7 @@ steps:
       - silver.hud_rent50_wide
     depends_on:
       - seed_staging
+      - hud_fmr_history_staging
       - geo_crosswalks
     enabled: true
 

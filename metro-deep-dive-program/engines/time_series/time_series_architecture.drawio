@@ -1,0 +1,192 @@
+<mxfile host="app.diagrams.net" modified="2026-09-05T00:00:00.000Z" agent="Codex" version="24.7.17">
+  <diagram id="time-series-architecture" name="Time-Series Architecture">
+    <mxGraphModel dx="1500" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="title" value="Metro Deep Dive Time-Series / Trajectory Engine Architecture&#xa;Drafted 2026-09-05" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=22;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="40" y="20" width="720" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle" value="Reusable all-market method in engines/time_series/  •  DuckDB is canonical  •  Position / Trajectory is a thin consumer" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=13;fontColor=#555555;" parent="1" vertex="1">
+          <mxGeometry x="40" y="70" width="1100" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="source_header" value="1. Upstream Inputs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="40" y="110" width="250" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="source_gold" value="Gold annual CBSA series&#xa;Population • housing • labor • wages&#xa;health • environment • industry • mobility&#xa;&#xa;Source values + year + geography" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="40" y="175" width="250" height="125" as="geometry"/>
+        </mxCell>
+        <mxCell id="source_catalogs" value="Semantic catalogs&#xa;Metric → frame → topic&#xa;unit • polarity • source lineage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="40" y="325" width="250" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="source_position" value="mart_intelligence current position&#xa;Current frame context and CBSA universe&#xa;Used to frame the ending position" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="40" y="445" width="250" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="source_legacy" value="Legacy Phase 6 evidence&#xa;Metric inventory • exclusions • windows&#xa;Old score and 4-way labels are not contract" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#6c8ebf;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="40" y="570" width="250" height="105" as="geometry"/>
+        </mxCell>
+        <mxCell id="source_pilot" value="Initial method pilot&#xa;12 KPIs: 4 per frame&#xa;2023 end: 5yr = 2018–2023; 1yr = 2022–2023&#xa;Expand only after method QA" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf2f8;strokeColor=#6c8ebf;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="40" y="700" width="250" height="110" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="engine_header" value="2. Time-Series Engine — engines/time_series/" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="340" y="110" width="500" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="engine_box" value="Sequential build pipeline" style="swimlane;html=1;rounded=1;whiteSpace=wrap;fillColor=#fffaf0;strokeColor=#d6b656;fontStyle=1;startSize=30;" parent="1" vertex="1">
+          <mxGeometry x="340" y="175" width="500" height="735" as="geometry"/>
+        </mxCell>
+        <mxCell id="stage_registry" value="A. Metric registry + eligibility&#xa;Frame/topic • source • cadence • unit • transform&#xa;normativity • windows • minimum observations • coverage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" parent="engine_box" vertex="1">
+          <mxGeometry x="25" y="45" width="450" height="78" as="geometry"/>
+        </mxCell>
+        <mxCell id="stage_history" value="B. Normalize annual history&#xa;One comparable CBSA × metric × year surface&#xa;Validate grain, gaps, endpoints, vintages, exclusions" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" parent="engine_box" vertex="1">
+          <mxGeometry x="25" y="140" width="450" height="78" as="geometry"/>
+        </mxCell>
+        <mxCell id="stage_trend" value="C. Estimate metric paths&#xa;Start/end value + percentile • endpoint change&#xa;Theil-Sen slope when ≥4 observations • 1yr two-point change" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" parent="engine_box" vertex="1">
+          <mxGeometry x="25" y="235" width="450" height="82" as="geometry"/>
+        </mxCell>
+        <mxCell id="stage_momentum" value="D. Standardize relative momentum&#xa;Empirical national percentile by metric/window/vintage&#xa;Keep absolute direction separate from relative movement" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" parent="engine_box" vertex="1">
+          <mxGeometry x="25" y="334" width="450" height="78" as="geometry"/>
+        </mxCell>
+        <mxCell id="stage_aggregate" value="E. Aggregate topic → frame&#xa;Topic-first prevents metric-count weighting&#xa;Livability/Opportunity signed • Character magnitude-only&#xa;Retain coverage + directional agreement" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" parent="engine_box" vertex="1">
+          <mxGeometry x="25" y="429" width="450" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="stage_labels" value="F. Score salience + labels&#xa;Continuous absolute-momentum percentile&#xa;Nested p80 / p90 / p95 → common / notable / strong / exceptional&#xa;Position band + relative movement → plain-language label" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" parent="engine_box" vertex="1">
+          <mxGeometry x="25" y="536" width="450" height="92" as="geometry"/>
+        </mxCell>
+        <mxCell id="stage_turn" value="G. Compare compatible windows&#xa;Same KPI panel + compatible end years&#xa;Confirmed turn • emerging watch • no signal • insufficient evidence" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" parent="engine_box" vertex="1">
+          <mxGeometry x="25" y="645" width="450" height="75" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="mart_header" value="3. Canonical DuckDB Mart" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="900" y="110" width="380" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="mart_box" value="mart_intelligence" style="swimlane;html=1;rounded=1;whiteSpace=wrap;fillColor=#f8fff4;strokeColor=#82b366;fontStyle=1;startSize=30;" parent="1" vertex="1">
+          <mxGeometry x="900" y="175" width="380" height="600" as="geometry"/>
+        </mxCell>
+        <mxCell id="table_series" value="intelligence_trajectory_series&#xa;CBSA × metric × year&#xa;Prepared reusable history" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontStyle=1;" parent="mart_box" vertex="1">
+          <mxGeometry x="25" y="50" width="330" height="92" as="geometry"/>
+        </mxCell>
+        <mxCell id="table_metric" value="intelligence_trajectory_metric&#xa;CBSA × metric × window × end vintage&#xa;Auditable trend + momentum truth" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontStyle=1;" parent="mart_box" vertex="1">
+          <mxGeometry x="25" y="166" width="330" height="92" as="geometry"/>
+        </mxCell>
+        <mxCell id="table_frame" value="intelligence_trajectory_frame&#xa;CBSA × frame × window × end vintage&#xa;Default consumer surface" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontStyle=1;" parent="mart_box" vertex="1">
+          <mxGeometry x="25" y="282" width="330" height="92" as="geometry"/>
+        </mxCell>
+        <mxCell id="table_turn" value="intelligence_trajectory_turn_signals&#xa;CBSA × frame × window comparison&#xa;Specialized reversal + evidence surface" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontStyle=1;" parent="mart_box" vertex="1">
+          <mxGeometry x="25" y="398" width="330" height="102" as="geometry"/>
+        </mxCell>
+        <mxCell id="mart_contract" value="Contract fields on every applicable table&#xa;method_version • source/end vintage • coverage • quality flags" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#82b366;" parent="mart_box" vertex="1">
+          <mxGeometry x="25" y="522" width="330" height="62" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="review_box" value="Noncanonical review exports&#xa;outputs/review/*.parquet mirrors the 4 tables&#xa;trajectory_threshold_sensitivity.csv&#xa;&#xa;For inspection and portable QA only&#xa;Never a downstream input dependency" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="900" y="800" width="380" height="110" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="consumer_header" value="4. Thin Consumers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="1340" y="110" width="360" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="consumer_position" value="Position / Trajectory&#xa;analyses/position/trajectory/&#xa;Select one CBSA • query frame/metric/turn tables&#xa;Per-market CSV + HTML QA&#xa;No model recomputation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1340" y="175" width="360" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="consumer_act3" value="Act 3 Dynamics + Data Takes&#xa;Reader-facing trend panels&#xa;Start/end paths • strong signals • confirmed turns&#xa;Select and restyle in issue layer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="1340" y="335" width="360" height="115" as="geometry"/>
+        </mxCell>
+        <mxCell id="consumer_forward" value="Forward analog + peer slopes&#xa;Metric/path similarity from the shared contract&#xa;No separate slope implementation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="1340" y="480" width="360" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="consumer_candidate" value="Candidate Scan support&#xa;Consumes trajectory salience + labels&#xa;Adds editorial weights downstream&#xa;Candidate ranking is not an engine output" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="1340" y="610" width="360" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="consumer_future" value="Future theme/time-series consumers&#xa;Use the same metric and frame contracts&#xa;Expand engine only for a named reusable need" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="1340" y="750" width="360" height="100" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rules" value="Build rules&#xa;1. Audit and lock the 12-KPI pilot before expanding toward the 50 direct-series candidates.  2. Run DuckDB writes sequentially: series → metric → frame → turn signals.&#xa;3. Keep absolute direction distinct from relative momentum.  4. Compare 1yr and 5yr only on the same KPI panel.  5. Review exports never become a shadow data contract." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff4f4;strokeColor=#b85450;fontSize=13;align=left;spacingLeft=12;" parent="1" vertex="1">
+          <mxGeometry x="340" y="955" width="960" height="105" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend" value="Color key&#xa;Blue = upstream inputs&#xa;Yellow = reusable engine method&#xa;Green = canonical DuckDB&#xa;Red = consumers&#xa;Dashed = legacy, future, or review-only" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;fontSize=12;align=left;spacingLeft=10;" parent="1" vertex="1">
+          <mxGeometry x="40" y="955" width="250" height="105" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge_catalog_registry" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;" parent="1" source="source_catalogs" target="stage_registry" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_legacy_registry" value="audit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;dashed=1;" parent="1" source="source_legacy" target="stage_registry" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_pilot_registry" value="start narrow" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;" parent="1" source="source_pilot" target="stage_registry" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_gold_history" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;" parent="1" source="source_gold" target="stage_history" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_position_labels" value="ending context" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;" parent="1" source="source_position" target="stage_labels" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge_registry_history" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d6b656;" parent="engine_box" source="stage_registry" target="stage_history" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_history_trend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d6b656;" parent="engine_box" source="stage_history" target="stage_trend" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_trend_momentum" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d6b656;" parent="engine_box" source="stage_trend" target="stage_momentum" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_momentum_aggregate" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d6b656;" parent="engine_box" source="stage_momentum" target="stage_aggregate" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_aggregate_labels" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d6b656;" parent="engine_box" source="stage_aggregate" target="stage_labels" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_labels_turn" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d6b656;" parent="engine_box" source="stage_labels" target="stage_turn" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge_history_series" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;" parent="1" source="stage_history" target="table_series" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_momentum_metric" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;" parent="1" source="stage_momentum" target="table_metric" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_labels_frame" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;" parent="1" source="stage_labels" target="table_frame" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_turn_table" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;" parent="1" source="stage_turn" target="table_turn" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_mart_review" value="export after materialization" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;dashed=1;" parent="1" source="mart_box" target="review_box" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge_metric_position" value="evidence" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;" parent="1" source="table_metric" target="consumer_position" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_frame_position" value="default" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;" parent="1" source="table_frame" target="consumer_position" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_turn_position" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;" parent="1" source="table_turn" target="consumer_position" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_series_act3" value="trend panels" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;" parent="1" source="table_series" target="consumer_act3" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_frame_act3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;" parent="1" source="table_frame" target="consumer_act3" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_metric_forward" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;" parent="1" source="table_metric" target="consumer_forward" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_frame_candidate" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;" parent="1" source="table_frame" target="consumer_candidate" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_mart_future" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;dashed=1;" parent="1" source="mart_box" target="consumer_future" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

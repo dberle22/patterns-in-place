@@ -1,0 +1,3 @@
+# Release artifacts are generated from the private Foundations DuckDB and must not be committed.
+output/
+

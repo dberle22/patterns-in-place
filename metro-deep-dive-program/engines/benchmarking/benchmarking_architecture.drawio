@@ -1,0 +1,126 @@
+<mxfile host="65bd71144e">
+    <diagram id="eYQoqd21L5OZI4gJuhgn" name="Page-1">
+        <mxGraphModel dx="812" dy="611" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="benchmarking-architecture" name="Benchmarking Architecture">
+        <mxGraphModel dx="812" dy="611" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="Metro Deep Dive Benchmarking Engine Architecture&#xa;Drafted 2026-09-03" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=22;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="20" width="520" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="upstream_header" value="1. Upstream Sources" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="90" width="240" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="source_geo" value="`patterns_in_place.gold.dim_geo`&#xa;Canonical geography hierarchy&#xa;Region / Division / State / CBSA" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="150" width="240" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="source_if" value="`mart_intelligence.*`&#xa;Character / Livability / Opportunity / Cross-Frame&#xa;Metric values + peer fields" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="280" width="240" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="source_future" value="Future Gold / Theme marts&#xa;Housing / Industry / Mobility / Health / etc.&#xa;Additional benchmarkable KPI sources" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;dashed=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="410" width="240" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="schema_header" value="2. Materialized DuckDB Schema" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="340" y="90" width="300" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="schema_box" value="`mart_benchmarking`&#xa;Small reusable serving schema&#xa;Materialize only stable metadata + membership layers" style="swimlane;html=1;rounded=1;whiteSpace=wrap;fillColor=#f8fff4;strokeColor=#82b366;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="340" y="150" width="340" height="430" as="geometry"/>
+                </mxCell>
+                <mxCell id="table_catalog" value="`benchmark_metric_catalog`&#xa;1 row per metric&#xa;Metric family / type / unit / direction / source" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" parent="schema_box" vertex="1">
+                    <mxGeometry x="20" y="40" width="300" height="85" as="geometry"/>
+                </mxCell>
+                <mxCell id="table_metrics" value="`benchmark_cbsa_metrics`&#xa;1 row per CBSA + metric + year&#xa;Long benchmarkable metric surface" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" parent="schema_box" vertex="1">
+                    <mxGeometry x="20" y="145" width="300" height="85" as="geometry"/>
+                </mxCell>
+                <mxCell id="table_sets" value="`benchmark_sets`&#xa;1 row per target CBSA + comparison set&#xa;National / Region / Division / State / Peer Set" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" parent="schema_box" vertex="1">
+                    <mxGeometry x="20" y="250" width="300" height="85" as="geometry"/>
+                </mxCell>
+                <mxCell id="table_members" value="`benchmark_set_members`&#xa;1 row per comparison set member&#xa;Reusable membership for geographic sets + IF peer set" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" parent="schema_box" vertex="1">
+                    <mxGeometry x="20" y="355" width="300" height="85" as="geometry"/>
+                </mxCell>
+                <mxCell id="package_header" value="3. Reusable Python Package Layer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="740" y="90" width="300" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="package_box" value="Proposed shared package&#xa;Example home: `foundations/python/pip_benchmarking/`&#xa;Imported across MDD, Research Tool, Area Explorer, Publisher" style="swimlane;html=1;rounded=1;whiteSpace=wrap;fillColor=#fffaf0;strokeColor=#d6b656;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="740" y="150" width="360" height="430" as="geometry"/>
+                </mxCell>
+                <mxCell id="pkg_conn" value="Connection + config&#xa;Resolve `DB_PATH`&#xa;Open DuckDB consistently" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" parent="package_box" vertex="1">
+                    <mxGeometry x="20" y="40" width="320" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="pkg_lookup" value="Lookup helpers&#xa;List comparison sets&#xa;Load target metric bundle&#xa;Load peer-set membership" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" parent="package_box" vertex="1">
+                    <mxGeometry x="20" y="130" width="320" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="pkg_compute" value="On-demand benchmark functions&#xa;Inputs: target geo + metric(s) + comparison set(s) + year&#xa;Outputs: summary rows + member rows" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" parent="package_box" vertex="1">
+                    <mxGeometry x="20" y="230" width="320" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="pkg_batch" value="Batch-friendly APIs&#xa;Benchmark metric bundles in one call&#xa;Prevent notebook-by-notebook drift" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" parent="package_box" vertex="1">
+                    <mxGeometry x="20" y="340" width="320" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="consumer_header" value="4. Downstream Consumers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="90" width="260" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="consumer_profile" value="Position / Profile&#xa;Fingerprint percentile table&#xa;Act 1 benchmark context" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="150" width="260" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="consumer_peers" value="Position / Peers&#xa;Featured peer comparison&#xa;Head-to-head peer tables" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="260" width="260" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="consumer_act2" value="Act 2 notebooks&#xa;Regional role&#xa;Benchmark comparison layer across themes/questions" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="370" width="260" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="consumer_future" value="Later consumers&#xa;Act 3 trend comparisons&#xa;Issue builders / Publisher-ready tables" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;dashed=1;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="480" width="260" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="note" value="Design rule&#xa;Materialize stable lookup tables in DuckDB.&#xa;Compute benchmark summaries on demand in one shared package.&#xa;Promote heavier outputs only if repeated downstream use proves it is worth it." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="340" y="620" width="760" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_geo_catalog" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;" parent="1" source="source_geo" target="table_sets" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_geo_members" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;" parent="1" source="source_geo" target="table_members" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_if_metrics" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;" parent="1" source="source_if" target="table_metrics" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_if_peers" value="cross-frame peers" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;" parent="1" source="source_if" target="table_members" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_future_metrics" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;dashed=1;" parent="1" source="source_future" target="table_metrics" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_schema_conn" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;" parent="1" source="table_catalog" target="pkg_lookup" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_schema_metrics" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;" parent="1" source="table_metrics" target="pkg_compute" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_schema_sets" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;" parent="1" source="table_sets" target="pkg_lookup" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_schema_members" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;" parent="1" source="table_members" target="pkg_compute" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_pkg_profile" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d6b656;" parent="1" source="pkg_batch" target="consumer_profile" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_pkg_peers" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d6b656;" parent="1" source="pkg_batch" target="consumer_peers" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_pkg_act2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d6b656;" parent="1" source="pkg_batch" target="consumer_act2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_pkg_future" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d6b656;dashed=1;" parent="1" source="pkg_batch" target="consumer_future" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

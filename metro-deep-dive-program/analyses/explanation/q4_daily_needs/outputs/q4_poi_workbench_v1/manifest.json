@@ -1,0 +1,17 @@
+{
+  "basket_version": "q4_amenity_baskets_v2",
+  "interface_status": "pilot_artifacts_direct_not_promoted",
+  "source_runs": {
+    "richmond_va": "metro-deep-dive-program/engines/poi/outputs/richmond_va/overture-places-40060-2026-08-19-0-20260908T110747Z",
+    "jacksonville_fl": "metro-deep-dive-program/engines/poi/outputs/jacksonville_fl/overture-places-27260-2026-08-19-0-20260909T093431Z"
+  },
+  "artifacts": {
+    "q4_poi_basket_catalog.parquet": "a7e8613675ba8d03991dd784ca4af42dec6564b237f2f0cc4db7737319a09dbd",
+    "q4_poi_basket_membership.parquet": "8b00c7a22604ad05a24f828175e862dfeaee59f0fed1d4a9a1cfa1ed5770f97c",
+    "q4_poi_workbench.parquet": "77ad806fde30248c5de315a35606868e9607c3b0c79e104c5718ee7f89a17fb3",
+    "q4_poi_category_composition.parquet": "83ce090679bab5fe8728cf2a20c666787ea1963c92b1b90226d16365351285e8",
+    "q4_poi_coverage.parquet": "03cf0c5b4d4a185a1895c72356baa3ccf752d85911b418d5c0bc8caab20c8789"
+  },
+  "workbench_rows": 148446,
+  "membership_rows": 225354
+}
