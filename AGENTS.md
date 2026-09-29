@@ -117,17 +117,10 @@ Before finalizing any documentation change, scan changed markdown, YAML, JSON, S
 
 ## 7. Monorepo Orientation
 
-This is the `patterns-in-place` monorepo. Top-level folders are independent product areas:
+This is the `patterns-in-place` monorepo. The folder map, each area's status (Active / Paused / Legacy), the canonical DuckDB path and the Python environments are in the root [README.md](README.md). Read it before starting work in an unfamiliar area.
 
-| Folder | Purpose |
-|---|---|
-| `foundations/` | Semantic layer, visual library, data dictionary, ETL pipeline |
-| `publisher/` | NL→SQL engine, Insights Generator, Chatbot frontend |
-| `stoop/` | Stoop Explore + Stoop Search |
-| `metro-deep-dive/` | Long-form market reports, notebooks, R utilities |
-| `area-explorer/` | Interactive CBSA tool (new) |
-| `exploration/` | Ad hoc analysis and notebooks — never ships |
-| `notes/` | Obsidian vault, roadmap, product notes |
+- Don't start new work in a **Paused** area unless asked, and don't build new work in a **Legacy** area (`metro-deep-dive/`); its replacement is `metro-deep-dive-program/`.
+- `notes/` is a local, gitignored Obsidian vault being retired. Don't treat it as a current source of truth.
 
 **`foundations/` is a dependency, not a product.** Product folders reference it for the semantic layer, visual library, and DuckDB output. Do not embed copies of foundations assets inside product folders.
 
