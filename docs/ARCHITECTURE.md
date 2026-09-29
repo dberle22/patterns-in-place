@@ -107,6 +107,6 @@ Meaning flows top down: theme → topic → metric → table → source. Agents 
 
 ## Open items
 
-- `mart_explanation_q6` has no builder in the repo or its git history, and nothing reads it: the Q6 notebook computes its results live from `q6_one_metro/sql/`. It looks like a leftover from an earlier prototype. Decide whether to drop it when the Metro Deep Dive cleanup (Section E of the docs overhaul) comes up.
+- `mart_explanation_q6` has no builder in the repo or its git history, and nothing reads it: the Q6 notebook computes its results live from `q6_one_metro/sql/`. It looks like a leftover from an earlier prototype. Decide whether to drop it during the legacy Metro Deep Dive retirement review, or sooner if the Q6 analysis is revisited.
 - `mart_housing` is built from two `SELECT` files with no runner script, so rebuilding it is a manual step. Add a runner when Publisher resumes.
 - The Intelligence universe differs by surface: 401 CBSAs in the roadmap, 396 in the frame marts, 925 in the zone model. Documented as a known limitation in the framework overview.
