@@ -122,7 +122,6 @@ Before finalizing any documentation change, scan changed markdown, YAML, JSON, S
 This is the `patterns-in-place` monorepo. The folder map, each area's status (Active / Paused / Legacy), the canonical DuckDB path and the Python environments are in the root [README.md](README.md). Read it before starting work in an unfamiliar area.
 
 - Don't start new work in a **Paused** area unless asked, and don't build new work in a **Legacy** area (`metro-deep-dive/`); its replacement is `metro-deep-dive-program/`.
-- `notes/` is a local, gitignored Obsidian vault being retired. Don't treat it as a current source of truth.
 
 **Repo-local agent skills** live in `.codex/skills/` (`chart-question-generator` for chart-a-day backlog ideas, `metro-explorer-section-spec` for explorer section specs). They're written for Codex; other agents can read the `SKILL.md` files directly.
 

@@ -14,7 +14,7 @@ Turn a user's rough notes into a `metro-deep-dive/metro-area-explorer/<section>/
 Read, in order:
 
 - `metro-deep-dive/metro-area-explorer/README.md` — the folder scaffold and process contract every section must follow (SPEC.md / data_prep.py / app.py / decisions.md / notes.md, market-parameterized).
-- `notes/patterns_in_place_notes/Products/Metro Deep Dive.md` and `metro-deep-dive/metro_deep_dive_build_approach.md` — the Acts/Fixed-Spine structure and what's already locked for the Deep Dive track.
+- `metro-deep-dive-program/metro_deep_dive_program.md` and `metro-deep-dive/metro_deep_dive_build_approach.md` — the Acts/Fixed-Spine structure and what's already locked for the Deep Dive track.
 - `metro-deep-dive/markets/richmond_va/SPEC.md` (or whichever market has the most developed spec) — check whether this section's topic already has locked spine content in an Act. Overlap is common; the Deep Dive spec stays the analytical spec of record for anything already locked there.
 - Any relevant strategic-context or roadmap memory/notes for the topic.
 

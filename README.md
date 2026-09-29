@@ -24,8 +24,6 @@ Read this file first. Agent behaviour rules are in [AGENTS.md](AGENTS.md).
 
 Details and next steps per area: [docs/STATUS.md](docs/STATUS.md). **Status meanings:** Active = in development. Paused = not in development, intended to resume. Legacy = kept only until its live parts move elsewhere; don't build new work here.
 
-**Local only (gitignored):** `notes/` is an old Obsidian vault of early strategy notes. It is being reviewed and retired; don't treat it as a current source of truth.
-
 ## Context docs
 
 | To understand | Read |

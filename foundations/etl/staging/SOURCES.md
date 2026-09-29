@@ -32,4 +32,4 @@ This file tracks where each staging script gets its data and what is needed to r
 | `get_zillow.R` | CSV download | Zillow Research Data |
 | `tx_school_acs_ingest.R` | API (`tidycensus`) | Census API key required |
 
-Detailed source notes live under `notes/patterns_in_place_notes/Data/Sources/`.
+Detailed source documentation lives under `foundations/data_dictionary/sources/`.

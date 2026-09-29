@@ -22,7 +22,6 @@ The Intelligence Framework (phases 0–7) is finished: CBSA frames, Cross-Frame,
 
 1. **Metro Deep Dive: define the New York series and point the program at it.** Settle the series outline and set up `issues/new_york/`. Review Profile, Peers and Trajectory interactively for New York CBSAs. Continue the Explanation analyses already in flight (Q2, Q3, Q4, Q1).
 2. **Public panel: finish v2026.1.** Release hygiene (Epic 5), then the first analysis and outreach (Epic 6). This runs alongside the Deep Dive, not after it: Deep Dive issues cite the panel as their public data source.
-3. **Documentation overhaul:** finish the remaining sections, then retire the notes vault.
 
 ## Next
 
