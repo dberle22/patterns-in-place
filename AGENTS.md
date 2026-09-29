@@ -77,6 +77,8 @@ When working on a sprint or series of tasks:
 - Add any unplanned tasks that were required and tick them off once done.
 - Add a short summary of completed work to the planning doc for easy review.
 
+When creating or editing docs, follow `docs/CONVENTIONS.md`: doc type names, the status header, the README sections and the archive rules. Apply them to old docs only as you touch them.
+
 ---
 
 ## 5.1 ETL Workflow Commands

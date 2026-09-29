@@ -27,7 +27,7 @@ Read this file first. Agent behaviour rules are in [AGENTS.md](AGENTS.md).
 
 ## Where current plans live
 
-Repo-wide context docs are being rebuilt in `docs/`. Until then:
+Repo-wide context docs are being rebuilt in `docs/`. So far that covers [docs/CONVENTIONS.md](docs/CONVENTIONS.md): how docs are named, headed, kept current and archived. Until the rest exists:
 
 - Strategy across all areas: [ROADMAP.md](ROADMAP.md) and [PLATFORM_ROADMAP.md](PLATFORM_ROADMAP.md). Both were last updated in July 2026 and don't cover the public panel or the MDD program.
 - Metro Deep Dive: [metro_deep_dive_program.md](metro-deep-dive-program/metro_deep_dive_program.md) and [build_sequence.md](metro-deep-dive-program/docs/build_sequence.md).
