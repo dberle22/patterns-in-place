@@ -10,14 +10,14 @@ Read this file first. Agent behaviour rules are in [AGENTS.md](AGENTS.md).
 
 | Folder | What it is | Status | Start with |
 |---|---|---|---|
-| `foundations/` | ETL, DuckDB warehouse, semantic layer, data dictionary, visual library, loaders. A dependency for every product, not a product itself. | Active | [semantic_layer/README.md](foundations/semantic_layer/README.md), [data_dictionary/README.md](foundations/data_dictionary/README.md) |
+| `foundations/` | ETL, DuckDB warehouse, semantic layer, data dictionary, visual library, loaders. A dependency for every product, not a product itself. | Active | [README.md](foundations/README.md) |
 | `metro-deep-dive-program/` | The canonical Metro Deep Dive build: engines, analyses, issues. | Active | [metro_deep_dive_program.md](metro-deep-dive-program/metro_deep_dive_program.md) |
 | `public-cbsa-panel/` | Release workspace for the public Metro & Micro Panel; v2026.1 published 2026-09-28. | Active | [README.md](public-cbsa-panel/README.md) |
 | `exploration/` | Ad hoc analysis before it is standardized. Never ships directly. | Active | [README.md](exploration/README.md) |
 | `metro-deep-dive/` | Legacy Deep Dive tree, retiring into `metro-deep-dive-program/`. The research tool and some code the program depends on still live here. | Legacy | [README.md](metro-deep-dive/README.md) |
 | `area-explorer/` | Streamlit CBSA explorer apps. | Paused | [README.md](area-explorer/README.md) |
 | `publisher/` | NL-to-SQL chatbot, chart-a-day pipeline, editorial content. Has shipped work. | Paused | [README.md](publisher/README.md) |
-| `stoop/` | NYC neighborhood explorer. The public app link is still live. | Paused | [docs/README.md](stoop/docs/README.md) |
+| `stoop/` | NYC neighborhood explorer. The public app link is still live. | Paused | [README.md](stoop/README.md) |
 | `docs/` | Repo-wide context: status, roadmap, overview, architecture, glossary, conventions, decisions. | Active | [STATUS.md](docs/STATUS.md) |
 | `scripts/` | Repo-level launchers (e.g. `start_research_tool.sh`). | — | — |
 | `config/` | Local R environment helper. | — | — |

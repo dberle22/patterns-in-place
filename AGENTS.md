@@ -124,6 +124,8 @@ This is the `patterns-in-place` monorepo. The folder map, each area's status (Ac
 - Don't start new work in a **Paused** area unless asked, and don't build new work in a **Legacy** area (`metro-deep-dive/`); its replacement is `metro-deep-dive-program/`.
 - `notes/` is a local, gitignored Obsidian vault being retired. Don't treat it as a current source of truth.
 
+**Repo-local agent skills** live in `.codex/skills/` (`chart-question-generator` for chart-a-day backlog ideas, `metro-explorer-section-spec` for explorer section specs). They're written for Codex; other agents can read the `SKILL.md` files directly.
+
 **`foundations/` is a dependency, not a product.** Product folders reference it for the semantic layer, visual library, and DuckDB output. Do not embed copies of foundations assets inside product folders.
 
 Each folder may have its own `README.md` and language-specific tooling (R, Python, etc.). When working in a specific folder, check for a local README before assuming project-wide conventions apply.

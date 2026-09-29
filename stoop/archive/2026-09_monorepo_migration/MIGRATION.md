@@ -1,5 +1,7 @@
 # Stoop Migration Plan
 
+**Status:** Done — migration complete; archived 2026-09-29. The one open follow-up (manual NTA boundary copy) moved to `stoop/README.md`.
+
 Migration of `rental_area_search` into `stoop/` within the `patterns-in-place` monorepo.
 
 **Source repo:** `<local-projects-root>/rental_area_search`

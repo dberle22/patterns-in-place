@@ -48,7 +48,7 @@ Read this section before starting any milestone work. It records decisions alrea
 - Also add q016–q028 to `backlog.yaml` at CE-0 time — see chart type coverage table below
 
 **CE-1 (draft skills):**
-- `ChartRequest` surface: [`foundations/visual_library/chart_engine_py/SPEC.md`](../foundations/visual_library/chart_engine_py/SPEC.md)
+- `ChartRequest` surface: [`foundations/visual_library/chart_engine_py/SPEC_CHART_ENGINE.md`](../foundations/visual_library/chart_engine_py/SPEC_CHART_ENGINE.md)
 - Chart selection rules: `foundations/semantic_layer/chart_rules.yml` — extend with `correlation`, `composition`, `map`, `demographic`, `rank_change` rule blocks in CE-1
 - Gold table schema context for the SQL skill: `foundations/semantic_layer/`
 - Worked example of good SQL + chart output: `publisher/content/vacancy_rates/`

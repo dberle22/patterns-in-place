@@ -1,5 +1,7 @@
 # Area Explorer
 
+**Status:** Paused since 2026-07. The internal CBSA app (Phase 1) is built but hasn't been verified end to end; that verification run is the first step on return. See `docs/STATUS.md`.
+
 Metric-first interactive dashboards for the Patterns in Place data platform. You pick a theme, subject, topic, or metric — the map and charts update around that selection across all geographies.
 
 ## Product structure
@@ -25,11 +27,9 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Set the DB connection env var, then launch the desired app:
+By default the apps read the shared warehouse at `foundations/etl/data/duckdb/patterns_in_place.duckdb`. To point them at a different DuckDB file, set `DB_CONNECTION` (or `DB_PATH`). Then launch the app you want from the `area-explorer/` folder:
 
 ```bash
-export DB_CONNECTION="/path/to/patterns_in_place/foundations/data/foundations.duckdb"
-
 # CBSA Internal (analytical, with Intelligence frames)
 streamlit run apps/cbsa_internal/app.py
 

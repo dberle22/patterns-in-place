@@ -12,7 +12,7 @@ same topic, use the ownership table below to decide which one should be updated.
 | How are Python packages organized and where should code live? | `packages.md` |
 | What DuckDB tables power the apps? | `data_model.md` |
 | How do I rebuild local data? | `pipeline_plan.md` |
-| What POI categories exist, what files, what status? | `poi_categories.md` |
+| What POI categories exist, what files, what status? | `data_products/curated_places/poi_categories.md` |
 | Where do raw sources, URLs, and caveats live? | `source_inventory.md` |
 | What decisions have already been made? | `decision_log.md` |
 | What are we building and why? | `planning/product_strategy.md` |
@@ -26,7 +26,7 @@ same topic, use the ownership table below to decide which one should be updated.
 | Python package boundaries and interactions | `packages.md` |
 | Gold table contracts, source/build manifest, and table QA | `data_model.md` |
 | Local build order and commands | `pipeline_plan.md` |
-| POI category definitions, file sources, and ingestion status | `poi_categories.md` |
+| POI category definitions, file sources, and ingestion status | `data_products/curated_places/poi_categories.md` |
 | Raw source URLs, local path conventions, and caveats | `source_inventory.md` |
 | Durable decisions and rationale | `decision_log.md` |
 | Listing CSV input schema | `contracts/listing_csv_contract.md` |

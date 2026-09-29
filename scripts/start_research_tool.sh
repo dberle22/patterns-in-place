@@ -23,7 +23,6 @@ choose_python() {
   for candidate in \
     "${REPO_ROOT}/area-explorer/.venv/bin/python" \
     "${REPO_ROOT}/.venv312/bin/python" \
-    "${REPO_ROOT}/.venv/bin/python" \
     "python3"
   do
     if [[ "${candidate}" == "python3" ]]; then
