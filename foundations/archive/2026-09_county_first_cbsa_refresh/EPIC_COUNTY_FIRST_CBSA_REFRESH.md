@@ -1,6 +1,7 @@
 # Foundation Epic — County-First CBSA Data Refresh
 
-**Status:** Ready for a dedicated agent  
+**Status:** Done — confirmed by Dan on 2026-09-29. Public panel v2026.1 (published 2026-09-28) ships the county-derived BEA GDP and HUD FMR series this epic produced. The task checkboxes below were never ticked individually.  
+**Updated:** 2026-09-29  
 **Owner area:** `foundations/etl`  
 **Downstream consumer:** Patterns in Place: Metro & Micro Panel v2026.1
 

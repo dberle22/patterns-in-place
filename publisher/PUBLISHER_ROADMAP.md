@@ -1,6 +1,9 @@
 # Publisher — Product Roadmap
 
-*Last updated: 2026-07-13. This roadmap is referenced from `PLATFORM_ROADMAP.md` → Track G and Track H. It covers three distinct products that share the same foundations layer (DuckDB warehouse, `chart_engine_py`, semantic layer, Gold tables) but have different execution models, outputs, and distribution channels.*
+**Status:** Paused (since 2026-07). Resume plan: `docs/ROADMAP.md` → Resuming a paused area; publishing strategy in `docs/strategy/PUBLISHING.md`.
+**Updated:** 2026-09-29 (status header only; content unchanged since 2026-07-13)
+
+*Last updated: 2026-07-13. This roadmap is referenced from `docs/ROADMAP.md` (previously `PLATFORM_ROADMAP.md` → Track G and Track H). It covers three distinct products that share the same foundations layer (DuckDB warehouse, `chart_engine_py`, semantic layer, Gold tables) but have different execution models, outputs, and distribution channels.*
 
 *Revision notes: Added CE task breakdowns (2026-07-11). Added chart type coverage analysis, q016–q028 backlog expansion, decision gate log, backlog format spec, and chart-selection design (2026-07-11). Added Python rendering architecture direction after the Phase 5 manual-run review (2026-07-12). Added repo-local backlog-replenishment Skill for generating new Chart A Day questions after the initial 28-question queue was exhausted (2026-07-13).*
 
@@ -45,7 +48,7 @@ Read this section before starting any milestone work. It records decisions alrea
 - Also add q016–q028 to `backlog.yaml` at CE-0 time — see chart type coverage table below
 
 **CE-1 (draft skills):**
-- `ChartRequest` surface: [`foundations/visual_library/chart_engine_py/SPEC.md`](../foundations/visual_library/chart_engine_py/SPEC.md)
+- `ChartRequest` surface: [`foundations/visual_library/chart_engine_py/SPEC_CHART_ENGINE.md`](../foundations/visual_library/chart_engine_py/SPEC_CHART_ENGINE.md)
 - Chart selection rules: `foundations/semantic_layer/chart_rules.yml` — extend with `correlation`, `composition`, `map`, `demographic`, `rank_change` rule blocks in CE-1
 - Gold table schema context for the SQL skill: `foundations/semantic_layer/`
 - Worked example of good SQL + chart output: `publisher/content/vacancy_rates/`

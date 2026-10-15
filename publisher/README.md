@@ -1,5 +1,7 @@
 # Publisher
 
+**Status:** Paused since 2026-07. Chart a day ran 28 questions; the chatbot works locally but isn't deployed. On return, start from `docs/strategy/PUBLISHING.md` and `PUBLISHER_ROADMAP.md`; open questions are at the end of this file.
+
 `publisher/` is one product area with two different workflows inside it:
 
 - the automated Chatbot-to-publishing workflow
@@ -451,3 +453,21 @@ Run from `publisher/` with `PYTHONPATH=.`
 - Edit semantic catalogs in `foundations/semantic_layer/`, not here.
 - Edit chart render scripts in `foundations/visual_library/shared/render/`, not here.
 - Treat `content/` as a manual workflow unless the publishing model changes intentionally.
+
+## Open Questions On Return
+
+Publisher is paused. The publishing plan to resume from is `docs/strategy/PUBLISHING.md`; post ideas are in `content/IDEAS.md` and piece templates in `content/templates/`.
+
+These chatbot questions were raised in June 2026, before the build, and haven't been settled:
+
+- Who is the target user: a data-curious generalist, a researcher, or a real estate or investment professional? Does that change which question types to prioritize?
+- When a question can't be answered well, do we explain why, suggest a rephrasing, or show the closest answer?
+- Is showing the SQL a feature for that user or noise? Should it sit behind a toggle?
+- Are the chatbot and chart a day one surface with two modes, or two separate tools?
+- When, if ever, does the chatbot need accounts or memory of past questions?
+
+Follow-ups carried from the monorepo migration (archived in `archive/2026-09_monorepo_migration/`):
+
+- Create a `content` skill so agents can reproduce the manual editorial workflow in `content/`.
+- Consider renaming the inner `publisher/` folder (e.g. `production/` or `pipeline/`) to avoid confusion with the top-level `publisher/`.
+- Refresh this README. It predates `PUBLISHER_ROADMAP.md` and references files that no longer exist: `publisher/packager.py`, `publisher/summarizer.py` and `publisher/output/`.

@@ -34,7 +34,7 @@ The important distinction is:
 
 The `396`-CBSA limit is written in multiple Phase 7 docs:
 
-- [exploration/intelligence_framework/docs/zone_methodology_notes.md](exploration/intelligence_framework/docs/zone_methodology_notes.md): "a consistent label set assigned to every tract in the 396-CBSA universe" and "Universe: all tracts in the 396 non-Puerto-Rico CBSAs"
+- [docs/methodology/intelligence_framework/zone_methodology_notes.md](docs/methodology/intelligence_framework/zone_methodology_notes.md): "a consistent label set assigned to every tract in the 396-CBSA universe" and "Universe: all tracts in the 396 non-Puerto-Rico CBSAs"
 - [exploration/intelligence_framework/docs/phase7_eda_plan.md](exploration/intelligence_framework/docs/phase7_eda_plan.md): "filtered to the 396-CBSA universe via `silver.xwalk_tract_county` → `silver.xwalk_cbsa_county`"
 - [exploration/intelligence_framework/phase_7_zone_methodology/PHASE7_PLAN.md](exploration/intelligence_framework/phase_7_zone_methodology/PHASE7_PLAN.md): "every tract in the 396-CBSA universe gets a nationally consistent label" and "Filter to tracts in the 396 non-PR CBSAs"
 

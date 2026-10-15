@@ -12,7 +12,7 @@ This folder is the home of the reusable visual system for shared Patterns in Pla
 
 This `README.md` is the single entry point for the folder. Start here first, then follow the links below based on what you are trying to do.
 
-This repo is intended to live under `projects/patterns_in_place/patterns-foundations` alongside sibling repos such as `patterns-data`. Keep references portable and repo-relative where possible.
+This folder lives at `foundations/visual_library/` in the `patterns-in-place` monorepo. Keep references portable and repo-relative.
 
 ## Who This Is For
 

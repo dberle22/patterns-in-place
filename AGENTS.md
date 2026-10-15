@@ -77,6 +77,8 @@ When working on a sprint or series of tasks:
 - Add any unplanned tasks that were required and tick them off once done.
 - Add a short summary of completed work to the planning doc for easy review.
 
+When creating or editing docs, follow `docs/CONVENTIONS.md`: doc type names, the status header, the README sections and the archive rules. Apply them to old docs only as you touch them.
+
 ---
 
 ## 5.1 ETL Workflow Commands
@@ -117,17 +119,11 @@ Before finalizing any documentation change, scan changed markdown, YAML, JSON, S
 
 ## 7. Monorepo Orientation
 
-This is the `patterns-in-place` monorepo. Top-level folders are independent product areas:
+This is the `patterns-in-place` monorepo. The folder map, each area's status (Active / Paused / Legacy), the canonical DuckDB path and the Python environments are in the root [README.md](README.md). Read it before starting work in an unfamiliar area.
 
-| Folder | Purpose |
-|---|---|
-| `foundations/` | Semantic layer, visual library, data dictionary, ETL pipeline |
-| `publisher/` | NL→SQL engine, Insights Generator, Chatbot frontend |
-| `stoop/` | Stoop Explore + Stoop Search |
-| `metro-deep-dive/` | Long-form market reports, notebooks, R utilities |
-| `area-explorer/` | Interactive CBSA tool (new) |
-| `exploration/` | Ad hoc analysis and notebooks — never ships |
-| `notes/` | Obsidian vault, roadmap, product notes |
+- Don't start new work in a **Paused** area unless asked, and don't build new work in a **Legacy** area (`metro-deep-dive/`); its replacement is `metro-deep-dive-program/`.
+
+**Repo-local agent skills** live in `.codex/skills/` (`chart-question-generator` for chart-a-day backlog ideas, `metro-explorer-section-spec` for explorer section specs). They're written for Codex; other agents can read the `SKILL.md` files directly.
 
 **`foundations/` is a dependency, not a product.** Product folders reference it for the semantic layer, visual library, and DuckDB output. Do not embed copies of foundations assets inside product folders.
 

@@ -1,5 +1,8 @@
 # Intelligence Layer Roadmap
 
+**Status:** Done — archived 2026-09-29. Phases 0–7 are complete and promoted to `mart_intelligence`.
+**Superseded by:** `docs/methodology/intelligence_framework/` (method; the locked architecture is in its `ARCHITECTURE.md`) and `docs/STATUS.md` (current state). The remaining unchecked items are stale (Phase 1 is done) or tracked elsewhere (the MotherDuck promotion is in `foundations/ROADMAP.md`).
+
 *The Intelligence Layer is the analytical core of Patterns in Place: the scoring models, archetypes, and zone classifications that make the three frames (Character, Livability, Opportunity) say something meaningful. This roadmap covers the work from raw metrics to publishable Deep Dive findings. It is ordered by dependency, not by calendar.*
 
 ---

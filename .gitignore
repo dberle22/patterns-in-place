@@ -95,5 +95,3 @@ tmp_update_cbsa_qa_note.py
 # should stay out of version control.
 .claude/
 
-# ── Notes vault (Obsidian — not version controlled here) ─────────────────────
-notes/

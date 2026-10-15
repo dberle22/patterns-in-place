@@ -1,5 +1,7 @@
 # Publisher Migration Plan
 
+**Status:** Done — migration complete; archived 2026-09-29. Open follow-ups moved to `publisher/README.md` (Open Questions On Return); frontend chart QA is CH-2 in `PUBLISHER_ROADMAP.md`.
+
 Migration of `metro_deep_dive_chatbot` into `publisher/` within the `patterns-in-place` monorepo.
 
 **Source repo:** `<local-projects-root>/metro_deep_dive_chatbot`

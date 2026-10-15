@@ -11,5 +11,5 @@ See `stoop/AGENTS.md` for stoop-specific additions.
 - Boot the app: `streamlit run app/stoop_explore.py` from `stoop/`
 - Core library: `src/nyc_property_finder/`
 - Data: `data/processed/nyc_property_finder.duckdb` (local-only, gitignored)
-- Product notes: `notes/patterns_in_place_notes/Products/Stoop Explore.md`
-  and `Stoop Search.md`
+- Product strategy: `docs/product_strategy.md`; open questions for Explore and Search
+  are at the end of `docs/README.md`

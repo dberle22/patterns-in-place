@@ -7,7 +7,7 @@ description: >
   score built from hierarchical weighted sub-scores. Cosine similarity on the scored vectors
   produces frame-specific peer sets.
 
-  Architecture is locked. See INTELLIGENCE_LAYER_ROADMAP.md → "Scoring and Clustering Architecture"
+  Architecture is locked. See docs/methodology/intelligence_framework/ARCHITECTURE.md
   for full methodology decisions. Status moves from "specified" → "calibrated" after each phase
   notebook runs and the natural_k and calibration_notes fields are populated.
 

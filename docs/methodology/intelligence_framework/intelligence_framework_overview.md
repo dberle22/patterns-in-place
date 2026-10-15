@@ -2,7 +2,7 @@
 
 *Consolidated reference: rationale, architecture, per-frame methodology, outputs, and known limitations.*
 
-**Sources synthesized:** `foundations/semantic_layer/intelligence_catalog.yml`, `foundations/semantic_layer/theme_catalog.yml`, `INTELLIGENCE_LAYER_ROADMAP.md`, `exploration/intelligence_framework/docs/*`, `metro-deep-dive/docs/intelligence_framework_review_question_bank.md`.
+**Sources synthesized:** `foundations/semantic_layer/intelligence_catalog.yml`, `foundations/semantic_layer/theme_catalog.yml`, `INTELLIGENCE_LAYER_ROADMAP.md` (now archived at `docs/archive/2026-09_intelligence_layer_roadmap/`), `exploration/intelligence_framework/docs/*`, `metro-deep-dive/docs/intelligence_framework_review_question_bank.md`.
 
 **Last updated:** 2026-08-26
 
@@ -38,7 +38,7 @@ Every frame uses the identical build pipeline: same imputation rule, same standa
 
 ## 2. How it works in practice — shared architecture
 
-This section describes the pipeline every frame (and, with variations noted, the zone model) runs through. It's documented as the "locked" architecture in `INTELLIGENCE_LAYER_ROADMAP.md`.
+This section describes the pipeline every frame (and, with variations noted, the zone model) runs through. The full "locked" architecture is in [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ### 2.1 Universe
 
@@ -204,7 +204,7 @@ phase_N_<frame>_calibration/
 - **Subjects (equal weight, 50/50):** Demographics, Social Fabric
 - **Demographics topics:** Race & Ethnicity, Age Structure, Educational Attainment, Nativity & Citizenship, Population Density
 - **Social Fabric topics:** Social Capital, Nonprofits & Civic Organizations, Residential Stability, Social Associations, Built Form, Household Structure
-- **Cluster labels** (literature-anchored against Brookings metro typologies, Pew community framing, and Moretti's knowledge-economy divergence — see `character_clustering_notes.md`):
+- **Cluster labels** (literature-anchored against Brookings metro typologies, Pew community framing, and Moretti's knowledge-economy divergence — see `exploration/intelligence_framework/docs/character_clustering_notes.md`):
   - Global Knowledge Capitals
   - Retirement And Lifestyle Havens
   - College And Civic Anchors
@@ -244,7 +244,7 @@ phase_N_<frame>_calibration/
 - **Business & Industry topics:** GDP Growth, Industry Concentration, Human Capital Momentum, Business Formation, Establishment Density, Location Quotient Specialization, Sector GDP Mix, Sector Employment Mix
 - **Cluster labels:** Superstar Knowledge Capitals, Broad-Based Opportunity Hubs, Emerging Momentum Markets, Industrial Rebound Markets, Uneven Transition Markets, Thin-Base Distressed Markets
 - **k=6 vs k=5 tradeoff (explicit, documented):** k=6 slightly trails k=5 on K-Means silhouette score but was chosen anyway because it preserves a narratively useful subtype split and a stronger hierarchical structure — an explicit case of favoring interpretability over the marginal quantitative metric.
-- **Coverage-caution KPI:** `zori_annual_avg_yoy_pct` (Rent Growth) — retained despite being the frame's weakest-coverage core KPI (see [§6 findings](#6-known-limitations--open-questions), a review question flags this needs a coverage-bias check).
+- **Coverage-caution KPI:** `zori_annual_avg_yoy_pct` (Rent Growth) — retained despite being the frame's weakest-coverage core KPI (see [§7 findings](#7-known-limitations-and-open-questions), a review question flags this needs a coverage-bias check).
 - **`economic_connectedness`** is retained as a hypothesis/audit signal only — not in the default clustering set, pending direct mobility data (Opportunity Atlas) expansion.
 - **Hypothesis tests:** industry mix as a leading indicator of income growth (Article 4), social capital vs. income growth (Article 5), 1yr vs. 5yr signal divergence, Opportunity Zone exposure overlay.
 
@@ -289,7 +289,7 @@ Zones answer a different question than the CBSA frames: not "how does this metro
 
 Zone types are a **national model** — a "Knowledge Corridor" tract means the same thing in Jacksonville, Richmond, or Chicago, which is what makes cross-market Deep Dive comparison possible. A ZCTA-grain rollup (for reader-friendly ZIP-code presentation) inherits a tract's dominant zone only when that zone exceeds 50% of the HUD population-weighted tract mix within the ZCTA; otherwise it's labeled `Mixed Zone`. The separate Corridor Intelligence Engine owns reproducible within-market grouping: same-zone tracts form candidate cores, while governed Geography, Infrastructure, aggregate POI composition, and conservative bridge rules refine membership before each candidate is classified as a corridor or district. Its first method and systematic IDs are planned under `metro-deep-dive-program/engines/corridor_intelligence/`; the original per-market DBSCAN design is retained only as pilot evidence and is not a dependency of the canonical tract/ZCTA marts.
 
-Zone methodology has its own literature anchor review (NCRC gentrification typologies, UC Berkeley's Urban Displacement Project, Esri Tapestry, Moretti) — see `zone_methodology_notes.md` and `zone_methodology_literature_review.md`.
+Zone methodology has its own literature anchor review (NCRC gentrification typologies, UC Berkeley's Urban Displacement Project, Esri Tapestry, Moretti) — see [zone_methodology_notes.md](zone_methodology_notes.md) and [zone_methodology_literature_review.md](zone_methodology_literature_review.md).
 
 ---
 
@@ -356,10 +356,13 @@ One Phase 8 task is explicitly still open: MotherDuck validation that all `mart_
 |---|---|
 | Scoring model definition | `foundations/semantic_layer/intelligence_catalog.yml` |
 | User-facing topic browsing | `foundations/semantic_layer/theme_catalog.yml` |
-| Full roadmap + locked architecture decisions | `INTELLIGENCE_LAYER_ROADMAP.md` |
+| Locked architecture decisions | [ARCHITECTURE.md](ARCHITECTURE.md) |
+| Phase-by-phase build history | `docs/archive/2026-09_intelligence_layer_roadmap/INTELLIGENCE_LAYER_ROADMAP.md` |
 | Phase build code + outputs | `exploration/intelligence_framework/phase_N_*/` |
 | Cross-phase calibration summary | `exploration/intelligence_framework/docs/intelligence_calibration_notes.md` |
 | Character literature anchor | `exploration/intelligence_framework/docs/character_clustering_notes.md` |
-| Zone methodology | `exploration/intelligence_framework/docs/zone_methodology_notes.md` + `zone_methodology_literature_review.md` |
+| Zone methodology | [zone_methodology_notes.md](zone_methodology_notes.md) + [zone_methodology_literature_review.md](zone_methodology_literature_review.md) |
+| Metric map and final KPI selections | [metric_map.md](metric_map.md), [metric_selections.md](metric_selections.md) |
+| What each frame answers | [frame_questions.md](frame_questions.md) |
 | Open methodological questions | `metro-deep-dive/docs/intelligence_framework_review_question_bank.md` |
 | Production query layer | DuckDB schema `mart_intelligence.*` |

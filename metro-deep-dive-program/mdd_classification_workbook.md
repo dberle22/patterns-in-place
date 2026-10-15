@@ -430,7 +430,7 @@ This is where we trace current material back into the program.
 
 | Existing artifact | Best mapped to | Layer in program | Useful as-is, reference only, or needs translation? | What to audit for | Notes |
 |---|---|---|---|---|---|
-| `exploration/intelligence_framework/docs/intelligence_framework_overview.md` | Intelligence Framework system reference | Engine / Analysis | Useful as-is | Canonical outputs, build sequence, frame structure, trajectory/zones extensions, known limitations | Strongest current reference for what the framework actually is; essential for aligning Position work and for honest caveat language |
+| `docs/methodology/intelligence_framework/intelligence_framework_overview.md` | Intelligence Framework system reference | Engine / Analysis | Useful as-is | Canonical outputs, build sequence, frame structure, trajectory/zones extensions, known limitations | Strongest current reference for what the framework actually is; essential for aligning Position work and for honest caveat language |
 | `RESEARCH_TOOL_ROADMAP.md` | Position source material | Analysis | Reference only, with selective translation | Which tab logic should become notebook analyses versus remain legacy UI framing | Very useful as a map of existing Position surfaces; not the long-term structure itself |
 | `Overview tab` | Profile / fingerprint source material | Analysis | Needs translation | Current query logic, scorecard structure, cluster-label display, what can become notebook-first identity assets | One of the clearest bridges from legacy app outputs into Act 1 notebook work |
 | `Peers tab` | Peers source material | Analysis | Needs translation | Cross-frame vs frame-specific peer behavior, current comparison layout, what should become reusable peer tables/views | Strong source for Act 1 and Act 3 comparative outputs, but should move out of app-specific framing |
@@ -499,7 +499,7 @@ or apps are supporting evidence, not the main organizing principle.
 | Intelligence Cluster Label | Treat as its own Act 1 asset | Important enough to deserve its own lineage |
 | Featured peer comparison | Required Act 1 asset | Standard intro to the intelligence framework |
 | Fingerprint KPI lineage | Define from framework structure first, then trace to current query outputs, then package for readers | Do not start from presentation slots |
-| Fingerprint KPI definition | Curated subset of KPIs from across the three intelligence frames, then promoted into a locked fingerprint asset | See `exploration/intelligence_framework/docs/intelligence_framework_overview.md` |
+| Fingerprint KPI definition | Curated subset of KPIs from across the three intelligence frames, then promoted into a locked fingerprint asset | See `docs/methodology/intelligence_framework/intelligence_framework_overview.md` |
 | Fingerprint KPI organization | Organize as `frame -> topic -> KPI`, then choose market-specific subsets for radar/table packaging | Do not force even representation across frames |
 | Fingerprint asset packaging | Keep a broader core KPI pool in the fingerprint set; radar and tables can select the best KPIs for a given market | Presentation can vary by market while staying grounded in the same pool |
 | Fingerprint KPI pool boundary | Define a governed `Act 1 candidate pool` that is smaller than the full framework but broad enough to support any KPI we would realistically use in Act 1 | This can become a reusable base data frame across multiple Act 1 assets |

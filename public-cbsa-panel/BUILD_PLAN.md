@@ -38,7 +38,7 @@ panel will consume. This is a Foundations-owned epic, assigned to a dedicated ag
 exporter begins.
 
 The complete task list and acceptance criteria are in
-[`foundations/etl/EPIC_COUNTY_FIRST_CBSA_REFRESH.md`](../foundations/etl/EPIC_COUNTY_FIRST_CBSA_REFRESH.md).
+[`foundations/archive/2026-09_county_first_cbsa_refresh/EPIC_COUNTY_FIRST_CBSA_REFRESH.md`](../foundations/archive/2026-09_county_first_cbsa_refresh/EPIC_COUNTY_FIRST_CBSA_REFRESH.md) (done; archived).
 It covers BEA county GDP through 2024, historical county HUD FMR, and BEA-correct real-GDP
 aggregation. It establishes the county-first contract; it does not publish the public release.
 
