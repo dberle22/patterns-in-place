@@ -89,6 +89,15 @@ canonical allocation tables, profile, QA, compatible benchmarks, tract median
 evidence, 2023 LODES context, governed POI counts, and interpretation limits
 in the active session; it does not write artifacts or DuckDB tables.
 
+## Site Intelligence workbook and client brief
+
+[`site_intelligence/`](site_intelligence/README.md) is the planned product
+layer above this reusable method. It will keep an internal Marimo workbook and
+a static, forwardable client brief on one declared site-artifact contract. It
+does not reopen the Catchment V1 method boundary: the workbook can show
+incomplete D4/D5/market sections as visible work items, but it must not present
+them to clients until their stated validation gates pass.
+
 ## V1 contracts and limitations
 
 | Output | Grain and contract |
