@@ -89,7 +89,7 @@ def read_config(path: Path) -> dict[str, Any]:
 
 
 def resolve_market(config: dict[str, Any], name: str) -> tuple[str, dict[str, Any]]:
-    """Return one safely named market declaration with its numeric CBSA identity."""
+    """Return one safely named market with its declared Geography identity."""
 
     if not MARKET_NAME.fullmatch(name):
         raise ValueError(f"Unsafe market name: {name!r}.")
@@ -99,6 +99,8 @@ def resolve_market(config: dict[str, Any], name: str) -> tuple[str, dict[str, An
         raise ValueError(f"Market {name!r} is missing a complete OSM source declaration.")
     if not str(market["market_id"]).isdigit():
         raise ValueError(f"Market {name!r} has a non-numeric market_id.")
+    if market.get("boundary_level", "cbsa") not in {"cbsa", "state"}:
+        raise ValueError(f"Market {name!r} must declare a cbsa or state boundary.")
     return name, market
 
 
@@ -108,33 +110,43 @@ def configure_spatial(con: duckdb.DuckDBPyConnection) -> None:
     con.execute("LOAD spatial")
 
 
-def resolve_boundary(con: duckdb.DuckDBPyConnection, market_id: str) -> dict[str, Any]:
-    """Resolve the governed analytical CBSA boundary required for clipping."""
+def resolve_boundary(con: duckdb.DuckDBPyConnection, market_id: str, boundary_level: str = "cbsa") -> dict[str, Any]:
+    """Resolve Geography's analytical boundary; existing markets default to CBSA.
+
+    State acquisition still clips to TIGER geometry, never the provider bbox.
+    Only these two internal table/key pairs may enter the rendered SQL.
+    """
+
+    boundary_sources = {"cbsa": ("cbsas_analysis", "cbsa_code"), "state": ("states_analysis", "state_fips")}
+    table, key = boundary_sources[boundary_level]
+    # State identity_current describes the 2020 identity backbone, while the
+    # analytical geometry is 2023 TIGER. Record the clipping geometry's vintage.
+    vintage = "g.boundary_vintage" if boundary_level == "state" else "i.boundary_vintage"
 
     row = con.execute(
-        """
+        f"""
         SELECT
-            g.cbsa_code,
-            i.boundary_vintage,
+            g.{key},
+            {vintage},
             ST_XMin(g.geom) AS west,
             ST_YMin(g.geom) AS south,
             ST_XMax(g.geom) AS east,
             ST_YMax(g.geom) AS north,
             ST_AsWKB(g.geom) AS geometry_wkb,
             COALESCE(c.geometry_role, 'legacy_unclassified') AS geometry_role
-        FROM geo.cbsas_analysis g
+        FROM geo.{table} g
         INNER JOIN mart_geography.identity_current i
-            ON i.geo_level = 'cbsa' AND i.geo_id = g.cbsa_code
+            ON i.geo_level = ? AND i.geo_id = g.{key}
         LEFT JOIN mart_geography.geometry_catalog c
-            ON c.geo_level = 'cbsa' AND c.table_name = 'cbsas_analysis'
-        WHERE g.cbsa_code = ?
+            ON c.geo_level = ? AND c.table_name = ?
+        WHERE g.{key} = ?
         """,
-        [market_id],
+        [boundary_level, boundary_level, table, market_id],
     ).fetchone()
     if not row:
-        raise RuntimeError(f"Geography Engine returned no current CBSA geometry for {market_id}.")
+        raise RuntimeError(f"Geography Engine returned no current {boundary_level} geometry for {market_id}.")
     return {
-        "market_id": row[0], "boundary_vintage": int(row[1]),
+        "market_id": row[0], "geo_level": boundary_level, "boundary_vintage": int(row[1]),
         "west": row[2], "south": row[3], "east": row[4], "north": row[5],
         "geometry_wkb": row[6], "geometry_role": row[7],
     }
@@ -163,10 +175,16 @@ def core_source_sql(adapter: Path, line_columns: set[str], polygon_columns: set[
     polygon_waterway = field(polygon_columns, "waterway")
 
     def select(layer: str, columns: set[str], group: str, type_sql: str, geometry_type: str, where_sql: str) -> str:
+        identity = f"NULLIF(TRIM({field(columns, 'osm_id')}), '')"
+        if layer == "multipolygons" and "osm_way_id" in columns:
+            # GDAL puts polygon ways in osm_way_id and relations in osm_id.
+            # Preserve existing relation keys and namespace way IDs so a way
+            # and relation with the same numeric ID cannot collide or be lost.
+            identity = f"COALESCE({identity}, 'way:' || NULLIF(TRIM(osm_way_id), ''))"
         return f"""
         SELECT
             {sql_literal(layer)} AS source_layer,
-            NULLIF(TRIM({field(columns, 'osm_id')}), '') AS source_feature_id,
+            {identity} AS source_feature_id,
             {field(columns, 'name')} AS source_name,
             {group} AS source_group,
             {type_sql} AS source_type,
@@ -198,18 +216,22 @@ def core_source_sql(adapter: Path, line_columns: set[str], polygon_columns: set[
 
 
 def prepare_views(con: duckdb.DuckDBPyConnection, source_sql: str, boundary: dict[str, Any], market_id: str, release: str) -> None:
-    """Create temporary source, bbox, and true-boundary views for one declared run."""
+    """Cache temporary source, bbox, and true-boundary stages for one run."""
 
-    # DuckDB does not prepare CREATE VIEW statements. Render only values that
-    # originated from the trusted Geography query or checked-in configuration.
+    # Render only values from the trusted Geography query or checked-in
+    # configuration when constructing the connection-local spatial stages.
     boundary_geometry = f"ST_GeomFromWKB(from_hex({sql_literal(boundary['geometry_wkb'].hex())}))"
     envelope = "ST_MakeEnvelope({}, {}, {}, {})".format(
         boundary["west"], boundary["south"], boundary["east"], boundary["north"]
     )
-    con.execute(f"CREATE OR REPLACE TEMP VIEW source_features AS SELECT * FROM {source_sql}")
+    # A statewide adapter contains millions of non-core OSM objects. Cache the
+    # selected rows and clipped geometry once, so each count/QA/export does not
+    # rescan the GeoPackage and repeat every intersection. These temporary
+    # tables belong only to this read-only connection, never the warehouse.
+    con.execute(f"CREATE OR REPLACE TEMP TABLE source_features AS SELECT * FROM {source_sql}")
     con.execute(
         f"""
-        CREATE OR REPLACE TEMP VIEW bbox_candidates AS
+        CREATE OR REPLACE TEMP TABLE bbox_candidates AS
         SELECT *
         FROM source_features
         WHERE ST_Intersects(ST_GeomFromWKB(source_geometry_wkb), {envelope})
@@ -217,7 +239,7 @@ def prepare_views(con: duckdb.DuckDBPyConnection, source_sql: str, boundary: dic
     )
     con.execute(
         f"""
-        CREATE OR REPLACE TEMP VIEW market_features AS
+        CREATE OR REPLACE TEMP TABLE market_features AS
         SELECT
             {sql_literal(market_id)} AS market_id,
             {sql_literal(release)} AS source_release,
@@ -263,13 +285,15 @@ def scalar_counts(con: duckdb.DuckDBPyConnection) -> dict[str, int]:
 def diagnostics(con: duckdb.DuckDBPyConnection) -> list[dict[str, Any]]:
     """Summarize source-to-clipped coverage without performing unbounded unions."""
 
+    # GDAL WKB is longitude/latitude. EPSG:4326's authority axis order is
+    # latitude/longitude, so explicitly retain x/y order for metric QA.
     rows = con.execute(
         """
         WITH bbox AS (
             SELECT
                 source_group, source_type, geometry_type,
                 COUNT(*) AS extracted_bbox_features,
-                ROUND(SUM(CASE WHEN source_layer = 'multipolygons' THEN ST_Area(ST_Transform(ST_GeomFromWKB(source_geometry_wkb), 'EPSG:4326', 'EPSG:5070')) ELSE 0 END), 2) AS extracted_bbox_polygon_area_sqm
+                ROUND(SUM(CASE WHEN source_layer = 'multipolygons' THEN ST_Area(ST_Transform(ST_GeomFromWKB(source_geometry_wkb), 'EPSG:4326', 'EPSG:5070', always_xy := true)) ELSE 0 END), 2) AS extracted_bbox_polygon_area_sqm
             FROM bbox_candidates
             GROUP BY 1, 2, 3
         ), market AS (
@@ -278,7 +302,7 @@ def diagnostics(con: duckdb.DuckDBPyConnection) -> list[dict[str, Any]]:
                 COUNT(*) AS market_features,
                 COUNT(*) FILTER (WHERE record_status = 'retained') AS retained_features,
                 COUNT(*) FILTER (WHERE record_status = 'rejected') AS rejected_features,
-                ROUND(SUM(CASE WHEN source_layer = 'multipolygons' THEN ST_Area(ST_Transform(ST_GeomFromWKB(geometry_wkb), 'EPSG:4326', 'EPSG:5070')) ELSE 0 END), 2) AS clipped_polygon_area_sqm
+                ROUND(SUM(CASE WHEN source_layer = 'multipolygons' THEN ST_Area(ST_Transform(ST_GeomFromWKB(geometry_wkb), 'EPSG:4326', 'EPSG:5070', always_xy := true)) ELSE 0 END), 2) AS clipped_polygon_area_sqm
             FROM market_features
             GROUP BY 1, 2, 3
         )
@@ -339,7 +363,7 @@ def main() -> None:
 
     with duckdb.connect(str(database), read_only=True) as con:
         configure_spatial(con)
-        boundary = resolve_boundary(con, str(market["market_id"]))
+        boundary = resolve_boundary(con, str(market["market_id"]), market.get("boundary_level", "cbsa"))
         source_sql = core_source_sql(adapter, source_columns(con, adapter, "lines"), source_columns(con, adapter, "multipolygons"))
         prepare_views(con, source_sql, boundary, str(market["market_id"]), market["source_release"])
         counts = scalar_counts(con)
@@ -357,7 +381,7 @@ def main() -> None:
                 "provider": market["provider"],
                 "market_id": str(market["market_id"]),
                 "market_slug": market_slug,
-                "boundary": {key: boundary[key] for key in ("market_id", "boundary_vintage", "west", "south", "east", "north", "geometry_role")},
+                "boundary": {key: boundary[key] for key in ("market_id", "geo_level", "boundary_vintage", "west", "south", "east", "north", "geometry_role")},
                 "source_asset": {
                     "uri": market["source_asset_uri"],
                     "cache_uri": str(source_asset.relative_to(REPO_ROOT)),
@@ -369,7 +393,7 @@ def main() -> None:
                     "method": config["query_method"],
                     "core_groups": ["road", "rail", "water_network"],
                     "water_network": {"lines": list(WATERWAY_TYPES), "surfaces": ["water=river", "waterway=riverbank"]},
-                    "market_filter": "ST_Intersects then ST_Intersection against declared CBSA geometry",
+                    "market_filter": f"ST_Intersects then ST_Intersection against declared {boundary['geo_level']} geometry",
                 },
                 "row_counts": counts,
                 "coverage": coverage,

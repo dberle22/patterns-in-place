@@ -20,6 +20,7 @@ The task-level detail below is carried over word for word from the retired `PLAT
 |---|---|
 | Public panel v2 source candidates (BFS, CBP, QCEW, HUD CHAS, permits, vacancy) and sparse BEA GDP-share fields | Public panel Epic 7 ([BUILD_PLAN.md](../public-cbsa-panel/BUILD_PLAN.md)) |
 | `housing_market_wide` Connecticut coverage fix (Track 18.7) | Any analysis using Zillow or FHFA for CT metros |
+| ACS tract gap: 14 Suffolk County, NY tracts (`36103`) are missing from `staging.acs_age_tract` for 2023 and 2024, so `gold.population_demographics` tracts in Suffolk sum to 1,452,567 against the county's 1,530,146 (77,579 people short). The tracts are present through 2022, and the county rows are complete. One Ulster County tract (`36111`) also drops between 2022 and 2023. Re-pull the 2023–24 ACS tract files for these counties, find why the pull lost them, and check the other ACS tract tables for the same gap. Found 2026-10-18 | NY series Population Map, which greys these tracts out as "no data" until fixed |
 | Semantic layer alignment pass: prune low-variance metrics from `theme_catalog.yml`, check `metric_catalog.yml` against calibrated KPI sets, run an end-to-end question test | Area Explorer public app or the chatbot resuming |
 | Cloud-hosted warehouse (MotherDuck) with `mart_intelligence` queryable | Any cloud-deployed app |
 | ACS broadband/disability/language close-out (Track 11.6–11.8) | Next time those Gold tables are touched |

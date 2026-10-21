@@ -1,0 +1,268 @@
+{
+  "updated": "2026-10-18T21:50:00-04:00",
+  "scope": "30 planned landmarks plus 7 port candidates, all retained pending editorial map review",
+  "coordinate_crs": "EPSG:4326",
+  "overture_id_policy": "Empty: named references from Wikipedia, OSM and official published coordinates; no statewide Overture run.",
+  "landmarks_sha256": "0db9d4d4e435b775458e77dd59acb5db958bb52606dcd6d1db2f1be3185573f4",
+  "sources": [
+    {
+      "name": "Lockport Flight of Five",
+      "source_url": "https://www.openstreetmap.org/way/434269399",
+      "coordinate_method": "OSM polygon representative point",
+      "source_revision": null,
+      "notes": "Flight of Five polygon in the approved dated PBF; not the city centroid."
+    },
+    {
+      "name": "Buffalo Canalside",
+      "source_url": "https://en.wikipedia.org/wiki/Canalside",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1379577977,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "Waterford Flight",
+      "source_url": "https://tile.loc.gov/storage-services/master/pnp/habshaer/ny/ny2100/ny2178/data/ny2178data.pdf",
+      "coordinate_method": "Library of Congress HAER coordinate",
+      "source_revision": null,
+      "notes": "Lock E2 lockhouse represents the eastern gateway to locks E2\u2013E6."
+    },
+    {
+      "name": "Ellis Island",
+      "source_url": "https://en.wikipedia.org/wiki/Ellis_Island",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1379350577,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "Statue of Liberty",
+      "source_url": "https://en.wikipedia.org/wiki/Statue_of_Liberty",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1380786529,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "Wall Street / NYSE",
+      "source_url": "https://en.wikipedia.org/wiki/New_York_Stock_Exchange_Building",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1372918783,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "Kodak Park, Rochester",
+      "source_url": "https://en.wikipedia.org/wiki/Eastman_Business_Park",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1364504445,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "Bethlehem Steel, Lackawanna",
+      "source_url": "https://www.loc.gov/item/ny1584/",
+      "coordinate_method": "Library of Congress HAER coordinate",
+      "source_revision": null,
+      "notes": "Historic Lackawanna plant, HAER NY-198; not the Bethlehem, Pennsylvania plant."
+    },
+    {
+      "name": "GE, Schenectady",
+      "source_url": "https://en.wikipedia.org/wiki/General_Electric_Research_Laboratory",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1373296729,
+      "notes": "Historic General Electric Research Laboratory represents the Schenectady industrial campus."
+    },
+    {
+      "name": "West Point",
+      "source_url": "https://en.wikipedia.org/wiki/United_States_Military_Academy",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1379467858,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "Saratoga Battlefield",
+      "source_url": "https://en.wikipedia.org/wiki/Saratoga_National_Historical_Park",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1380434152,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "Fort Ticonderoga",
+      "source_url": "https://en.wikipedia.org/wiki/Fort_Ticonderoga",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1376250487,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "UN Headquarters",
+      "source_url": "https://en.wikipedia.org/wiki/Headquarters_of_the_United_Nations",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1376160976,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "9/11 Memorial",
+      "source_url": "https://en.wikipedia.org/wiki/National_September_11_Memorial_%26_Museum",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1377292911,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "Empire State Plaza",
+      "source_url": "https://en.wikipedia.org/wiki/Empire_State_Plaza",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1372202270,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "Niagara Power Project",
+      "source_url": "https://en.wikipedia.org/wiki/Robert_Moses_Niagara_Power_Plant",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1379968019,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "Jones Beach",
+      "source_url": "https://en.wikipedia.org/wiki/Jones_Beach_State_Park",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1378974969,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "Bear Mountain",
+      "source_url": "https://en.wikipedia.org/wiki/Bear_Mountain_State_Park",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1362698504,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "Seneca Falls",
+      "source_url": "https://en.wikipedia.org/wiki/Women%27s_Rights_National_Historical_Park",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1362949303,
+      "notes": "Women's Rights National Historical Park represents the convention site, rather than a municipal centroid."
+    },
+    {
+      "name": "Harriet Tubman Home, Auburn",
+      "source_url": "https://www.nps.gov/hart/planyourvisit/maps.htm",
+      "coordinate_method": "NPS published GPS coordinate",
+      "source_revision": null,
+      "notes": "180 South Street visitor center/Home for the Aged; chosen instead of a generic multipart park point."
+    },
+    {
+      "name": "Stonewall Inn",
+      "source_url": "https://en.wikipedia.org/wiki/Stonewall_Inn",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1379437893,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "Rockefeller Center (NBC)",
+      "source_url": "https://en.wikipedia.org/wiki/30_Rockefeller_Plaza",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1379578542,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "Woodstock / Bethel",
+      "source_url": "https://en.wikipedia.org/wiki/Bethel_Woods_Center_for_the_Arts",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1372068006,
+      "notes": "Bethel Woods represents the 1969 festival site, not the town of Woodstock."
+    },
+    {
+      "name": "Cooperstown",
+      "source_url": "https://en.wikipedia.org/wiki/National_Baseball_Hall_of_Fame_and_Museum",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1380082614,
+      "notes": "National Baseball Hall of Fame and Museum represents the culture landmark."
+    },
+    {
+      "name": "Attica",
+      "source_url": "https://en.wikipedia.org/wiki/Attica_Correctional_Facility",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1375062818,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "Clinton Correctional, Dannemora",
+      "source_url": "https://en.wikipedia.org/wiki/Clinton_Correctional_Facility",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1368970838,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "Adirondack Park",
+      "source_url": "https://en.wikipedia.org/wiki/Adirondack_Park",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1379098594,
+      "notes": "Label anchor only; use the separately downloaded official APA blue-line polygon for the area."
+    },
+    {
+      "name": "Catskill Park",
+      "source_url": "https://en.wikipedia.org/wiki/Catskill_Park",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1362709404,
+      "notes": "Label anchor only; use the separately downloaded official DEC blue-line polygon for the area."
+    },
+    {
+      "name": "Niagara Falls",
+      "source_url": "https://en.wikipedia.org/wiki/American_Falls",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1373827424,
+      "notes": "American Falls coordinate keeps the marker on the NY portion of the falls."
+    },
+    {
+      "name": "Finger Lakes",
+      "source_url": "https://en.wikipedia.org/wiki/Finger_Lakes",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1380680155,
+      "notes": "Regional label anchor only; no regional boundary polygon is asserted."
+    },
+    {
+      "name": "Port of New York and New Jersey (NY side)",
+      "source_url": "https://en.wikipedia.org/wiki/Howland_Hook_Marine_Terminal",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1311618603,
+      "notes": "Howland Hook Marine Terminal on Staten Island represents the NY side; no claim that the whole regional port lies in NY."
+    },
+    {
+      "name": "Port of Albany\u2013Rensselaer",
+      "source_url": "https://en.wikipedia.org/wiki/Port_of_Albany%E2%80%93Rensselaer",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1344988561,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "Port of Oswego",
+      "source_url": "https://en.wikipedia.org/wiki/Port_of_Oswego",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1378096416,
+      "notes": "Named-site coordinate; cartographic landmark marker."
+    },
+    {
+      "name": "Buffalo Harbor",
+      "source_url": "https://www.portofbuffalo.com/contact",
+      "coordinate_method": "Hand-placed port marker from operator location map",
+      "source_revision": null,
+      "notes": "Gateway Metroport, 1951 Hamburg Turnpike. Approximate marker at the operator map center; represents the commercial port, not the Small Boat Harbor."
+    },
+    {
+      "name": "Port of Ogdensburg",
+      "source_url": "https://qsl.com/our-network/ogdensburg/",
+      "coordinate_method": "Terminal operator published coordinate",
+      "source_revision": null,
+      "notes": "Marine terminal location; not the international bridge returned by the Wikipedia authority redirect."
+    },
+    {
+      "name": "Port of Coeymans",
+      "source_url": "https://en.wikipedia.org/wiki/Port_of_Coeymans",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1367608909,
+      "notes": "Additional port candidate confirmed by NYSDOT: https://www.dot.ny.gov/news/press-releases/2024/2024-07-291 ."
+    },
+    {
+      "name": "Port of Rochester",
+      "source_url": "https://www.openstreetmap.org/way/447569260",
+      "coordinate_method": "OSM polygon representative point",
+      "source_revision": null,
+      "notes": "Port of Rochester Building at the Genesee River mouth; additional review candidate. City describes the current site as a marina/terminal complex: https://www.cityofrochester.gov/locations/port-rochester . Do not imply cargo scale comparable to the other ports."
+    }
+  ]
+}

@@ -62,6 +62,7 @@ def main() -> None:
         "interface_version": interface["interface_version"],
         "market": args.market,
         "market_id": source_manifest["market_id"],
+        "market_boundary_geo_level": source_manifest["boundary"].get("geo_level", "cbsa"),
         "source_run_id": source_manifest["source_run_id"],
         "artifact_uri": str(artifact.relative_to(REPO_ROOT)),
         "validation_manifest_uri": str((source_dir / "validated" / "osm_core_v1" / "validation_manifest.json").relative_to(REPO_ROOT)),

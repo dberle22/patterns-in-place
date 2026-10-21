@@ -4,8 +4,16 @@
 # the GeoPackage adapter used for local reads on every run.
 source_system: osm
 source_dataset: infrastructure
-query_method: core_tag_selector_then_governed_cbsa_clip
+query_method: core_tag_selector_then_governed_boundary_clip
 markets:
+  new_york_state:
+    market_id: "36"
+    boundary_level: state
+    source_release: "snapshot_2026-10-17"
+    provider: geofabrik
+    source_asset_uri: "https://download.geofabrik.de/north-america/us/new-york-261017.osm.pbf"
+    source_asset_path: "metro-deep-dive-program/engines/infrastructure/outputs/new_york_state/raw/geofabrik_new-york-261017.osm.pbf"
+    source_adapter_path: "metro-deep-dive-program/engines/infrastructure/outputs/new_york_state/raw/geofabrik_new-york-261017.gpkg"
   richmond_va:
     market_id: "40060"
     source_release: "snapshot_2026-07-29"

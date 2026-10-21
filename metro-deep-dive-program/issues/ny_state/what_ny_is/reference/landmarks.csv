@@ -1,0 +1,38 @@
+name,theme,kind,lat,lon,overture_id,keep
+Lockport Flight of Five,Erie Canal,point,43.1712963,-78.69275781,,true
+Buffalo Canalside,Erie Canal,point,42.89138889,-78.8725,,true
+Waterford Flight,Erie Canal,point,42.7895443,-73.6819471,,true
+Ellis Island,Immigration,point,40.69944444,-74.03972222,,true
+Statue of Liberty,Immigration,point,40.68916667,-74.04444444,,true
+Wall Street / NYSE,"Capitalism, highs and lows",point,40.70694444,-74.01111111,,true
+"Kodak Park, Rochester","Capitalism, highs and lows",point,43.199,-77.631,,true
+"Bethlehem Steel, Lackawanna","Capitalism, highs and lows",point,42.825534,-78.858169,,true
+"GE, Schenectady","Capitalism, highs and lows",point,42.81077222,-73.951575,,true
+West Point,Military,point,41.3925,-73.9575,,true
+Saratoga Battlefield,Military,point,42.99888889,-73.6375,,true
+Fort Ticonderoga,Military,point,43.84166667,-73.3875,,true
+UN Headquarters,Global center,point,40.74944444,-73.96805556,,true
+9/11 Memorial,Global center,point,40.71166667,-74.01361111,,true
+Empire State Plaza,Public works,point,42.650347,-73.759688,,true
+Niagara Power Project,Public works,point,43.14305556,-79.03972222,,true
+Jones Beach,Public works,point,40.59583333,-73.51527778,,true
+Bear Mountain,Public works,point,41.31277778,-74.00583333,,true
+Seneca Falls,Social movements,point,42.91083333,-76.80138889,,true
+"Harriet Tubman Home, Auburn",Social movements,point,42.91166667,-76.56277778,,true
+Stonewall Inn,Social movements,point,40.73388889,-74.00222222,,true
+Rockefeller Center (NBC),Media and culture,point,40.75888889,-73.97916667,,true
+Woodstock / Bethel,Media and culture,point,41.69722222,-74.87777778,,true
+Cooperstown,Media and culture,point,42.7,-74.92333333,,true
+Attica,Prison towns,point,42.85,-78.27166667,,true
+"Clinton Correctional, Dannemora",Prison towns,point,44.7236,-73.7208,,true
+Adirondack Park,Landscape,area,44,-74.33333333,,true
+Catskill Park,Landscape,area,42.08333333,-74.5,,true
+Niagara Falls,Landscape,point,43.085,-79.07,,true
+Finger Lakes,Landscape,area,42.66666667,-76.83333333,,true
+Port of New York and New Jersey (NY side),Ports,port,40.63833333,-74.18833333,,true
+Port of Albany–Rensselaer,Ports,port,42.62805556,-73.7575,,true
+Port of Oswego,Ports,port,43.46388889,-76.51027778,,true
+Buffalo Harbor,Ports,port,42.80080327,-78.85077482,,true
+Port of Ogdensburg,Ports,port,44.70805556,-75.48638889,,true
+Port of Coeymans,Ports,port,42.48416667,-73.79055556,,true
+Port of Rochester,Ports,port,43.255366,-77.607347,,true

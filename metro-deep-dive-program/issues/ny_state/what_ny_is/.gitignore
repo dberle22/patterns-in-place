@@ -1,0 +1,6 @@
+# Official one-off downloads stay local; provenance is recorded in the manifest.
+/data/*.geojson
+/data/wikipedia*.json
+# Keep the issue's curated input despite the monorepo's general CSV exclusion.
+!/reference/landmarks.csv
+!/reference/state_population_history.csv

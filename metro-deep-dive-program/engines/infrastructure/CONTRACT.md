@@ -7,6 +7,27 @@ names, not yet materialized DuckDB table names. Epic 2 recorded the former
 remain serving candidates until this engine republishes them against that
 declared analytical boundary.
 
+**State scope added 2026-10-18:** `new_york_state` declares `boundary_level:
+state`, Geography identity `36`, and `geo.states_analysis` (2023 TIGER/Line,
+`geometry_role = analysis`). Existing declarations without `boundary_level`
+remain CBSA-scoped. Source manifests record `boundary.geo_level`; normalization
+defaults older manifests without that field to `cbsa`. New York uses EPSG:5070
+for metric QA. This adds physical context for NY Map 2 without changing the
+core tag mapping or promoting point features into Infrastructure.
+
+The NY adapter audit also identified GDAL polygon ways whose `osm_id` is null
+but `osm_way_id` is populated. Acquisition uses `way:<osm_way_id>` for those
+features, preserving existing relation IDs while preventing way/relation
+numeric-ID collisions. A row missing both IDs still enters the rejected
+identity stream. This applies to future runs with that GDAL field; existing
+source caches are not rewritten.
+
+Metric QA explicitly transforms longitude/latitude WKB with `always_xy = true`.
+Acquisition caches its selected and clipped rows in connection-local temporary
+tables so statewide QA and exports do not repeatedly scan the full adapter.
+Neither change writes managed warehouse tables. The consumer handoff verifies
+`market_boundary_geo_level` and includes it in its printed pointer.
+
 ## Contract boundary
 
 The engine converts a declared source release and a governed market boundary
@@ -46,7 +67,7 @@ unversioned display fields for them.
 | Classification | `feature_group`, `feature_type`, `feature_form`, `mapping_version`, `mapping_status`, `mapping_rule_id`, `mapping_evidence`, `review_status` | Core groups are `road`, `rail`, and `water_network`; `feature_form` distinguishes `linear` and `surface` water. Types stay source-supported and documented. `mapping_status` is `mapped`, `unmapped`, `ambiguous`, or `overridden`. |
 | Source content | `source_name`, `source_tags`, `source_attributes` | Preserve raw OSM/provider tags and selected source attributes in structured form. Absent tags are null; governed values are not written back as raw tags. |
 | Geometry | `geometry`, `geometry_type`, `source_crs`, `analytical_crs`, `geometry_status` | Analytical geometry is line or polygon, clipped to the governed boundary where needed. The source geometry and its CRS remain traceable. |
-| Provenance | `market_id`, `market_boundary_geo_level`, `market_boundary_vintage`, `source_run_id`, `extracted_at`, `source_asset_uri`, `source_asset_checksum`, `source_query` | `market_id` is the Geography Engine's CBSA identity, not a market slug. A source release and extract time are distinct. A null checksum is explicit when unavailable. |
+| Provenance | `market_id`, `market_boundary_geo_level`, `market_boundary_vintage`, `source_run_id`, `extracted_at`, `source_asset_uri`, `source_asset_checksum`, `source_query` | `market_id` is the Geography Engine identity at the declared `cbsa` or `state` level, not a market slug. A source release and extract time are distinct. A null checksum is explicit when unavailable. |
 | Validation | `record_status`, `rejection_reason`, `is_within_market_boundary`, `was_clipped`, `was_repaired` | `record_status` is `retained` or `rejected`; rejection preserves identity, tags, geometry when present, and provenance. |
 
 The engine publishes WGS 84 source geometry for interchange and declares an
@@ -120,8 +141,9 @@ membership.
 
 Before an engine run, Geography supplies one declared market boundary with:
 
-- `market_id` as the current CBSA `geo_id` (for example, `40060`),
-  `market_boundary_geo_level = cbsa`, and its `boundary_vintage`;
+- `market_id` as the current `geo_id` at the declared boundary level (for
+  example, CBSA `40060` or state `36`), `market_boundary_geo_level` as `cbsa`
+  or `state`, and its `boundary_vintage`;
 - geometry role and source: use analytical geometry for clipping and spatial
   QA; use display geometry only for review products;
 - boundary CRS plus the run's projected analytical CRS; and
@@ -130,7 +152,7 @@ Before an engine run, Geography supplies one declared market boundary with:
   features from the serving layer with `outside_market_boundary`.
 
 The engine must not derive a market footprint from counties, tracts, a place
-name, or a buffered bbox when the governed CBSA geometry is available. It may
+name, or a buffered bbox when the governed analytical boundary is available. It may
 use a bbox only to acquire a covering source extract. It must not assign
 tracts, counties, ZIPs, or ZCTAs; those are Geography operations requested by
 a consumer.

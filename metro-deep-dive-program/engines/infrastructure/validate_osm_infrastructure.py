@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Validate and publish an Epic 4 serving artifact for one normalized OSM run.
 
-The script keeps source WGS84 geometry for interchange, declares a local UTM
-analytical CRS for each first-slice market, and writes only valid line/polygon
+The script keeps source WGS84 geometry for interchange, declares a projected
+analytical CRS for each market, and writes only valid line/polygon
 records to the serving artifact. It creates QA JSON and a deliberately small
 SVG review map; it does not simplify or dissolve analytical features.
 """
@@ -27,7 +27,9 @@ DEFAULT_OUTPUT_ROOT = ENGINE_DIR / "outputs"
 MAPPING_VERSION = "osm_core_v1"
 # NAD83 UTM provides local metric measurements without promising one national
 # projection. Additional markets must declare their CRS before serving.
-ANALYTICAL_CRS = {"richmond_va": "EPSG:26918", "jacksonville_fl": "EPSG:26917"}
+# New York spans UTM zones; CONUS Albers supplies one declared statewide
+# measurement CRS rather than extending a local market's UTM assumption.
+ANALYTICAL_CRS = {"richmond_va": "EPSG:26918", "jacksonville_fl": "EPSG:26917", "new_york_state": "EPSG:5070"}
 
 
 def checksum(path: Path) -> str:
@@ -126,7 +128,9 @@ def qa_summary(con: duckdb.DuckDBPyConnection, query: str, analytical_crs: str) 
     water = rows(
         f"""
         SELECT feature_type, feature_form, geometry_type, COUNT(*) AS features,
-            ROUND(SUM(CASE WHEN feature_form = 'surface' THEN ST_Area(ST_Transform(ST_GeomFromWKB(geometry), 'EPSG:4326', {sql_literal(analytical_crs)})) ELSE 0 END), 2) AS area_sqm,
+            -- Interchange WKB uses longitude/latitude; keep that order when
+            -- applying authority-defined CRSs for the metric water QA.
+            ROUND(SUM(CASE WHEN feature_form = 'surface' THEN ST_Area(ST_Transform(ST_GeomFromWKB(geometry), 'EPSG:4326', {sql_literal(analytical_crs)}, always_xy := true)) ELSE 0 END), 2) AS area_sqm,
             ROUND(AVG(ST_NPoints(ST_GeomFromWKB(geometry))), 2) AS avg_vertices,
             MAX(ST_NPoints(ST_GeomFromWKB(geometry))) AS max_vertices
         FROM ({query})
