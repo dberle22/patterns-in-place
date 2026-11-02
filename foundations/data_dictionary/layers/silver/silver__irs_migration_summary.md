@@ -36,7 +36,8 @@
 | `net_agi` | `DOUBLE` | 0.0305 | Net adjusted gross income calculated as `inflow_agi - outflow_agi`. |
 
 ## Data Quality Notes
-- CBSA rows intentionally leave `state_fips` and `state_abbr` null because a metro can span multiple states.
+
+- **IRS direction fix, 2026-10-26:** before this date every IRS flow was stored backwards (staging read origin from the IRS `y2_` columns), so inflow and outflow were swapped and every net value had the wrong sign. Rebuilt with origin from `y1_` and destination from `y2_`; `foundations/etl/gold/check_irs_migration_direction.sql` fails if it regresses. Spec: [IRS_MIGRATION_DIRECTION_FIX_SPEC.md](../../../etl/IRS_MIGRATION_DIRECTION_FIX_SPEC.md).- CBSA rows intentionally leave `state_fips` and `state_abbr` null because a metro can span multiple states.
 - Missing-sided summary rows are now zero-filled before netting, so `net_returns` and `net_exemptions` no longer go null just because one side had no observed rows.
 - Small remaining null rates on AGI summary columns trace to suppressed or missing income values in the staged IRS source.
 

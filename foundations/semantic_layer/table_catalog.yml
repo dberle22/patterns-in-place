@@ -458,12 +458,12 @@ tables:
         queryable: true
       - column_name: irs_net_migration
         type: integer
-        description: IRS-based net migration count.
+        description: IRS-based net migration count (tax returns in minus out; positive = net gain). Sign corrected 2026-10-26.
         source_id: IRS
         queryable: true
       - column_name: irs_net_migration_rate
         type: percent
-        description: IRS-based net migration rate.
+        description: IRS-based net migration rate (net returns per ACS resident; positive = net gain). Sign corrected 2026-10-26.
         source_id: IRS
         queryable: true
       - column_name: irs_migration_churn

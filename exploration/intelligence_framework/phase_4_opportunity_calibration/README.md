@@ -2,6 +2,8 @@
 
 This folder now contains the complete modular Opportunity build plus the review notebook layer.
 
+> **IRS direction fix, 2026-10-26.** Builds before this date used IRS migration values with the sign reversed (`irs_net_migration_rate`, `irs_net_agi`). The canonical `outputs/` were replaced from the `fixed_gdp_frozen` rerun and reloaded, with the three BEA GDP inputs held at their June values and the published cluster names carried forward by cluster ID (the rule-based namer would have swapped Superstar Knowledge Capitals and Emerging Momentum Markets). Rerunning `run_phase4_opportunity.R` as is would pick up the 2024 GDP refresh and the rule-based names; see the GDP and clustering refresh item in `foundations/ROADMAP.md`; clusters, peers and published names are unchanged and scores moved. The previous outputs are in `outputs_irs_fix_2026-10/canonical_before/`. Review: [IRS_FIX_RERUN_REVIEW.md](../IRS_FIX_RERUN_REVIEW.md).
+
 ## Model Overview
 
 The Opportunity model scores the current `396`-CBSA universe on future-facing economic upside for residents, investors, and businesses. It combines the published Opportunity KPI set across three subjects:

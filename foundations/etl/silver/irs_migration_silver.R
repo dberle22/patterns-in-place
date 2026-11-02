@@ -133,7 +133,8 @@ state_lookup <- tibble(
   distinct(state_fip, state_abbr, state_name)
 
 # County FIPS can change over time, so we build a "best available" county name
-# reference from both the current crosswalk and the staged IRS destination names.
+# reference from both the current crosswalk and the staged IRS origin names
+# (the inflow file names only the origin county, via y1_countyname).
 county_name_ref <- bind_rows(
   # Current county crosswalk names are the preferred modern labels.
   county_lookup %>%
@@ -145,8 +146,8 @@ county_name_ref <- bind_rows(
   # cleanly to the current crosswalk naming.
   county_inflow_raw %>%
     transmute(
-      county_geoid = dest_geoid,
-      county_name = dest_county_name
+      county_geoid = origin_geoid,
+      county_name = origin_county_name
     )
 ) %>%
   filter(!is.na(county_name), county_name != "") %>%
@@ -202,7 +203,8 @@ county_flows <- county_inflow_raw %>%
     origin_state_abbr,
     origin_county_fips,
     dest_geo_id = dest_geoid,
-    dest_geo_name = coalesce(dest_geo_name, dest_county_name),
+    # Staging carries no destination name, so fall back to the ID, as for origin.
+    dest_geo_name = coalesce(dest_geo_name, dest_geoid),
     dest_state_fips,
     dest_state_abbr,
     dest_county_fips,

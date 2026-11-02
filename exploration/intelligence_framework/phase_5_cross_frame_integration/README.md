@@ -2,6 +2,8 @@
 
 This folder holds the cross-frame combined model work that sits on top of the completed Character, Livability, and Opportunity frame calibrations.
 
+> **IRS direction fix, 2026-10-26.** Builds before this date used IRS migration values with the sign reversed (through the Character and Opportunity inputs). The canonical `outputs/` were replaced from the `fixed_gdp_frozen` rerun and reloaded (Opportunity inputs with GDP held at June values; names pinned to the published map, which the rules already matched); clusters, peers and published names are unchanged and scores moved. The previous outputs are in `outputs_irs_fix_2026-10/canonical_before/`. Review: [IRS_FIX_RERUN_REVIEW.md](../IRS_FIX_RERUN_REVIEW.md).
+
 The Phase 5 goal is different from the single-frame phases:
 
 - identify which metros look similar overall across all three frames

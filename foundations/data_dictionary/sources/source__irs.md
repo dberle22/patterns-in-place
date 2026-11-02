@@ -70,6 +70,7 @@ Current IRS handoff pattern:
 
 ## 6. Transformation Notes
 
+- **IRS direction fix, 2026-10-26:** before this date every IRS flow was stored backwards (staging read origin from the IRS `y2_` columns), so inflow and outflow were swapped and every net value had the wrong sign. Rebuilt with origin from `y1_` and destination from `y2_`; `foundations/etl/gold/check_irs_migration_direction.sql` fails if it regresses. Spec: [IRS_MIGRATION_DIRECTION_FIX_SPEC.md](../../etl/IRS_MIGRATION_DIRECTION_FIX_SPEC.md). In the inflow files each row is keyed by the Y2 (destination) area and names the Y1 (origin) area.
 | Topic group | Current modeled role | Derivation logic |
 | --- | --- | --- |
 | Migration inflows | documented staged source with detailed and summary migration outputs | ingest builds `flow_id`, pads FIPS codes, drops within-county non-migrants, converts suppressed negative values to nulls, scales `agi_thousands` into dollar `agi`, deduplicates repeated staged county flows in Silver, and rebases county flows to CBSA for the summary contract |

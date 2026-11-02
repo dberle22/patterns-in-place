@@ -22,7 +22,8 @@
 - **IRS AGI metrics**: `irs_inflow_agi`, `irs_outflow_agi`, `irs_net_agi`
 
 ## Data Quality Notes
-- Live query checks confirm the intended `geo_level + geo_id + year` grain with zero duplicate keys.
+
+- **IRS direction fix, 2026-10-26:** before this date every IRS flow was stored backwards (staging read origin from the IRS `y2_` columns), so inflow and outflow were swapped and every net value had the wrong sign. Rebuilt with origin from `y1_` and destination from `y2_`; `foundations/etl/gold/check_irs_migration_direction.sql` fails if it regresses. Spec: [IRS_MIGRATION_DIRECTION_FIX_SPEC.md](../../../etl/IRS_MIGRATION_DIRECTION_FIX_SPEC.md).- Live query checks confirm the intended `geo_level + geo_id + year` grain with zero duplicate keys.
 - `mobility_rate` is null in 6,288 rows, matching missing ACS migration base coverage.
 - IRS fields populate in 42,575 rows (2.25% of the table), matching the county/CBSA/state coverage of `silver.irs_migration_summary`.
 - IRS rate fields use `pop_nativity_total` as the denominator so they remain comparable on the same population base as the rest of the migration mart.

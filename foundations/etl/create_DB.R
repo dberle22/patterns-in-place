@@ -103,6 +103,8 @@ gold_scripts <- c(
   "gold_environment_wide.sql",
   "gold_affordability_wide.sql",
   "gold_migration_wide.sql",
+  # Read-only guard: errors if the IRS flows are stored backwards.
+  "check_irs_migration_direction.sql",
   "gold_transport_built_form_wide.sql",
   "gold_transport_built_form_sld.sql",
   "gold_food_access_wide.sql",
