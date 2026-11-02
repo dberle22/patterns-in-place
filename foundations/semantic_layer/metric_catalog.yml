@@ -1297,14 +1297,14 @@ metrics:
     description: Unemployment rate.
     source_table: economics_labor_wide
     source_column: pct_unemployment_rate
-    formula: unemployed / labor_force
+    formula: unemployed / civilian labor force (BLS LAUS rate for county, cbsa and state; ACS B23025_005 / B23025_003 for tract and zcta)
     unit_format: percent
     subject_areas: [labor]
     themes: [opportunity]
     valid_geo_levels: [us, region, division, state, cbsa, county, place, zcta, tract]
     growth_eligible: false
     growth_windows: []
-    caveats: Short-run labor tightness measure, not a full job quality signal.
+    caveats: Short-run labor tightness measure, not a full job quality signal. Tract and zcta values before the 2026-10-22 ACS B23025 fix were wrong (about 0.40).
     status: active
 
   - metric_id: acs_ind_total_emp

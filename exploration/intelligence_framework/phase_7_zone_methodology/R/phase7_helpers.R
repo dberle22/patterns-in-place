@@ -172,6 +172,39 @@ build_phase7_draft_label_scores <- function(subject_centroids) {
 }
 
 build_phase7_provisional_label_map <- function(subject_centroids, config) {
+  # When config carries a fixed name map, use it instead of the automatic
+  # scoring below, after checking every cluster still has the expected size.
+  # A size mismatch means the inputs changed and the k-means IDs may have
+  # shuffled, so we stop rather than attach names to the wrong clusters.
+  if (!is.null(config$zone_name_map)) {
+    named <- subject_centroids |>
+      dplyr::select(zone_kmeans_cluster, tracts_in_cluster) |>
+      dplyr::left_join(config$zone_name_map, by = "zone_kmeans_cluster")
+
+    if (any(is.na(named$zone_type)) || any(named$tracts_in_cluster != named$expected_tracts)) {
+      print(as.data.frame(named))
+      stop(
+        paste(
+          "Cluster sizes no longer match config$zone_name_map; the inputs changed.",
+          "Re-match clusters to the previous build (see R/phase7_labor_fix_rerun_compare.R)",
+          "and update zone_name_map in phase7_config.R before running."
+        ),
+        call. = FALSE
+      )
+    }
+
+    return(
+      named |>
+        dplyr::transmute(
+          zone_kmeans_cluster,
+          provisional_zone_type = zone_type,
+          label_score = NA_real_,
+          zone_type_name_status = "draft_label_pending_review"
+        ) |>
+        dplyr::arrange(zone_kmeans_cluster)
+    )
+  }
+
   label_score_lookup <- tibble::tribble(
     ~draft_zone_type, ~score_column,
     "Knowledge Corridor", "label_score_knowledge_corridor",

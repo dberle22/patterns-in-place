@@ -120,13 +120,14 @@ mutate(
   in_lf_armed_forces = in_lf_armed_forcesE,
   not_in_labor_force = not_in_labor_forceE,
   employed           = employedE,
-  # derive unemployed since we'll trust our own calc
-  unemployed         = in_labor_forceE - employedE
+  unemployed         = unemployedE
 ) %>%
   mutate(
     lfpr           = in_labor_force / pop_16plus,
-    unemp_rate     = unemployed / na_if(in_labor_force, 0),
+    # BLS/ACS convention: unemployed / civilian labor force
+    unemp_rate     = unemployed / na_if(in_lf_civilian, 0),
     emp_pop_ratio  = employed / pop_16plus,
+    # kept for compatibility; identical to unemp_rate since the 2026-10-22 B23025 fix
     unemp_rate_civ = unemployed / na_if(in_lf_civilian, 0)
   ) %>%
   

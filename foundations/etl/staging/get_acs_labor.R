@@ -46,9 +46,10 @@ vars <- c(
   pop_16plus          = "B23025_001",  # total 16+
   in_labor_force      = "B23025_002",
   in_lf_civilian      = "B23025_003",
-  in_lf_armed_forces  = "B23025_004",
-  not_in_labor_force  = "B23025_005",
-  employed            = "B23025_007",
+  employed            = "B23025_004",  # civilian LF: employed
+  unemployed          = "B23025_005",  # civilian LF: unemployed
+  in_lf_armed_forces  = "B23025_006",
+  not_in_labor_force  = "B23025_007",
   
   # 2) Occupation
   occ_total           = "C24010_001",

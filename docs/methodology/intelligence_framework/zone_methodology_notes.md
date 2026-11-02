@@ -1,6 +1,6 @@
 # Zone Methodology Notes
 
-*Last updated: 2026-09-08*
+*Last updated: 2026-10-23*
 
 This document is the canonical methodology reference for Phase 7: the Zone Methodology. It captures the design decisions, data architecture, algorithmic choices, and literature anchors that govern how Patterns in Place classifies sub-metro areas into zone types.
 
@@ -12,6 +12,22 @@ composition, and conservative bridge tracts, then classifies candidates as
 corridors or districts. It uses a shared versioned market method with
 deterministic engine-owned IDs; opportunity selection and editorial names
 remain downstream.
+
+**Labor-fix rerun (`2026-10-23`):** The tract unemployment input was wrong
+until the ACS B23025 fix: it held 2 − 1/LFPR, a labor force participation
+transform, and tracts under 50% participation were median-imputed. The model
+was rerun on the corrected rate with unchanged code, seeds, KPI contract and
+k = 7, then promoted. k = 7 still has the best k-means silhouette; 83.4% of
+tracts keep their type (adjusted Rand 0.695). The knowledge pair reorganised:
+Emerging Knowledge Districts is now a narrower campus and student type (2,111
+tracts), and Knowledge Corridor absorbs young-professional and educated-affluent
+tracts (10,899). Zone names are the previous names carried forward to the
+matched clusters through a fixed name map in `phase7_config.R`, which replaces
+the automatic centroid-score labeler. Names remain draft and are reviewed CBSA
+by CBSA during issue work. Opportunity and composite scores moved (44.5% of
+tracts shift more than 10 national Opportunity percentile points); Character
+and Livability did not. Full comparison:
+`exploration/intelligence_framework/phase_7_zone_methodology/PHASE7_LABOR_FIX_RERUN_REVIEW.md`.
 
 ---
 

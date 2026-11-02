@@ -68,6 +68,7 @@ publisher/content/**/result*.csv
 foundations/visual_library/charts/**/sample_output/
 foundations/data_dictionary/artifacts/
 exploration/**/outputs/
+exploration/**/outputs_rerun_*/
 exploration/**/cache/
 metro-deep-dive-program/engines/poi/outputs/
 metro-deep-dive-program/engines/infrastructure/outputs/
