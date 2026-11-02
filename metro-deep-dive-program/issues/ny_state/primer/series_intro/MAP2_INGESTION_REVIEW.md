@@ -11,12 +11,12 @@ validation and remaining visual decisions, not approval of the final map.
 
 | Input | Result | Provenance / QA |
 |---|---|---|
-| OSM infrastructure | 179,751 valid, uniquely identified serving features: 152,269 roads, 21,368 rail and 6,114 water-network features | [Consumer handoff](what_ny_is/data/map2_infrastructure_handoff.json), [independent input QA](what_ny_is/data/map2_ingestion_qa.json) |
-| Canal Corporation centerline | 20 valid LineStrings; Erie route is one continuous line, about 337.78 miles | [Download manifest](what_ny_is/data/map2_reference_manifest.json) |
-| Adirondack Park | One valid APA blue-line polygon, about 5.824 million acres | Download manifest; `what_ny_is/data/adirondack_park.geojson` |
-| Catskill Park | One valid DEC blue-line polygon, about 696,707 acres | DEC's current `dil_reference/MapServer/8`; `what_ny_is/data/catskill_park.geojson` |
-| Landmarks and ports | All 30 planned landmarks plus seven ports; all 37 coordinates inside NY; all retained for review | [Landmark CSV](what_ny_is/reference/landmarks.csv), [coordinate sources](what_ny_is/reference/landmark_sources.json) |
-| Principal cities | 22 NY principal-city points across 13 metros, unique at CBSA × Place | Independently executed [SQL](what_ny_is/sql/ny_principal_cities.sql) |
+| OSM infrastructure | 179,751 valid, uniquely identified serving features: 152,269 roads, 21,368 rail and 6,114 water-network features | [Consumer handoff](data/map2_infrastructure_handoff.json), [independent input QA](data/map2_ingestion_qa.json) |
+| Canal Corporation centerline | 20 valid LineStrings; Erie route is one continuous line, about 337.78 miles | [Download manifest](data/map2_reference_manifest.json) |
+| Adirondack Park | One valid APA blue-line polygon, about 5.824 million acres | Download manifest; `primer/series_intro/data/adirondack_park.geojson` |
+| Catskill Park | One valid DEC blue-line polygon, about 696,707 acres | DEC's current `dil_reference/MapServer/8`; `primer/series_intro/data/catskill_park.geojson` |
+| Landmarks and ports | All 30 planned landmarks plus seven ports; all 37 coordinates inside NY; all retained for review | [Landmark CSV](reference/landmarks.csv), [coordinate sources](reference/landmark_sources.json) |
+| Principal cities | 22 NY principal-city points across 13 metros, unique at CBSA × Place | Independently executed [SQL](sql/ny_principal_cities.sql) |
 
 The source PBF is Geofabrik's dated `new-york-261017.osm.pbf`, 497,738,989
 bytes, verified against the provider's MD5. The approximately 4 GB GeoPackage

@@ -224,7 +224,7 @@ Found by headless testing on 2026-11-02. No fix has been made, and the line numb
 
 ## Next
 
-Once this branch is merged to `main`, review the Albany folder restructure, which is still uncommitted. `docs/STATUS.md` and `question_bank.md` hold edits for this work and ship with it.
+Nothing is scheduled. Pick up the Deferred items when a piece needs them. The Albany folder restructure followed this work in its own PR, with `docs/STATUS.md` and `question_bank.md`.
 
 ## Expected POIs by market
 

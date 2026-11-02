@@ -18,7 +18,7 @@ A spec for one agent session. Make every LODES WAC/RAC count and ratio in the wa
 
 ## Why
 
-Found 2026-10-22 during Albany Lens 1 ([build plan](../../metro-deep-dive-program/issues/ny_state/albany/ALBANY_LENS1_VISUALS_BUILD_PLAN.md), Findings). In every county, WAC `jobs_total` equals LODES OD private jobs exactly. For Albany city that's 72.1k "jobs" against 131.8k in all, because 45% of the city's jobs are public. Q2's job centers and Q6's place jobs read `jobs_total`, and neither spec said so. Albany's largest job tract (downtown, 71% public) looked like a quarter of its real size.
+Found 2026-10-22 during Albany Lens 1 ([build plan](../../metro-deep-dive-program/issues/ny_state/metro_deep_dives/albany/part_1/ALBANY_LENS1_VISUALS_BUILD_PLAN.md), Findings). In every county, WAC `jobs_total` equals LODES OD private jobs exactly. For Albany city that's 72.1k "jobs" against 131.8k in all, because 45% of the city's jobs are public. Q2's job centers and Q6's place jobs read `jobs_total`, and neither spec said so. Albany's largest job tract (downtown, 71% public) looked like a quarter of its real size.
 
 ## Required work
 
@@ -45,7 +45,7 @@ Start from this inventory (2026-10-23; re-search to confirm, including `jobs_to_
 | `analyses/position/internal_structure/queries/internal_structure_d3_job_centers.sql` | `jobs_total` | |
 | `analyses/explanation/catchment/` (notebook, `site_intelligence/SITE_INTELLIGENCE_CLIENT_BRIEF.py`, `site_bundle_adapter.py`) | `jobs_total`, `workers_total` | **Shipped client work (PR #7).** What did the brief present as "jobs"? Report what was shown and whether a correction note is needed. Don't edit the delivered brief; report to Dan. |
 | `exploration/intelligence_framework/phase_7_zone_methodology/` (config, tract frame build, validator, app) | `jobs_per_resident` (private), high-wage and professional shares (private) | Note only (see Coordination) |
-| `issues/ny_state/albany/` | already on all jobs where it matters | No change |
+| `issues/ny_state/metro_deep_dives/albany/` | already on all jobs where it matters | No change |
 | Semantic layer, data dictionary | | Updated in step 1 |
 
 For each reader, record: the columns used, what the analysis claims (all jobs or private), whether the claim matches the data, and the **recommended choice**: private on purpose, switch to all, or show both. **Don't change analysis logic in this session**, except switching a reader from a deprecated alias to the explicit name *with the same values*. Changing which universe an analysis uses is that analysis's decision. List them for Dan.

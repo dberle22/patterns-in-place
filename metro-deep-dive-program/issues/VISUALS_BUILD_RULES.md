@@ -1,13 +1,13 @@
 # Issue Visuals: Build Rules
 
 **Status:** Active
-**Updated:** 2026-10-22
+**Updated:** 2026-11-02
 
 How to go from an approved outline to the evidence and print visuals for a Metro Deep Dive issue. It is written so it can become a Claude Code skill or agent: each phase has inputs, steps, a gate and an output, and every rule says why it exists.
 
 **The product is the article, not the charts.** Answer the outline's questions first, with several tables and quick views per question. Write down what the evidence says. Only then choose the one visual that carries each claim.
 
-Learned from two builds: [What NY Is](ny_state/what_ny_is/WHAT_NY_IS_VISUALS_BUILD_PLAN.md) (2026-10-17 to 10-19) and [Albany Lens 1](ny_state/albany/ALBANY_LENS1_VISUALS_BUILD_PLAN.md) (v1 2026-10-22). Add a rule when a review catches something a rule would have prevented.
+Learned from two builds: [What NY Is](ny_state/primer/series_intro/WHAT_NY_IS_VISUALS_BUILD_PLAN.md) (2026-10-17 to 10-19) and [Albany Lens 1](ny_state/metro_deep_dives/albany/part_1/ALBANY_LENS1_VISUALS_BUILD_PLAN.md) (v1 2026-10-22). Add a rule when a review catches something a rule would have prevented.
 
 ---
 
@@ -24,7 +24,7 @@ Learned from two builds: [What NY Is](ny_state/what_ny_is/WHAT_NY_IS_VISUALS_BUI
 | Question Bank, Exhibit Bank, print rules, D/E decisions | The series repo context, e.g. `issues/ny_state/upstate_downstate_repo_context.md` |
 | Routed analyses and their queries | The notebooks the outline's "Explore with" lines name |
 | Style | `foundations/visual_library/chart_engine_py/chart_engine/pip_theme.yml` through `Theme`; the visual style guide |
-| Reference notebook | [WHAT_NY_IS_VISUALS.py](ny_state/what_ny_is/WHAT_NY_IS_VISUALS.py) |
+| Reference notebook | [WHAT_NY_IS_VISUALS.py](ny_state/primer/series_intro/WHAT_NY_IS_VISUALS.py) |
 
 ## Outputs
 
@@ -40,6 +40,8 @@ issues/<series>/<piece>/
   output/drafts/                  PNGs, rewritten on every run
   output/                         finals (PNG + SVG), after sign-off
 ```
+
+A metro with several articles gets one folder per article, `issues/<series>/<metro>/part_<N>/`, using the layout above. Files that more than one article uses sit at the metro root: `<metro>_common.py`, shared `sql/`, `data/` and `reference/`. In the New York series the folder paths follow [its layout](ny_state/README.md) (`issues/ny_state/metro_deep_dives/<metro>/`) and the article text lives in the vault, with working copies in `drafts/` deleted when the work is done. Example: [Albany](ny_state/metro_deep_dives/albany/README.md).
 
 ---
 
@@ -63,7 +65,7 @@ Write `<PIECE>_VISUALS_BUILD_PLAN.md` from the template below. Organize it by **
 
 ### Phases 2–4 run one question set at a time
 
-Take one question through Explore, its gate, Build and Review before starting the next. The exploration notebook answers questions; the visuals notebook holds only promoted exhibits and the confirmed results behind them, organized by question in article order. A plan's Workflow section spells out the loop and a status per question (example: the [Albany Lens 1 plan](ny_state/albany/ALBANY_LENS1_VISUALS_BUILD_PLAN.md)).
+Take one question through Explore, its gate, Build and Review before starting the next. The exploration notebook answers questions; the visuals notebook holds only promoted exhibits and the confirmed results behind them, organized by question in article order. A plan's Workflow section spells out the loop and a status per question (example: the [Albany Lens 1 plan](ny_state/metro_deep_dives/albany/part_1/ALBANY_LENS1_VISUALS_BUILD_PLAN.md)).
 
 ### Phase 2: Explore
 
@@ -132,7 +134,7 @@ Rule numbers are stable IDs that plans and reviews cite. A new rule takes the ne
 ### Data
 
 - **R7. Probe before you plan.** Test every number in the outline against the warehouse, and search for data the outline assumes is missing. *Why:* Albany's outline deferred Section 4 to a future data ingest that had already landed, and misread Q6's "10 candidate places" (really 10 job-center components tied to 6 places).
-- **R8. Reuse analysis SQL from its own folder.** Never copy it. New queries go in the issue's `sql/` with `__NAME__` placeholders, filled by `run_sql(con, path, name=value)`. *Why:* one owner per query; fixes in the analysis reach the issue.
+- **R8. Reuse analysis SQL from its own folder.** Never copy it. New queries go in the article's `sql/`, moving to the metro's `sql/` when a second article needs them, with `__NAME__` placeholders, filled by `run_sql(con, path, name=value)`. *Why:* one owner per query; fixes in the analysis reach the issue.
 - **R9. Read governed marts before re-deriving.** If a mart already holds the answer, read it.
 - **R10. Every section gets a check table.** Each row is a claim from the outline, the computed value, and passed/failed. Assert on hard facts (counts, definitions); display soft ones (approximate numbers). *Why:* the checks are the first answers to the outline's questions, and they catch drift when the data refreshes.
 - **R11. Draw with display geometry, compute with analysis geometry.** Shoreline-clipped display layers are for drawing only; measures come from analysis tables.
@@ -162,7 +164,7 @@ Rule numbers are stable IDs that plans and reviews cite. A new rule takes the ne
 
 - **R17. Use the house style.** Colors are theme tokens via `Theme.color`. Fonts: Inter, then Arial. Figures are 1456 px wide (2× Substack content width) at 200 dpi, and map height follows the geography's shape. Map projection: a state plane or Lambert fitted to the area.
 - **R18. Settings cells own everything the reader sees.** Labels, colors, label positions (`(lon, lat)` for map anchors, points for offsets), cut lists, metric lists. Drawing functions take these as arguments. *Why:* review edits become one-line changes, and Dan can make them himself.
-- **R19. Helpers live at the end as `@app.function`.** Copy-adapt from the reference notebook rather than importing across issues. Promote a helper to the Visual Library when a second piece reuses it unchanged.
+- **R19. Helpers live at the end as `@app.function`.** Copy-adapt from the reference notebook rather than importing across issues. Within a metro, a helper a second article uses moves to `<metro>_common.py`; no article imports from another article's notebook. Promote a helper to the Visual Library when a second piece reuses it unchanged.
 - **R20. Title states the claim, subtitle what's shown, source line the data and its caveats.** Vintages go in the source line (ACS 2020–24, LODES 2023, OMB 2023).
 - **R21. Look at every PNG before reporting.** Read the image and fix overlapping labels, clipped titles and lines crossing values. *Why:* Albany v1 had label collisions on two maps and a mathtext bug (two `$` in one string) that only showed in the image.
 - **R22. Escape `$` in matplotlib text** (`\$`). Two dollar signs in one string start math mode.

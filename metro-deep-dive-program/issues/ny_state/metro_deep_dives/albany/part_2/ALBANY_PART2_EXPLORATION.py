@@ -11,9 +11,11 @@ with app.setup:
     import pandas as pd
 
     HERE = Path(__file__).resolve().parent
-    sys.path.insert(0, str(HERE))
-    # Shared paths and layer loading come from the Lens 1 visuals notebook until Lens 2 has its own.
-    from ALBANY_LENS1_VISUALS import (
+    # Queries only this lens uses; shared ones are in SQL_DIR (albany/sql/).
+    LENS_SQL_DIR = HERE / "sql"
+    sys.path.insert(0, str(HERE.parent))
+    # Shared paths and layer loading.
+    from albany_common import (
         CBSA_CODE,
         SQL_DIR,
         color,
@@ -44,12 +46,13 @@ with app.setup:
 @app.cell(hide_code=True)
 def _():
     mo.md(r"""
-    # Albany, Lens 2: Exploration
+    # Albany, Part 2: Exploration
 
     Commuting and regional role (M.13, M.14). **Banked from Lens 1** (Dan, 2026-10-24): Lens 1
     keeps only the high-level "does every county belong" test (its Q1a, Q1b table and Q1f). Moved
     here unchanged on 2026-10-26, so the question IDs (Q1b–Q1h) still match the Lens 1 build plan
-    and its reads. A Lens 2 outline and build plan come later; until then this is the starting point.
+    and its reads. This began as the Lens 2 notebook and is the starting point for Part 2
+    (vault: metro_deep_dives/albany/part_2/), which has no build plan yet.
 
     Rules: `issues/VISUALS_BUILD_RULES.md`. Helpers: `albany_explore.py`.
 
@@ -202,7 +205,7 @@ def _():
 
 @app.cell
 def _(con):
-    county_by_cbsa = run_sql(con, SQL_DIR / "county_jobs_by_cbsa.sql")
+    county_by_cbsa = run_sql(con, LENS_SQL_DIR / "county_jobs_by_cbsa.sql")
     pull_all = external_metro_pull(county_by_cbsa)
     pull_no_nyc = external_metro_pull(county_by_cbsa, exclude={"35620"})
     _review = pull_all.merge(
@@ -289,7 +292,7 @@ def _():
 
 @app.cell
 def _(con, four_cities):
-    place_flows = run_sql(con, SQL_DIR / "place_flows.sql", place_geoids=sql_list(four_cities.values()))
+    place_flows = run_sql(con, LENS_SQL_DIR / "place_flows.sql", place_geoids=sql_list(four_cities.values()))
     mo.vstack([
         mo.md("**Where each city's residents work** (share of the city's resident jobs)"),
         city_matrix(place_flows, four_cities, side="home"),
@@ -320,7 +323,7 @@ def _():
 def _(con):
     q2_all_candidates, _components, _private, q2_checks = all_jobs_centers(con)
     assert q2_checks["passed"].all(), q2_checks
-    tract_flows = run_sql(con, SQL_DIR / "tract_flows.sql", cbsa_code=CBSA_CODE, job_type="JT00")
+    tract_flows = run_sql(con, LENS_SQL_DIR / "tract_flows.sql", cbsa_code=CBSA_CODE, job_type="JT00")
     tract_flow_checks = pd.DataFrame({
         "check": ["flows touching the metro (jobs)", "tract pairs", "home tracts without geometry (jobs)"],
         "value": [f"{tract_flows['jobs'].sum():,.0f}", f"{len(tract_flows):,}", f"{tract_flows.loc[tract_flows['home_lon'].isna(), 'jobs'].sum():,.0f}"],

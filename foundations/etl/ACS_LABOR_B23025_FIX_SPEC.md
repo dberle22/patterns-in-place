@@ -39,7 +39,7 @@ A spec for one agent session. Fix the ACS B23025 variable mapping that corrupts 
 
 `acs_labor_silver.R` then derives `unemployed = in_labor_force - employed`. With `employed` holding not-in-labor-force, every downstream rate is wrong.
 
-**Evidence (2026-10-22):** in `silver.labor_kpi`, `emp_pop_ratio` equals exactly `1 - lfpr` in every row (US 2024: 0.3653 = 1 − 0.6347). US `unemp_rate` is 0.4245, and NY tract medians run 0.40–0.45. Example: tract 36001000202, 2024 has `pop_16plus` 1,683, `in_labor_force` 1,405 and `employed` 278 (= 1,683 − 1,405). Found during Albany Lens 1 exploration ([build plan](../../metro-deep-dive-program/issues/ny_state/albany/ALBANY_LENS1_VISUALS_BUILD_PLAN.md), Findings).
+**Evidence (2026-10-22):** in `silver.labor_kpi`, `emp_pop_ratio` equals exactly `1 - lfpr` in every row (US 2024: 0.3653 = 1 − 0.6347). US `unemp_rate` is 0.4245, and NY tract medians run 0.40–0.45. Example: tract 36001000202, 2024 has `pop_16plus` 1,683, `in_labor_force` 1,405 and `employed` 278 (= 1,683 − 1,405). Found during Albany Lens 1 exploration ([build plan](../../metro-deep-dive-program/issues/ny_state/metro_deep_dives/albany/part_1/ALBANY_LENS1_VISUALS_BUILD_PLAN.md), Findings).
 
 ## Blast radius (verify; this is the starting list)
 
