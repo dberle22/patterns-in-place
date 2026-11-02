@@ -1,10 +1,26 @@
-phase7_zone_config <- function() {
-  output_dir <- here::here(
-    "exploration",
-    "intelligence_framework",
-    "phase_7_zone_methodology",
-    "outputs"
-  )
+phase7_zone_config <- function(
+  output_dir = Sys.getenv("PHASE7_OUTPUT_DIR"),
+  input_frame_path = Sys.getenv("PHASE7_INPUT_FRAME")
+) {
+  # Output and input overrides for side-by-side reruns (e.g. the 2026-10 labor
+  # fix rerun). Both default to the canonical behaviour: write to `outputs/`,
+  # which the mart loaders read, and build the tract frame from Gold.
+  # - PHASE7_OUTPUT_DIR: repo-relative folder to write every Phase 7 artifact to
+  #   instead of `outputs/`, so a rerun never overwrites the promoted outputs.
+  # - PHASE7_INPUT_FRAME: repo-relative path to a saved
+  #   `phase7_tract_frame.parquet`; when set, the frame build reads it instead
+  #   of querying `gold.intelligence_zone_inputs` (used to replay old inputs).
+  output_dir <- if (nzchar(output_dir)) {
+    here::here(output_dir)
+  } else {
+    here::here(
+      "exploration",
+      "intelligence_framework",
+      "phase_7_zone_methodology",
+      "outputs"
+    )
+  }
+  input_frame_path <- if (nzchar(input_frame_path)) here::here(input_frame_path) else NA_character_
 
   dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
@@ -73,6 +89,7 @@ phase7_zone_config <- function() {
 
   list(
     output_dir = output_dir,
+    input_frame_path = input_frame_path,
     expected_kpis = expected_kpis,
     excluded_kpis = excluded_kpis,
     clustering_metric_decisions = clustering_metric_decisions,
@@ -104,6 +121,23 @@ phase7_zone_config <- function() {
     calibration_sample_size = 5000L,
     run_gmm = FALSE,
     log_transform_kpis = c("pop_weighted_density_sqmi"),
+    # Fixed name map for the current build (Dan, 2026-10-23). It replaces the
+    # automatic centroid-score labeler, which left one cluster unnamed after the
+    # ACS labor fix (see PHASE7_LABOR_FIX_RERUN_REVIEW.md). Names are the July
+    # names carried forward to the matched clusters; renaming happens CBSA by
+    # CBSA during issue work. `expected_tracts` is a guard: k-means IDs are only
+    # stable for identical inputs, so if any cluster size changes the run stops
+    # and the clusters must be re-matched before this map is updated.
+    zone_name_map = tibble::tribble(
+      ~zone_kmeans_cluster, ~zone_type, ~expected_tracts,
+      1L, "Entry-Market Neighborhoods", 9770L,
+      2L, "Knowledge Corridor", 10899L,
+      3L, "Emerging Knowledge Districts", 2111L,
+      4L, "Mixed-Income Middle Neighborhoods", 27469L,
+      5L, "Working Neighborhoods", 11497L,
+      6L, "Established Residential", 16385L,
+      7L, "Commercial Core / Jobs Center", 68L
+    ),
     draft_zone_labels = c(
       "Entry-Market Neighborhoods",
       "Emerging Knowledge Districts",

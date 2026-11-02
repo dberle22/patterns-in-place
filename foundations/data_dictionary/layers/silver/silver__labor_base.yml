@@ -168,71 +168,93 @@ columns:
     definition: 'ACS 2024 Employment Status for the Population 16 Years and Over [B23025_003]:
       Total:, In labor force:, Civilian labor force: (estimate).'
     needs_confirmation: no
-  - name: in_lf_armed_forcesE
+  - name: employedE
     type: DOUBLE
-    null_pct: 0.0069
-    distinct_count: 52125
+    null_pct: 0.0042
+    distinct_count: 52127
     min_value: 0.0
     max_value: 1.6129716e+08
     min_length: ~
     max_length: ~
     top_values:
       - value: '0.0'
-        count: 18242
+        count: 27245
       - value: '46.0'
+        count: 1416
+      - value: '28.0'
         count: 1392
       - value: '27.0'
-        count: 1364
-      - value: '28.0'
-        count: 1363
+        count: 1387
       - value: '41.0'
-        count: 1337
+        count: 1360
     definition: 'ACS 2024 Employment Status for the Population 16 Years and Over [B23025_004]:
-      Total:, In labor force:, Civilian labor force:, Employed (estimate).'
+      Total:, In labor force:, Civilian labor force:, Employed (estimate). Mapping fixed 2026-10-22; before then this column held the wrong B23025 code.'
+    needs_confirmation: no
+  - name: unemployedE
+    type: DOUBLE
+    null_pct: 0.0042
+    distinct_count: 13916
+    min_value: 0.0
+    max_value: 15249189
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 147858
+      - value: '2.0'
+        count: 14047
+      - value: '4.0'
+        count: 12965
+      - value: '3.0'
+        count: 12963
+      - value: '6.0'
+        count: 12778
+    definition: 'ACS 2024 Employment Status for the Population 16 Years and Over [B23025_005]:
+      Total:, In labor force:, Civilian labor force:, Unemployed (estimate). Mapping fixed 2026-10-22; before then this column held the wrong B23025 code.'
+    needs_confirmation: no
+  - name: in_lf_armed_forcesE
+    type: DOUBLE
+    null_pct: 0.0042
+    distinct_count: 6231
+    min_value: 0.0
+    max_value: 1293765
+    min_length: ~
+    max_length: ~
+    top_values:
+      - value: '0.0'
+        count: 1457202
+      - value: '9.0'
+        count: 14584
+      - value: '8.0'
+        count: 14428
+      - value: '10.0'
+        count: 14261
+      - value: '7.0'
+        count: 13666
+    definition: 'ACS 2024 Employment Status for the Population 16 Years and Over [B23025_006]:
+      Total:, In labor force:, Armed Forces (estimate). Mapping fixed 2026-10-22; before then this column held the wrong B23025 code.'
     needs_confirmation: no
   - name: not_in_labor_forceE
     type: DOUBLE
-    null_pct: 0.0069
-    distinct_count: 13916
-    min_value: 0.0
-    max_value: 1.5249189e+07
-    min_length: ~
-    max_length: ~
-    top_values:
-      - value: '0.0'
-        count: 128203
-      - value: '2.0'
-        count: 13467
-      - value: '3.0'
-        count: 12219
-      - value: '4.0'
-        count: 11942
-      - value: '5.0'
-        count: 11384
-    definition: 'ACS 2024 Employment Status for the Population 16 Years and Over [B23025_005]:
-      Total:, In labor force:, Civilian labor force:, Unemployed (estimate).'
-    needs_confirmation: no
-  - name: employedE
-    type: DOUBLE
-    null_pct: 0.0069
+    null_pct: 0.0042
     distinct_count: 39939
     min_value: 0.0
-    max_value: 9.8688351e+07
+    max_value: 98688351
     min_length: ~
     max_length: ~
     top_values:
       - value: '0.0'
-        count: 17315
+        count: 25403
       - value: '35.0'
-        count: 1752
+        count: 1779
       - value: '39.0'
-        count: 1740
+        count: 1761
       - value: '28.0'
-        count: 1731
-      - value: '34.0'
-        count: 1718
+        count: 1760
+      - value: '23.0'
+        count: 1748
     definition: 'ACS 2024 Employment Status for the Population 16 Years and Over [B23025_007]:
-      Total:, Not in labor force (estimate).'
+      Total:, Not in labor force (estimate). Mapping fixed 2026-10-22; before then this column held the wrong B23025 code.'
     needs_confirmation: no
   - name: occ_totalE
     type: DOUBLE
@@ -1123,6 +1145,11 @@ kpi_definitions:
     denominator_hint: ~
     data_type: DOUBLE
   - kpi_name: employedE
+    business_definition: Measure derived from ACS Silver table.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
+  - kpi_name: unemployedE
     business_definition: Measure derived from ACS Silver table.
     source: ACS 5-year
     denominator_hint: ~

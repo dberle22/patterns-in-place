@@ -243,8 +243,7 @@ columns:
         count: 10
       - value: '3928.0'
         count: 9
-    definition: Total Employed Persons, used as numerator for employment-population
-      ratio and unemployment rate in ACS.
+    definition: Employed persons. County, CBSA and state rows come from BLS LAUS; tract and ZCTA rows come from ACS B23025 (silver.labor_kpi), fixed 2026-10-22.
     needs_confirmation: no
   - name: jobs_to_pop_ratio
     type: DOUBLE
@@ -265,7 +264,7 @@ columns:
         count: 3
       - value: '0.3652448657187994'
         count: 3
-    definition: Ratio of employed to population (i.e., number of people with a job divided by total population).
+    definition: Employed divided by total population (all ages). Tract and ZCTA values were wrong before the 2026-10-22 ACS B23025 fix.
     needs_confirmation: no
   - name: unemployed
     type: DOUBLE
@@ -286,8 +285,7 @@ columns:
         count: 68
       - value: '38.0'
         count: 67
-    definition: Total Unemployed Persons, used as numerator for unemployment rate
-      in ACS.
+    definition: Unemployed persons. County, CBSA and state rows come from BLS LAUS; tract and ZCTA rows come from ACS B23025 (silver.labor_kpi), fixed 2026-10-22.
     needs_confirmation: no
   - name: pct_unemployment_rate
     type: DOUBLE
@@ -308,7 +306,7 @@ columns:
         count: 835
       - value: '0.037000000000000005'
         count: 831
-    definition: Percentage of the labor force that is unemployed.
+    definition: Unemployment rate as a 0-1 share. County, CBSA and state rows use BLS LAUS (unemployment_rate_percent / 100); tract and ZCTA rows use ACS unemployed / civilian labor force (silver.labor_kpi.unemp_rate), fixed 2026-10-22 (it was about 0.40 before).
     needs_confirmation: no
   - name: unemployment_rate_change_1yr
     type: DOUBLE

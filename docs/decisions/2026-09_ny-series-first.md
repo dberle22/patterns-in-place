@@ -6,7 +6,7 @@
 
 ## Decision
 
-The first published Metro Deep Dive work is a series on New York State, working title *NY State of Mind*. Its work lives in `metro-deep-dive-program/issues/new_york/`. The scope is still being defined; the current outline has four parts:
+The first published Metro Deep Dive work is a series on New York State, working title *NY State of Mind*. Its work lives in `metro-deep-dive-program/issues/ny_state/`. The scope is still being defined; the current outline has four parts:
 
 | Part | Planned pieces |
 |---|---|

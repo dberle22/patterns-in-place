@@ -6,6 +6,8 @@ This folder now contains the completed modular Phase 7 tract model, the downstre
 
 The Phase 7 model scores the current full tract universe on a combined zone methodology that blends Character, Livability, and Opportunity into one national tract typology. The current Sprint 2 build uses the locked `22`-KPI clustering contract from Sprint 1 and runs on the governed `gold.intelligence_zone_inputs` tract surface.
 
+**Current build (2026-10-23):** rerun on the corrected tract unemployment rate after the ACS B23025 fix, then promoted. Same code, seeds, contract and k = 7; the knowledge clusters reorganised and the names are carried forward through a fixed name map. See [PHASE7_LABOR_FIX_RERUN_REVIEW.md](PHASE7_LABOR_FIX_RERUN_REVIEW.md). The July build is kept in `outputs_rerun_2026-10/pre_promotion_outputs/`.
+
 The current Phase 7 output includes:
 
 - hard national tract cluster assignments
@@ -26,6 +28,7 @@ The main Phase 7 implementation choices are now locked:
 - **Keep `k = 7` as the published tract structure:** The national tract model now keeps the `k = 7` solution after the `k = 6` versus `k = 7` review confirmed it adds a real subtype without destabilizing the broader map.
 - **Skip GMM by default at tract scale:** Sprint 2 now treats GMM as optional because the full-tract pass is expensive and lower-value analytically than the hard labels, centroids, and percentile outputs at this grain.
 - **Use the final decision-point zone names in the tract output:** The canonical `zone_type` labels are now `Entry-Market Neighborhoods`, `Emerging Knowledge Districts`, `Knowledge Corridor`, `Established Residential`, `Mixed-Income Middle Neighborhoods`, `Working Neighborhoods`, and `Commercial Core / Jobs Center`.
+- **Names come from a fixed name map (2026-10-23):** `zone_name_map` in `R/phase7_config.R` maps each k-means cluster to its name and replaces the automatic centroid-score labeler. It carries an expected tract count per cluster; if inputs change and any count differs, the run stops so the clusters can be re-matched (`R/phase7_labor_fix_rerun_compare.R`) before names are attached. Names stay `draft_label_pending_review` and are reviewed CBSA by CBSA during issue work.
 - **Roll ZCTAs from tract composition, not a separate model:** The ZCTA layer is a population-weighted summary of tract assignments using `silver.xwalk_zcta_tract`, with a `Mixed Zone` label when no single tract type exceeds `50%` of the weighted population mix.
 - **Keep corridor work outside Phase 7:** DBSCAN remains proposal evidence, not
   part of the canonical tract or ZCTA marts. The active Corridor Intelligence
@@ -88,3 +91,5 @@ It should not be the primary execution surface for the model build.
 3. Review outputs in `outputs/`
 4. Render `zone_methodology.qmd` when you want visuals or narrative review
 5. Run `foundations/loaders/load_zone_assignments.R` and `foundations/loaders/load_zone_scores_zcta.R` to promote the tract and ZCTA marts
+
+For a side-by-side rerun that must not touch `outputs/`, set `PHASE7_OUTPUT_DIR` (repo-relative output folder) and optionally `PHASE7_INPUT_FRAME` (a saved `phase7_tract_frame.parquet` to replay instead of querying Gold) on steps 1 and 2.

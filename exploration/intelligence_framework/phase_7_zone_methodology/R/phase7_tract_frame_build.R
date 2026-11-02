@@ -18,7 +18,15 @@ build_phase7_tract_frame <- function(con, config) {
   # surface. Sprint 2 intentionally reads that shared table rather than
   # re-implementing the wide join in R, then adds the tract metadata and policy
   # flags needed for labeling, benchmarks, and downstream review.
-  tract_frame <- DBI::dbGetQuery(con, "
+  #
+  # When `config$input_frame_path` is set (PHASE7_INPUT_FRAME), a previously
+  # saved tract frame is replayed instead, so a rerun can reproduce an earlier
+  # model on its exact inputs. The saved frame already carries the metadata
+  # columns, and the shared relocate / cleaning / audit steps below still run.
+  tract_frame <- if (!is.na(config$input_frame_path)) {
+    arrow::read_parquet(config$input_frame_path) |>
+      as.data.frame()
+  } else DBI::dbGetQuery(con, "
     with latest_policy as (
       select
         geo_id as tract_geoid,

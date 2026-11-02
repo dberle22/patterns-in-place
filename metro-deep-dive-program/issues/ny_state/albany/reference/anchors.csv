@@ -1,0 +1,36 @@
+name,theme,place,kind,lat,lon,overture_id,keep
+New York State Capitol,State government,Albany,point,42.652553,-73.757323,,true
+Empire State Plaza,State government,Albany,area,42.650347,-73.759688,,true
+Harriman State Office Campus,State government,Albany,area,42.6795333,-73.8095,,true
+Fort Orange (site),History and the canal,Albany,point,42.64485,-73.7502917,,true
+Schuyler Mansion,History and the canal,Albany,point,42.6397222,-73.7605556,,true
+Stockade Historic District,History and the canal,Schenectady,area,42.8186111,-73.9463889,,true
+Waterford Flight,History and the canal,Waterford,point,42.7895443,-73.6819471,,true
+Cohoes Falls,History and the canal,Cohoes,point,42.7879667,-73.7085333,,true
+Saratoga National Historical Park,History and the canal,Stillwater,area,42.9988889,-73.6375,,true
+University at Albany,Education and research,Albany,area,42.686,-73.824,,true
+Rensselaer Polytechnic Institute,Education and research,Troy,area,42.73,-73.6775,,true
+Union College,Education and research,Schenectady,area,42.8172222,-73.93,,true
+Skidmore College,Education and research,Saratoga Springs,area,43.0977778,-73.7852778,,true
+Siena University,Education and research,Loudonville,area,42.7183333,-73.7536111,,true
+Albany NanoTech Complex,Education and research,Albany,area,42.690527,-73.832244,4b680c20-dbf0-40d1-8650-8fb5f199032c,true
+GE Aerospace Research,Education and research,Niskayuna,area,42.8272222,-73.8780556,,true
+Knolls Atomic Power Laboratory,Education and research,Niskayuna,area,42.8205775,-73.8677696,8d795e63-301d-4c55-bdbe-c96df84ca1d2,true
+Albany Medical Center,Health,Albany,area,42.65345,-73.7754278,,true
+St. Peter's Hospital,Health,Albany,area,42.6559038,-73.8038346,2e8a63cb-e189-4571-90b5-b34620380aa5,true
+Ellis Hospital,Health,Schenectady,area,42.8199807,-73.9160743,b0dcaeb7-803a-4a84-9f6a-cbc7cabb5edd,true
+GE Vernova Schenectady works,Industry,Schenectady,area,42.810951,-73.955164,0c4f17f1-b6a7-4452-871e-ddbc8bdc92a7,true
+GlobalFoundries Fab 8,Industry,Malta,area,42.9707146,-73.757816,0cf03450-c214-4f36-88f3-3fa503517577,true
+Watervliet Arsenal,Industry,Watervliet,area,42.7183333,-73.7086111,,true
+Port of Albany,Transport,Albany / Rensselaer,area,42.6280556,-73.7575,,true
+Albany–Rensselaer station,Transport,Rensselaer,point,42.6413889,-73.7411111,,true
+Albany International Airport,Transport,Colonie,area,42.7491667,-73.8019444,7d7878bd-bc59-47f0-a04b-e3844c72121f,true
+Saratoga Race Course,Culture and sports,Saratoga Springs,area,43.0716667,-73.7686111,,true
+Saratoga Spa State Park,Parks and nature,Saratoga Springs,area,43.0511111,-73.8038889,,true
+Saratoga Performing Arts Center,Culture and sports,Saratoga Springs,point,43.0553,-73.8058,,true
+Proctors,Culture and sports,Schenectady,point,42.8122222,-73.9419444,,true
+Troy Savings Bank Music Hall,Culture and sports,Troy,point,42.7302778,-73.6913889,,true
+MVP Arena,Culture and sports,Albany,point,42.6486111,-73.7547222,,true
+Washington Park,Parks and nature,Albany,area,42.6569444,-73.7716667,,true
+Crossgates Mall,Culture and sports,Guilderland,point,42.6897,-73.8508,,true
+Howe Caverns,Parks and nature,Schoharie County,point,42.69654,-74.39861,,true

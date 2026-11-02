@@ -12,6 +12,7 @@ required_fields:
   - analytical_crs
   - geometry_status
   - market_id
+  - market_boundary_geo_level
   - market_boundary_vintage
   - source_run_id
   - record_status

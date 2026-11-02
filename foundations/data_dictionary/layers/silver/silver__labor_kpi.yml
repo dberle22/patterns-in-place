@@ -184,7 +184,7 @@ columns:
         count: 1363
       - value: '41.0'
         count: 1337
-    definition: Total Population in Armed Forces Labor Force.
+    definition: Population 16+ in the Armed Forces [B23025_006].
     needs_confirmation: no
   - name: not_in_labor_force
     type: DOUBLE
@@ -205,7 +205,7 @@ columns:
         count: 11942
       - value: '5.0'
         count: 11384
-    definition: Total Population Not in Labor Force, used as numerator for not in labor force rate in ACS.
+    definition: Population 16+ not in the labor force [B23025_007].
     needs_confirmation: no
   - name: employed
     type: DOUBLE
@@ -226,7 +226,7 @@ columns:
         count: 1731
       - value: '34.0'
         count: 1718
-    definition: Total Employed Persons, used as numerator for employment-population ratio and unemployment rate in ACS.
+    definition: Civilian employed population 16+ [B23025_004]. Numerator for emp_pop_ratio.
     needs_confirmation: no
   - name: unemployed
     type: DOUBLE
@@ -247,7 +247,7 @@ columns:
         count: 2468
       - value: '3.0'
         count: 2454
-    definition: Total Unemployed Persons, used as numerator for unemployment rate in ACS.
+    definition: Civilian unemployed population 16+ [B23025_005], pulled directly (no longer derived). Numerator for unemp_rate.
     needs_confirmation: no
   - name: lfpr
     type: DOUBLE
@@ -289,7 +289,7 @@ columns:
         count: 1857
       - value: '0.3333333333333333'
         count: 1248
-    definition: Unemployment Rate, derived from ACS counts. Unemployment / In Labor Force. Note some values are >1 due to data quality issues in source ACS tables.
+    definition: Unemployment rate, unemployed / civilian labor force (in_lf_civilian), the BLS and ACS convention. Fixed 2026-10-22; before then it was computed from mislabeled B23025 fields and was about 0.42 for the US.
     needs_confirmation: no
   - name: emp_pop_ratio
     type: DOUBLE
@@ -310,7 +310,7 @@ columns:
         count: 2478
       - value: '0.3333333333333333'
         count: 1857
-    definition: Ratio of Employed Persons to Population 16 and Up, used as employment-population ratio in ACS.
+    definition: Employment-population ratio, civilian employed / population 16+. Fixed 2026-10-22; before then it equalled 1 - lfpr.
     needs_confirmation: no
   - name: unemp_rate_civ
     type: DOUBLE
@@ -331,10 +331,7 @@ columns:
         count: 1830
       - value: '0.3333333333333333'
         count: 1245
-    definition: Unemployment Rate for Civilian Labor Force, derived from ACS counts. Unemployed / In LF Civilian.
-     Note some values are >1 due to data quality issues in source ACS tables.
-     Also note some values are >100% due to data quality issues in source ACS tables.
-     Consider using unemp_rate instead of this metric for analysis given the data quality issues with this one.
+    definition: Unemployed / civilian labor force. Kept for compatibility; identical to unemp_rate since the 2026-10-22 B23025 fix (the earlier values above 1 came from the mapping bug).
     needs_confirmation: no
   - name: occ_total_emp
     type: DOUBLE
@@ -1170,23 +1167,22 @@ kpi_definitions:
     denominator_hint: ~
     data_type: DOUBLE
   - kpi_name: in_lf_armed_forces
-    business_definition: Total:, In labor force:, Civilian labor force:, Employed.
+    business_definition: Total:, In labor force:, Armed Forces.
     source: ACS 5-year
     denominator_hint: ~
     data_type: DOUBLE
   - kpi_name: not_in_labor_force
-    business_definition: Total:, In labor force:, Civilian labor force:, Unemployed.
-    source: ACS 5-year
-    denominator_hint: ~
-    data_type: DOUBLE
-  - kpi_name: employed
     business_definition: Total:, Not in labor force.
     source: ACS 5-year
     denominator_hint: ~
     data_type: DOUBLE
+  - kpi_name: employed
+    business_definition: Total:, In labor force:, Civilian labor force:, Employed.
+    source: ACS 5-year
+    denominator_hint: ~
+    data_type: DOUBLE
   - kpi_name: unemployed
-    business_definition: Ratio of in labor forceE + employedE + mutate + lfpr + in
-      labor force to pop 16plus.
+    business_definition: Total:, In labor force:, Civilian labor force:, Unemployed.
     source: ACS 5-year
     denominator_hint: ~
     data_type: DOUBLE

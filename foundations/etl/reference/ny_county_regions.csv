@@ -1,0 +1,63 @@
+county_geoid,county_name,redc_region,downstate_core,downstate_mta,downstate_redc,source_url,as_of
+36001,Albany County,Capital Region,false,false,false,https://regionalcouncils.ny.gov/capital-region,2026-10-18
+36003,Allegany County,Western New York,false,false,false,https://regionalcouncils.ny.gov/western-new-york,2026-10-18
+36005,Bronx County,New York City,true,true,true,https://regionalcouncils.ny.gov/new-york-city,2026-10-18
+36007,Broome County,Southern Tier,false,false,false,https://regionalcouncils.ny.gov/southern-tier,2026-10-18
+36009,Cattaraugus County,Western New York,false,false,false,https://regionalcouncils.ny.gov/western-new-york,2026-10-18
+36011,Cayuga County,Central New York,false,false,false,https://regionalcouncils.ny.gov/central-new-york,2026-10-18
+36013,Chautauqua County,Western New York,false,false,false,https://regionalcouncils.ny.gov/western-new-york,2026-10-18
+36015,Chemung County,Southern Tier,false,false,false,https://regionalcouncils.ny.gov/southern-tier,2026-10-18
+36017,Chenango County,Southern Tier,false,false,false,https://regionalcouncils.ny.gov/southern-tier,2026-10-18
+36019,Clinton County,North Country,false,false,false,https://regionalcouncils.ny.gov/north-country,2026-10-18
+36021,Columbia County,Capital Region,false,false,false,https://regionalcouncils.ny.gov/capital-region,2026-10-18
+36023,Cortland County,Central New York,false,false,false,https://regionalcouncils.ny.gov/central-new-york,2026-10-18
+36025,Delaware County,Southern Tier,false,false,false,https://regionalcouncils.ny.gov/southern-tier,2026-10-18
+36027,Dutchess County,Mid-Hudson,false,true,true,https://regionalcouncils.ny.gov/mid-hudson,2026-10-18
+36029,Erie County,Western New York,false,false,false,https://regionalcouncils.ny.gov/western-new-york,2026-10-18
+36031,Essex County,North Country,false,false,false,https://regionalcouncils.ny.gov/north-country,2026-10-18
+36033,Franklin County,North Country,false,false,false,https://regionalcouncils.ny.gov/north-country,2026-10-18
+36035,Fulton County,Mohawk Valley,false,false,false,https://regionalcouncils.ny.gov/mohawk-valley,2026-10-18
+36037,Genesee County,Finger Lakes,false,false,false,https://regionalcouncils.ny.gov/finger-lakes,2026-10-18
+36039,Greene County,Capital Region,false,false,false,https://regionalcouncils.ny.gov/capital-region,2026-10-18
+36041,Hamilton County,North Country,false,false,false,https://regionalcouncils.ny.gov/north-country,2026-10-18
+36043,Herkimer County,Mohawk Valley,false,false,false,https://regionalcouncils.ny.gov/mohawk-valley,2026-10-18
+36045,Jefferson County,North Country,false,false,false,https://regionalcouncils.ny.gov/north-country,2026-10-18
+36047,Kings County,New York City,true,true,true,https://regionalcouncils.ny.gov/new-york-city,2026-10-18
+36049,Lewis County,North Country,false,false,false,https://regionalcouncils.ny.gov/north-country,2026-10-18
+36051,Livingston County,Finger Lakes,false,false,false,https://regionalcouncils.ny.gov/finger-lakes,2026-10-18
+36053,Madison County,Central New York,false,false,false,https://regionalcouncils.ny.gov/central-new-york,2026-10-18
+36055,Monroe County,Finger Lakes,false,false,false,https://regionalcouncils.ny.gov/finger-lakes,2026-10-18
+36057,Montgomery County,Mohawk Valley,false,false,false,https://regionalcouncils.ny.gov/mohawk-valley,2026-10-18
+36059,Nassau County,Long Island,true,true,true,https://regionalcouncils.ny.gov/long-island,2026-10-18
+36061,New York County,New York City,true,true,true,https://regionalcouncils.ny.gov/new-york-city,2026-10-18
+36063,Niagara County,Western New York,false,false,false,https://regionalcouncils.ny.gov/western-new-york,2026-10-18
+36065,Oneida County,Mohawk Valley,false,false,false,https://regionalcouncils.ny.gov/mohawk-valley,2026-10-18
+36067,Onondaga County,Central New York,false,false,false,https://regionalcouncils.ny.gov/central-new-york,2026-10-18
+36069,Ontario County,Finger Lakes,false,false,false,https://regionalcouncils.ny.gov/finger-lakes,2026-10-18
+36071,Orange County,Mid-Hudson,false,true,true,https://regionalcouncils.ny.gov/mid-hudson,2026-10-18
+36073,Orleans County,Finger Lakes,false,false,false,https://regionalcouncils.ny.gov/finger-lakes,2026-10-18
+36075,Oswego County,Central New York,false,false,false,https://regionalcouncils.ny.gov/central-new-york,2026-10-18
+36077,Otsego County,Mohawk Valley,false,false,false,https://regionalcouncils.ny.gov/mohawk-valley,2026-10-18
+36079,Putnam County,Mid-Hudson,true,true,true,https://regionalcouncils.ny.gov/mid-hudson,2026-10-18
+36081,Queens County,New York City,true,true,true,https://regionalcouncils.ny.gov/new-york-city,2026-10-18
+36083,Rensselaer County,Capital Region,false,false,false,https://regionalcouncils.ny.gov/capital-region,2026-10-18
+36085,Richmond County,New York City,true,true,true,https://regionalcouncils.ny.gov/new-york-city,2026-10-18
+36087,Rockland County,Mid-Hudson,true,true,true,https://regionalcouncils.ny.gov/mid-hudson,2026-10-18
+36089,St. Lawrence County,North Country,false,false,false,https://regionalcouncils.ny.gov/north-country,2026-10-18
+36091,Saratoga County,Capital Region,false,false,false,https://regionalcouncils.ny.gov/capital-region,2026-10-18
+36093,Schenectady County,Capital Region,false,false,false,https://regionalcouncils.ny.gov/capital-region,2026-10-18
+36095,Schoharie County,Mohawk Valley,false,false,false,https://regionalcouncils.ny.gov/mohawk-valley,2026-10-18
+36097,Schuyler County,Southern Tier,false,false,false,https://regionalcouncils.ny.gov/southern-tier,2026-10-18
+36099,Seneca County,Finger Lakes,false,false,false,https://regionalcouncils.ny.gov/finger-lakes,2026-10-18
+36101,Steuben County,Southern Tier,false,false,false,https://regionalcouncils.ny.gov/southern-tier,2026-10-18
+36103,Suffolk County,Long Island,true,true,true,https://regionalcouncils.ny.gov/long-island,2026-10-18
+36105,Sullivan County,Mid-Hudson,false,false,true,https://regionalcouncils.ny.gov/mid-hudson,2026-10-18
+36107,Tioga County,Southern Tier,false,false,false,https://regionalcouncils.ny.gov/southern-tier,2026-10-18
+36109,Tompkins County,Southern Tier,false,false,false,https://regionalcouncils.ny.gov/southern-tier,2026-10-18
+36111,Ulster County,Mid-Hudson,false,false,true,https://regionalcouncils.ny.gov/mid-hudson,2026-10-18
+36113,Warren County,Capital Region,false,false,false,https://regionalcouncils.ny.gov/capital-region,2026-10-18
+36115,Washington County,Capital Region,false,false,false,https://regionalcouncils.ny.gov/capital-region,2026-10-18
+36117,Wayne County,Finger Lakes,false,false,false,https://regionalcouncils.ny.gov/finger-lakes,2026-10-18
+36119,Westchester County,Mid-Hudson,true,true,true,https://regionalcouncils.ny.gov/mid-hudson,2026-10-18
+36121,Wyoming County,Finger Lakes,false,false,false,https://regionalcouncils.ny.gov/finger-lakes,2026-10-18
+36123,Yates County,Finger Lakes,false,false,false,https://regionalcouncils.ny.gov/finger-lakes,2026-10-18

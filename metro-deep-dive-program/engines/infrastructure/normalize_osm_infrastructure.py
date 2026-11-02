@@ -117,7 +117,7 @@ def normalized_sql(source_path: Path, run: dict[str, Any], rules: dict[str, Any]
             NULL::VARCHAR AS analytical_crs,
             'unvalidated' AS geometry_status,
             market_id,
-            'cbsa' AS market_boundary_geo_level,
+            {sql_literal(run['boundary'].get('geo_level', 'cbsa'))} AS market_boundary_geo_level,
             {int(run['boundary']['boundary_vintage'])} AS market_boundary_vintage,
             {sql_literal(run['source_run_id'])} AS source_run_id,
             {sql_literal(run['extracted_at'])} AS extracted_at,

@@ -1,0 +1,165 @@
+{
+  "scope": "NY Map 2 one-off references; no warehouse materialization",
+  "sources": [
+    {
+      "file": "data/canal_centerline.geojson",
+      "provider": "NYS Canal Corporation",
+      "layer_url": "https://services6.arcgis.com/DmQy2NS38tchd4fs/arcgis/rest/services/Canal_Centerline/FeatureServer/10",
+      "query_url": "https://services6.arcgis.com/DmQy2NS38tchd4fs/arcgis/rest/services/Canal_Centerline/FeatureServer/10/query?where=1%3D1&outFields=*&outSR=4326&f=geojson",
+      "pulled_at": "2026-10-18T21:43:24-04:00",
+      "sha256": "f35b881c7c30960048b9bfb95a75e720d518697dc23ccc80692cf186150d1a10",
+      "features": 20,
+      "crs": "EPSG:4326",
+      "all_valid": true,
+      "bounds_wsen": [
+        -78.8785667420869,
+        42.3507798125477,
+        -73.4010107322108,
+        43.5581041365318
+      ],
+      "total_miles": 533.78,
+      "routes": [
+        {
+          "route": "CH",
+          "features": 1,
+          "miles": 60.99
+        },
+        {
+          "route": "CH-FE",
+          "features": 1,
+          "miles": 1.25
+        },
+        {
+          "route": "CH-LH",
+          "features": 1,
+          "miles": 2.06
+        },
+        {
+          "route": "CS",
+          "features": 1,
+          "miles": 17.13
+        },
+        {
+          "route": "CS-CL",
+          "features": 1,
+          "miles": 38.94
+        },
+        {
+          "route": "CS-E",
+          "features": 1,
+          "miles": 0.39
+        },
+        {
+          "route": "CS-SL",
+          "features": 1,
+          "miles": 36.85
+        },
+        {
+          "route": "CS-SLS",
+          "features": 1,
+          "miles": 0.31
+        },
+        {
+          "route": "CS-W",
+          "features": 1,
+          "miles": 0.37
+        },
+        {
+          "route": "ER",
+          "features": 1,
+          "miles": 337.78
+        },
+        {
+          "route": "ER-EC",
+          "features": 1,
+          "miles": 0.96
+        },
+        {
+          "route": "ER-FH",
+          "features": 1,
+          "miles": 0.4
+        },
+        {
+          "route": "ER-FHS",
+          "features": 1,
+          "miles": 0.16
+        },
+        {
+          "route": "ER-G",
+          "features": 1,
+          "miles": 3.36
+        },
+        {
+          "route": "ER-OL",
+          "features": 1,
+          "miles": 6.87
+        },
+        {
+          "route": "ER-UH",
+          "features": 1,
+          "miles": 0.82
+        },
+        {
+          "route": "ER-UMR",
+          "features": 1,
+          "miles": 1.26
+        },
+        {
+          "route": "OS",
+          "features": 1,
+          "miles": 23.3
+        },
+        {
+          "route": "OS-E",
+          "features": 1,
+          "miles": 0.3
+        },
+        {
+          "route": "OS-W",
+          "features": 1,
+          "miles": 0.29
+        }
+      ],
+      "notes": [
+        "ER is one LineString (~338 miles). The full layer includes lake routes and spurs; its total is not the official 524-mile canal mileage.",
+        "Credit NYS Canal Corporation; the service declares no license text."
+      ]
+    },
+    {
+      "file": "data/adirondack_park.geojson",
+      "provider": "Adirondack Park Agency",
+      "layer_url": "https://services2.arcgis.com/8krRUWgifzA4cgL3/ArcGIS/rest/services/BluelinePolygon/FeatureServer/0",
+      "query_url": "https://services2.arcgis.com/8krRUWgifzA4cgL3/ArcGIS/rest/services/BluelinePolygon/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=geojson",
+      "pulled_at": "2026-10-18T21:43:24-04:00",
+      "sha256": "1c132fa9b47bc624ec1a181789f028748514877f847395fdfe1a4f60773eaf23",
+      "features": 1,
+      "crs": "EPSG:4326",
+      "all_valid": true,
+      "bounds_wsen": [
+        -75.3183083865366,
+        43.0523924516016,
+        -73.2934965598406,
+        44.8776850640698
+      ],
+      "area_acres_epsg5070": 5824240.68
+    },
+    {
+      "file": "data/catskill_park.geojson",
+      "provider": "NYS Department of Environmental Conservation",
+      "layer_url": "https://gisservices.dec.ny.gov/arcgis/rest/services/dil_reference/MapServer/8",
+      "query_url": "https://gisservices.dec.ny.gov/arcgis/rest/services/dil_reference/MapServer/8/query?where=1%3D1&outFields=*&outSR=4326&f=geojson",
+      "pulled_at": "2026-10-18T21:43:23-04:00",
+      "sha256": "6d7cb262f2af8cb621edc3ea8faa27b687f58f7cf3ad844865f14d7ba96f4def",
+      "features": 1,
+      "crs": "EPSG:4326",
+      "all_valid": true,
+      "bounds_wsen": [
+        -75.07385170642814,
+        41.7785614095516,
+        -73.99739444092083,
+        42.33125798406696
+      ],
+      "area_acres_epsg5070": 696706.85
+    }
+  ]
+}

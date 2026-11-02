@@ -34,18 +34,32 @@ build_phase7_zcta_rollup <- function(con, config) {
     dplyr::select(tract_geoid, zone_type) |>
     dplyr::mutate(tract_geoid = as.character(tract_geoid))
 
+  # Since 2026-09-29 `silver.xwalk_zcta_tract` is a compatibility view over
+  # `silver.xwalk_zip_tract` and no longer carries the USPS preferred city and
+  # state, so those labels come straight from the HUD staging table (one
+  # preferred city/state per ZIP). Weights and vintage are unchanged.
   zcta_crosswalk <- DBI::dbGetQuery(
     con,
     "
+    WITH zip_names AS (
+      SELECT
+        lpad(cast(ZIP AS varchar), 5, '0') AS zip_geoid,
+        any_value(USPS_ZIP_PREF_CITY) AS zip_pref_city,
+        any_value(USPS_ZIP_PREF_STATE) AS zip_pref_state
+      FROM staging.hud_usps_zip_tract
+      GROUP BY 1
+    )
     SELECT
-      zip_geoid,
-      tract_geoid,
-      zip_pref_city,
-      zip_pref_state,
-      rel_weight_pop,
-      vintage,
-      source
-    FROM silver.xwalk_zcta_tract
+      xwalk.zip_geoid,
+      xwalk.tract_geoid,
+      zip_names.zip_pref_city,
+      zip_names.zip_pref_state,
+      xwalk.rel_weight_pop,
+      xwalk.vintage,
+      xwalk.source
+    FROM silver.xwalk_zcta_tract AS xwalk
+    LEFT JOIN zip_names
+      ON zip_names.zip_geoid = xwalk.zip_geoid
     "
   ) |>
     dplyr::mutate(

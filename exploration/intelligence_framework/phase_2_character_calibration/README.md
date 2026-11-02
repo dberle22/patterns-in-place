@@ -2,6 +2,8 @@
 
 This folder now holds the modular Character build, the review notebook layer, and the canonical phase-local outputs.
 
+> **IRS direction fix, 2026-10-26.** Builds before this date used IRS migration values with the sign reversed (`irs_net_migration_rate`). The canonical `outputs/` were replaced from the `fixed` rerun and reloaded; clusters, peers and published names are unchanged and scores moved. The previous outputs are in `outputs_irs_fix_2026-10/canonical_before/`. Review: [IRS_FIX_RERUN_REVIEW.md](../IRS_FIX_RERUN_REVIEW.md).
+
 ## Model Overview
 
 The Character model scores the current `396`-CBSA universe on who lives in a place, how rooted or mobile the population is, and what kind of civic and built-form context shapes metro identity. The current calibration keeps the full `17`-KPI Character set, excludes Puerto Rico from the modeling universe, and currently locks `k = 7` for the first full model pass.

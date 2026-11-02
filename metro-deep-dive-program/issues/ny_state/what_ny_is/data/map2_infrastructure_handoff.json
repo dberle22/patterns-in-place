@@ -1,0 +1,20 @@
+{
+  "interface_version": "infrastructure_consumer_v1",
+  "market": "new_york_state",
+  "market_id": "36",
+  "market_boundary_geo_level": "state",
+  "source_run_id": "osm-infrastructure-36-snapshot-2026-10-17-426e6bab853f",
+  "artifact_uri": "metro-deep-dive-program/engines/infrastructure/outputs/new_york_state/osm-infrastructure-36-snapshot-2026-10-17-426e6bab853f/validated/osm_core_v1/infrastructure_feature.parquet",
+  "validation_manifest_uri": "metro-deep-dive-program/engines/infrastructure/outputs/new_york_state/osm-infrastructure-36-snapshot-2026-10-17-426e6bab853f/validated/osm_core_v1/validation_manifest.json",
+  "boundary_geometry_role": "analysis",
+  "promotion_status": "eligible_for_consumer_promotion",
+  "adoptions": [
+    {
+      "analysis": "regional_role",
+      "market": "richmond_va",
+      "market_id": "40060",
+      "source_run_id": "osm-infrastructure-40060-snapshot-2026-07-29-ea3dc9b69040",
+      "interface_version": "infrastructure_consumer_v1"
+    }
+  ]
+}

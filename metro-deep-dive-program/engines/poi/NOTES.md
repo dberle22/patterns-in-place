@@ -175,3 +175,32 @@ geographic assumptions, or source-specific matching hierarchy.
 | Whether an official/specialist source replaces a public baseline category | Consumer-driven; no default replacement |
 | Cross-release or cross-source entity resolution | Defer until a consumer needs a canonical entity |
 | Refresh cadence and national partition strategy | After the first repeatable Richmond/Jacksonville build |
+
+## Albany run — 2026-10-22
+
+First market outside the two pilots (`albany_ny`, CBSA `10580`), for Albany
+Lens 1 (`issues/ny_state/albany/`). What changed to make it run:
+
+- **Release bump.** `2026-08-19.0` is no longer in Overture's public bucket
+  (available on 2026-10-22: `2026-09-23.0`, `2026-09-23.1`, `2026-10-21.0`).
+  `sources/overture_places.yml` now declares `2026-10-21.0`. The Richmond and
+  Jacksonville caches and manifests keep `2026-08-19.0` as their audit record;
+  rerunning those markets would now pull `2026-10-21.0`.
+- **Schema change.** `2026-10-21.0` drops the deprecated `categories` struct.
+  `normalize_overture_places.py` now checks the cache's columns and writes
+  `source_category_primary` as null when `categories` is absent (absent source
+  fields are null, per the contract). Classification keys on `basic_category`,
+  which is unchanged, so governed categories are unaffected. Earlier releases
+  normalize exactly as before.
+- **Taxonomy profile step.** `publish_poi_mart.py` requires
+  `taxonomy/build_taxonomy_hierarchy_profile.py --market <market>` to have run
+  first. It isn't in the README's run order; add it.
+
+Results: 47,047 places retained (60,710 in the bbox), 0 rejected, 75
+near-duplicate groups; 45,671 mapped, 1,376 unmapped; tract assignment 100%,
+Census Place assignment 59% (most of the rest are NY town areas, which aren't
+Census Places). Hierarchy invariants hold on 45,606 places.
+
+**Published 2026-10-22** after the DuckDB lock freed: `mart_poi.poi_source_place` and
+`poi_classified_place` have 47,047 rows for CBSA 10580; `poi_geography_assignment` has
+188,188; `poi_taxonomy_hierarchy_tag_profile` has 4,763.

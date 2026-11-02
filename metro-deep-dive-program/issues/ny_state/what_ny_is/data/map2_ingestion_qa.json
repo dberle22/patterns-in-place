@@ -1,0 +1,178 @@
+{
+  "source_run_id": "osm-infrastructure-36-snapshot-2026-10-17-426e6bab853f",
+  "artifact_uri": "metro-deep-dive-program/engines/infrastructure/outputs/new_york_state/osm-infrastructure-36-snapshot-2026-10-17-426e6bab853f/validated/osm_core_v1/infrastructure_feature.parquet",
+  "source_row_counts": {
+    "source_selector": 180497,
+    "extracted_bbox": 180497,
+    "retained_market": 179764,
+    "rejected_market": 0,
+    "outside_market_boundary": 733
+  },
+  "serving_rows": 179751,
+  "unique_source_keys": 179751,
+  "valid_geometries": 179751,
+  "empty_geometries": 0,
+  "nonintersecting_features": 0,
+  "geometry_outside_boundary_length_m": 1.1115410505037543e-06,
+  "geometry_outside_boundary_area_sqm": 4.8193299218154354e-08,
+  "feature_groups": {
+    "water_network": 6114,
+    "rail": 21368,
+    "road": 152269
+  },
+  "feature_types": {
+    "trunk": 10028,
+    "light_rail": 176,
+    "primary_link": 2380,
+    "rail": 16342,
+    "canal": 897,
+    "subway": 4850,
+    "motorway": 14452,
+    "secondary": 30889,
+    "tertiary_link": 1244,
+    "tertiary": 41867,
+    "secondary_link": 1284,
+    "primary": 36976,
+    "motorway_link": 11234,
+    "river": 5217,
+    "trunk_link": 1915
+  },
+  "rejected_features": [
+    {
+      "name": "Delaware River",
+      "reason": "unsupported_geometry",
+      "clipped_geometry_type": "GEOMETRYCOLLECTION",
+      "features": 4
+    },
+    {
+      "name": "Granville Street",
+      "reason": "unsupported_geometry",
+      "clipped_geometry_type": "POINT",
+      "features": 1
+    },
+    {
+      "name": "Honeoye Road",
+      "reason": "unsupported_geometry",
+      "clipped_geometry_type": "POINT",
+      "features": 1
+    },
+    {
+      "name": "New Boston Road",
+      "reason": "unsupported_geometry",
+      "clipped_geometry_type": "POINT",
+      "features": 1
+    },
+    {
+      "name": "Nissequogue River",
+      "reason": "unsupported_geometry",
+      "clipped_geometry_type": "GEOMETRYCOLLECTION",
+      "features": 1
+    },
+    {
+      "name": "Olean Road",
+      "reason": "unsupported_geometry",
+      "clipped_geometry_type": "POINT",
+      "features": 1
+    },
+    {
+      "name": "Railroad Avenue",
+      "reason": "unsupported_geometry",
+      "clipped_geometry_type": "POINT",
+      "features": 1
+    },
+    {
+      "name": "Vermont Route 67 West",
+      "reason": "unsupported_geometry",
+      "clipped_geometry_type": "POINT",
+      "features": 1
+    },
+    {
+      "name": null,
+      "reason": "unsupported_geometry",
+      "clipped_geometry_type": "GEOMETRYCOLLECTION",
+      "features": 2
+    }
+  ],
+  "motorway_operator_counts": {
+    "(missing)": 14445,
+    "New York City Department of Transportation": 4,
+    "Port Authority of New York and New Jersey": 3
+  },
+  "interstate_ref_counts": {
+    "I 86;NY 17": 481,
+    "I 81": 566,
+    "I 86": 226,
+    "I 495": 633,
+    "I 78": 10,
+    "I 95": 221,
+    "I 87": 1059,
+    "I 690": 180,
+    "I 81 BUS": 121,
+    "I 90": 1320,
+    "I 287": 140,
+    "I 88": 257,
+    "I 684": 197,
+    "I 81;I 86;NY 17": 34,
+    "I 490": 242,
+    "I 84": 326,
+    "I 990": 63,
+    "I 190": 319,
+    "I 87;I 287": 123,
+    "I 290": 122,
+    "I 95;US 1": 66,
+    "I 278": 519,
+    "I 87;I 90": 4,
+    "I 678": 170,
+    "I 390": 308,
+    "I 99;US 15": 46,
+    "I 787": 93,
+    "I 84;NY 52": 44,
+    "I 190;NY 324": 17,
+    "I 787;NY 7": 8,
+    "I 890": 65,
+    "I 278;NY 440": 19,
+    "I 590": 36,
+    "I 695": 18,
+    "I 890;NY 7": 20,
+    "I 295": 84,
+    "I 86;NY 13;NY 17": 1,
+    "I 790;NY 5": 4,
+    "I 95;US 1;US 9": 8,
+    "I 790;NY 5;NY 8;NY 12": 6,
+    "I 278;GCP": 9,
+    "I 88;NY 28": 17,
+    "I 86;US 219;NY 17": 10,
+    "I 88;NY 7": 11,
+    "I 87;NY 17": 5,
+    "I 781": 8,
+    "I 495 East": 1,
+    "I 287;NY 17": 2,
+    "I 87;NY 7": 1
+  },
+  "thruway_name_counts": {
+    "New England Thruway": 142,
+    "New York State Thruway": 1743,
+    "Niagara Thruway": 245,
+    "New York State Thruway Berkshire Connector": 74
+  },
+  "rail_usage_counts": {
+    "main": 6855,
+    "(missing)": 6334,
+    "industrial": 1351,
+    "branch": 1639,
+    "tourism": 123,
+    "freight": 23,
+    "military": 6,
+    "museum": 10,
+    "test": 1
+  },
+  "landmarks": 37,
+  "landmark_kinds": {
+    "area": 3,
+    "point": 27,
+    "port": 7
+  },
+  "principal_city_points": 22,
+  "metros": 13,
+  "reference_checksums_verified": true
+}

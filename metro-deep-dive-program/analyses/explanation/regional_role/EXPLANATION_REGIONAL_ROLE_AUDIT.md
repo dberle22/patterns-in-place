@@ -6,6 +6,9 @@
 Position, Infrastructure, and documented source contracts. No Regional Role
 notebook, query, or mart was built in this epic.
 
+
+> **Note added 2026-10-26 (IRS direction fix).** Any run of the Regional Role notebook before 2026-10-26 read `silver.irs_migration_flows` and `irs_net_migration_rate` with origin and destination reversed: inbound and outbound partner exchanges were swapped and net migration had the wrong sign. Rerun after that date. See `foundations/etl/IRS_MIGRATION_DIRECTION_FIX_SPEC.md`.
+
 ## Decision summary
 
 | Requirement | Finding | V1 disposition |

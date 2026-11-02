@@ -217,6 +217,17 @@ steps:
       - seed_staging
     enabled: true
 
+  - id: irs_migration_staging
+    layer: staging
+    script: foundations/etl/staging/get_irs_migration.R
+    outputs:
+      - staging.irs_inflow_migration_county
+      - staging.irs_inflow_migration_state
+    depends_on:
+      - seed_staging
+    enabled: true
+    notes: Reads the IRS SOI county and state inflow files. Rows are keyed by the Y2 (destination) area; origin comes from the y1_ columns (direction fixed 2026-10).
+
   - id: irs_bmf_staging
     layer: staging
     script: foundations/etl/staging/get_irs_bmf.R
@@ -867,9 +878,10 @@ steps:
     layer: silver
     script: foundations/etl/silver/irs_migration_silver.R
     outputs:
+      - silver.irs_migration_flows
       - silver.irs_migration_summary
     depends_on:
-      - seed_staging
+      - irs_migration_staging
       - geo_crosswalks
     enabled: true
 
@@ -1050,7 +1062,18 @@ steps:
       - gold.migration_wide
     depends_on:
       - acs_migration
+      - irs_migration
     enabled: true
+
+  - id: check_irs_migration_direction
+    layer: gold
+    script: foundations/etl/gold/check_irs_migration_direction.sql
+    outputs: []
+    depends_on:
+      - irs_migration
+      - gold_migration_wide
+    enabled: true
+    notes: Read-only check. Raises an error if the IRS flows are stored backwards (NY State net interstate migration not negative, Miami-Dade -> Manhattan larger than the reverse, or gold disagreeing with Silver).
 
   - id: gold_transport_built_form_wide
     layer: gold

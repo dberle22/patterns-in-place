@@ -1,0 +1,48 @@
+{
+  "scope": "Albany Lens 1 one-off references (key places, parks, towns); no warehouse materialization",
+  "sources": [
+    {
+      "file": "data/wikipedia_anchors.json",
+      "provider": "Wikipedia (MediaWiki API, prop=coordinates|revisions)",
+      "query_url": "https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&redirects=1&prop=coordinates|revisions&titles=\u2026",
+      "pulled_at": "2026-10-24",
+      "sha256": "5cbe30716cd01fb115e75db81e750a5ec092e3a27c313c84058d8d2870d9ea07"
+    },
+    {
+      "file": "data/wikipedia_anchors_supplement.json",
+      "provider": "Wikipedia (MediaWiki API, prop=coordinates|revisions)",
+      "query_url": "https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&redirects=1&prop=coordinates|revisions&titles=\u2026",
+      "pulled_at": "2026-10-24",
+      "sha256": "adeb05ecd54f22b1712c452decab2f98a1bf28d5bf28933a23b143ba77b9dc36"
+    },
+    {
+      "file": "data/osm_parks.json",
+      "provider": "OpenStreetMap via the Overpass API (overpass-api.de)",
+      "query": "named leisure=park|nature_reserve, boundary=protected_area|national_park ways and relations, bbox 42.43,-74.72,43.33,-73.24; out geom",
+      "osm_base_timestamp": "2026-10-25T11:43:02Z",
+      "pulled_at": "2026-10-25",
+      "license": "ODbL (\u00a9 OpenStreetMap contributors)",
+      "sha256": "7c8babd3a3070885508a74b80e957885e437e2f51cb22c0edaa38d4b52208068"
+    },
+    {
+      "file": "data/osm_parks_selected.geojson",
+      "derived_from": "data/osm_parks.json",
+      "selection": "reference/parks.csv (22 parks)",
+      "sha256": "5bcb44ed31091d65e32c669c47063ac4a9a58db36530db8400501073d156eaf4"
+    },
+    {
+      "file": "data/cb_2023_36_cousub_500k.zip",
+      "provider": "US Census Bureau cartographic boundary files (county subdivisions, 1:500k)",
+      "url": "https://www2.census.gov/geo/tiger/GENZ2023/shp/cb_2023_36_cousub_500k.zip",
+      "pulled_at": "2026-10-25",
+      "sha256": "6987048bc14c0951e8fad603f5ac0895dd7ff63867c448a92ee280ddb42cfc22"
+    },
+    {
+      "file": "data/acs2024_cousub_population.json",
+      "provider": "US Census Bureau API, ACS 2020-24 5-year, B01003_001E",
+      "url": "https://api.census.gov/data/2024/acs/acs5?get=NAME,B01003_001E&for=county%20subdivision:*&in=state:36%20county:001,083,091,093,095 (key omitted)",
+      "pulled_at": "2026-10-25",
+      "sha256": "0b18424979bef07fb5aacb2371051792966aa3691487351a95472efb6d4cc593"
+    }
+  ]
+}

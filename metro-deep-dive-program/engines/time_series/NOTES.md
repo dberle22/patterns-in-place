@@ -22,3 +22,20 @@ field exclusions, and publication outputs are not reused as this engine's
 method. Future KPI expansion must add a registry entry, pass source and
 coverage validation, and update this note if it changes the common panel or
 vintage.
+
+## IRS direction fix (2026-10-26)
+
+The IRS series were stored with the sign reversed until 2026-10-26
+(`foundations/etl/IRS_MIGRATION_DIRECTION_FIX_SPEC.md`). All five IRS registry
+entries are `insufficient_history` at the 2023 end vintage, so no momentum,
+label, tier or turn signal changed; only the IRS raw values in
+`intelligence_trajectory_series` (and start values in the metric table) flipped.
+
+The mart was promoted from `irs_fix_rerun_engine.py promote`, not from
+`build_time_series_engine.py`, because gold now carries the BEA GDP refresh
+(county GDP through 2024) and Dan held that for a separate GDP and clustering
+refresh. The two GDP series (`industry_concentration_hhi`,
+`pct_real_gdp_information`) in the mart are therefore the June values. **The
+next `build_time_series_engine.py` run will publish the GDP refresh**; do it as
+part of that refresh (see `foundations/ROADMAP.md`).
+

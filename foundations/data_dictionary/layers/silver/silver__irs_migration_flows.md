@@ -37,7 +37,8 @@
 | `agi` | `DOUBLE` | 0.1029 | Adjusted gross income associated with the flow, scaled into dollars from the IRS thousand-dollar source field. |
 
 ## Data Quality Notes
-- Exact duplicate staging flow rows were removed during Silver modeling; row count dropped from 655,232 to 654,225.
+
+- **IRS direction fix, 2026-10-26:** before this date every IRS flow was stored backwards (staging read origin from the IRS `y2_` columns), so inflow and outflow were swapped and every net value had the wrong sign. Rebuilt with origin from `y1_` and destination from `y2_`; `foundations/etl/gold/check_irs_migration_direction.sql` fails if it regresses. Spec: [IRS_MIGRATION_DIRECTION_FIX_SPEC.md](../../../etl/IRS_MIGRATION_DIRECTION_FIX_SPEC.md).- Exact duplicate staging flow rows were removed during Silver modeling; row count dropped from 655,232 to 654,225.
 - `origin_county_fips` and `dest_county_fips` are null only on `state` rows.
 - `agi_thousands` and `agi` retain nulls where the IRS source suppressed or omitted income values.
 

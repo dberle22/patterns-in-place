@@ -47,7 +47,10 @@ outflow_county_file <- file.path(raw_dir, glue("outflow{code}.csv"))
 
 
 inflow_county_url <- glue("https://www.irs.gov/pub/irs-soi/countyinflow{code}.csv")
-inflow_county_file <- file.path(raw_dir, glue("inflow{code}.csv"))
+# Use the same file name as the year loop below. The older raw file
+# "inflow2122.csv" is byte-identical to the outflow file (outflow2122.csv),
+# and testing against it is how the Y1/Y2 mapping got reversed (fixed 2026-10).
+inflow_county_file <- file.path(raw_dir, glue("countyinflow{code}.csv"))
 
 # Ingest inflow test
 if (!file.exists(inflow_county_file)) {
@@ -91,8 +94,9 @@ test_inflow <- irs_inflow_raw %>%
     y2_state_fips  = str_pad(as.character(y2_statefips), 2, pad = "0"),
     y2_county_fips = str_pad(as.character(y2_countyfips), 3, pad = "0"),
     y2_geoid = paste0(y2_state_fips, y2_county_fips),
-    y2_state,
-    y2_countyname,
+    # The inflow file only names the Y1 (origin) side; there are no y2_ names.
+    y1_state,
+    y1_countyname,
     y1_state_fips    = str_pad(as.character(y1_statefips), 2, pad = "0"),
     y1_county_fips   = str_pad(as.character(y1_countyfips), 3, pad = "0"),
     y1_geoid   = paste0(y1_state_fips,   y1_county_fips),
@@ -105,8 +109,8 @@ test_inflow <- irs_inflow_raw %>%
   left_join(county_state_xwalk %>% 
               select(county_geoid, y2_county_name_long = county_name_long, y2_state_abbr = state_abbr),
             by = c("y2_geoid" = "county_geoid")) %>%
-  select(y2_geoid, y2_countyname, y2_state, y2_county_name_long, y2_state_abbr,
-         y1_geoid, y1_county_name_long, y1_state_abbr,
+  select(y2_geoid, y2_county_name_long, y2_state_abbr,
+         y1_geoid, y1_countyname, y1_state, y1_county_name_long, y1_state_abbr,
          n1, n2) %>%
   filter(y2_geoid == "06037" | y1_geoid == "06037")
 
@@ -132,16 +136,19 @@ irs_county_inflow <- irs_inflow_raw %>%
     dplyr::between(y1_countyfips, 1, 840),
     dplyr::between(y2_countyfips, 1, 840)
   ) %>%
-  # Pad FIPS and build GEOIDs
+  # Pad FIPS and build GEOIDs.
+  # In the inflow file each row is keyed by the county filers lived in at Y2
+  # (the later year: the destination) and names the county they lived in at
+  # Y1 (the earlier year: the origin). y1_countyname is the origin's name.
   mutate(
-    origin_state_fips  = str_pad(as.character(y2_statefips), 2, pad = "0"),
-    origin_county_fips = str_pad(as.character(y2_countyfips), 3, pad = "0"),
-    dest_state_fips    = str_pad(as.character(y1_statefips), 2, pad = "0"),
-    dest_county_fips   = str_pad(as.character(y1_countyfips), 3, pad = "0"),
-    
+    origin_state_fips  = str_pad(as.character(y1_statefips), 2, pad = "0"),
+    origin_county_fips = str_pad(as.character(y1_countyfips), 3, pad = "0"),
+    dest_state_fips    = str_pad(as.character(y2_statefips), 2, pad = "0"),
+    dest_county_fips   = str_pad(as.character(y2_countyfips), 3, pad = "0"),
+
     origin_geoid = paste0(origin_state_fips, origin_county_fips),
     dest_geoid   = paste0(dest_state_fips,   dest_county_fips),
-    dest_county_name = y1_countyname,
+    origin_county_name = y1_countyname,
     dest_year = test_year,
     origin_year = prev_year
   ) %>%
@@ -162,8 +169,8 @@ irs_county_inflow <- irs_inflow_raw %>%
   select(
     flow_id,
     origin_year, dest_year,
-    dest_state_fips,   dest_county_fips,   dest_geoid, dest_county_name,
-    origin_state_fips, origin_county_fips, origin_geoid, 
+    dest_state_fips,   dest_county_fips,   dest_geoid,
+    origin_state_fips, origin_county_fips, origin_geoid, origin_county_name,
     n_returns, n_exemptions,
     agi_thousands, agi
   )
@@ -175,18 +182,19 @@ irs_summary_inflow <- irs_inflow_raw %>%
   # We assume clean_names() already called upstream
   # Focus on rows that are "Total Migration-..." style for destination counties
   filter(
-    !is.na(y1_statefips),
-    !is.na(y1_countyfips),
-    y1_countyfips != 0,                                   # real destination counties
+    !is.na(y2_statefips),
+    !is.na(y2_countyfips),
+    y2_countyfips != 0,                                   # real destination counties
     str_detect(y1_countyname, "Total Migration")
   ) %>%
   mutate(
-    # Destination county (inflow file: Y1 is destination)
-    dest_state_fips  = str_pad(as.character(y1_statefips), 2, pad = "0"),
-    dest_county_fips = str_pad(as.character(y1_countyfips), 3, pad = "0"),
+    # Destination county (inflow file: Y2 is destination). On summary rows the
+    # Y1 codes are IRS bucket codes (96-98), not a real origin.
+    dest_state_fips  = str_pad(as.character(y2_statefips), 2, pad = "0"),
+    dest_county_fips = str_pad(as.character(y2_countyfips), 3, pad = "0"),
     dest_geoid       = paste0(dest_state_fips, dest_county_fips),
-    origin_state_fips  = str_pad(as.character(y2_statefips), 2, pad = "0"),
-    origin_county_fips = str_pad(as.character(y2_countyfips), 3, pad = "0"),
+    origin_state_fips  = str_pad(as.character(y1_statefips), 2, pad = "0"),
+    origin_county_fips = str_pad(as.character(y1_countyfips), 3, pad = "0"),
     
     # Classify which summary bucket this is for that destination county
     inflow_summary_type = case_when(
@@ -305,16 +313,19 @@ irs_county_inflow_list <- map(
         dplyr::between(y1_countyfips, 1, 840),
         dplyr::between(y2_countyfips, 1, 840)
       ) %>%
-      # Map origin (Y1) and destination (Y2), pad FIPS and build GEOIDs
+      # Map origin (Y1) and destination (Y2), pad FIPS and build GEOIDs.
+      # Inflow rows are keyed by the Y2 (destination) county; the y1_ columns
+      # and y1_countyname describe the origin. Silver treats dest rows as
+      # inflows and origin rows as outflows, so this mapping sets every sign.
       mutate(
-        origin_state_fips  = str_pad(as.character(y2_statefips), 2, pad = "0"),
-        origin_county_fips = str_pad(as.character(y2_countyfips), 3, pad = "0"),
-        dest_state_fips    = str_pad(as.character(y1_statefips), 2, pad = "0"),
-        dest_county_fips   = str_pad(as.character(y1_countyfips), 3, pad = "0"),
-        
+        origin_state_fips  = str_pad(as.character(y1_statefips), 2, pad = "0"),
+        origin_county_fips = str_pad(as.character(y1_countyfips), 3, pad = "0"),
+        dest_state_fips    = str_pad(as.character(y2_statefips), 2, pad = "0"),
+        dest_county_fips   = str_pad(as.character(y2_countyfips), 3, pad = "0"),
+
         origin_geoid = paste0(origin_state_fips, origin_county_fips),
         dest_geoid   = paste0(dest_state_fips,   dest_county_fips),
-        dest_county_name = y1_countyname,
+        origin_county_name = y1_countyname,
         origin_year = origin_year,
         dest_year   = dest_year,
         year        = dest_year   # canonical analysis year
@@ -335,8 +346,8 @@ irs_county_inflow_list <- map(
       select(
         flow_id,
         year, origin_year, dest_year,
-        dest_county_name, dest_state_fips,   dest_county_fips,   dest_geoid,
-        origin_state_fips, origin_county_fips, origin_geoid,
+        dest_state_fips,   dest_county_fips,   dest_geoid,
+        origin_county_name, origin_state_fips, origin_county_fips, origin_geoid,
         n_returns, n_exemptions,
         agi_thousands, agi
       )
@@ -447,12 +458,14 @@ irs_inflow_list <- map(
         dplyr::between(y1_statefips, 1, 56),
         dplyr::between(y2_statefips, 1, 56)
       ) %>%
-      # Map origin (Y1) and destination (Y2), pad FIPS and build GEOIDs
+      # Map origin (Y1) and destination (Y2), pad FIPS and build GEOIDs.
+      # Same layout as the county file: rows are keyed by the Y2 (destination)
+      # state, and y1_state_name is the origin's name.
       mutate(
-        origin_state_fips  = str_pad(as.character(y2_statefips), 2, pad = "0"),
-        dest_state_fips    = str_pad(as.character(y1_statefips), 2, pad = "0"),
-        
-        dest_state_name = y1_state_name,
+        origin_state_fips  = str_pad(as.character(y1_statefips), 2, pad = "0"),
+        dest_state_fips    = str_pad(as.character(y2_statefips), 2, pad = "0"),
+
+        origin_state_name = y1_state_name,
         origin_year = origin_year,
         dest_year   = dest_year,
         year        = dest_year   # canonical analysis year
@@ -473,8 +486,8 @@ irs_inflow_list <- map(
       select(
         flow_id,
         year, origin_year, dest_year,
-        dest_state_name, dest_state_fips, 
-        origin_state_fips, 
+        dest_state_fips,
+        origin_state_name, origin_state_fips,
         n_returns, n_exemptions,
         agi_thousands, agi
       )

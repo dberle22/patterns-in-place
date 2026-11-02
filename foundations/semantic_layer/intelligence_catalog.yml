@@ -450,6 +450,7 @@ frames:
     cross_frame_notes:
       - permits_per_1000_housing_units appears in Livability (supply) and Opportunity (market activity) — intentional cross-frame overlap
       - irs_net_migration_rate appears in Character (residential stability) and Opportunity (market momentum) — intentional
+      - 2026-10-26 IRS direction fix — irs_net_migration_rate and irs_net_agi were sign-flipped in every build before this date. Frames rescored; clusters, peers and published names unchanged (exploration/intelligence_framework/IRS_FIX_RERUN_REVIEW.md)
       - pov_rate appears in Livability (burden) and Opportunity (trajectory context via pov_rate_change_5yr) — intentional
 
     subjects:

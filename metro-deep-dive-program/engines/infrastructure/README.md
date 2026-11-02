@@ -19,7 +19,7 @@ Start with:
 Epics 1–5 are complete, and the Census Place overlap handoff is available for
 the bounded Richmond validation run. The market-parameterized builder reads the declared
 cached OSM asset, records PBF and GeoPackage checksums, clips core candidates
-to the Geography CBSA boundary, and writes a deterministic local source run
+to the declared Geography CBSA or state boundary, and writes a deterministic local source run
 with a manifest and rejected-identity stream. The current Geography geometry
 is explicitly marked `legacy_unclassified`; Epic 4 must not promote it as an
 analytical serving geometry without the corresponding Geography product.
@@ -33,6 +33,16 @@ python3 metro-deep-dive-program/engines/infrastructure/acquire_osm_infrastructur
 Add `--dry-run` to inspect the run without writing artifacts. Runs are written
 below `engines/infrastructure/outputs/`, which is intentionally local and
 ignored by Git.
+
+The declared `new_york_state` market uses state identity `36` and Geography's
+2023 analytical state boundary. Download the dated PBF declared in
+`sources/osm_infrastructure.yml` to its ignored `source_asset_path`, then run
+`Rscript metro-deep-dive-program/engines/infrastructure/sources/ingest_new_york_osmextract.R`
+from the repo root to build the `osmextract` GeoPackage adapter. Run the same
+acquire → normalize → validate → publish commands with `--market new_york_state`,
+using `.venv-marimo/bin/python` (spatial installed), in sequence. These commands
+read the warehouse and write local artifacts; they do not materialize warehouse
+tables. NY's metric QA uses EPSG:5070 because the state spans UTM zones.
 
 Normalize an acquired run with the versioned core mapping:
 
