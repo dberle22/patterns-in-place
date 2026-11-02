@@ -23,6 +23,7 @@ On the Mac it links back to this folder through `repo_ny_state/`.
 ny_state/
   README.md                          this file
   upstate_downstate_repo_context.md  entry doc for Claude Code sessions
+  NY_STATEWIDE_DATA_BUILD_PLAN.md    statewide POI and OSM run, deferred work
   question_bank.md                   question IDs and readiness
   exhibit_bank.md                    exhibit IDs and specs
   program_glossary.md                Metro Deep Dive terms
@@ -38,7 +39,7 @@ ny_state/
     <piece>/
 ```
 
-**One difference in name:** `rankings_and_analyses/<piece>` here matches `rankings/<piece>` in the vault. The repo name is broader because this folder also holds analyses that are not rankings.
+**One difference in name:** `rankings_and_analyses/<piece>` here matches `analyses_and_rankings/<piece>` in the vault. The repo name is broader because this folder also holds analyses that are not rankings.
 
 ## Inside a piece folder
 

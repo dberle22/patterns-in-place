@@ -1,7 +1,7 @@
 # Roadmap
 
 **Status:** Active
-**Updated:** 2026-09-29
+**Updated:** 2026-11-02
 **Supersedes:** `ROADMAP.md` and `PLATFORM_ROADMAP.md` (archived in [archive/2026-09_platform_roadmaps/](archive/2026-09_platform_roadmaps/))
 
 Strategy and sequencing across areas. Two products are active: the **Metro Deep Dive**, the destination, and the **public CBSA panel**, the first thing shipped. Foundations supports both. Everything else is paused and can resume on the same shared core. Current state per area is in [STATUS.md](STATUS.md); task lists live in each area's own plan.
@@ -20,12 +20,12 @@ The Intelligence Framework (phases 0–7) is finished: CBSA frames, Cross-Frame,
 
 ## Now
 
-1. **Metro Deep Dive: define the New York series and point the program at it.** Settle the series outline and set up `issues/ny_state/`. Review Profile, Peers and Trajectory interactively for New York CBSAs. Continue the Explanation analyses already in flight (Q2, Q3, Q4, Q1).
+1. **Metro Deep Dive: the New York series.** The Series Intro and Albany Part 1 are published. Next are the growth ranking, Albany Part 2 and What Is Upstate; the [repo context](../metro-deep-dive-program/issues/ny_state/upstate_downstate_repo_context.md) is the entry point. Review Profile, Peers and Trajectory interactively for New York CBSAs. Continue the Explanation analyses already in flight (Q2, Q3, Q4, Q1).
 2. **Public panel: finish v2026.1.** Release hygiene (Epic 5), then the first analysis and outreach (Epic 6). This runs alongside the Deep Dive, not after it: Deep Dive issues cite the panel as their public data source.
 
 ## Next
 
-- **First New York pieces.** The state primer first, then regional and metro deep dives and rankings, with New York City as the finale.
+- **The rest of the New York series.** A rotation of metro deep dives, statewide analyses and regional arguments, with New York City as the finale.
 - **Public panel v2 scope** (Epic 7), pulling the held-back sources through Foundations.
 - **Promotions into Foundations** as engines reach two unchanged consumers, starting with POI.
 

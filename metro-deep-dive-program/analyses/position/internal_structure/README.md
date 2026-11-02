@@ -14,7 +14,7 @@ for the analysis boundary and
 [POSITION_INTERNAL_STRUCTURE_BUILD_PLAN.md](POSITION_INTERNAL_STRUCTURE_BUILD_PLAN.md)
 for the two-part build sequence.
 
-**Known issue:** the Part 2 notebook doesn't run as committed, for any market.
+**Known issue:** neither notebook runs as committed, for any market.
 The bugs and fixes are listed under
 [Notebook fixes](../../../issues/ny_state/NY_STATEWIDE_DATA_BUILD_PLAN.md#notebook-fixes)
-and are deferred until a NY piece needs it.
+and are deferred until a NY piece needs them.

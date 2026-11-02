@@ -193,12 +193,19 @@ Approved as initial mappings 2026-11-02, with further review expected as analyse
 | **POI filter review** | Raw counts overstate some markets until this is done. Test the candidate filter against known places; decide its threshold and its closed-record and unmapped conditions; decide where it lives (shared view or each query); then check Internal Structure, other POI queries and Albany Part 1's posted POI counts | Before the first cross-market POI comparison |
 | Rules for 6 unmapped category values | 187 POIs, mostly `waterfall`; review with the taxonomy | Next taxonomy update |
 | Ports | Barely present in OSM tags; would need mapping review | A NY piece needs ports |
+| Fix Internal Structure Part 1 notebook | Crashes for every market. See [Notebook fixes](#notebook-fixes) | A NY piece needs the notebook |
 | Fix Internal Structure Part 2 notebook | Fails for every market, including Richmond. See [Notebook fixes](#notebook-fixes) | A NY piece needs the notebook |
 | Fix Infrastructure Explorer notebook | Can't start, for any market. See [Notebook fixes](#notebook-fixes) | A NY piece needs the notebook |
 
 ## Notebook fixes
 
 Found by headless testing on 2026-11-02. No fix has been made, and the line numbers are as of that date. The bugs predate this work. Until they're fixed, query the marts and Parquet outputs directly.
+
+**[Internal Structure Part 1](../../analyses/position/internal_structure/POSITION_INTERNAL_STRUCTURE_NOTEBOOK.py)**
+
+| Line | Problem | Effect | Fix |
+|---|---|---|---|
+| 188, 203 | `axis_off=True` isn't valid in `axis.set()` | Crashes the map cells | Call `set_axis_off()` on each axis |
 
 **[Internal Structure Part 2](../../analyses/position/internal_structure/POSITION_INTERNAL_STRUCTURE_PART2_NOTEBOOK.py)**
 
@@ -219,6 +226,7 @@ Found by headless testing on 2026-11-02. No fix has been made, and the line numb
 
 **Testing.** Both notebooks ran headless through `app.run()` with these bugs worked around outside the repo, so they haven't been opened in the marimo interface. After fixing them, rerun without workarounds:
 
+- Part 1: its default market ran cleanly with the `axis_off` bug worked around. Also run a NY market.
 - Part 2: Rochester, Corning, NYC and Richmond, viewing each map. Only Rochester's and Richmond's maps have been viewed so far.
 - Explorer: New York State and Richmond, confirming that changing the selected run changes the results.
 
