@@ -54,9 +54,9 @@ other connections.
 synthetic and joins to no real CBSA. The New York-Newark CBSA includes its NJ
 counties, so statewide queries filter on county assignment `geo_id LIKE '36%'`.
 
-**Filter before counting POIs.** Marts keep every source record, including likely
-junk and closed places, and these vary a lot by market. Analyses that count POIs
-apply:
+**Raw counts overstate some markets.** Marts keep every source record, including
+likely junk and closed places, and these vary a lot by market. No table or query
+filters them yet. A review is pending, starting from this candidate filter:
 
 ```sql
 try_cast(json_extract_string(source_attributes, '$.confidence') AS DOUBLE) >= 0.3
@@ -64,8 +64,8 @@ AND coalesce(json_extract_string(source_attributes, '$.operating_status'), '') <
 AND mapping_status = 'mapped'
 ```
 
-The evidence and its limits are in [the audit notes](NOTES.md). Existing analysis
-queries do not apply this yet.
+The evidence and open questions are in [the audit notes](NOTES.md), and the review
+is tracked in the [NY build plan](../../issues/ny_state/NY_STATEWIDE_DATA_BUILD_PLAN.md).
 
 `build_osm_anchors.py` and `publish_osm_anchors.py` build `mart_poi.poi_osm_anchor`:
 rail stations, subway entrances, ferry terminals and bus stations from OSM, in

@@ -175,6 +175,7 @@ geographic assumptions, or source-specific matching hierarchy.
 | Whether an official/specialist source replaces a public baseline category | Consumer-driven; no default replacement |
 | Cross-release or cross-source entity resolution | Defer until a consumer needs a canonical entity |
 | Refresh cadence and national partition strategy | After the first repeatable Richmond/Jacksonville build |
+| POI filter: test against known places; settle threshold, closed-record and unmapped conditions, and where it lives; recheck existing queries and Albany Part 1's posted counts | Future review, before the first cross-market POI comparison |
 
 ## Albany run — 2026-10-22
 
@@ -225,7 +226,7 @@ two markets and tract and county assignment at 100%.
   Lakes, with an average confidence of 0.10.
 - **Closed records.** 49,831 NY POIs (4.5%) are `permanently_closed`, mostly from
   BrightQuery. Earlier queries, including Albany Part 1's, do not exclude them.
-- **Analysis filter.** The README's filter keeps 82.6% of NY POIs. Steuben goes
+- **Candidate analysis filter, not applied.** The README's filter keeps 82.6% of NY POIs. Steuben goes
   from 107.2 to 45.2 POIs per 1,000 residents, in line with Chemung at 45.7. The
   0.3 threshold comes from those comparisons and small samples, not a ground-truth
   list.

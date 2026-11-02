@@ -90,7 +90,7 @@ Approved 2026-11-02.
 
 **Cause.** Most of the excess is 9,306 records with the invalid postal code `10000`, 99% of them in nine counties around the western Finger Lakes (3,318 in Steuben alone), plus low-confidence records with no postal code. Average confidence is 0.10, and many names look like unrelated pages or generated text. Low-confidence records also cluster in Manhattan, the Bronx and Staten Island.
 
-**Filter.** Publish every record, as the POI contract requires, and apply this in analyses that count POIs:
+**Candidate filter, not applied.** Every record is published, as the POI contract requires, and no table or query filters them. This is the starting point for the future review listed under Deferred:
 
 ```sql
 try_cast(json_extract_string(source_attributes, '$.confidence') AS DOUBLE) >= 0.3
@@ -190,7 +190,7 @@ Approved as initial mappings 2026-11-02, with further review expected as analyse
 | Q6 notebook infrastructure fix | Only needed once the overlap exists | Same |
 | Q4 market wiring | Markets are hardcoded in four places | A NY piece needs Q4 |
 | Corridor Intelligence inputs | Needs per-market entries, a mapping version update and CBSA-level NY infrastructure | A NY piece needs corridors |
-| Apply the POI filter in consumers | Internal Structure and other queries still count every record | Before the first cross-market POI comparison |
+| **POI filter review** | Raw counts overstate some markets until this is done. Test the candidate filter against known places; decide its threshold and its closed-record and unmapped conditions; decide where it lives (shared view or each query); then check Internal Structure, other POI queries and Albany Part 1's posted POI counts | Before the first cross-market POI comparison |
 | Rules for 6 unmapped category values | 187 POIs, mostly `waterfall`; review with the taxonomy | Next taxonomy update |
 | Ports | Barely present in OSM tags; would need mapping review | A NY piece needs ports |
 
