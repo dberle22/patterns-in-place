@@ -193,6 +193,12 @@ Approved as initial mappings 2026-11-02, with further review expected as analyse
 | **POI filter review** | Raw counts overstate some markets until this is done. Test the candidate filter against known places; decide its threshold and its closed-record and unmapped conditions; decide where it lives (shared view or each query); then check Internal Structure, other POI queries and Albany Part 1's posted POI counts | Before the first cross-market POI comparison |
 | Rules for 6 unmapped category values | 187 POIs, mostly `waterfall`; review with the taxonomy | Next taxonomy update |
 | Ports | Barely present in OSM tags; would need mapping review | A NY piece needs ports |
+| Fix Internal Structure Part 2 notebook | Fails for every market, including Richmond: multi-select defaults pass values instead of labels, and `axis_off=True` is invalid. Its Richmond map is also broken because WGS84 infrastructure is labelled EPSG:26918. NY markets show no infrastructure because the notebook only looks for CBSA-level runs | Before using the notebook interactively |
+| Fix Infrastructure Explorer notebook | Can't start: `validation` is defined in two cells, and `feature_path` is a leftover loop variable, so it could read the wrong run. It also lists core runs only, not the context polygons | Before using the notebook interactively |
+
+## Next
+
+Once this branch is merged to `main`, review the Albany folder restructure, which is still uncommitted. `docs/STATUS.md` and `question_bank.md` hold edits for this work and ship with it.
 
 ## Expected POIs by market
 
@@ -243,3 +249,4 @@ Non-CBSA counties: Allegany, Chenango, Delaware, Essex, Franklin, Greene, Hamilt
 | 2026-11-02 | Gate 2: POI publish | 27 markets in 155 sec; warehouse grew 0.88 GB; existing markets unchanged; reruns refused | Stopped three idle marimo kernels first |
 | 2026-11-02 | Gate 3: OSM layers | 11,172 polygons and 2,963 anchors published to new tables; core files unchanged; reruns refused | Added a labelled nearest-county fallback for 15 pier ferry terminals |
 | 2026-11-02 | Close out | Docs updated and backup deleted | Committed on branch `ny-statewide-data`. `docs/STATUS.md` and `question_bank.md` stay with the folder restructure |
+| 2026-11-02 | Notebook testing, headless | With workarounds kept outside the repo, Part 2 ran on Rochester, Corning and NYC, and the Explorer on the statewide core run. POI coverage matched the marts | Neither notebook runs as committed, for any market. The bugs predate this work and are listed under Deferred |
