@@ -26,6 +26,51 @@ county, and Census Place geometry with QA. Place results are direct analytical
 point assignments; `no_census_place` and boundary ambiguity remain visible.
 First-analysis adoption remains open.
 
+All 27 New York CBSAs and the state's non-CBSA counties are published as of
+2026-11-02, along with a separate OSM anchor table.
+
+## Running markets
+
+Declare the market in [sources/overture_places.yml](sources/overture_places.yml),
+then build its local artifacts. The runner resumes unfinished steps, stops on a
+failure, and never writes to the warehouse:
+
+```sh
+.venv-marimo/bin/python metro-deep-dive-program/engines/poi/run_poi_markets.py --markets hudson_ny
+```
+
+Its order is acquire, normalize, classify, taxonomy profile, taxonomy validation,
+assign. Review the results, then publish:
+
+```sh
+.venv-marimo/bin/python metro-deep-dive-program/engines/poi/publish_poi_append.py --market hudson_ny
+```
+
+`publish_poi_append.py` refuses a market that already has rows, while
+`publish_poi_mart.py` replaces them. Publishing needs the warehouse free of
+other connections.
+
+`SYNTH-NY` in `cbsa_code` marks the New York counties in no CBSA. It is
+synthetic and joins to no real CBSA. The New York-Newark CBSA includes its NJ
+counties, so statewide queries filter on county assignment `geo_id LIKE '36%'`.
+
+**Filter before counting POIs.** Marts keep every source record, including likely
+junk and closed places, and these vary a lot by market. Analyses that count POIs
+apply:
+
+```sql
+try_cast(json_extract_string(source_attributes, '$.confidence') AS DOUBLE) >= 0.3
+AND coalesce(json_extract_string(source_attributes, '$.operating_status'), '') <> 'permanently_closed'
+AND mapping_status = 'mapped'
+```
+
+The evidence and its limits are in [the audit notes](NOTES.md). Existing analysis
+queries do not apply this yet.
+
+`build_osm_anchors.py` and `publish_osm_anchors.py` build `mart_poi.poi_osm_anchor`:
+rail stations, subway entrances, ferry terminals and bus stations from OSM, in
+New York only. They stay separate from Overture records and are not merged.
+
 ## Ownership
 
 - Geography supplies authoritative market boundaries, tract geometry,

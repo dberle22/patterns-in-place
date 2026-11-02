@@ -202,7 +202,10 @@ def main() -> None:
         "notes": [
             "Epic 3 mapping output only; geometry_status is unvalidated until Epic 4.",
             "Unmapped retained features remain in the feature artifact and are also written to the unmapped review artifact.",
-            "No airport, port, warehouse/logistics, industrial, access, barrier, routing, or corridor classification is produced.",
+            # Context mappings do classify airports, so only the core mapping can say otherwise.
+            "No airport, port, warehouse/logistics, industrial, access, barrier, routing, or corridor classification is produced."
+            if rules["mapping_version"] == "osm_core_v1"
+            else "No access, barrier, routing, or corridor classification is produced.",
         ],
     }
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")

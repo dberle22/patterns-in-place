@@ -30,6 +30,11 @@ REPO_ROOT = ENGINE_DIR.parents[2]
 DEFAULT_CONFIG = ENGINE_DIR / "sources" / "overture_places.yml"
 DEFAULT_OUTPUT_ROOT = ENGINE_DIR / "outputs"
 IDENTIFIER = re.compile(r"^[a-z][a-z0-9_]*$")
+MARKET_ID = re.compile(r"^(?:[0-9]+|SYNTH-[A-Z]{2})$")
+COUNTY_GEOID = re.compile(r"^[0-9]{5}$")
+# A county-list market has no CBSA rollup row to read a vintage from. This is
+# the rollup's county vintage, which assignment also records.
+COUNTY_LIST_BOUNDARY_VINTAGE = 2023
 
 
 def database_path(override: Path | None) -> Path:
@@ -71,11 +76,25 @@ def resolve_market(config: dict[str, Any], market_name: str) -> tuple[str, str]:
     """Return the declared market slug and CBSA identifier after safe validation."""
 
     market = config["markets"].get(market_name)
-    if not market or not str(market.get("market_id", "")).isdigit():
-        raise ValueError(f"Market {market_name!r} is not declared with a numeric market_id.")
+    if not market or not MARKET_ID.fullmatch(str(market.get("market_id", ""))):
+        raise ValueError(f"Market {market_name!r} is not declared with a numeric or SYNTH-<state> market_id.")
     if not IDENTIFIER.fullmatch(market_name):
         raise ValueError(f"Unsafe market name: {market_name!r}.")
     return market_name, str(market["market_id"])
+
+
+def market_county_geoids(config: dict[str, Any], market_name: str) -> list[str] | None:
+    """Return a synthetic market's declared counties; a CBSA market returns None."""
+
+    market = config["markets"][market_name]
+    counties = market.get("county_geoids")
+    if str(market["market_id"]).startswith("SYNTH-") != bool(counties):
+        raise ValueError(f"Market {market_name!r}: county_geoids and a SYNTH-<state> market_id must be declared together.")
+    if not counties:
+        return None
+    if not all(COUNTY_GEOID.fullmatch(str(county)) for county in counties):
+        raise ValueError(f"Market {market_name!r} declares an invalid county GEOID.")
+    return [str(county) for county in counties]
 
 
 def configure_extensions(con: duckdb.DuckDBPyConnection, source_path: str) -> None:
@@ -96,15 +115,29 @@ def configure_extensions(con: duckdb.DuckDBPyConnection, source_path: str) -> No
             con.execute("SET s3_region = 'us-west-2'")
 
 
-def boundary_sql() -> str:
-    """Build one Geography-owned CBSA boundary from current tract membership."""
+def county_list_sql(county_geoids: list[str]) -> str:
+    """Render validated county GEOIDs for a SQL IN clause."""
 
-    return """
-    WITH market_counties AS (
+    return ", ".join(sql_literal(county) for county in county_geoids)
+
+
+def boundary_sql(county_geoids: list[str] | None = None) -> str:
+    """Build one Geography-owned market boundary from current tract membership."""
+
+    if county_geoids:
+        counties = f"""
+        SELECT county_geoid, {COUNTY_LIST_BOUNDARY_VINTAGE} AS boundary_vintage
+        FROM geo.counties
+        WHERE county_geoid IN ({county_list_sql(county_geoids)})
+        """
+    else:
+        counties = """
         SELECT county_geoid, boundary_vintage
         FROM mart_geography.rollup_county_to_cbsa
         WHERE cbsa_code = ?
-    ), market_boundary AS (
+        """
+    return f"""
+    WITH market_counties AS ({counties}), market_boundary AS (
         SELECT
             ST_Union_Agg(t.geom) AS geom,
             MIN(c.boundary_vintage) AS boundary_vintage,
@@ -124,12 +157,23 @@ def boundary_sql() -> str:
     """
 
 
-def resolve_boundary(con: duckdb.DuckDBPyConnection, market_id: str) -> dict[str, Any]:
+def resolve_boundary(con: duckdb.DuckDBPyConnection, market_id: str, county_geoids: list[str] | None = None) -> dict[str, Any]:
     """Resolve the market geometry and vintage through the Geography Engine."""
 
-    row = con.execute(boundary_sql(), [market_id]).fetchone()
+    if county_geoids:
+        # A declared county in a CBSA would duplicate POIs across two markets.
+        in_cbsa = con.execute(
+            "SELECT count(*) FROM mart_geography.rollup_county_to_cbsa "
+            f"WHERE county_geoid IN ({county_list_sql(county_geoids)})"
+        ).fetchone()[0]
+        found = con.execute(
+            f"SELECT count(*) FROM geo.counties WHERE county_geoid IN ({county_list_sql(county_geoids)})"
+        ).fetchone()[0]
+        if in_cbsa or found != len(county_geoids):
+            raise RuntimeError(f"Market {market_id}: {found} of {len(county_geoids)} counties exist and {in_cbsa} belong to a CBSA.")
+    row = con.execute(boundary_sql(county_geoids), [] if county_geoids else [market_id]).fetchone()
     if not row or row[0] is None or row[4] is None:
-        raise RuntimeError(f"Geography Engine returned no tract boundary for CBSA {market_id}.")
+        raise RuntimeError(f"Geography Engine returned no tract boundary for market {market_id}.")
     return {
         "west": row[0], "south": row[1], "east": row[2], "north": row[3],
         "boundary_vintage": int(row[4]), "tract_count": int(row[5]), "geometry": row[6],
@@ -201,13 +245,14 @@ def main() -> None:
 
     config = read_config(args.config)
     market_name, market_id = resolve_market(config, args.market)
+    county_geoids = market_county_geoids(config, market_name)
     database = database_path(args.db_path)
     if not database.exists():
         raise FileNotFoundError(f"DuckDB database does not exist: {database}")
 
     with duckdb.connect(str(database), read_only=True) as con:
         configure_extensions(con, config["source_path"])
-        boundary = resolve_boundary(con, market_id)
+        boundary = resolve_boundary(con, market_id, county_geoids)
         extracted, retained = counts(con, config["source_path"], boundary)
         run = run_id(market_id, config["source_release"])
         run_dir = args.output_root / market_name / run
@@ -226,6 +271,8 @@ def main() -> None:
                 "extracted_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                 "notes": ["Source-faithful cache only; normalization, coordinate validation, and taxonomy mapping are deferred to later epics."],
             }
+            if county_geoids:
+                manifest["boundary"]["county_geoids"] = county_geoids
             manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"market": market_name, "market_id": market_id, "source_release": config["source_release"], "extracted_bbox": extracted, "retained_market": retained, "outside_market_boundary": extracted - retained, "dry_run": args.dry_run}, indent=2))
 

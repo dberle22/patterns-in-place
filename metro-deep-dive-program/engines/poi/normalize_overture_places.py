@@ -130,7 +130,7 @@ def main() -> None:
 
     with duckdb.connect(str(database), read_only=True) as con:
         configure_extensions(con, "local.parquet")
-        boundary = resolve_boundary(con, str(run["market_id"]))
+        boundary = resolve_boundary(con, str(run["market_id"]), run["boundary"].get("county_geoids"))
         columns = {row[0] for row in con.execute(
             f"DESCRIBE SELECT * FROM read_parquet({sql_literal(str(source_path))})").fetchall()}
         query = normalize_sql(source_path, run, boundary["geometry"], has_categories="categories" in columns)

@@ -29,7 +29,7 @@ MAPPING_VERSION = "osm_core_v1"
 # projection. Additional markets must declare their CRS before serving.
 # New York spans UTM zones; CONUS Albers supplies one declared statewide
 # measurement CRS rather than extending a local market's UTM assumption.
-ANALYTICAL_CRS = {"richmond_va": "EPSG:26918", "jacksonville_fl": "EPSG:26917", "new_york_state": "EPSG:5070"}
+ANALYTICAL_CRS = {"richmond_va": "EPSG:26918", "jacksonville_fl": "EPSG:26917", "new_york_state": "EPSG:5070", "new_york_state_context": "EPSG:5070"}
 
 
 def checksum(path: Path) -> str:
@@ -212,17 +212,18 @@ def main() -> None:
     parser.add_argument("--market", required=True, choices=sorted(ANALYTICAL_CRS))
     parser.add_argument("--source-run-dir", type=Path, help="Completed source run; defaults to latest for --market.")
     parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
+    parser.add_argument("--mapping-version", default=MAPPING_VERSION, help="Normalized mapping version to validate.")
     parser.add_argument("--overwrite", action="store_true", help="Replace an existing Epic 4 artifact after review.")
     args = parser.parse_args()
 
     source_dir = args.source_run_dir or latest_source_run(args.output_root, args.market)
     source_manifest = json.loads((source_dir / "source_run_manifest.json").read_text(encoding="utf-8"))
-    normalized_dir = source_dir / "normalized" / MAPPING_VERSION
+    normalized_dir = source_dir / "normalized" / args.mapping_version
     feature_path = normalized_dir / "infrastructure_feature.parquet"
     rejected_path = normalized_dir / "infrastructure_rejected_feature.parquet"
     if not feature_path.exists() or not rejected_path.exists():
         raise FileNotFoundError("Epic 3 feature and rejected artifacts are required before validation.")
-    output_dir = source_dir / "validated" / MAPPING_VERSION
+    output_dir = source_dir / "validated" / args.mapping_version
     manifest_path = output_dir / "validation_manifest.json"
     if manifest_path.exists() and not args.overwrite:
         raise FileExistsError(f"Validated artifact already exists: {output_dir}. Use --overwrite after review.")
@@ -245,7 +246,7 @@ def main() -> None:
     qa_path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     manifest = {
         "source_run_id": source_manifest["source_run_id"],
-        "mapping_version": MAPPING_VERSION,
+        "mapping_version": args.mapping_version,
         "validated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "analytical_crs": ANALYTICAL_CRS[args.market],
         "outputs": {name: {"uri": str(path.relative_to(REPO_ROOT)), "sha256": checksum(path)} for name, path in {"features": serving_path, "rejected": rejected_output, "qa_summary": qa_path, "review_map": map_path}.items()},

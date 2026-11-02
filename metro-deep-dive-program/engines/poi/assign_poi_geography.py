@@ -9,7 +9,7 @@ from pathlib import Path
 import duckdb
 
 from normalize_overture_places import latest_source_run
-from acquire_overture_places import ENGINE_DIR, configure_extensions, database_path, sql_literal
+from acquire_overture_places import ENGINE_DIR, configure_extensions, county_list_sql, database_path, sql_literal
 
 
 PLACE_METHOD = "direct_point_in_place_strict_interior_v1"
@@ -33,11 +33,30 @@ def require_place_geometry(con: duckdb.DuckDBPyConnection) -> int:
     return int(vintage)
 
 
-def assignment_sql(places: Path, cbsa: str, place_vintage: int) -> str:
+def market_geography_sql(cbsa: str, county_geoids: list[str] | None) -> tuple[str, str]:
+    """Scope county and tract geometry to a CBSA or a declared county list."""
+    if county_geoids:
+        counties = county_list_sql(county_geoids)
+        return (
+            f"SELECT c.county_geoid, c.geom FROM geo.counties c WHERE c.county_geoid IN ({counties})",
+            f"SELECT t.tract_geoid, t.geom FROM geo.tracts_all_us t WHERE t.county_geoid IN ({counties})",
+        )
+    return (
+        f"""SELECT c.county_geoid, c.geom FROM geo.counties c
+        JOIN mart_geography.rollup_county_to_cbsa x ON c.county_geoid = x.county_geoid
+        WHERE x.cbsa_code = {sql_literal(cbsa)}""",
+        f"""SELECT t.tract_geoid, t.geom FROM geo.tracts_all_us t
+        JOIN mart_geography.rollup_tract_to_cbsa x ON t.tract_geoid = x.tract_geoid
+        WHERE x.cbsa_code = {sql_literal(cbsa)}""",
+    )
+
+
+def assignment_sql(places: Path, cbsa: str, place_vintage: int, county_geoids: list[str] | None = None) -> str:
     """Build assignments while keeping direct Point-to-Place outcomes explicit."""
     # A Place is assigned only for one strict-interior polygon match. A touched
     # boundary or overlapping candidate set remains reviewable rather than being
     # resolved alphabetically. No candidate is the expected unincorporated result.
+    counties_sql, tracts_sql = market_geography_sql(cbsa, county_geoids)
     return f"""
     WITH p AS (
         SELECT source_record_key, source_run_id, market_id, longitude, latitude,
@@ -50,13 +69,9 @@ def assignment_sql(places: Path, cbsa: str, place_vintage: int) -> str:
                          THEN ST_Point(longitude, latitude) END AS geom
         FROM p
     ), counties AS (
-        SELECT c.county_geoid, c.geom FROM geo.counties c
-        JOIN mart_geography.rollup_county_to_cbsa x ON c.county_geoid = x.county_geoid
-        WHERE x.cbsa_code = {sql_literal(cbsa)}
+        {counties_sql}
     ), tracts AS (
-        SELECT t.tract_geoid, t.geom FROM geo.tracts_all_us t
-        JOIN mart_geography.rollup_tract_to_cbsa x ON t.tract_geoid = x.tract_geoid
-        WHERE x.cbsa_code = {sql_literal(cbsa)}
+        {tracts_sql}
     ), place_scope AS (
         -- A retained market point cannot belong to a Place in another state.
         -- This narrows the spatial index scan without using a tract-to-Place edge.
@@ -143,7 +158,7 @@ def main() -> None:
     with duckdb.connect(str(database_path(args.db_path)), read_only=True) as con:
         configure_extensions(con, "local.parquet")
         place_vintage = require_place_geometry(con)
-        query = assignment_sql(places, str(run["market_id"]), place_vintage)
+        query = assignment_sql(places, str(run["market_id"]), place_vintage, run["boundary"].get("county_geoids"))
         con.execute(f"COPY ({query}) TO {sql_literal(str(destination))} (FORMAT PARQUET, COMPRESSION ZSTD)")
         # QA makes no-Place a visible coverage outcome rather than a category zero.
         qa_query = f"""
@@ -177,7 +192,7 @@ def main() -> None:
                    count_if(a.assignment_status = 'invalid_or_unassignable')
             FROM source_places p LEFT JOIN place_assignments a USING (source_record_key)
         """).fetchone()
-        if accounting[1] != accounting[2] - accounting[5]:
+        if accounting[1] != accounting[2] - accounting[6]:
             raise RuntimeError("Place assignment row accounting failed: retained valid POIs do not reconcile.")
 
         # This review-only cross-tab compares the direct Point-to-Place outcome
