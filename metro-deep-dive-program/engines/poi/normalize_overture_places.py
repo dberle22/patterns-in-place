@@ -33,10 +33,16 @@ def latest_source_run(output_root: Path, market: str) -> Path:
     return runs[-1]
 
 
-def normalize_sql(source_path: Path, run: dict, boundary_wkb: bytes) -> str:
-    """Create a source-place record without applying governed taxonomy rules."""
+def normalize_sql(source_path: Path, run: dict, boundary_wkb: bytes, *, has_categories: bool = True) -> str:
+    """Create a source-place record without applying governed taxonomy rules.
+
+    Overture dropped the deprecated `categories` struct in 2026-10-21.0. When a
+    release lacks it, `source_category_primary` is null (absent source fields are
+    null, per the contract); classification keys on `basic_category` regardless.
+    """
 
     source = f"read_parquet({sql_literal(str(source_path))})"
+    categories = "categories" if has_categories else "NULL"
     boundary = sql_literal(boundary_wkb.hex())
     return f"""
     WITH raw AS (
@@ -52,11 +58,11 @@ def normalize_sql(source_path: Path, run: dict, boundary_wkb: bytes) -> str:
             names.primary AS source_name,
             addresses[1].freeform AS source_address,
             addresses[1].postcode AS source_postal_zip,
-            categories.primary AS source_category_primary,
+            {categories + '.primary' if has_categories else 'NULL::VARCHAR'} AS source_category_primary,
             basic_category AS source_category_basic,
             taxonomy.primary AS source_taxonomy_primary,
             taxonomy.hierarchy AS source_taxonomy_hierarchy,
-            to_json(struct_pack(categories := categories, confidence := confidence,
+            to_json(struct_pack(categories := {categories}, confidence := confidence,
                 sources := sources, brand := brand, operating_status := operating_status,
                 websites := websites, phones := phones)) AS source_attributes,
             geometry,
@@ -125,7 +131,9 @@ def main() -> None:
     with duckdb.connect(str(database), read_only=True) as con:
         configure_extensions(con, "local.parquet")
         boundary = resolve_boundary(con, str(run["market_id"]))
-        query = normalize_sql(source_path, run, boundary["geometry"])
+        columns = {row[0] for row in con.execute(
+            f"DESCRIBE SELECT * FROM read_parquet({sql_literal(str(source_path))})").fetchall()}
+        query = normalize_sql(source_path, run, boundary["geometry"], has_categories="categories" in columns)
         write_query(con, query + " WHERE record_status = 'retained'", normalized_path)
         write_query(con, query + " WHERE record_status = 'rejected'", rejected_path)
         # A same-name, roughly 11 m grid co-location is a review candidate only,

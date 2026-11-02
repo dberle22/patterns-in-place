@@ -3,13 +3,16 @@
 # Engine; no market bbox is stored here as an alternate geography authority.
 source_system: overture
 source_dataset: places
-# The legacy 2026-06-17.0 pilot release is no longer present in Overture's
-# public bucket. This is the oldest available release when Epic 2 was built.
-source_release: "2026-08-19.0"
-source_path: "s3://overturemaps-us-west-2/release/2026-08-19.0/theme=places/type=place/*"
+# Overture keeps only recent releases public. 2026-06-17.0 (pilot) and
+# 2026-08-19.0 (Richmond and Jacksonville Epic 2 runs) are gone; their caches
+# and manifests remain the audit record. Bumped 2026-10-22 for the Albany run.
+source_release: "2026-10-21.0"
+source_path: "s3://overturemaps-us-west-2/release/2026-10-21.0/theme=places/type=place/*"
 query_method: bbox_prefilter_then_governed_boundary_intersection
 markets:
   richmond_va:
     market_id: "40060"
   jacksonville_fl:
     market_id: "27260"
+  albany_ny:
+    market_id: "10580"
