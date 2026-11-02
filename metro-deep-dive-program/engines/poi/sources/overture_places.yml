@@ -16,3 +16,90 @@ markets:
     market_id: "27260"
   albany_ny:
     market_id: "10580"
+  # NY statewide build, see issues/ny_state/NY_STATEWIDE_DATA_BUILD_PLAN.md.
+  # Largest first, so a scale problem appears before the small markets run.
+  new_york_ny_nj:
+    market_id: "35620"
+    series: ny_state
+  rochester_ny:
+    market_id: "40380"
+    series: ny_state
+  buffalo_ny:
+    market_id: "15380"
+    series: ny_state
+  poughkeepsie_ny:
+    market_id: "28880"
+    series: ny_state
+  syracuse_ny:
+    market_id: "45060"
+    series: ny_state
+  utica_rome_ny:
+    market_id: "46540"
+    series: ny_state
+  binghamton_ny:
+    market_id: "13780"
+    series: ny_state
+  kingston_ny:
+    market_id: "28740"
+    series: ny_state
+  corning_ny:
+    market_id: "18500"
+    series: ny_state
+  glens_falls_ny:
+    market_id: "24020"
+    series: ny_state
+  jamestown_dunkirk_ny:
+    market_id: "27460"
+    series: ny_state
+  watertown_ny:
+    market_id: "48060"
+    series: ny_state
+  ithaca_ny:
+    market_id: "27060"
+    series: ny_state
+  massena_ogdensburg_ny:
+    market_id: "32390"
+    series: ny_state
+  plattsburgh_ny:
+    market_id: "38460"
+    series: ny_state
+  elmira_ny:
+    market_id: "21300"
+    series: ny_state
+  monticello_ny:
+    market_id: "33910"
+    series: ny_state
+  olean_ny:
+    market_id: "36460"
+    series: ny_state
+  hudson_ny:
+    market_id: "26460"
+    series: ny_state
+  oneonta_ny:
+    market_id: "36580"
+    series: ny_state
+  auburn_ny:
+    market_id: "12180"
+    series: ny_state
+  batavia_ny:
+    market_id: "12860"
+    series: ny_state
+  gloversville_ny:
+    market_id: "24100"
+    series: ny_state
+  amsterdam_ny:
+    market_id: "11220"
+    series: ny_state
+  cortland_ny:
+    market_id: "18660"
+    series: ny_state
+  seneca_falls_ny:
+    market_id: "42900"
+    series: ny_state
+  # The NY counties in no CBSA. The key is deliberately synthetic: it fills
+  # cbsa_code so these POIs publish like any market, and it never joins to a
+  # real CBSA.
+  ny_non_cbsa:
+    market_id: "SYNTH-NY"
+    series: ny_state
+    county_geoids: ["36003", "36017", "36025", "36031", "36033", "36039", "36041", "36049", "36097", "36121", "36123"]

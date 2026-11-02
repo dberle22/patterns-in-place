@@ -1,0 +1,62 @@
+# Context polygons for the NY statewide build, kept apart from the core mapping
+# so the core run and its consumers do not change. Approved as initial mappings
+# on 2026-11-02 at Gate 3 of issues/ny_state/NY_STATEWIDE_DATA_BUILD_PLAN.md,
+# with further review expected as analyses use them.
+mapping_version: osm_context_v1
+rules:
+  - rule_id: osm_context_airport_v1
+    source_group: airport
+    source_types: [aerodrome]
+    source_layer: multipolygons
+    feature_group: airport
+    feature_form: surface
+    review_status: approved_initial
+    evidence: "OSM aeroway=aerodrome"
+  - rule_id: osm_context_campus_v1
+    source_group: campus
+    source_types: [university, college]
+    source_layer: multipolygons
+    feature_group: campus
+    feature_form: surface
+    review_status: approved_initial
+    evidence: "OSM amenity=university or amenity=college"
+  - rule_id: osm_context_hospital_v1
+    source_group: hospital
+    source_types: [hospital]
+    source_layer: multipolygons
+    feature_group: hospital
+    feature_form: surface
+    review_status: approved_initial
+    evidence: "OSM amenity=hospital"
+  - rule_id: osm_context_prison_v1
+    source_group: prison
+    source_types: [prison]
+    source_layer: multipolygons
+    feature_group: prison
+    feature_form: surface
+    review_status: approved_initial
+    evidence: "OSM amenity=prison"
+  - rule_id: osm_context_bus_facility_v1
+    source_group: bus_facility
+    source_types: [bus_station, bus_depot]
+    source_layer: multipolygons
+    feature_group: bus_facility
+    feature_form: surface
+    review_status: approved_initial
+    evidence: "OSM amenity=bus_station or amenity=bus_depot"
+  - rule_id: osm_context_protected_area_v1
+    source_group: protected_area
+    source_types: [protected_area]
+    source_layer: multipolygons
+    feature_group: protected_area
+    feature_form: surface
+    review_status: approved_initial
+    evidence: "OSM boundary=protected_area; takes precedence over leisure tags on the same feature"
+  - rule_id: osm_context_park_v1
+    source_group: park
+    source_types: [park, nature_reserve]
+    source_layer: multipolygons
+    feature_group: park
+    feature_form: surface
+    review_status: approved_initial
+    evidence: "OSM leisure=park or leisure=nature_reserve, when not also a protected area"

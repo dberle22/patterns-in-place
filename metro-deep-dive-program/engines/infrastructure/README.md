@@ -44,6 +44,22 @@ using `.venv-marimo/bin/python` (spatial installed), in sequence. These commands
 read the warehouse and write local artifacts; they do not materialize warehouse
 tables. NY's metric QA uses EPSG:5070 because the state spans UTM zones.
 
+**NY context polygons** (airports, campuses, hospitals, prisons, bus facilities,
+protected areas and parks) use the same cached file in their own output folder
+and mapping, and are the one layer this engine serves from the warehouse:
+
+```sh
+.venv-marimo/bin/python metro-deep-dive-program/engines/infrastructure/acquire_osm_context.py --market new_york_state_context
+.venv-marimo/bin/python metro-deep-dive-program/engines/infrastructure/normalize_osm_infrastructure.py --market new_york_state_context --rules metro-deep-dive-program/engines/infrastructure/sources/osm_context_mappings_v1.yml
+.venv-marimo/bin/python metro-deep-dive-program/engines/infrastructure/validate_osm_infrastructure.py --market new_york_state_context --mapping-version osm_context_v1
+.venv-marimo/bin/python metro-deep-dive-program/engines/infrastructure/publish_osm_context.py --market new_york_state_context
+```
+
+The publish appends to `mart_infrastructure.infrastructure_context_feature` and
+refuses a run the table already holds. Each feature has one group; a feature that
+is both protected area and park counts as protected area. Polygon areas can
+overlap, so don't sum them as land coverage.
+
 Normalize an acquired run with the versioned core mapping:
 
 ```sh
@@ -105,6 +121,10 @@ Choose a completed Richmond or Jacksonville run to review its provenance,
 feature composition, water complexity, validation/rejection evidence, raw tags,
 and a bounded geometry-map sample. The notebook does not change artifacts or
 create an analysis result.
+
+**Known issue:** the notebook doesn't start as committed. The bugs and fixes are
+listed under [Notebook fixes](../../issues/ny_state/NY_STATEWIDE_DATA_BUILD_PLAN.md#notebook-fixes)
+and are deferred until a NY piece needs it.
 
 ## Ownership
 

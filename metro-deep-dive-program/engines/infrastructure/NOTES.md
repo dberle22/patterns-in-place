@@ -248,3 +248,26 @@ it does not perform downstream geography assignment.
 
 No source data was downloaded, no DuckDB table changed, and no legacy consumer
 was migrated as part of this audit.
+
+## NY context polygons — 2026-11-02
+
+`acquire_osm_context.py` and the `osm_context_v1` mapping add a separate statewide
+run for airports (113), campuses (328), hospitals (238), prisons (95), bus
+facilities (47), protected areas (2,292) and parks (8,059), published to
+`mart_infrastructure.infrastructure_context_feature`. The 13 core run files were
+hashed before and after and did not change.
+
+Clipping failed on invalid source polygons, so 22 were repaired before the clip
+with `ST_MakeValid`, polygons only, and counted in the manifest. Validation then
+rejected nothing. `geometry_status` reads `valid` on these because they were
+repaired before validation; `source_geometry_id` still hashes the original.
+
+The mappings were approved as initial on 2026-11-02, with further review expected
+as analyses use them. Known looseness: `amenity=university` also catches offices
+such as a Cornell Cooperative Extension county office, and 1,885 features tagged
+both protected area and park count as protected area, including Jones Beach.
+
+The Place overlap (`build_place_overlap.py`) was deliberately not run for the
+statewide core run. It took 26 s in a scratch test, but the Q6 notebook reads the
+first overlap file alphabetically and filters on a CBSA code, so a `new_york_state`
+file would blank Richmond's context. Fix the notebook first.
