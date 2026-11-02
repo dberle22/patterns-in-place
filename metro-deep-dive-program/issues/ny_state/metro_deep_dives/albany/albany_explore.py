@@ -1,8 +1,8 @@
 """Exploration helpers for the Albany pieces: quick tables, zoomable Plotly maps and picker charts.
 
-Imported by the exploration notebooks (ALBANY_LENS1_EXPLORATION.py, ALBANY_LENS2_EXPLORATION.py, and later
-lenses). Nothing here is styled for print. Print helpers live in ALBANY_LENS1_VISUALS.py; when a print exhibit
-uses one of these, it moves there (move, don't copy). Promote to a shared module when another market reuses
+Imported by the exploration notebooks (ALBANY_LENS1_EXPLORATION.py, ALBANY_PART2_EXPLORATION.py, and later
+parts). Nothing here is styled for print. Print helpers live in albany_common.py or the part's visuals notebook;
+when a print exhibit uses one of these, it moves there (move, don't copy). Promote to a shared module when another market reuses
 them unchanged (NATIONAL_FOLLOWUPS N10).
 """
 
@@ -21,7 +21,7 @@ import plotly.graph_objects as go
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from ALBANY_LENS1_VISUALS import (  # noqa: E402
+from albany_common import (  # noqa: E402
     CBSA_CODE,
     NYC_CBSA_CODE,
     SQL_DIR,
@@ -33,9 +33,9 @@ from ALBANY_LENS1_VISUALS import (  # noqa: E402
     run_sql,
     short_cbsa,
 )
-# Moved to the visuals notebook when their exhibits were promoted (move, don't copy); re-exported here so the
-# exploration notebooks keep importing them from this module.
-from ALBANY_LENS1_VISUALS import (  # noqa: E402, F401
+# Moved out when their exhibits were promoted (move, don't copy); re-exported here so the exploration notebooks
+# keep importing them from this module.
+from albany_common import (  # noqa: E402, F401
     ACTIVITY_BUNDLES,
     ACTIVITY_COLORS,
     ACTIVITY_ORDER,

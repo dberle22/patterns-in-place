@@ -17,7 +17,7 @@ with app.setup:
     from matplotlib.patches import Patch
 
     HERE = Path(__file__).resolve().parent
-    REPO_ROOT = HERE.parents[3]
+    REPO_ROOT = HERE.parents[4]
     SQL_DIR = HERE / "sql"
     OUTPUT_DIR = HERE / "output"
     DRAFTS_DIR = OUTPUT_DIR / "drafts"

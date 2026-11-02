@@ -39,7 +39,7 @@ From Dan's initial CBSA list. Depth is a starting point; a metro can grow into m
 
 | # | Piece | Track | Questions | Readiness |
 |---|---|---|---|---|
-| 1 | What Albany Actually Is | Albany, Lens 1 | M.10, M.9, M.2 (Part 1), M.3, S2.2 | Mostly ready. See the [outline](albany/ALBANY_LENS1_OUTLINE.md) |
+| 1 | What Albany Actually Is | Albany, Lens 1 | M.10, M.9, M.2 (Part 1), M.3, S2.2 | Mostly ready. See the [outline](metro_deep_dives/albany/part_1/ALBANY_LENS1_OUTLINE.md) |
 | 2 | What People Do in Albany | Albany, Lens 4 | M.6, M.8, M.15, M.16, M.17, S5.4 | Ready; state government share needs the QCEW filter (B2 step 1). Opens with Rockefeller and Empire State Plaza; Schenectady and GE (M.17) folded in |
 | 3 | The State as Employer | Statewide, Lens 4 | S5.3, S5.4 | QCEW part ready; the full institution map waits on B2 |
 | 4 | Growing, Shrinking, and Graded on a Curve | Ranking | K.2, K.6 | Ready (2012 to 2024 window settled) |

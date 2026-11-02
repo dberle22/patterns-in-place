@@ -111,7 +111,7 @@ Part B tests this rather than assuming it. If clusters or peers do move, stop an
 
 | Reader | What it uses | Action |
 |---|---|---|
-| `metro-deep-dive-program/issues/ny_state/albany/` | `sql/q4_metro_migration.sql` (swaps flows back), `sql/q4_metro_scorecard.sql` (negates `irs_net_migration_rate`), `irs_flows_reversed()` guard in the exploration helpers | Part C: remove both workarounds once the guard fails; rerun the notebook and confirm Q4i reads the same |
+| `metro-deep-dive-program/issues/ny_state/metro_deep_dives/albany/` | `sql/q4_metro_migration.sql` (swaps flows back), `sql/q4_metro_scorecard.sql` (negates `irs_net_migration_rate`), `irs_flows_reversed()` guard in the exploration helpers | Part C: remove both workarounds once the guard fails; rerun the notebook and confirm Q4i reads the same |
 | `analyses/explanation/regional_role/` | `queries/regional_role_irs_partner_exchange.sql` (flows), `irs_net_migration_rate` in the notebook; no saved outputs | Rerun the notebook. Note in its audit doc that runs before the fix had the direction reversed |
 | `analyses/explanation/q1_supply_or_demand/` | `irs_net_migration_rate` as context in `q1_cbsa_trend.sql`, `q1_market_cbsa_county_context.sql`, `q1_supply_demand_mart.sql`; saved CSVs in `outputs/market_10580`, `market_32580`, `market_40060`, `market_43340`, `market_45300`, `national` | Rebuild the mart; re-export those CSVs; confirm the composite didn't use IRS |
 | `analyses/position/` (profile, peers, trajectory) and `engines/intelligence_framework/queries/` | mart_intelligence raw values and scores | Correct after the mart reload; note any saved reads that quote IRS values or scores |

@@ -82,4 +82,4 @@ The three lines are the ends of an argument the articles can make. On the narrow
 | `source_url` | The region's ESD page |
 | `as_of` | Date the assignment was checked |
 
-**Checks** (run in `what_ny_is/WHAT_NY_IS_VISUALS.py` through `check_seed`): 62 rows, each county once, matches the NY counties in `geo.counties`, 10 regions, 10 / 12 / 14 Downstate counties, and `core ⊂ mta ⊂ redc`.
+**Checks** (run in `primer/series_intro/WHAT_NY_IS_VISUALS.py` through `check_seed`): 62 rows, each county once, matches the NY counties in `geo.counties`, 10 regions, 10 / 12 / 14 Downstate counties, and `core ⊂ mta ⊂ redc`.

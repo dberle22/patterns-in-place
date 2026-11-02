@@ -3,7 +3,7 @@
 **Status:** Active
 **Updated:** 2026-10-19
 
-Plan and build record for the four visuals in the opening sections of [series_intro.md](series_intro.md): the Population Map in "Two New Yorks", plus Map 1 (Regions and CBSAs), Map 2 (Core Infrastructure) and the "How New York Stacks Up" benchmark in "What New York Is". Everything is built in one marimo notebook, [what_ny_is/WHAT_NY_IS_VISUALS.py](what_ny_is/WHAT_NY_IS_VISUALS.py).
+Plan and build record for the four visuals in the opening sections of the Series Intro (vault: `primer/series_intro/Series Intro.md`): the Population Map in "Two New Yorks", plus Map 1 (Regions and CBSAs), Map 2 (Core Infrastructure) and the "How New York Stacks Up" benchmark in "What New York Is". Everything is built in one marimo notebook, [primer/series_intro/WHAT_NY_IS_VISUALS.py](WHAT_NY_IS_VISUALS.py).
 
 | Visual | Intro section | Exhibit | Questions | Status (2026-10-19) |
 |---|---|---|---|---|
@@ -13,7 +13,7 @@ Plan and build record for the four visuals in the opening sections of [series_in
 | Map 2: Core Infrastructure | What New York Is | X.19 | S3.1 | Reviewed; v2 (infrastructure-led, short landmark cut) built beside v1 |
 | How New York Stacks Up | What New York Is | X.4 | S2.4, S2.5 | Reviewed; table chosen; v2 with "as if a state" ranks built beside v1 |
 
-IDs are from the Question Bank and Exhibit Bank in [ny_state_of_mind_repo_context.md](ny_state_of_mind_repo_context.md).
+IDs are from the Question Bank and Exhibit Bank in [question_bank.md](../../question_bank.md) and [exhibit_bank.md](../../exhibit_bank.md).
 
 ---
 
@@ -21,11 +21,11 @@ IDs are from the Question Bank and Exhibit Bank in [ny_state_of_mind_repo_contex
 
 **Next task:** Dan reviews the two population history charts (rank and share) and picks one or both. The v2s of the other four were approved on 2026-10-19 ("looking great"); v1 cells stay until Dan says to cut them. Exports remain off. The 2026-10-19 review below is the spec for the v2s. The [ingestion review](MAP2_INGESTION_REVIEW.md) records the earlier Map 2 data handoff.
 
-**Read first:** this plan, [AGENTS.md](../../../AGENTS.md), [NY_REGIONS_SPEC.md](NY_REGIONS_SPEC.md), and for Map 2 the [Infrastructure Engine README](../../engines/infrastructure/README.md) and [CONTRACT](../../engines/infrastructure/CONTRACT.md).
+**Read first:** this plan, [AGENTS.md](../../../../../AGENTS.md), [NY_REGIONS_SPEC.md](../../regional_deep_dives/NY_REGIONS_SPEC.md), and for Map 2 the [Infrastructure Engine README](../../../../engines/infrastructure/README.md) and [CONTRACT](../../../../engines/infrastructure/CONTRACT.md).
 
 **How to work in this folder**
-- **One notebook.** All code is in `what_ny_is/WHAT_NY_IS_VISUALS.py`: a setup cell (imports, paths, projection, theme), one section per visual with its settings cell first, and a **Map helpers** section at the end with every drawing function as an `@app.function`. Layer queries are `.sql` files in `what_ny_is/sql/`. Don't add a separate `.py` module: the kernel caches imported modules, and edits then need a restart (this happened on 2026-10-18).
-- **Marimo rules.** Every variable shared between cells must be unique across the notebook (prefix per section, e.g. `map2_fig`); use `_`-prefixed names for cell-local values. Run `.venv-marimo/bin/marimo check` after every edit. From the repo root, execute the notebook with `MPLBACKEND=Agg .venv-marimo/bin/python metro-deep-dive-program/issues/ny_state/what_ny_is/WHAT_NY_IS_VISUALS.py`; Agg avoids the macOS GUI backend during a headless script check.
+- **One notebook.** All code is in `primer/series_intro/WHAT_NY_IS_VISUALS.py`: a setup cell (imports, paths, projection, theme), one section per visual with its settings cell first, and a **Map helpers** section at the end with every drawing function as an `@app.function`. Layer queries are `.sql` files in `primer/series_intro/sql/`. Don't add a separate `.py` module: the kernel caches imported modules, and edits then need a restart (this happened on 2026-10-18).
+- **Marimo rules.** Every variable shared between cells must be unique across the notebook (prefix per section, e.g. `map2_fig`); use `_`-prefixed names for cell-local values. Run `.venv-marimo/bin/marimo check` after every edit. From the repo root, execute the notebook with `MPLBACKEND=Agg .venv-marimo/bin/python metro-deep-dive-program/issues/ny_state/primer/series_intro/WHAT_NY_IS_VISUALS.py`; Agg avoids the macOS GUI backend during a headless script check.
 - **Dan often has the notebook open** in the VS Code marimo extension. Editing cells that already exist is fine. **Adding or removing cells while it's open causes `ValueError: Cell '<id>' already exists`.** Before structural edits, ask Dan to close it; after, tell him to run "Developer: Reload Window" and reopen.
 - **Nothing saves yet.** Every `save(...)` call is commented out (`# off until we export`) and `output/drafts/` is empty on purpose. To look at a draft yourself, run the notebook as a script and `savefig` to your own scratch directory, not to `output/`.
 - **No commits** until Dan approves. Use repo-relative paths only in committed files.
@@ -44,7 +44,7 @@ IDs are from the Question Bank and Exhibit Bank in [ny_state_of_mind_repo_contex
 | Decision | Choice | Source |
 |---|---|---|
 | Output format | Static PNG/SVG in the Substack article; interactive Carto versions of Maps 1 and 2 linked out | Dan, 2026-10-15 |
-| Regions | 10 official REDC regions | [Series decision](../../../docs/decisions/2026-09_ny-series-first.md) |
+| Regions | 10 official REDC regions | [Series decision](../../../../../docs/decisions/2026-09_ny-series-first.md) |
 | CBSAs | 2023 vintage; show all metros and micros, lead with metros | Series decision |
 | Downstate definitions | All three stored as boolean columns in the REDC county seed; everything starts with `downstate_core` (10 counties) | Dan, 2026-10-17 |
 | Map data sources | Existing OSM Infrastructure and Overture POI engines, not new NYS GIS or BTS pipelines. Fall back to those sources only for a real gap | Dan, 2026-10-17 |
@@ -155,15 +155,15 @@ Line numbers are as of 2026-10-19. Check them off as they land.
 
 ## Shared setup (done)
 
-- [x] **Folder layout** under `issues/ny_state/what_ny_is/`:
+- [x] **Folder layout** under `issues/ny_state/primer/series_intro/`:
   - `WHAT_NY_IS_VISUALS.py`: the notebook (see Handoff)
   - `sql/`: `ny_counties.sql`, `ny_cbsas.sql`, `neighbor_states.sql`, `ny_tract_density.sql`, `benchmark_stack_up.sql`, `benchmark_median_bins.sql`, `map2_infrastructure.sql`, `ny_principal_cities.sql`; v2: `downstate_shares.sql`, `benchmark_state_values.sql`, `map2_v2_water.sql`
   - `reference/`: `landmarks.csv` and `landmark_sources.json` (Map 2 input review)
   - `data/`: local one-off canal/park downloads and their provenance manifest
   - `output/`: final PNG/SVG plus GeoJSON exports for Carto; `output/drafts/` for saved variants. Both empty for now
 - [x] **NY regions seed:** `foundations/etl/reference/ny_county_regions.csv`, 62 rows: `county_geoid`, `county_name`, `redc_region`, `downstate_core` (10), `downstate_mta` (12), `downstate_redc` (14), `source_url`, `as_of`. REDC assignments checked against each region's ESD page. The checks (62 rows, each county once, matches `geo.counties`, 10 regions, 10/12/14 counties, `core ⊂ mta ⊂ redc`) run in the notebook's first section. The seed is gitignored; see Open questions.
-- [x] **Definitions spec:** [NY_REGIONS_SPEC.md](NY_REGIONS_SPEC.md). `downstate_core` is exactly the NY part of the 2023 NYC metro, and `downstate_mta` adds exactly the Kiryas Joel-Poughkeepsie-Newburgh metro.
-- [x] **Style.** `foundations/visual_library/chart_engine_py/chart_engine/pip_theme.yml` through the library's `Theme`, and the [visual style guide](../../../foundations/visual_library/docs/visual_style_guide_and_standards.md). Figures are 1456 px wide (2× Substack content width) at 200 dpi; map height follows the state's shape.
+- [x] **Definitions spec:** [NY_REGIONS_SPEC.md](../../regional_deep_dives/NY_REGIONS_SPEC.md). `downstate_core` is exactly the NY part of the 2023 NYC metro, and `downstate_mta` adds exactly the Kiryas Joel-Poughkeepsie-Newburgh metro.
+- [x] **Style.** `foundations/visual_library/chart_engine_py/chart_engine/pip_theme.yml` through the library's `Theme`, and the [visual style guide](../../../../../foundations/visual_library/docs/visual_style_guide_and_standards.md). Figures are 1456 px wide (2× Substack content width) at 200 dpi; map height follows the state's shape.
 - [x] **Library gaps.** `choropleth` shades categories along one blue ramp, so it can't do 10 region fills (a categorical choropleth is a NEW TYPE in the Exhibit Bank, X.5 and X.8). `highlight_context_map` draws polygons only, with no line layers, point symbols or dashed lines. `strength_strip` normalizes metrics across a peer set and needs one geography level. So every visual here is drawn by the notebook's own helpers.
 - [x] **Geometry: draw with display layers, compute with analysis layers.**
   - Drawing: `geo.cbsas`, `geo.counties`, `geo.tracts_all_us` (2024 Census cartographic, clipped to the shoreline). The analysis TIGER shapes run out into the water (the NYC CBSA is about 1,900 sq mi larger, Buffalo about 780 sq mi into Lake Erie).
@@ -179,7 +179,7 @@ Line numbers are as of 2026-10-19. Check them off as they land.
 
 **Job:** show the intro's claim that New York was the largest state from 1810 to 1960, then was passed by California, Texas and Florida. Notebook section sits before the Population Map, matching the article order.
 
-**Data: `what_ny_is/reference/state_population_history.csv`** (110 rows; whitelisted in the folder `.gitignore` like `landmarks.csv`)
+**Data: `primer/series_intro/reference/state_population_history.csv`** (110 rows; whitelisted in the folder `.gitignore` like `landmarks.csv`)
 - Columns: `year`, `geography` (New York, California, Texas, Florida, United States), `population`, `state_rank`, `states_ranked`, `is_state`, `note`, `source_url`, `as_of`.
 - Counts are Census decennial figures transcribed from Wikipedia's [historical population tables](https://en.wikipedia.org/w/index.php?title=List_of_U.S._states_and_territories_by_historical_population&oldid=1369369888), pinned to revision 1369369888 and parsed by script, not typed. The raw API download is in `data/wikipedia_state_population_history.json` (gitignored).
 - **Ranks** were computed from all 50 states in that table: present-day boundaries, ranked among areas that were states at each census (the table's territory shading), DC excluded. `states_ranked` gives the denominator (17 in 1810, 50 from 1960).
@@ -206,7 +206,7 @@ Line numbers are as of 2026-10-19. Check them off as they land.
 **Data**
 - `sql/ny_tract_density.sql`: tract shapes from `geo.tracts_all_us` (NY), left-joined to `gold.population_demographics` tract `pop_total` for 2024, density = `pop_total / land_area_sqmi`. 5,393 tracts with land are drawn.
 - Checks (2026-10-18): tract shapes are shoreline-clipped and cover the same 48,970 sq mi as the county shapes. The 17 population rows with no shape are zero-population water tracts.
-- **Known gap:** 14 Suffolk County tracts have no 2023–24 population in the warehouse (77,579 people; the county total is complete). They draw grey as "no data" with a note in the source line. Fix ticketed in [foundations/ROADMAP.md](../../../foundations/ROADMAP.md) (Next table).
+- **Known gap:** 14 Suffolk County tracts have no 2023–24 population in the warehouse (77,579 people; the county total is complete). They draw grey as "no data" with a note in the source line. Fix ticketed in [foundations/ROADMAP.md](../../../../../foundations/ROADMAP.md) (Next table).
 
 **Design as drafted**
 - Nine log classes stepping ×5 then ×2: under 10, 10–50, 50–100, 100–500, … 50,000+ people per sq mi (`density_breaks`)
@@ -335,7 +335,7 @@ added. After the changes, reload the VS Code window and reopen the notebook.
 
 1. [x] **Canal centerline (one-off download).**
    - URL: `https://services6.arcgis.com/DmQy2NS38tchd4fs/arcgis/rest/services/Canal_Centerline/FeatureServer/10/query?where=1%3D1&outFields=*&outSR=4326&f=geojson`
-   - Saved as `what_ny_is/data/canal_centerline.geojson`; URL, pull timestamp, checksum and geometry QA are recorded in `what_ny_is/data/map2_reference_manifest.json`. Add the notebook source note after the data review. No pipeline.
+   - Saved as `primer/series_intro/data/canal_centerline.geojson`; URL, pull timestamp, checksum and geometry QA are recorded in `primer/series_intro/data/map2_reference_manifest.json`. Add the notebook source note after the data review. No pipeline.
    - Expect 20 line features (about 570 KB) coded by `ROUTE`: `ER` Erie, `CH` Champlain, `OS` Oswego, `CS*` Cayuga-Seneca, plus spurs (`ER-OL`, `CH-FE`, …). Check: `ER` is one continuous line of about 338 miles; all routes about 534 (official system: 524). Checked 2026-10-17.
    - Why not OSM: OSM tags the canalized river stretches (Mohawk, Seneca, Oswego, Clyde) as rivers.
    - Credit "NYS Canal Corporation" in the source line; the service has no license text.
@@ -343,7 +343,7 @@ added. After the changes, reload the VS Code window and reopen the notebook.
 2. [x] **Park boundaries (one-off downloads)**, from the B2 Source Plan in the repo context:
    - Adirondack Park: APA Blue Line polygon, `https://services2.arcgis.com/8krRUWgifzA4cgL3/ArcGIS/rest/services/BluelinePolygon/FeatureServer/0` (query as GeoJSON like the canal)
    - Catskill Park: look for a Catskill Park boundary layer on the DEC service (`https://gisservices.dec.ny.gov/arcgis/rest/services/reference/MapServer`); layer 2 is DEC Lands (Forest Preserve, State Forests, WMAs), which is state land, not the park boundary. If no park boundary layer exists, use OSM `boundary=protected_area` and note it.
-   - Save to `what_ny_is/data/` with URLs and pull dates in the notebook. Draw as light shaded areas.
+   - Save to `primer/series_intro/data/` with URLs and pull dates in the notebook. Draw as light shaded areas.
    - Downloaded and validated: `adirondack_park.geojson` (APA; about 5.824 million acres) and `catskill_park.geojson` (DEC; about 696,707 acres). DEC's current `dil_reference/MapServer/8` is the actual Catskill Park boundary, so no OSM fallback is required. Both are one valid polygon in EPSG:4326. Provenance lives in `data/map2_reference_manifest.json` until the notebook section is approved.
 
 3. [x] **NY OSM extract.**
@@ -357,18 +357,18 @@ added. After the changes, reload the VS Code window and reopen the notebook.
    - `normalize_osm_infrastructure.py` hardcodes `'cbsa' AS market_boundary_geo_level` (around line 120); make it follow the market. Grep `validate_` and `publish_` for other CBSA assumptions.
    - Run acquire → normalize → validate → publish with `--market new_york_state`. `configure_spatial` only loads the extension, so use an environment that has spatial for its DuckDB version (`.venv312` or `.venv-marimo`). Don't run DuckDB writes in parallel.
    - The engine keeps roads down to `tertiary`. Filter to what the map needs in the notebook query; don't change the engine's core mapping for this map.
-   - Completed acquire → normalize → validate → publish for `new_york_state`, state `36`, 2023 analytical boundary. Of 180,497 selected source features, 733 fall outside NY; 179,764 are acquired and mapped, and 179,751 pass the geometry gate. The 13 rejected clipped geometries remain available for QA (six points, seven geometry collections). Final serving groups: 152,269 road, 21,368 rail, 6,114 water-network features. [Handoff](what_ny_is/data/map2_infrastructure_handoff.json) and [independent QA](what_ny_is/data/map2_ingestion_qa.json).
+   - Completed acquire → normalize → validate → publish for `new_york_state`, state `36`, 2023 analytical boundary. Of 180,497 selected source features, 733 fall outside NY; 179,764 are acquired and mapped, and 179,751 pass the geometry gate. The 13 rejected clipped geometries remain available for QA (six points, seven geometry collections). Final serving groups: 152,269 road, 21,368 rail, 6,114 water-network features. [Handoff](data/map2_infrastructure_handoff.json) and [independent QA](data/map2_ingestion_qa.json).
    - Required unplanned fixes, verified complete: preserve GDAL polygon-way identity via `osm_way_id` (843 valid NY water polygons would otherwise be rejected); use the state's geometry vintage rather than its identity vintage; explicitly preserve longitude/latitude axis order for metric QA; cache acquisition stages in temporary tables to avoid repeated full-adapter scans. Seven regression tests pass, and existing CBSA normalization/handoff compatibility was checked. The README and CONTRACT were updated. No managed warehouse tables were written.
 
-5. [x] **Landmarks and ports, `what_ny_is/reference/landmarks.csv`.** Columns: `name, theme, kind, lat, lon, overture_id, keep`, with `kind` = `point`, `area` or `port`.
+5. [x] **Landmarks and ports, `primer/series_intro/reference/landmarks.csv`.** Columns: `name, theme, kind, lat, lon, overture_id, keep`, with `kind` = `point`, `area` or `port`.
    - There is no NY run in `mart_poi` (it's CBSA-scoped to earlier markets). Either query Overture Places directly for the ~30 names (DuckDB `httpfs` on the Overture release, filtered to the NY bounding box), or take coordinates from Wikipedia or OSM and leave `overture_id` empty. Note which in the notebook.
    - Ports: 5 hand-placed points. Which 5 is an open question. Candidates for Dan: Port of New York and New Jersey (NY side), Albany, Oswego, Buffalo, Ogdensburg.
    - Completed all 30 planned landmarks plus seven ports, all with `keep=true` for the first review. Added Coeymans and Rochester to the approved five. Rochester represents its current terminal/marina complex; inclusion does not imply comparable freight activity. NY/NJ is represented by Howland Hook on Staten Island; Buffalo by Gateway Metroport's published location map. Each coordinate's source and interpretation are in `reference/landmark_sources.json`. All 37 coordinates are inside Geography's NY analytical boundary. `overture_id` is empty because no Overture run was made.
 
 6. [x] **Principal-city dots.** `silver.xwalk_cbsa_primary_city` (`cbsa_code`, `primary_city`, `state_fips`, `place_fips`) joined to `geo.places_display` on `place_geoid = state_fips || place_fips`; use a representative point. Metros only.
-   - Independently executed `what_ny_is/sql/ny_principal_cities.sql`: 22 NY principal-city points across 13 metros, unique at CBSA × Place. The crosswalk can name several principal cities per metro; retain them for the later visual review. These are display-geometry points, not job centers or city halls.
+   - Independently executed `primer/series_intro/sql/ny_principal_cities.sql`: 22 NY principal-city points across 13 metros, unique at CBSA × Place. The crosswalk can name several principal cities per metro; retain them for the later visual review. These are display-geometry points, not job centers or city halls.
 
-7. [x] **Notebook section.** Added independently executed `what_ny_is/sql/map2_infrastructure.sql` over the verified consumer artifact, plus the existing principal-city query:
+7. [x] **Notebook section.** Added independently executed `primer/series_intro/sql/map2_infrastructure.sql` over the verified consumer artifact, plus the existing principal-city query:
    - **Thruway:** operator tags are optional; the proposed operator filter returned zero rows. The query uses source-supported names for the mainline, Berkshire Connector, New England and Niagara sections, Cross Westchester Expressway and Garden State Parkway Connector, plus I-190's named Grand Island bridges and I-90's western AMVETS segment. Checked against [the Authority's section descriptions](https://www.thruway.ny.gov/business/real-property). The Northway, Major Deegan, Albany's free I-90 and northern Niagara Expressway are not highlighted. Unnamed source segments may remain in the lighter interstate layer; the legend says "named sections" rather than claiming a legal inventory. Selected 2,366 features.
    - **Other interstates:** `motorway` with exact interstate route tokens, including semicolon-separated concurrent routes, excluding already highlighted sections. This avoids treating `I 81 BUS` as an interstate. Selected 5,803 features.
    - **Main-line rail:** `railway=rail` with `usage=main`.
@@ -400,7 +400,7 @@ added. After the changes, reload the VS Code window and reopen the notebook.
 
 ## Open questions
 
-- **Revisit later:** the regions seed is not in git. `foundations/.gitignore` ignores every `*.csv`, and unlike the QCEW map it has no build script, so a lost copy has to be rebuilt by hand from [NY_REGIONS_SPEC.md](NY_REGIONS_SPEC.md). Kept out of git for now (Dan, 2026-10-18). The fix is one line: `!etl/reference/ny_county_regions.csv` in `foundations/.gitignore`
+- **Revisit later:** the regions seed is not in git. `foundations/.gitignore` ignores every `*.csv`, and unlike the QCEW map it has no build script, so a lost copy has to be rebuilt by hand from [NY_REGIONS_SPEC.md](../../regional_deep_dives/NY_REGIONS_SPEC.md). Kept out of git for now (Dan, 2026-10-18). The fix is one line: `!etl/reference/ny_county_regions.csv` in `foundations/.gitignore`
 - Map 2 v2: clip the Hudson north of Fort Edward, or keep it to its source?
 - X.3: rank version, share version, or both?
 - Intro wording: "from 1810 to 1960" needs "on today's boundaries", or should read "from 1820" (Virginia, with West Virginia, was larger in 1810)

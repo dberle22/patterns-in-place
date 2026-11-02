@@ -3,7 +3,7 @@
 **Status:** Outline, revised
 **Updated:** 2026-10-26
 
-The first Albany installment. Geography: the 5-county Albany-Schenectady-Troy CBSA (10580), 2023 delineation (D4). Target: 1,500 to 2,500 words. Draft: [lens1_albany.md](lens1_albany.md). Build plan: [ALBANY_LENS1_VISUALS_BUILD_PLAN.md](ALBANY_LENS1_VISUALS_BUILD_PLAN.md).
+The first Albany installment. Geography: the 5-county Albany-Schenectady-Troy CBSA (10580), 2023 delineation (D4). Target: 1,500 to 2,500 words. Published text: the vault's `metro_deep_dives/albany/part_1/Albany - What Albany Actually Is.md`. Build plan: [ALBANY_LENS1_VISUALS_BUILD_PLAN.md](ALBANY_LENS1_VISUALS_BUILD_PLAN.md).
 
 Revised 2026-10-25 to the article order agreed on 2026-10-24 (plan, Reviews 6–8). The previous version led with "four cities, no center"; that thesis is now a thread inside the later sections.
 

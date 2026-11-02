@@ -3,7 +3,7 @@
 **Status:** Active
 **Updated:** 2026-10-26
 
-Outline: [ALBANY_LENS1_OUTLINE.md](ALBANY_LENS1_OUTLINE.md). Rules: [VISUALS_BUILD_RULES.md](../../VISUALS_BUILD_RULES.md). Notebooks: [exploration](ALBANY_LENS1_EXPLORATION.py) and [visuals](ALBANY_LENS1_VISUALS.py); exploration helpers in [albany_explore.py](albany_explore.py); the commuting work banked for Lens 2 in [ALBANY_LENS2_EXPLORATION.py](ALBANY_LENS2_EXPLORATION.py).
+Outline: [ALBANY_LENS1_OUTLINE.md](ALBANY_LENS1_OUTLINE.md). Rules: [VISUALS_BUILD_RULES.md](../../../../VISUALS_BUILD_RULES.md). Notebooks: [exploration](ALBANY_LENS1_EXPLORATION.py) and [visuals](ALBANY_LENS1_VISUALS.py); exploration helpers in [albany_explore.py](../albany_explore.py); the commuting work banked for Lens 2 in [ALBANY_LENS2_EXPLORATION.py](../part_2/ALBANY_PART2_EXPLORATION.py).
 
 Geography: the 5-county Albany-Schenectady-Troy CBSA (10580), 2023 delineation (D4).
 
@@ -119,7 +119,7 @@ Order: Q1 → Q2 → Q3 → Q4. Q3 comes after Q2 so the anchors and roads layer
 
 ### Q3. How is the metro assembled?
 
-**The clusters changed.** Phase 7 was rerun on the fixed unemployment rate and promoted on 2026-10-23 ([review](../../../../exploration/intelligence_framework/phase_7_zone_methodology/PHASE7_LABOR_FIX_RERUN_REVIEW.md)). The original seven names were carried forward to the matched clusters and stay `draft_label_pending_review`. Names are reviewed **CBSA by CBSA during issue work**: propose Albany renames here for Dan's decision, not a national sweep. A rename means editing `zone_name_map` in `phase7_config.R` and re-promoting.
+**The clusters changed.** Phase 7 was rerun on the fixed unemployment rate and promoted on 2026-10-23 ([review](../../../../../../exploration/intelligence_framework/phase_7_zone_methodology/PHASE7_LABOR_FIX_RERUN_REVIEW.md)). The original seven names were carried forward to the matched clusters and stay `draft_label_pending_review`. Names are reviewed **CBSA by CBSA during issue work**: propose Albany renames here for Dan's decision, not a national sweep. A rename means editing `zone_name_map` in `phase7_config.R` and re-promoting.
 
 **Explore:**
 - [x] Q3a: what the labels describe, raw median profile per zone type, US vs Albany (`sql/zone_profile.sql`)
@@ -174,7 +174,7 @@ Root cause: the K6/K7 review read polarity-flipped centroids as raw values (R32)
 - [x] Q4d: quick benchmark bars, Albany vs Buffalo, Rochester, Syracuse and the peer median, on any metrics from Q4a
 - [ ] Reads for Q4 (after Dan's first look)
 - [x] Apply R32 to the CBSA cluster before printing its name: profile "High-Amenity Knowledge Civics" on raw values (table in Q4c; read it at Gate A)
-- [x] Cluster name and label: not printed in Lens 1; describe what the peers share (Dan, 2026-10-24). National naming review is [N1](../../NATIONAL_FOLLOWUPS.md)
+- [x] Cluster name and label: not printed in Lens 1; describe what the peers share (Dan, 2026-10-24). National naming review is [N1](../../../../NATIONAL_FOLLOWUPS.md)
 - [x] Benchmark metrics: the six defaults (income, bachelor's, home value, 10-yr growth, GDP per capita, public share) are fine (Dan, 2026-10-24)
 - [x] At a glance metric set: population, 10-yr growth, median household income, per capita income, median home value, bachelor's share, median age, non-white share (Dan, 2026-10-24). Prototype in Q4e: number cards and a percentile dot plot
 - [x] At a glance print form: keep both for now (Dan, 2026-10-25)
@@ -222,15 +222,15 @@ Cut from v1 (2026-10-27, Dan: "revamp the notebook so it's aligned to the struct
 | Tract-level commute sheds | `commute_sheds` run for 10580, `either_endpoint`, JT00 + JT02; done 2026-10-22 | Dan, 2026-10-22 |
 | Jobs universe | Albany analyses use all jobs (JT00) unless a view is explicitly about private jobs (R34) | Rules, 2026-10-22 |
 | Q2 centers for Albany | Q2's method on all jobs, as an Albany sensitivity in the exploration notebook | Dan, 2026-10-22 |
-| LODES jobs universe | Explicit private/all column names and a reader audit, by a separate agent: [LODES_JOBS_UNIVERSE_SPEC.md](../../../../foundations/etl/LODES_JOBS_UNIVERSE_SPEC.md) | Dan, 2026-10-23 |
-| Labor fix and Phase 7 rerun | Done by separate agents ([ACS fix](../../../../foundations/etl/ACS_LABOR_B23025_FIX_SPEC.md), [Phase 7 rerun](../../../../exploration/intelligence_framework/phase_7_zone_methodology/PHASE7_LABOR_FIX_RERUN_SPEC.md)); promoted 2026-10-23 with the original names | Dan, 2026-10-23 |
+| LODES jobs universe | Explicit private/all column names and a reader audit, by a separate agent: [LODES_JOBS_UNIVERSE_SPEC.md](../../../../../../foundations/etl/LODES_JOBS_UNIVERSE_SPEC.md) | Dan, 2026-10-23 |
+| Labor fix and Phase 7 rerun | Done by separate agents ([ACS fix](../../../../../../foundations/etl/ACS_LABOR_B23025_FIX_SPEC.md), [Phase 7 rerun](../../../../../../exploration/intelligence_framework/phase_7_zone_methodology/PHASE7_LABOR_FIX_RERUN_SPEC.md)); promoted 2026-10-23 with the original names | Dan, 2026-10-23 |
 | Residents-vs-jobs bar | Replaced; Q2 compares jobs with resident workers | Dan, 2026-10-22 |
 | Peers and benchmarks | Keep; peers open the clustering topic | Dan, 2026-10-22 |
 | Upstate definition | Series default: every county but NYC, Long Island, Westchester, Putnam, Rockland (`downstate_core`). So every NY metro but NYC's is Upstate. A standalone "defining Upstate" article comes later | Dan, 2026-10-24 |
 | Article lead | Lead with the metro profile (At a glance), standard across metro pieces and not all economic. "Four cities, no center" returns as a thread in later sections | Dan, 2026-10-24 |
 | Cluster names | Not in Lens 1. Lean on the peers and describe what they share. National naming review is future work (N1) | Dan, 2026-10-24 |
 | Exploration style | Pickers with one large chart, and zoomable Carto maps (Plotly) with toggleable overlays, not grids of small statics. Static versions only for print | Dan, 2026-10-24 |
-| National-scope questions | Tracked in [NATIONAL_FOLLOWUPS.md](../../NATIONAL_FOLLOWUPS.md) and revisited with each market | Dan, 2026-10-24 |
+| National-scope questions | Tracked in [NATIONAL_FOLLOWUPS.md](../../../../NATIONAL_FOLLOWUPS.md) and revisited with each market | Dan, 2026-10-24 |
 | Commute shed | Banked for Lens 2; Lens 1 shows the high level only | Dan, 2026-10-24 |
 | At a glance set | The eight metrics above, with non-white share for diversity | Dan, 2026-10-24 |
 | Key places | A curated landmark set (not amenity analysis, which is Lens 2), with a data review | Dan, 2026-10-24 |
@@ -276,7 +276,7 @@ Cut from v1 (2026-10-27, Dan: "revamp the notebook so it's aligned to the struct
 Built when the first promoted exhibit needs them:
 - [x] `sql/metro_place_outlines.sql`: place polygons from `geo.places_display`, with kind and principal-city flag (2026-10-24; used by the exploration maps)
 - [ ] `sql/metro_roads.sql`: motorway and trunk lines from the Infrastructure handoff (Q1 E1, Q2)
-- [ ] Main-line rail: reuse What NY Is's selection (`what_ny_is/sql/map2_infrastructure.sql`) (Q2)
+- [ ] Main-line rail: reuse What NY Is's selection (`primer/series_intro/sql/map2_infrastructure.sql`) (Q2)
 - [ ] `reference/anchors.csv` + sources: draft built 2026-10-24 (Q4f); waiting on the data review (R14)
 
 ## Review, 2026-10-22 (1): v1 visuals
@@ -378,7 +378,7 @@ Dan's notes, then the responses.
 ## Review, 2026-10-26 (11): Q4g–Q4i explored
 
 1. **Q4g–Q4i built** in the exploration notebook with draft reads (peers' shared traits, Albany vs Buffalo/Rochester/Syracuse with trends since 2012, IRS migration by region of the other end, a net-migration map).
-2. **Data bug: IRS migration directions are reversed in the warehouse.** Staging maps the IRS `y2_` (destination) columns to origin. As stored, New York gains 413k people from other states in 2022; Manhattan → Miami reads as Miami → Manhattan. Affects `silver.irs_migration_flows`, `silver.irs_migration_summary`, the IRS fields of `gold.migration_wide` (net sign flipped) and the Intelligence Framework inputs. Spec for a separate agent: [IRS_MIGRATION_DIRECTION_FIX_SPEC.md](../../../../foundations/etl/IRS_MIGRATION_DIRECTION_FIX_SPEC.md). Workaround: `q4_metro_migration.sql` swaps back and `q4_metro_scorecard.sql` negates the net rate; the `irs_flows_reversed` guard fails when the fix lands. **Dan to decide** when the fix runs. (Review 12: clusters and peers are expected to hold; scores move.) **Fixed 2026-10-26:** warehouse and Intelligence marts rebuilt; both workarounds removed and the guard now fails if the reversal returns. Q4i reads the same (Albany +1,478 people a year net, 2018–22); the Q4a scorecard is row-for-row identical. Albany's Intelligence clusters and peers are unchanged; its Opportunity percentile moved 74.4 → 72.2 and cross-frame 85.3 → 88.4.
+2. **Data bug: IRS migration directions are reversed in the warehouse.** Staging maps the IRS `y2_` (destination) columns to origin. As stored, New York gains 413k people from other states in 2022; Manhattan → Miami reads as Miami → Manhattan. Affects `silver.irs_migration_flows`, `silver.irs_migration_summary`, the IRS fields of `gold.migration_wide` (net sign flipped) and the Intelligence Framework inputs. Spec for a separate agent: [IRS_MIGRATION_DIRECTION_FIX_SPEC.md](../../../../../../foundations/etl/IRS_MIGRATION_DIRECTION_FIX_SPEC.md). Workaround: `q4_metro_migration.sql` swaps back and `q4_metro_scorecard.sql` negates the net rate; the `irs_flows_reversed` guard fails when the fix lands. **Dan to decide** when the fix runs. (Review 12: clusters and peers are expected to hold; scores move.) **Fixed 2026-10-26:** warehouse and Intelligence marts rebuilt; both workarounds removed and the guard now fails if the reversal returns. Q4i reads the same (Albany +1,478 people a year net, 2018–22); the Q4a scorecard is row-for-row identical. Albany's Intelligence clusters and peers are unchanged; its Opportunity percentile moved 74.4 → 72.2 and cross-frame 85.3 → 88.4.
 3. **Headline results:** Albany gains ~1,500 people a year net (2018–22), the only big Upstate metro to gain; +2,500 from Downstate, +1,300 from the rest of Upstate, −2,400 to other states; the pandemic roughly tripled it. Buffalo's real GDP lead over Albany shrank from $8.2B (2012) to $1.6B (2024).
 4. **Gold rate definition:** `irs_net_migration_rate` is net *households* (returns) per resident, a documented choice; quote people (exemptions) in print.
 
@@ -390,7 +390,7 @@ Dan's notes, then the responses.
    - All 41 exploration helpers moved, copied exactly from the notebook, to a plain module, `albany_explore.py`, with three new loaders both notebooks share (`load_commute_flows`, `load_tract_profile`, `all_jobs_centers`).
    - Checks: `marimo check` and ruff pass; both notebooks run headless and give the same numbers as before (Albany +1,478 people a year net, 2018–22; the 13-tract uptown band; zone counts 143/39/32/22/13/2).
    - The visuals notebook is unchanged; reordering it and cutting v1 wait for Dan's sign-off.
-2. **IRS fix spec** expanded into the full fix, the downstream impact and the reruns: [IRS_MIGRATION_DIRECTION_FIX_SPEC.md](../../../../foundations/etl/IRS_MIGRATION_DIRECTION_FIX_SPEC.md). It has three parts (fix Foundations; rerun Intelligence Phases 2, 4, 5 and 6 with a control; refresh marts and outputs, then remove the Albany workaround) and two stops for Dan. Expected effect:
+2. **IRS fix spec** expanded into the full fix, the downstream impact and the reruns: [IRS_MIGRATION_DIRECTION_FIX_SPEC.md](../../../../../../foundations/etl/IRS_MIGRATION_DIRECTION_FIX_SPEC.md). It has three parts (fix Foundations; rerun Intelligence Phases 2, 4, 5 and 6 with a control; refresh marts and outputs, then remove the Albany workaround) and two stops for Dan. Expected effect:
    - The stored net values are an exact sign flip, so clusters and peers should not change (distances and cosine similarity are unchanged when one column is negated for every metro).
    - The Character, Opportunity and cross-frame scores, the topic scores and the trajectory signals will change, because both IRS inputs have positive polarity.
    - The rerun tests this instead of assuming it.

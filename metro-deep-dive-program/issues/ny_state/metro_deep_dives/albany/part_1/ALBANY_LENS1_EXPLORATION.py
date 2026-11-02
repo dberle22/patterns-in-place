@@ -12,9 +12,11 @@ with app.setup:
     import pandas as pd
 
     HERE = Path(__file__).resolve().parent
-    sys.path.insert(0, str(HERE))
-    # Shared paths, layer loading and the scorecard helpers come from the piece's visuals notebook.
-    from ALBANY_LENS1_VISUALS import (
+    # Queries only this lens uses; shared ones are in SQL_DIR (albany/sql/).
+    LENS_SQL_DIR = HERE / "sql"
+    sys.path.insert(0, str(HERE.parent))
+    # Shared paths, layer loading and the scorecard helpers.
+    from albany_common import (
         ACTIVITY_RULES,
         ANALYSES_DIR,
         ANCHOR_SOURCES,
@@ -102,7 +104,7 @@ def _():
     5. How It's Assembled (Q2, Q3)
 
     The commuting analysis banked for Lens 2 (Q1b–Q1e maps, Q1g, Q1h) lives in
-    `ALBANY_LENS2_EXPLORATION.py`. The helpers live in `albany_explore.py`.
+    `../part_2/ALBANY_PART2_EXPLORATION.py`. The helpers live in `albany_explore.py`.
     """)
     return
 
@@ -210,7 +212,7 @@ def _():
 def _(con, q4_metrics, q4_upstate_rules):
     # The IRS net migration rate reads directly since the 2026-10-26 direction fix; fail if the reversal returns.
     assert not irs_flows_reversed(con), "IRS migration flows look reversed again: see foundations/etl/gold/check_irs_migration_direction.sql"
-    q4_scorecard_raw = run_sql(con, SQL_DIR / "q4_metro_scorecard.sql")
+    q4_scorecard_raw = run_sql(con, LENS_SQL_DIR / "q4_metro_scorecard.sql")
     # Upstate counties and metros, with their checks, from the visuals notebook (shared with Albany Today).
     q4_upstate_counties, q4_upstate_metros, q4_checks = upstate_sets(con, q4_scorecard_raw)
     q4_upstate = upstate_aggregate(q4_scorecard_raw, q4_upstate_counties, q4_metrics, q4_upstate_rules)
@@ -301,7 +303,7 @@ def _():
     mo.md(r"""
     ## 2. A Bit of History
 
-    No data work: Dan is writing it (review notes in `lens1_albany.md`).
+    No data work: Dan is writing it (article text is in the vault).
 
     ## 3. The Metro on the Map (M.10)
 
@@ -311,7 +313,7 @@ def _():
 
     - **Does every county belong** (Q1a, Q1f, Q1b): the high-level commuting test. The full
       commuting analysis is banked for **Lens 2** (Dan, 2026-10-24; M.13, M.14) and lives in
-      `ALBANY_LENS2_EXPLORATION.py`.
+      `../part_2/ALBANY_PART2_EXPLORATION.py`.
     - **Key places** (Q4f): the landmark list behind the E1v2 maps.
 
     2023 LODES county OD, all jobs (JT00). Counts are **jobs**, not workers; a second job
@@ -512,7 +514,7 @@ def _():
 def _(con, q4_metrics, q4_scorecard_raw):
     q4_peer_list = run_sql(con, ANALYSES_DIR / "position" / "peers" / "queries" / "peer_list.sql", cbsa_code=CBSA_CODE)
     q4_clusters = run_sql(
-        con, SQL_DIR / "peer_clusters.sql",
+        con, LENS_SQL_DIR / "peer_clusters.sql",
         cbsa_codes=sql_list(q4_scorecard_raw.loc[q4_scorecard_raw["geo_level"] == "cbsa", "geo_id"].unique()),
     ).set_index("cbsa_code")
     q4_peers = q4_peer_list.loc[q4_peer_list["peer_type"] == "cross_frame"]
@@ -559,7 +561,7 @@ def _():
 
 @app.cell
 def _(con, q4_metrics, q4_peer_extra, q4_peers, q4_scorecard_raw):
-    q4_profile_raw = pd.concat([q4_scorecard_raw, run_sql(con, SQL_DIR / "q4_peer_extra_metrics.sql")], ignore_index=True)
+    q4_profile_raw = pd.concat([q4_scorecard_raw, run_sql(con, LENS_SQL_DIR / "q4_peer_extra_metrics.sql")], ignore_index=True)
     q4_profile_metrics = {**q4_metrics, **q4_peer_extra}
     q4_peer_codes = set(q4_peers["peer_cbsa_code"])
     q4_shared = peer_shared_traits(q4_profile_raw, q4_profile_metrics, q4_peer_codes)
@@ -616,7 +618,7 @@ def _(q4_metrics, q4_rivals, q4_scorecard_raw):
 
 @app.cell
 def _(con, q4_rivals):
-    q4_trends = run_sql(con, SQL_DIR / "q4_trends.sql", cbsa_codes=sql_list([CBSA_CODE, *q4_rivals]))
+    q4_trends = run_sql(con, LENS_SQL_DIR / "q4_trends.sql", cbsa_codes=sql_list([CBSA_CODE, *q4_rivals]))
     q4_trend_metric = mo.ui.dropdown(
         options={"Population (ACS 5-year)": "pop_total", "Real GDP (BEA, chained 2017 $)": "real_gdp_total",
                  "Jobs, BEA employment": "employed", "Income per person (BEA)": "calc_income_pc"},
@@ -667,7 +669,7 @@ def _():
 @app.cell
 def _(con, q4_mig_years, q4_rivals, q4_scorecard_raw, q4_upstate_counties):
     assert not irs_flows_reversed(con), "IRS migration flows look reversed again: see foundations/etl/gold/check_irs_migration_direction.sql"
-    _flows = run_sql(con, SQL_DIR / "q4_metro_migration.sql", cbsa_codes=sql_list([CBSA_CODE, *q4_rivals]),
+    _flows = run_sql(con, LENS_SQL_DIR / "q4_metro_migration.sql", cbsa_codes=sql_list([CBSA_CODE, *q4_rivals]),
                      year_from=str(q4_mig_years[0]), year_to=str(q4_mig_years[1]))
     _xwalk = con.sql(
         "SELECT d.geo_id AS county_geoid, d.geo_name AS other_county_name, x.cbsa_code AS other_cbsa, "
@@ -940,7 +942,7 @@ def _():
 
 @app.cell
 def _(con):
-    zone_profile = run_sql(con, SQL_DIR / "zone_profile.sql", cbsa_code=CBSA_CODE)
+    zone_profile = run_sql(con, LENS_SQL_DIR / "zone_profile.sql", cbsa_code=CBSA_CODE)
     zone_profile.round(3)
     return
 
@@ -1074,7 +1076,7 @@ def _():
 
 @app.cell
 def _(con, zone_names_used):
-    poi_counts = run_sql(con, SQL_DIR / "poi_tract_categories.sql", poi_run_dir=POI_RUN_DIR.as_posix())
+    poi_counts = run_sql(con, LENS_SQL_DIR / "poi_tract_categories.sql", poi_run_dir=POI_RUN_DIR.as_posix())
     poi_by_zone = (
         poi_counts.merge(zone_names_used[["tract_geoid", "working_name"]], on="tract_geoid")
         .pivot_table(index="category", columns="working_name", values="pois", aggfunc="sum", fill_value=0)
@@ -1112,7 +1114,7 @@ def _(
 
 @app.cell
 def _(con, poi_dot_categories):
-    poi_points = run_sql(con, SQL_DIR / "poi_points.sql", poi_run_dir=POI_RUN_DIR.as_posix())
+    poi_points = run_sql(con, LENS_SQL_DIR / "poi_points.sql", poi_run_dir=POI_RUN_DIR.as_posix())
     poi_pick = mo.ui.multiselect(options=sorted(poi_points["category"].unique()), value=poi_dot_categories, label="Categories")
     return poi_pick, poi_points
 
@@ -1178,7 +1180,7 @@ def _(
     q3e_shrink,
     zone_names_used,
 ):
-    _base = run_sql(con, SQL_DIR / "tract_activity_base.sql", cbsa_code=CBSA_CODE)
+    _base = run_sql(con, LENS_SQL_DIR / "tract_activity_base.sql", cbsa_code=CBSA_CODE)
     _pois = poi_counts.loc[~poi_counts["category"].isin(["Unclassified", "Residential"])].groupby("tract_geoid")["pois"].sum()
     _per_1k = 1000 * _pois.reindex(_base["tract_geoid"]).fillna(0).to_numpy() / _base["residents"].clip(lower=100).to_numpy()
     q3e_activity_cut = float(pd.Series(_per_1k).median())

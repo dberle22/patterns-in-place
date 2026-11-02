@@ -33,7 +33,7 @@ This session compares and recommends. **Promotion (overwriting `mart_intelligenc
 
 `pct_unemployment_rate` is 1 of the 22 clustering KPIs (negative polarity). Until the fix, tract values were (labor force − not in labor force) / labor force, about 0.42 for the US: noise correlated with labor force participation, not unemployment. Cluster assignments, centroids, scores and percentiles may all move.
 
-**A second, independent issue for the naming step:** the K6/K7 review read polarity-flipped centroids as raw values. In the flipped scale, a negative poverty centroid means *high* poverty. On raw medians, "Mixed-Income Middle Neighborhoods" is the lowest-poverty type nationally (6.1%, $104k), and "Established Residential" is rural (147 people per sq mi). Albany is testing plain-language working names against this ([Albany build plan](../../../metro-deep-dive-program/issues/ny_state/albany/ALBANY_LENS1_VISUALS_BUILD_PLAN.md), Q3). This session reports raw profiles for every cluster but **doesn't rename anything**; renaming is a separate decision for Dan.
+**A second, independent issue for the naming step:** the K6/K7 review read polarity-flipped centroids as raw values. In the flipped scale, a negative poverty centroid means *high* poverty. On raw medians, "Mixed-Income Middle Neighborhoods" is the lowest-poverty type nationally (6.1%, $104k), and "Established Residential" is rural (147 people per sq mi). Albany is testing plain-language working names against this ([Albany build plan](../../../metro-deep-dive-program/issues/ny_state/metro_deep_dives/albany/part_1/ALBANY_LENS1_VISUALS_BUILD_PLAN.md), Q3). This session reports raw profiles for every cluster but **doesn't rename anything**; renaming is a separate decision for Dan.
 
 ## Required work
 
@@ -61,7 +61,7 @@ This session compares and recommends. **Promotion (overwriting `mart_intelligenc
 
 ## Downstream to list in the review (not to change)
 
-- `mart_intelligence.intelligence_zones` and `intelligence_zones_zcta` readers: `metro-deep-dive-program/analyses/position/internal_structure/`, `engines/corridor_intelligence/inputs/corridor_inputs_v1.yml`, `issues/ny_state/albany/` (zone map, composition, working names)
+- `mart_intelligence.intelligence_zones` and `intelligence_zones_zcta` readers: `metro-deep-dive-program/analyses/position/internal_structure/`, `engines/corridor_intelligence/inputs/corridor_inputs_v1.yml`, `issues/ny_state/metro_deep_dives/albany/` (zone map, composition, working names)
 - Anything that caches zone scores or percentiles (search the repo)
 
 ## Out of scope

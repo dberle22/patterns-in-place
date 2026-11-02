@@ -257,7 +257,7 @@ Raw Albany medians after the fix:
 | Emerging Knowledge | 13 | 27.0% | 51% | $52k | 17% | 7,566 | 9.1% | 7.4% |
 | Working | 2 | 19.3% | 23% | $64k | 44% | 7,623 | 10.0% | 5.7% |
 
-**Working-name implications** (the [build plan](../../../metro-deep-dive-program/issues/ny_state/albany/ALBANY_LENS1_VISUALS_BUILD_PLAN.md) Q3 table):
+**Working-name implications** (the [build plan](../../../metro-deep-dive-program/issues/ny_state/metro_deep_dives/albany/part_1/ALBANY_LENS1_VISUALS_BUILD_PLAN.md) Q3 table):
 - **Knowledge Corridor goes from 1 tract to 22**, so "too few to test" no longer applies. The 22 are 11 from Mixed-Income Middle (Albany County 6, Saratoga 4, Schenectady 1), 10 from Emerging Knowledge (Albany County 4, Rensselaer 3, Schenectady 3), and the original one. They're educated ($88k, 54% BA+), mixed tenure and moderately dense, so "Affluent urban" is a loose fit. Test it.
 - **Emerging Knowledge drops from 28 tracts to 13:** 6 in Albany County, 3 Rensselaer, 2 Schenectady, 1 each in Saratoga and Schoharie. They're poorer (27%) and more renter-heavy (17% owners). "Students and young professionals" becomes "Students" or "Campus neighborhoods". Re-check against campuses once anchors are in.
 - **"Comfortable suburbs" keeps 143 tracts** (131 stay; 9 arrive from Established Residential, 2 from Emerging Knowledge, 1 from Entry-Market). Its profile is unchanged, so the split-in-two stress test still stands.
@@ -288,14 +288,14 @@ Character, Livability, Opportunity, Cross-Frame (and Trajectory) read CBSA rows,
 - `metro-deep-dive-program/analyses/position/internal_structure/`: both notebooks and nine queries (tract zone map, zone composition, ZCTA rollup, place-zone matrix, place inventory, POI zone and points, job centers, market and cross-market summaries)
 - `metro-deep-dive-program/engines/corridor_intelligence/inputs/corridor_inputs_v1.yml` and `CORRIDOR_INTELLIGENCE_REVIEW_NOTEBOOK.py`
 - `metro-deep-dive-program/engines/intelligence_framework/queries/zones_cbsa_summary.sql` (and its `CONTRACT.md`)
-- `metro-deep-dive-program/issues/ny_state/albany/`: `sql/zone_profile.sql`, `sql/zone_name_status.sql`, `sql/metro_tract_profile.sql`, and the Lens 1 exploration and visuals notebooks (zone map, composition, working names)
+- `metro-deep-dive-program/issues/ny_state/metro_deep_dives/albany/`: `sql/zone_profile.sql`, `sql/zone_name_status.sql`, `sql/metro_tract_profile.sql`, and the Lens 1 exploration and visuals notebooks (zone map, composition, working names)
 - `foundations/semantic_layer/table_catalog.yml` (catalog entry for both marts)
 - `metro-deep-dive/research-tool/dd_db.py` (Legacy area)
 - In this folder: `zone_methodology.qmd`, `R/phase7_descriptive_cluster_audit.R` and `sql/phase7_descriptive_cluster_audit.sql` (they read `outputs/`; the `phase7_descriptive_*.csv` files there would go stale)
 
 **Cached zone outputs:**
 - `metro-deep-dive-program/engines/corridor_intelligence/outputs/runs/*phase7_2026-07-01*`: eight run folders for Jacksonville (27260) and Richmond (40060), keyed to the July Phase 7 build
-- marimo session caches under `issues/ny_state/albany/__marimo__/`, `engines/corridor_intelligence/__marimo__/` and `analyses/position/internal_structure/__marimo__/`
+- marimo session caches under `issues/ny_state/metro_deep_dives/albany/__marimo__/`, `engines/corridor_intelligence/__marimo__/` and `analyses/position/internal_structure/__marimo__/`
 
 ## Code changes in this session
 
