@@ -122,6 +122,10 @@ feature composition, water complexity, validation/rejection evidence, raw tags,
 and a bounded geometry-map sample. The notebook does not change artifacts or
 create an analysis result.
 
+**Known issue:** the notebook doesn't start as committed. The bugs and fixes are
+listed under [Notebook fixes](../../issues/ny_state/NY_STATEWIDE_DATA_BUILD_PLAN.md#notebook-fixes)
+and are deferred until a NY piece needs it.
+
 ## Ownership
 
 - Geography supplies the authoritative study boundary, boundary vintage,

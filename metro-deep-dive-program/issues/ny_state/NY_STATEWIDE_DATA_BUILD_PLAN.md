@@ -193,8 +193,34 @@ Approved as initial mappings 2026-11-02, with further review expected as analyse
 | **POI filter review** | Raw counts overstate some markets until this is done. Test the candidate filter against known places; decide its threshold and its closed-record and unmapped conditions; decide where it lives (shared view or each query); then check Internal Structure, other POI queries and Albany Part 1's posted POI counts | Before the first cross-market POI comparison |
 | Rules for 6 unmapped category values | 187 POIs, mostly `waterfall`; review with the taxonomy | Next taxonomy update |
 | Ports | Barely present in OSM tags; would need mapping review | A NY piece needs ports |
-| Fix Internal Structure Part 2 notebook | Fails for every market, including Richmond: multi-select defaults pass values instead of labels, and `axis_off=True` is invalid. Its Richmond map is also broken because WGS84 infrastructure is labelled EPSG:26918. NY markets show no infrastructure because the notebook only looks for CBSA-level runs | Before using the notebook interactively |
-| Fix Infrastructure Explorer notebook | Can't start: `validation` is defined in two cells, and `feature_path` is a leftover loop variable, so it could read the wrong run. It also lists core runs only, not the context polygons | Before using the notebook interactively |
+| Fix Internal Structure Part 2 notebook | Fails for every market, including Richmond. See [Notebook fixes](#notebook-fixes) | A NY piece needs the notebook |
+| Fix Infrastructure Explorer notebook | Can't start, for any market. See [Notebook fixes](#notebook-fixes) | A NY piece needs the notebook |
+
+## Notebook fixes
+
+Found by headless testing on 2026-11-02. No fix has been made, and the line numbers are as of that date. The bugs predate this work. Until they're fixed, query the marts and Parquet outputs directly.
+
+**[Internal Structure Part 2](../../analyses/position/internal_structure/POSITION_INTERNAL_STRUCTURE_PART2_NOTEBOOK.py)**
+
+| Line | Problem | Effect | Fix |
+|---|---|---|---|
+| 130, 163, 199 | Multi-select defaults pass option values, but marimo expects labels | Crashes for every market | Pass labels as the defaults |
+| 190 | `axis_off=True` isn't valid in `axis.set()` | Crashes the map cell | Call `integrated_axis.set_axis_off()` |
+| 177 | Labels WGS84 infrastructure as EPSG:26918 | Richmond's map is mostly blank | Label it EPSG:4326 |
+| 115 | Only finds runs named for a CBSA, not the `new_york_state` run | NY markets show no infrastructure | Point it at the statewide run and clip to the market, or build CBSA-level runs. Decide when picking this up |
+
+**[Infrastructure Explorer](../../engines/infrastructure/INFRASTRUCTURE_EXPLORATION_NOTEBOOK.py)**
+
+| Line | Problem | Effect | Fix |
+|---|---|---|---|
+| 37, 144 | `validation` is defined in two cells | Won't start | Rename one, or make both private with `_validation` |
+| 31, 32, 114 | Line 114 returns the selected paths without naming them, so later cells get the loop's `feature_path` and `rejected_path` | Queries read the last run in the loop, not the one selected | Assign both names from `selected_run`, return those, and make the loop variables private |
+| 28 | Only lists `osm_core_v1` runs | Context polygons don't appear | Also list `osm_context_v1` runs if a piece needs them there |
+
+**Testing.** Both notebooks ran headless through `app.run()` with these bugs worked around outside the repo, so they haven't been opened in the marimo interface. After fixing them, rerun without workarounds:
+
+- Part 2: Rochester, Corning, NYC and Richmond, viewing each map. Only Rochester's and Richmond's maps have been viewed so far.
+- Explorer: New York State and Richmond, confirming that changing the selected run changes the results.
 
 ## Next
 
