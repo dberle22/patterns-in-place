@@ -1,0 +1,10 @@
+# One-off downloads stay local; provenance is recorded in data/anchors_reference_manifest.json.
+/data/wikipedia*.json
+/data/osm_*
+/data/cb_*.zip
+/data/acs*.json
+# Keep the issue's curated input despite the monorepo's general CSV exclusion.
+!/reference/anchors.csv
+!/reference/parks.csv
+# Stands in for the IRS county totals until N11 is fixed; rebuilt by data/build_irs_county_totals.py.
+!/data/irs_county_totals_2018_2022.csv

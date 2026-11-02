@@ -1,0 +1,255 @@
+{
+  "updated": "2026-10-24T08:16:41-04:00",
+  "scope": "Key places for Albany Lens 1 (35); data review passed, all kept (Dan, 2026-10-24). Leisure split into Parks and nature / Culture and sports the same day.",
+  "coordinate_crs": "EPSG:4326",
+  "overture_release": "overture-places-10580-2026-10-21-0-20261023T004908Z",
+  "overture_id_policy": "Filled where the coordinate comes from the Albany Overture run; empty for Wikipedia and What NY Is coordinates.",
+  "anchors_sha256": "47786dceb02279562043e59787765ed7b0c5c830f91d3dc41c03a2ba6ae71a0e",
+  "sources": [
+    {
+      "name": "New York State Capitol",
+      "source_url": "https://en.wikipedia.org/wiki/New_York_State_Capitol",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1378864931,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "Empire State Plaza",
+      "source_url": "https://en.wikipedia.org/wiki/Empire_State_Plaza",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1372202270,
+      "notes": "Rockefeller's state office complex; Lens 4 opens here."
+    },
+    {
+      "name": "Harriman State Office Campus",
+      "source_url": "https://en.wikipedia.org/wiki/W._Averell_Harriman_State_Office_Building_Campus",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1372628921,
+      "notes": "Uptown state campus; one of the mostly public Q2 tracts."
+    },
+    {
+      "name": "Fort Orange (site)",
+      "source_url": "https://en.wikipedia.org/wiki/Fort_Orange_(New_Netherland)",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1369409676,
+      "notes": "1624 Dutch fort; marker is the Wikipedia site coordinate. Confirm what is visible there today before captioning."
+    },
+    {
+      "name": "Schuyler Mansion",
+      "source_url": "https://en.wikipedia.org/wiki/Schuyler_Mansion",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1372961828,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "Stockade Historic District",
+      "source_url": "https://en.wikipedia.org/wiki/Stockade_Historic_District",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1379634684,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "Waterford Flight",
+      "source_url": "https://tile.loc.gov/storage-services/master/pnp/habshaer/ny/ny2100/ny2178/data/ny2178data.pdf",
+      "coordinate_method": "Library of Congress HAER coordinate (via What NY Is)",
+      "source_revision": null,
+      "notes": "Erie Canal's eastern gateway; same point as the Series Intro's Map 2."
+    },
+    {
+      "name": "Cohoes Falls",
+      "source_url": "https://en.wikipedia.org/wiki/Cohoes_Falls",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1362219260,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "Saratoga National Historical Park",
+      "source_url": "https://en.wikipedia.org/wiki/Saratoga_National_Historical_Park",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1380434152,
+      "notes": "1777 battlefield."
+    },
+    {
+      "name": "University at Albany",
+      "source_url": "https://en.wikipedia.org/wiki/University_at_Albany",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1378305950,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "Rensselaer Polytechnic Institute",
+      "source_url": "https://en.wikipedia.org/wiki/Rensselaer_Polytechnic_Institute",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1378975000,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "Union College",
+      "source_url": "https://en.wikipedia.org/wiki/Union_College",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1378339610,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "Skidmore College",
+      "source_url": "https://en.wikipedia.org/wiki/Skidmore_College",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1380988118,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "Siena University",
+      "source_url": "https://en.wikipedia.org/wiki/Siena_University_(New_York)",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1381257359,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "Albany NanoTech Complex",
+      "source_url": "overture:overture-places-10580-2026-10-21-0-20261023T004908Z",
+      "coordinate_method": "Overture place 'CNSE's Albany NanoTech Complex', 257 Fuller Rd",
+      "source_revision": null,
+      "notes": "257 Fuller Rd; no Wikipedia coordinate. IBM Research and NY CREATES share the address."
+    },
+    {
+      "name": "GE Aerospace Research",
+      "source_url": "https://en.wikipedia.org/wiki/GE_Aerospace_Research",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1380102635,
+      "notes": "Formerly GE Global Research."
+    },
+    {
+      "name": "Knolls Atomic Power Laboratory",
+      "source_url": "overture:overture-places-10580-2026-10-21-0-20261023T004908Z",
+      "coordinate_method": "Overture place 'Knolls Atomic Power Laboratory', 2401 River Rd",
+      "source_revision": null,
+      "notes": "2401 River Rd, Niskayuna. Wikipedia's coordinate (43.04, -73.95) is the Kesselring Site in West Milton, so not used."
+    },
+    {
+      "name": "Albany Medical Center",
+      "source_url": "https://en.wikipedia.org/wiki/Albany_Medical_Center",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1362282714,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "St. Peter's Hospital",
+      "source_url": "overture:overture-places-10580-2026-10-21-0-20261023T004908Z",
+      "coordinate_method": "Overture place 'Emergency Department - St. Peter's Hospital', 315 South Manning Blvd",
+      "source_revision": null,
+      "notes": "315 S Manning Blvd (main campus); Overture lists many St. Peter's sites."
+    },
+    {
+      "name": "Ellis Hospital",
+      "source_url": "overture:overture-places-10580-2026-10-21-0-20261023T004908Z",
+      "coordinate_method": "Overture place 'Ellis Hospital', 1101 Nott St",
+      "source_revision": null,
+      "notes": "1101 Nott St (main campus); Overture lists a dozen Ellis sites."
+    },
+    {
+      "name": "GE Vernova Schenectady works",
+      "source_url": "overture:overture-places-10580-2026-10-21-0-20261023T004908Z",
+      "coordinate_method": "Overture place 'General Electric Company', 1 River Rd",
+      "source_revision": null,
+      "notes": "1 River Rd; Overture names it 'General Electric Company'. GE's story belongs to Lens 4."
+    },
+    {
+      "name": "GlobalFoundries Fab 8",
+      "source_url": "overture:overture-places-10580-2026-10-21-0-20261023T004908Z",
+      "coordinate_method": "Overture place 'GlobalFoundries', 400 Stonebreak Rd Ext",
+      "source_revision": null,
+      "notes": "400 Stonebreak Rd Ext, Luther Forest Technology Campus; Wikipedia's GlobalFoundries coordinate is the California HQ."
+    },
+    {
+      "name": "Watervliet Arsenal",
+      "source_url": "https://en.wikipedia.org/wiki/Watervliet_Arsenal",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1381267732,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "Port of Albany",
+      "source_url": "https://en.wikipedia.org/wiki/Port_of_Albany–Rensselaer",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1381569846,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "Albany–Rensselaer station",
+      "source_url": "https://en.wikipedia.org/wiki/Albany–Rensselaer_station",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1370764830,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "Albany International Airport",
+      "source_url": "overture:overture-places-10580-2026-10-21-0-20261023T004908Z",
+      "coordinate_method": "Overture place 'Albany International Airport', 737 Albany Shaker Rd",
+      "source_revision": null,
+      "notes": "737 Albany Shaker Rd (terminal); the Wikipedia page has no primary coordinate."
+    },
+    {
+      "name": "Saratoga Race Course",
+      "source_url": "https://en.wikipedia.org/wiki/Saratoga_Race_Course",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1378114971,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "Saratoga Spa State Park",
+      "source_url": "https://en.wikipedia.org/wiki/Saratoga_Spa_State_Park",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1372960040,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "Saratoga Performing Arts Center",
+      "source_url": "https://en.wikipedia.org/wiki/Saratoga_Performing_Arts_Center",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1378058642,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "Proctors",
+      "source_url": "https://en.wikipedia.org/wiki/Proctor's_Theatre_(Schenectady,_New_York)",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1372222042,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "Troy Savings Bank Music Hall",
+      "source_url": "https://en.wikipedia.org/wiki/Troy_Savings_Bank_Music_Hall",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1373458523,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "MVP Arena",
+      "source_url": "https://en.wikipedia.org/wiki/MVP_Arena",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1372427063,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "Washington Park",
+      "source_url": "https://en.wikipedia.org/wiki/Washington_Park_Historic_District_(Albany,_New_York)",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1373474096,
+      "notes": "Named-site coordinate; marker for the site, not its footprint."
+    },
+    {
+      "name": "Crossgates Mall",
+      "source_url": "https://en.wikipedia.org/wiki/Crossgates_Mall",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1379575863,
+      "notes": "Regional mall near the uptown-to-Wolf Road job band."
+    },
+    {
+      "name": "Howe Caverns",
+      "source_url": "https://en.wikipedia.org/wiki/Howe_Caverns",
+      "coordinate_method": "Wikipedia primary coordinate",
+      "source_revision": 1381167121,
+      "notes": "Schoharie's best-known site; the metro's rural edge."
+    }
+  ]
+}

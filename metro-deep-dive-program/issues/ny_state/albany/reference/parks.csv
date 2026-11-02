@@ -1,0 +1,23 @@
+osm_id,name,group,kind,operator,acres,share_in_metro,keep,source_url
+relation/18295573,Central Park,City park,park,,262.0,1.0,True,https://www.openstreetmap.org/relation/18295573
+way/90890680,Prospect Park,City park,park,,88.0,1.0,True,https://www.openstreetmap.org/way/90890680
+way/37900371,Washington Park,City park,park,,81.0,1.0,True,https://www.openstreetmap.org/way/37900371
+way/52456389,Congress Park,City park,park,,22.0,1.0,True,https://www.openstreetmap.org/way/52456389
+relation/9137083,Corning City Preserve,City park,park,,22.0,1.0,True,https://www.openstreetmap.org/relation/9137083
+relation/11145849,Saratoga National Historical Park,National park,park,National Park Service,3547.0,1.0,True,https://www.openstreetmap.org/relation/11145849
+relation/6375740,Albany Pine Bush Preserve,Preserve,nature_reserve,New York State Department of Environmental Conservation,2028.0,1.0,True,https://www.openstreetmap.org/relation/6375740
+relation/4836454,Huyck Preserve,Preserve,nature_reserve,,1973.0,1.0,True,https://www.openstreetmap.org/relation/4836454
+relation/7393901,Vischer Ferry Nature & Historic Preserve,Preserve,nature_reserve,,960.0,1.0,True,https://www.openstreetmap.org/relation/7393901
+relation/6386207,Five Rivers Environmental Education Center,Preserve,nature_reserve,New York State Department of Environmental Conservation,445.0,1.0,True,https://www.openstreetmap.org/relation/6386207
+relation/6445314,Moreau Lake State Park,State park,nature_reserve,"New York State Office of Parks, Recreation and Historic Preservation",6305.0,0.79,True,https://www.openstreetmap.org/relation/6445314
+relation/6445365,Grafton Lakes State Park,State park,park,"New York State Office of Parks, Recreation and Historic Preservation",2488.0,1.0,True,https://www.openstreetmap.org/relation/6445365
+relation/6447769,Thacher State Park,State park,park,"New York State Office of Parks, Recreation and Historic Preservation",2146.0,1.0,True,https://www.openstreetmap.org/relation/6447769
+relation/6446981,Saratoga Spa State Park,State park,park,"New York State Office of Parks, Recreation and Historic Preservation",1936.0,1.0,True,https://www.openstreetmap.org/relation/6446981
+relation/6447831,Schodack Island State Park,State park,nature_reserve,"New York State Office of Parks, Recreation and Historic Preservation",1074.0,0.83,True,https://www.openstreetmap.org/relation/6447831
+way/416573735,Mine Kill State Park,State park,park,"New York State Office of Parks, Recreation and Historic Preservation",461.0,1.0,True,https://www.openstreetmap.org/way/416573735
+relation/6464059,Thompson's Lake State Park,State park,park,"New York State Office of Parks, Recreation and Historic Preservation",308.0,1.0,True,https://www.openstreetmap.org/relation/6464059
+relation/6464036,Peebles Island State Park,State park,park,"New York State Office of Parks, Recreation and Historic Preservation",184.0,1.0,True,https://www.openstreetmap.org/relation/6464036
+way/435887211,Cherry Plain State Park,State park,park,"New York State Office of Parks, Recreation and Historic Preservation",179.0,1.0,True,https://www.openstreetmap.org/way/435887211
+relation/7393854,Mohawk River State Park,State park,nature_reserve,"State of New York Department of Parks, Recreation and Historic Preservation",124.0,1.0,True,https://www.openstreetmap.org/relation/7393854
+way/90928835,Lock 6 Canal State Park,State park,park,,81.0,1.0,True,https://www.openstreetmap.org/way/90928835
+way/435967166,Max V. Shaul State Park,State park,park,"New York State Office of Parks, Recreation and Historic Preservation",77.0,1.0,True,https://www.openstreetmap.org/way/435967166
