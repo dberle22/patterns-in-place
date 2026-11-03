@@ -75,7 +75,7 @@ X.17 depends on assembling the state institution list, which is the smaller of t
 | X.21 | Downtown crop. A zoomed map of one CBD with its anchors marked. | Highlight context map | `geo_id`, `anchor_types`, `zoom` | Internal Structure, POI |
 | X.22 | Zone composition. Share of each zone type within a metro, benchmarked. | Bar, benchmarked | `cbsa_code`, `zone_model`, `year` | Intelligence Framework Phase 7 |
 
-X.19 and X.20 both wait on B1. X.21 is the CBD cell that will get reused on every metro spotlight, which makes it one of the highest-value exhibits in the bank. Internal Structure now runs per market from a Python script (2026-11-02), so run it for the metro first.
+X.19 and X.20 both wait on B1. X.21 is the CBD cell that will get reused on every metro spotlight, which makes it one of the highest-value exhibits in the bank. Internal Structure runs per market from two notebooks, which [need fixes](NY_STATEWIDE_DATA_BUILD_PLAN.md#notebook-fixes) before they run.
 
 ---
 
@@ -118,7 +118,7 @@ X.30 is A3 Moving Toward Harm in a single chart, and the bivariate choropleth al
 
 **Waiting on source assembly:** X.17
 
-**Ready, run the Internal Structure script for the metro first:** X.21, X.22 (updated 2026-11-02)
+**Data ready, Internal Structure notebooks [need fixes](NY_STATEWIDE_DATA_BUILD_PLAN.md#notebook-fixes) first:** X.21, X.22 (updated 2026-11-02)
 
 **Ready, composite built in the analysis:** X.28 (updated 2026-11-02)
 

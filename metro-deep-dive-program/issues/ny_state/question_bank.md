@@ -51,7 +51,7 @@ Researched 2026-10-17. Field lists not yet confirmed for the data.ny.gov dataset
 
 Other gates that are not builds, listed here so they are tracked in one place:
 - ~~**No NY POI run**~~ Lifted 2026-11-02: the NY POI run exists with categories (S3.4, R.5, M.11, M.12, K.9, K.10, X.21). The M.11 basket is a pick of POI categories, made at analysis time
-- ~~**Internal Structure not built**~~ Lifted 2026-11-02: a Python script builds it per market, quick to run (S3.3, M.2, M.12, K.9, K.10, X.21, X.22)
+- **Internal Structure notebooks crash as committed** (S3.3, S3.4, M.2, M.12, K.9, K.10, X.21, X.22). The analysis exists as two per-market notebooks, and there is no separate script. The queries and marts work; see [Notebook fixes](NY_STATEWIDE_DATA_BUILD_PLAN.md#notebook-fixes)
 - **LODES OD not ingested** gates M.14. Albany Part 2 uses county commuting shares instead
 - ~~**Composite scores not in production**~~ Lifted 2026-11-02: composite scores (affordability, overheating, economic strength, investment) are built within each analysis as needed (an approach, not a production layer). K.5, K.7, K.8 and X.28 build theirs in the analysis. Frame composite scores were updated 2026-11-02; print clearance is open decision 15
 
@@ -97,8 +97,8 @@ S2.3 is Q6 pointed the other way. Q6 asks whether an outlying county inside a CB
 |---|---|---|---|
 | S3.1 | What is the physical network that moves the state? | Infrastructure engine | **Build** (B1) |
 | S3.2 | Which population centers are far from major infrastructure? | Infrastructure + ACS population | **Build** (B1) |
-| S3.3 | Where are the core downtowns and central business districts? | Internal Structure, A5 | Ready (run the Internal Structure script) |
-| S3.4 | What anchors each downtown: transit, a university, an office core, a hospital, government? | Internal Structure, POI | Ready (run the Internal Structure script) |
+| S3.3 | Where are the core downtowns and central business districts? | Internal Structure, A5 | Data ready; the Internal Structure notebooks need [fixes](NY_STATEWIDE_DATA_BUILD_PLAN.md#notebook-fixes) |
+| S3.4 | What anchors each downtown: transit, a university, an office core, a hospital, government? | Internal Structure, POI | Data ready; the Internal Structure notebooks need [fixes](NY_STATEWIDE_DATA_BUILD_PLAN.md#notebook-fixes). POI filter review before comparing markets |
 | A4 | Did remote work rewire where work happens? | ACS WFH series, LODES | Ready |
 
 ### Who Lives Here
@@ -107,9 +107,9 @@ S2.3 is Q6 pointed the other way. Q6 asks whether an outlying county inside a CB
 |---|---|---|---|
 | S4.1 | What does the state's age structure look like, and how does it vary geographically? | ACS | Ready |
 | S4.2 | Where are people from, and how does that change from CBSA to county to tract? | ACS | Ready at CBSA and county; confirm tract grain |
-| S4.3 | Which places have the most external migration, and what did it do to them? | ACS nativity, IRS flows | Ready |
-| S4.4 | Which states do New Yorkers move to, and which states do they come from? | IRS flows 2012 to 2022 | Ready |
-| S4.5 | Where do people move within the state? | IRS county flows | Ready |
+| S4.3 | Which places have the most external migration, and what did it do to them? | ACS nativity, IRS flows | Ready; use IRS county totals for net migration ([N11](../NATIONAL_FOLLOWUPS.md)) |
+| S4.4 | Which states do New Yorkers move to, and which states do they come from? | IRS flows 2012 to 2022 | Ready; flows leave out suppressed small pairs, mostly out of state ([N11](../NATIONAL_FOLLOWUPS.md)) |
+| S4.5 | Where do people move within the state? | IRS county flows | Ready; flows leave out suppressed small pairs ([N11](../NATIONAL_FOLLOWUPS.md)) |
 | A2 | Does building more housing lower prices? | Permits, HPI, stock composition | Ready |
 | A7 | Who is squeezed: which people in which places carry the worst cost burden? | ACS burden, income | Ready |
 
@@ -151,7 +151,7 @@ These run per region. The first four are the same question asked of every region
 | R.2 | Does this region make sense on its own, or does it belong with another? | Commuting, industry, migration | Ready |
 | R.3 | Is this region underserved by infrastructure? | Infrastructure + population | **Build** (B1) |
 | R.4 | Where is housing being built in this region, and what is the existing stock? | Permits, ACS stock | Ready |
-| R.5 | Are there real amenity clusters here? | POI | Ready |
+| R.5 | Are there real amenity clusters here? | POI | Ready for one market. POI filter review before comparing markets |
 | R.6 | Western NY and the Finger Lakes: one region or two? | R.2 applied | Ready |
 | R.7 | What is "Upstate"? | R.2 applied, plus the vernacular evidence | Ready |
 | R.8 | How is the Southern Tier defined, and by whom? | R.2 applied | Ready |
@@ -168,7 +168,7 @@ The spotlight template, with each section's questions mapped to the program anal
 | ID | Question | Program | Readiness |
 |---|---|---|---|
 | M.1 | What kind of market is this, and where is it going? | Position: Profile, Trajectory | Ready. Frame composite scores updated 2026-11-02; print clearance is open decision 15 |
-| M.2 | How is the metro assembled internally? | Position: Internal Structure | Ready (run the Internal Structure script per market). Seven national tract types cleared for print, used in Albany Part 1 |
+| M.2 | How is the metro assembled internally? | Position: Internal Structure | Data ready; the Internal Structure notebooks need [fixes](NY_STATEWIDE_DATA_BUILD_PLAN.md#notebook-fixes). Seven national tract types cleared for print, used in Albany Part 1 |
 | M.3 | Who are its peers? | Position: Peers | Ready (cluster label and peer list cleared for print) |
 
 ### Housing and Growth
@@ -194,7 +194,7 @@ The spotlight template, with each section's questions mapped to the program anal
 | ID | Question | Program | Readiness |
 |---|---|---|---|
 | M.11 | What are the core amenities, and how good is access per tract? | Q4 | Ready. Pick the basket from POI categories at analysis time. Starting point: grocery, pharmacy, primary care, school, park, library, cafe or restaurant |
-| M.12 | Are there specific clusters, and how do they line up against downtowns, jobs, and housing? | Q4 + Internal Structure | Ready (with the M.11 basket) |
+| M.12 | Are there specific clusters, and how do they line up against downtowns, jobs, and housing? | Q4 + Internal Structure | Data ready (with the M.11 basket); the Internal Structure notebooks need [fixes](NY_STATEWIDE_DATA_BUILD_PLAN.md#notebook-fixes) |
 
 ### Regional Role
 | ID | Question | Program | Readiness |
@@ -241,8 +241,8 @@ The `metro-deep-dive-program/analyses/` notebooks are the exploration surface fo
 | [Peers](../../analyses/position/peers/POSITION_PEERS_NOTEBOOK.py) | M.3, K.6 | Ready; peer lists cleared for print |
 | [Trajectory](../../analyses/position/trajectory/POSITION_TRAJECTORY_NOTEBOOK.py) | M.1 | Ready |
 | [Candidate Scan](../../analyses/position/candidate_scan/POSITION_CANDIDATE_SCAN_NOTEBOOK.py) and [Discovery](../../analyses/position/candidate_scan/POSITION_CANDIDATE_DISCOVERY_NOTEBOOK.py) | K.2, K.6 | Ready; all markets, filter to NY |
-| [Internal Structure Part 1](../../analyses/position/internal_structure/POSITION_INTERNAL_STRUCTURE_NOTEBOOK.py) | M.2 | Ready (national Phase 7 zones) |
-| [Internal Structure Part 2](../../analyses/position/internal_structure/POSITION_INTERNAL_STRUCTURE_PART2_NOTEBOOK.py) | M.2, M.12 | Selector covers every CBSA. POI marts cover every NY CBSA as of 2026-11-02 |
+| [Internal Structure Part 1](../../analyses/position/internal_structure/POSITION_INTERNAL_STRUCTURE_NOTEBOOK.py) | M.2 | Crashes as committed; small [fix](NY_STATEWIDE_DATA_BUILD_PLAN.md#notebook-fixes) (national Phase 7 zones) |
+| [Internal Structure Part 2](../../analyses/position/internal_structure/POSITION_INTERNAL_STRUCTURE_PART2_NOTEBOOK.py) | M.2, M.12 | Crashes as committed; see [fixes](NY_STATEWIDE_DATA_BUILD_PLAN.md#notebook-fixes). Selector covers every CBSA and POI marts cover every NY CBSA, but NY markets show no infrastructure |
 | [Q1 Market](../../analyses/explanation/q1_supply_or_demand/EXPLANATION_Q1_MARKET_NOTEBOOK.py) and [National](../../analyses/explanation/q1_supply_or_demand/EXPLANATION_Q1_NATIONAL_NOTEBOOK.py) | M.5, M.18 | Ready |
 | [Q2 Job Center Outcomes](../../analyses/explanation/q2_job_proximity/EXPLANATION_Q2_JOB_CENTER_OUTCOMES_NOTEBOOK.py) | M.6, M.7, M.9 | Ready (straight line distance only) |
 | [Q2 Job Concentration](../../analyses/explanation/q2_job_proximity/EXPLANATION_Q2_JOB_CONCENTRATION_NOTEBOOK.py) | M.15, M.17 | Ready; set a comparison market |
@@ -268,11 +268,11 @@ Rankings emerge from the writing (E8). These are the axes we have named so far, 
 | K.3 | Which have the strongest economic indicators? | Ready (raw KPIs) |
 | K.4 | Which have the most human capital? | Ready |
 | K.5 | Which metros are underrated, and what does underrated mean? | Ready (composite built in the analysis) |
-| K.6 | Which cities are growing faster or slower than their national peer group? | Ready (cluster labels cleared for print) |
+| K.6 | Which cities are growing faster or slower than their national peer group? | Ready (cluster labels cleared for print). Peers use `irs_net_agi`; the [N11](../NATIONAL_FOLLOWUPS.md) effect on them is unchecked |
 | K.7 | Which have a strong economy now, and which have the ingredients for one? | Ready (composite built in the analysis) |
 | K.8 | Which areas need investment most? | Ready (composite built in the analysis) |
-| K.9 | Which are the top downtowns? | Ready (Internal Structure script, POI) |
-| K.10 | Which are the most walkable districts? | Ready (Internal Structure script, POI) |
+| K.9 | Which are the top downtowns? | Gated: POI filter review, and the Internal Structure notebooks need [fixes](NY_STATEWIDE_DATA_BUILD_PLAN.md#notebook-fixes) |
+| K.10 | Which are the most walkable districts? | Gated: POI filter review, and the Internal Structure notebooks need [fixes](NY_STATEWIDE_DATA_BUILD_PLAN.md#notebook-fixes) |
 | A1 | How exposed is each metro's job mix to AI? | Active |
 
 Composite scores (affordability, overheating, economic strength, investment) are built within each analysis as needed (an approach, not a production layer), so K.5, K.7 and K.8 are buildable now. Defining "underrated" (K.5) is still the editorial work. Frame composite scores were updated 2026-11-02; whether they print is open decision 15.

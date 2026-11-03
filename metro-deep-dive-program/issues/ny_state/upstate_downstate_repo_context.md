@@ -7,9 +7,21 @@ The entry doc for Claude Code sessions on the New York series. Upstate, Downstat
 
 ## Current first task
 
-**The growth ranking data pass.** The plan is in the vault at `rankings/growth/Growth Ranking.md` (K.2, K.6, S6.1). Build it in [`rankings_and_analyses/growth/`](README.md#adding-a-piece).
+**The growth ranking data pass.** The plan is in the vault at `rankings_and_analyses/growth/Growth Ranking.md` (K.2, K.6, S6.1). Build it in [`rankings_and_analyses/growth/`](README.md#adding-a-piece).
 
 What comes after it is in the Article Sequence and the Next up callout in the Series Overview.
+
+## Open issues
+
+Check this list before planning a piece. Remove a row when its issue is fixed.
+
+| Issue | What it affects | What to do | Details |
+|---|---|---|---|
+| **IRS migration undercount (N11)** | `irs_net_migration_rate`, `irs_net_agi` and anything summing IRS county pairs. Pairs under 20 returns are suppressed, so net migration can have the wrong sign: Albany's metro shows +1,478 a year on pairs and -1,491 on IRS county totals | Don't print net migration from the warehouse. Use [`irs_county_totals_2018_2022.csv`](metro_deep_dives/albany/data/irs_county_totals_2018_2022.csv), which covers every US county for 2018 to 2022. `irs_net_agi` is also a peer input, and the effect on peer lists (K.6) hasn't been checked. The warehouse fix is for Dan to schedule | [N11](../NATIONAL_FOLLOWUPS.md) |
+| **POI filter not decided** | Any POI count compared across markets. Raw counts overstate some markets, most of all Rochester, Corning and the non-CBSA counties | Do the review before the first cross-market POI comparison. Tables keep every record, so filtering happens in the review's chosen place | [Candidate filter](NY_STATEWIDE_DATA_BUILD_PLAN.md) |
+| **Notebooks that don't run** | Internal Structure Parts 1 and 2 and the Infrastructure Explorer crash as committed, for every market | Fix them when a piece first needs them. Until then, query the marts and Parquet outputs directly | [Notebook fixes](NY_STATEWIDE_DATA_BUILD_PLAN.md#notebook-fixes) |
+| **Visuals notebooks not rerun since the restructure** | `ALBANY_LENS1_VISUALS.py` and `WHAT_NY_IS_VISUALS.py`. Their paths were checked but they weren't run, because they rewrite draft PNGs | Run each one the next time its piece is touched, and check the PNG changes | |
+| **Engine work not done for NY** | Q4 market wiring, Corridor inputs, the Place overlap and Q6 fix, ports, and 6 unmapped POI categories | Pick up when a piece needs them | [Deferred](NY_STATEWIDE_DATA_BUILD_PLAN.md#deferred) |
 
 ## Who owns what
 
@@ -27,6 +39,8 @@ What comes after it is in the Article Sequence and the Next up callout in the Se
 - [Program Glossary](program_glossary.md): Metro Deep Dive terms
 - [Folder structure](README.md): what goes where, naming, and how repo folders mirror the vault
 - [Visuals build rules](../VISUALS_BUILD_RULES.md): how to go from an outline to print visuals
+- [NY statewide data build](NY_STATEWIDE_DATA_BUILD_PLAN.md): what POI and OSM data exists for New York, how it was run, and what was deferred
+- [National followups](../NATIONAL_FOLLOWUPS.md): data issues found during NY work that affect every market
 
 **In the vault**, under `/Users/danberle/Library/Mobile Documents/iCloud~md~obsidian/Documents/second_brain/patterns_in_place/ny_series/`:
 - `Approach.md`: the D and E rules, the source for everything cited below
