@@ -1,6 +1,6 @@
 # NAICS Crosswalk Rebuild Notes
 
-This note summarizes what we built in [naics_crosswalk_rebuild.ipynb](/Users/danberle/Documents/projects/patterns_in_place/metro-deep-dive/analysis_program/01_ai_inversion/naics_crosswalk_rebuild.ipynb) and how it should fit into the broader AI inversion workflow.
+This note summarizes what we built in [naics_crosswalk_rebuild.ipynb](naics_crosswalk_rebuild.ipynb) and how it should fit into the broader AI inversion workflow.
 
 ## Purpose
 
@@ -103,7 +103,7 @@ These appear to be the true residual unmatched concepts rather than notebook wir
 
 ## How This Should Fit With The Main Analysis
 
-The main [ai_inversion.ipynb](/Users/danberle/Documents/projects/patterns_in_place/metro-deep-dive/analysis_program/01_ai_inversion/ai_inversion.ipynb) notebook should focus on analysis, not crosswalk setup.
+The main [ai_inversion.ipynb](ai_inversion.ipynb) notebook should focus on analysis, not crosswalk setup.
 
 The intended structure going forward is:
 
@@ -113,7 +113,7 @@ The intended structure going forward is:
 
 ## Next Step
 
-We should build a parallel SOC notebook using the same philosophy as this NAICS notebook, while reusing the validated logic already developed in [ai_inversion.ipynb](/Users/danberle/Documents/projects/patterns_in_place/metro-deep-dive/analysis_program/01_ai_inversion/ai_inversion.ipynb).
+We should build a parallel SOC notebook using the same philosophy as this NAICS notebook, while reusing the validated logic already developed in [ai_inversion.ipynb](ai_inversion.ipynb).
 
 That SOC notebook should:
 

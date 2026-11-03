@@ -9,11 +9,7 @@ How this folder is laid out, so every session puts things in the same place. For
 
 **A piece's repo folder mirrors its vault folder.** The vault folder holds the words. The repo folder holds the notebooks and exhibits. When you start a piece, look up its path in the vault and use the same path here.
 
-The vault is at:
-
-```
-/Users/danberle/Library/Mobile Documents/iCloud~md~obsidian/Documents/second_brain/patterns_in_place/ny_series/
-```
+The vault is outside this repo. Its location is machine-specific, so it's kept in the gitignored `CLAUDE.local.md` and `AGENTS.local.md` at the repo root. If those files are missing, ask Dan.
 
 On the Mac it links back to this folder through `repo_ny_state/`.
 

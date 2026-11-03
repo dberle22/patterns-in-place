@@ -4,11 +4,11 @@ This document explains how the automated Publisher backend works after the monor
 
 The canonical implementation now lives in:
 
-- [chatbot/orchestrator.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/orchestrator.py)
-- [chatbot/intent/parser.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/intent/parser.py)
-- [chatbot/query/](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query)
-- [chatbot/charts/](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/charts)
-- [chatbot/response/assembler.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/response/assembler.py)
+- [chatbot/orchestrator.py](../../chatbot/orchestrator.py)
+- [chatbot/intent/parser.py](../../chatbot/intent/parser.py)
+- [chatbot/query/](../../chatbot/query)
+- [chatbot/charts/](../../chatbot/charts)
+- [chatbot/response/assembler.py](../../chatbot/response/assembler.py)
 
 ## What The Orchestrator Is
 
@@ -40,7 +40,7 @@ The orchestrator does not "think" in one monolithic step. It coordinates several
 8. render the chart
 9. write a short answer
 
-The main coordinating class is [chatbot/orchestrator.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/orchestrator.py).
+The main coordinating class is [chatbot/orchestrator.py](../../chatbot/orchestrator.py).
 
 ## High-Level Flow
 
@@ -82,7 +82,7 @@ Answer text
 
 ### Interactive or CLI question flow
 
-Use [chatbot/scripts/ask.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/scripts/ask.py).
+Use [chatbot/scripts/ask.py](../../chatbot/scripts/ask.py).
 
 This script can:
 
@@ -93,13 +93,13 @@ This script can:
 
 ### Queue-based publishing flow
 
-Use [publisher/run_publisher.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/publisher/run_publisher.py).
+Use [publisher/run_publisher.py](../run_publisher.py).
 
 This script wraps the same backend logic in a queue-driven production workflow.
 
 ## Core Files And Responsibilities
 
-### [chatbot/orchestrator.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/orchestrator.py)
+### [chatbot/orchestrator.py](../../chatbot/orchestrator.py)
 
 Main responsibilities:
 
@@ -124,7 +124,7 @@ This bundles the major outputs of the run:
 - `rendered_chart`
 - `response`
 
-### [chatbot/intent/parser.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/intent/parser.py)
+### [chatbot/intent/parser.py](../../chatbot/intent/parser.py)
 
 Main responsibilities:
 
@@ -141,12 +141,12 @@ Important objects:
 
 Important decision order:
 
-1. exact example match from [publisher/examples/question_library.yml](/Users/danberle/Documents/projects/patterns_in_place/publisher/publisher/examples/question_library.yml)
+1. exact example match from [publisher/examples/question_library.yml](../examples/question_library.yml)
 2. heuristic parse
 3. LLM parse if configured
 4. clarification if required slots are still missing
 
-### [chatbot/query/catalogs.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query/catalogs.py)
+### [chatbot/query/catalogs.py](../../chatbot/query/catalogs.py)
 
 Main responsibilities:
 
@@ -156,7 +156,7 @@ Main responsibilities:
 
 This file is where the migrated backend connects to shared `foundations/` assets.
 
-### [chatbot/query/planner.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query/planner.py)
+### [chatbot/query/planner.py](../../chatbot/query/planner.py)
 
 Main responsibilities:
 
@@ -168,7 +168,7 @@ Output:
 
 - `PlannedQuery`
 
-### [chatbot/query/generator.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query/generator.py)
+### [chatbot/query/generator.py](../../chatbot/query/generator.py)
 
 Main responsibilities:
 
@@ -189,7 +189,7 @@ Key template paths:
 - `benchmark`
 - `growth`
 
-### [chatbot/query/validator.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query/validator.py)
+### [chatbot/query/validator.py](../../chatbot/query/validator.py)
 
 Main responsibilities:
 
@@ -201,7 +201,7 @@ Output:
 
 - `ValidationResult`
 
-### [chatbot/query/executor.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query/executor.py)
+### [chatbot/query/executor.py](../../chatbot/query/executor.py)
 
 Main responsibilities:
 
@@ -210,7 +210,7 @@ Main responsibilities:
 
 This layer reads from `DB_CONNECTION` if set, otherwise from its default runtime database path.
 
-### [chatbot/charts/profiler.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/charts/profiler.py)
+### [chatbot/charts/profiler.py](../../chatbot/charts/profiler.py)
 
 Main responsibilities:
 
@@ -219,7 +219,7 @@ Main responsibilities:
 
 The profiler is important because chart selection depends on the actual result shape, not just the original question type.
 
-### [chatbot/charts/selector.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/charts/selector.py)
+### [chatbot/charts/selector.py](../../chatbot/charts/selector.py)
 
 Main responsibilities:
 
@@ -231,7 +231,7 @@ Output:
 
 - `ChartSelection`
 
-### [chatbot/charts/renderer.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/charts/renderer.py)
+### [chatbot/charts/renderer.py](../../chatbot/charts/renderer.py)
 
 Main responsibilities:
 
@@ -250,7 +250,7 @@ Output:
 
 - `RenderedChart`
 
-### [chatbot/response/assembler.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/response/assembler.py)
+### [chatbot/response/assembler.py](../../chatbot/response/assembler.py)
 
 Main responsibilities:
 
@@ -275,7 +275,7 @@ Examples:
 
 ### 2. Intent parsing
 
-Handled by [chatbot/intent/parser.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/intent/parser.py).
+Handled by [chatbot/intent/parser.py](../../chatbot/intent/parser.py).
 
 The parser decides:
 
@@ -294,7 +294,7 @@ Possible outputs:
 
 ### 3. Plan normalization
 
-Handled by [chatbot/query/planner.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query/planner.py).
+Handled by [chatbot/query/planner.py](../../chatbot/query/planner.py).
 
 The planner fills in defaults such as:
 
@@ -306,7 +306,7 @@ The planner fills in defaults such as:
 
 ### 4. SQL generation
 
-Handled by [chatbot/query/generator.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query/generator.py).
+Handled by [chatbot/query/generator.py](../../chatbot/query/generator.py).
 
 The generator uses the semantic layer to produce template-specific SQL and semantic metadata such as:
 
@@ -317,13 +317,13 @@ The generator uses the semantic layer to produce template-specific SQL and seman
 
 ### 5. Validation
 
-Handled by [chatbot/query/validator.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query/validator.py).
+Handled by [chatbot/query/validator.py](../../chatbot/query/validator.py).
 
 If validation fails, the orchestration stops here with errors.
 
 ### 6. Query execution
 
-Handled by [chatbot/query/executor.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/query/executor.py).
+Handled by [chatbot/query/executor.py](../../chatbot/query/executor.py).
 
 Output:
 
@@ -331,13 +331,13 @@ Output:
 
 ### 7. Result profiling
 
-Handled by [chatbot/charts/profiler.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/charts/profiler.py).
+Handled by [chatbot/charts/profiler.py](../../chatbot/charts/profiler.py).
 
 This inspects the shape of the result so the charting layer can make a good decision.
 
 ### 8. Chart selection
 
-Handled by [chatbot/charts/selector.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/charts/selector.py).
+Handled by [chatbot/charts/selector.py](../../chatbot/charts/selector.py).
 
 The selector combines:
 
@@ -349,7 +349,7 @@ to choose a chart type.
 
 ### 9. Chart rendering
 
-Handled by [chatbot/charts/renderer.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/charts/renderer.py).
+Handled by [chatbot/charts/renderer.py](../../chatbot/charts/renderer.py).
 
 Intermediate artifacts created in a temp directory:
 
@@ -360,7 +360,7 @@ Intermediate artifacts created in a temp directory:
 
 ### 10. Response assembly
 
-Handled by [chatbot/response/assembler.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/chatbot/response/assembler.py).
+Handled by [chatbot/response/assembler.py](../../chatbot/response/assembler.py).
 
 This produces the short answer text shown to the user or saved into Publisher artifacts.
 
@@ -381,7 +381,7 @@ This produces the short answer text shown to the user or saved into Publisher ar
 
 ### Persisted outputs in the Publisher workflow
 
-When the queue workflow uses the backend through [publisher/run_publisher.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/publisher/run_publisher.py), the main saved artifacts are:
+When the queue workflow uses the backend through [publisher/run_publisher.py](../run_publisher.py), the main saved artifacts are:
 
 - `query_plan.json`
 - `result.sql`
@@ -389,13 +389,13 @@ When the queue workflow uses the backend through [publisher/run_publisher.py](/U
 - `chart.png`
 - `answer.txt`
 
-These are stored under [publisher/output/](/Users/danberle/Documents/projects/patterns_in_place/publisher/publisher/output).
+These are stored under [publisher/output/](../output).
 
 ## Relationship To The Queue Workflow
 
 The orchestrator is the backend engine.
 
-The queue workflow in [publisher/run_publisher.py](/Users/danberle/Documents/projects/patterns_in_place/publisher/publisher/run_publisher.py) wraps that engine in a production process:
+The queue workflow in [publisher/run_publisher.py](../run_publisher.py) wraps that engine in a production process:
 
 - choose the next `ready` question
 - run parse, sql, or chart steps

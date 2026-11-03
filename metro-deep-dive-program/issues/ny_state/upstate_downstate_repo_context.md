@@ -28,7 +28,7 @@ What comes after it is in the Article Sequence and the Next up callout in the Se
 - [Folder structure](README.md): what goes where, naming, and how repo folders mirror the vault
 - [Visuals build rules](../VISUALS_BUILD_RULES.md): how to go from an outline to print visuals
 
-**In the vault**, under `/Users/danberle/Library/Mobile Documents/iCloud~md~obsidian/Documents/second_brain/patterns_in_place/ny_series/`:
+**In the vault**, at the path in the gitignored `CLAUDE.local.md` or `AGENTS.local.md` (ask Dan if they're missing):
 - `Approach.md`: the D and E rules, the source for everything cited below
 - `Upstate, Downstate - Series Overview.md`: sequence, status, decisions, open decisions
 - `Claude Working Guide.md`: how sessions run, including drafting and review

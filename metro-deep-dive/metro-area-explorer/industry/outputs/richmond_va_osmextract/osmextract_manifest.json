@@ -54,5 +54,5 @@
       "row_count": 1
     }
   ],
-  "notes": ["Matched provider openstreetmap_fr extract: http://download.openstreetmap.fr/extracts/north-america/us-south/virginia/richmond-latest.osm.pbf", "Reported source file size: 76222852 bytes", "Cached GeoPackage path: /Users/danberle/Documents/projects/patterns_in_place/metro-deep-dive/metro-area-explorer/industry/outputs/richmond_va_osmextract/raw/openstreetmap_fr_richmond-latest.gpkg"]
+  "notes": ["Matched provider openstreetmap_fr extract: http://download.openstreetmap.fr/extracts/north-america/us-south/virginia/richmond-latest.osm.pbf", "Reported source file size: 76222852 bytes", "Cached GeoPackage path: metro-deep-dive/metro-area-explorer/industry/outputs/richmond_va_osmextract/raw/openstreetmap_fr_richmond-latest.gpkg"]
 }

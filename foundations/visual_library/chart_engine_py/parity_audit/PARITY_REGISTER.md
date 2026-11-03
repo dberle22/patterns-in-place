@@ -43,33 +43,33 @@
 
 ### repeated spec drift
 - Shared finding: generated Python specs are intentionally minimal artifacts, but `scripts/generate_chart_specs.py` only preserves front matter plus a one-line body, while the R source specs carry variants, preprocessing rules, QA checks, and example question banks.
-- Evidence: [generate_chart_specs.py](/Users/danberle/Documents/projects/patterns_in_place/foundations/visual_library/chart_engine_py/scripts/generate_chart_specs.py), [bar_chart.md](/Users/danberle/Documents/projects/patterns_in_place/foundations/visual_library/chart_engine_py/chart_engine/chart_specs/bar_chart.md), [bar_spec.md](/Users/danberle/Documents/projects/patterns_in_place/foundations/visual_library/charts/bar/bar_spec.md)
+- Evidence: [generate_chart_specs.py](../scripts/generate_chart_specs.py), [bar_chart.md](../chart_engine/chart_specs/bar_chart.md), [bar_spec.md](../../charts/bar/bar_spec.md)
 - Severity: `major`
 - Layer: `spec`
 
 ### repeated render drift
 - Shared finding: many Python renderers implement the simplest visual form only, while the R shared renderers own benchmark, facet, label-strategy, or variant-specific semantics.
-- Evidence examples: [render_line.py](/Users/danberle/Documents/projects/patterns_in_place/foundations/visual_library/chart_engine_py/chart_engine/render/line.py), [render_line.R](/Users/danberle/Documents/projects/patterns_in_place/foundations/visual_library/shared/render/render_line.R), [render_choropleth.py](/Users/danberle/Documents/projects/patterns_in_place/foundations/visual_library/chart_engine_py/chart_engine/render/choropleth.py), [render_choropleth.R](/Users/danberle/Documents/projects/patterns_in_place/foundations/visual_library/shared/render/render_choropleth.R)
+- Evidence examples: [render_line.py](../chart_engine/render/line.py), [render_line.R](../../shared/render/render_line.R), [render_choropleth.py](../chart_engine/render/choropleth.py), [render_choropleth.R](../../shared/render/render_choropleth.R)
 
 ### repeated theme drift
 - Shared finding: the Python packaged theme sets `fonts.family: "Arial"` while the R standards layer's `visual_font_family()` returns `"Inter"`.
-- Evidence: [pip_theme.yml](/Users/danberle/Documents/projects/patterns_in_place/foundations/visual_library/chart_engine_py/chart_engine/pip_theme.yml), [standards.R](/Users/danberle/Documents/projects/patterns_in_place/foundations/visual_library/shared/standards.R)
+- Evidence: [pip_theme.yml](../chart_engine/pip_theme.yml), [standards.R](../../shared/standards.R)
 - Severity: `minor`
 - Layer: `theme`
 
 ### repeated export/runtime drift
 - Shared structural export finding: Altair-backed Python charts store captions in `chart.usermeta` instead of rendering them into the image, while R renderers put source/vintage/notes into the plot caption.
-- Evidence: [render_scatter.py](/Users/danberle/Documents/projects/patterns_in_place/foundations/visual_library/chart_engine_py/chart_engine/render/scatter.py), [render_boxplot.py](/Users/danberle/Documents/projects/patterns_in_place/foundations/visual_library/chart_engine_py/chart_engine/render/boxplot.py), [render_scatter.R](/Users/danberle/Documents/projects/patterns_in_place/foundations/visual_library/shared/render/render_scatter.R)
+- Evidence: [render_scatter.py](../chart_engine/render/scatter.py), [render_boxplot.py](../chart_engine/render/boxplot.py), [render_scatter.R](../../shared/render/render_scatter.R)
 - Severity: `blocking`
 - Layer: `export`
 - Shared environment/runtime finding: `_vegalite_version_for_altair()` uses a Vega-Lite 5 runtime bridge for Altair 4 specs. That is a compatibility workaround, but the code comments document it as a pragmatic runtime bridge rather than a known semantic drift by itself.
-- Evidence: [orchestrator.py](/Users/danberle/Documents/projects/patterns_in_place/foundations/visual_library/chart_engine_py/chart_engine/orchestrator.py)
+- Evidence: [orchestrator.py](../chart_engine/orchestrator.py)
 - Severity: `acceptable`
 - Layer: `export`
 
 ### repeated test drift
 - Shared finding: Python now has regression coverage across the Altair analytical family, but the geo chart tests are still structural-only and skipped when matplotlib is unavailable.
-- Evidence: [PLAN.md](/Users/danberle/Documents/projects/patterns_in_place/foundations/visual_library/chart_engine_py/PLAN.md), [test_regression.py](/Users/danberle/Documents/projects/patterns_in_place/foundations/visual_library/chart_engine_py/tests/test_regression.py), [test_geo_render.py](/Users/danberle/Documents/projects/patterns_in_place/foundations/visual_library/chart_engine_py/tests/test_geo_render.py)
+- Evidence: [PLAN.md](../PLAN.md), [test_regression.py](../tests/test_regression.py), [test_geo_render.py](../tests/test_geo_render.py)
 - Severity: `major`
 - Layer: `tests`
 
