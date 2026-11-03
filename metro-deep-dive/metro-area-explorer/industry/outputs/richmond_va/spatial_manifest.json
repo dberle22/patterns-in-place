@@ -110,6 +110,6 @@
   "notes": [
     "OSM infrastructure promoted from the Richmond osmextract run.",
     "OSM source path: openstreetmap_fr Richmond provider extract.",
-    "Promoted from: /Users/danberle/Documents/projects/patterns_in_place/metro-deep-dive/metro-area-explorer/industry/outputs/richmond_va_osmextract"
+    "Promoted from: metro-deep-dive/metro-area-explorer/industry/outputs/richmond_va_osmextract"
   ]
 }

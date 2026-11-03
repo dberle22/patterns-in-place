@@ -42,7 +42,7 @@ Check this list before planning a piece. Remove a row when its issue is fixed.
 - [NY statewide data build](NY_STATEWIDE_DATA_BUILD_PLAN.md): what POI and OSM data exists for New York, how it was run, and what was deferred
 - [National followups](../NATIONAL_FOLLOWUPS.md): data issues found during NY work that affect every market
 
-**In the vault**, under `/Users/danberle/Library/Mobile Documents/iCloud~md~obsidian/Documents/second_brain/patterns_in_place/ny_series/`:
+**In the vault**, at the path in the gitignored `CLAUDE.local.md` or `AGENTS.local.md` (ask Dan if they're missing):
 - `Approach.md`: the D and E rules, the source for everything cited below
 - `Upstate, Downstate - Series Overview.md`: sequence, status, decisions, open decisions
 - `Claude Working Guide.md`: how sessions run, including drafting and review

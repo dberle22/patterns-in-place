@@ -108,6 +108,8 @@ Do not hardcode paths like:
 
 **Exception — cross-folder references within this monorepo:** When a product folder (e.g. `publisher/`) must reference a sibling folder (e.g. `foundations/visual_library/`), use a `FOUNDATIONS_PATH` or `MONOREPO_ROOT` env var rather than a hardcoded absolute path. Document the expected env var in the folder's README.
 
+Paths that must stay machine-specific, such as the location of the writing vault, go in the gitignored `AGENTS.local.md` and `CLAUDE.local.md` at the repo root. Read them if they exist. Don't copy their contents into committed files.
+
 Use repo-relative paths everywhere else:
 - `foundations/etl/create_DB.R`
 - `publisher/app/main.py`

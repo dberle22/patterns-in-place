@@ -47,7 +47,7 @@
 - County and CBSA FEMA rows still show the AQI-overlapping subset of the broader FEMA county-equivalent coverage, while tract FEMA rows come directly from the governed tract Silver contract.
 
 ## Lineage
-1. **Primary build script**: [gold_environment_wide.sql](/Users/danberle/Documents/projects/patterns_in_place/foundations/etl/gold/gold_environment_wide.sql)
+1. **Primary build script**: [gold_environment_wide.sql](../../../etl/gold/gold_environment_wide.sql)
 2. **Primary upstreams**:
 - `silver.epa_aqi`
 - `silver.ejscreen`

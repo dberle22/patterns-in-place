@@ -155,7 +155,7 @@ After copying `data_sources.yaml`, update the `source_database_path` under `metr
 Observed during copy on 2026-06-05:
 
 - `rental_area_search/data/raw/geography/nta_boundaries.geojson` was not present in the source repo.
-- `stoop/config/data_sources.yaml` currently points `metro_deep_dive_tract_features.source_database_path` to `/Users/danberle/Documents/projects/data/duckdb/metro_deep_dive.duckdb`.
+- `stoop/config/data_sources.yaml` currently points `metro_deep_dive_tract_features.source_database_path` to `/path/to/local/metro_deep_dive.duckdb`.
 
 ### 1.3 Leave behind (do not copy)
 

@@ -91,6 +91,10 @@ foundations/visual_library/chart_engine_py/example/output_*.html
 grad-school-action-plan.md
 tmp_update_cbsa_qa_note.py
 
+# ── Agent notes with machine-specific paths ──────────────────────────────────
+CLAUDE.local.md
+AGENTS.local.md
+
 # ── Claude Code local workspace ──────────────────────────────────────────────
 # Claude stores machine-local permissions and paths here, so the whole folder
 # should stay out of version control.

@@ -36,7 +36,7 @@ sources:
   metro_deep_dive_tract_features:
     path: data/raw/metro_deep_dive/tract_features.csv
     expected_format: csv
-    source_database_path: /Users/danberle/Documents/projects/data/duckdb/metro_deep_dive.duckdb
+    source_database_path: /path/to/local/metro_deep_dive.duckdb
     owner: existing_local_duckdb_export
     notes: First neighborhood feature source path. Export from Metro Deep Dive DuckDB, then map tracts to NTAs. Source table/view still needs to be selected. Crime is deferred.
   listing_geocodes:

@@ -32,7 +32,7 @@
 - ZORI coverage remains much narrower than ZHVI: `zori_annual_avg` is null in 241,292 rows, while `zhvi_annual_avg` is null in only 83 rows.
 
 ## Lineage
-1. **Primary build script**: [gold_housing_market_wide.sql](/Users/danberle/Documents/projects/patterns_in_place/foundations/etl/gold/gold_housing_market_wide.sql)
+1. **Primary build script**: [gold_housing_market_wide.sql](../../../etl/gold/gold_housing_market_wide.sql)
 2. **Primary upstreams**:
    - `silver.fhfa_hpi`
    - `silver.zillow_zhvi`

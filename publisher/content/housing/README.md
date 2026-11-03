@@ -20,8 +20,8 @@ Each section should produce a small set of reusable chart artifacts, not just an
 
 Read these first:
 
-1. [overview.md](/Users/danberle/Documents/projects/patterns_in_place/publisher/content/housing/overview.md)
-2. [data_model.md](/Users/danberle/Documents/projects/patterns_in_place/publisher/content/housing/data_model.md)
+1. [overview.md](overview.md)
+2. [data_model.md](data_model.md)
 3. Section-local `README.md` and `VISUAL_BACKLOG.md` when they exist
 
 Use the shared section marts as the semantic source of truth:

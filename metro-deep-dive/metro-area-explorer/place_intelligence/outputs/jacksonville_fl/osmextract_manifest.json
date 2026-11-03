@@ -72,5 +72,5 @@
       "row_count": 26
     }
   ],
-  "notes": ["Matched provider openstreetmap_fr extract: http://download.openstreetmap.fr/extracts/north-america/us-south/florida/northeast-latest.osm.pbf", "Reported source file size: 64886477 bytes", "Cached GeoPackage path: /Users/danberle/Documents/projects/patterns_in_place/metro-deep-dive/metro-area-explorer/place_intelligence/outputs/jacksonville_fl/raw/openstreetmap_fr_northeast-latest.gpkg"]
+  "notes": ["Matched provider openstreetmap_fr extract: http://download.openstreetmap.fr/extracts/north-america/us-south/florida/northeast-latest.osm.pbf", "Reported source file size: 64886477 bytes", "Cached GeoPackage path: metro-deep-dive/metro-area-explorer/place_intelligence/outputs/jacksonville_fl/raw/openstreetmap_fr_northeast-latest.gpkg"]
 }

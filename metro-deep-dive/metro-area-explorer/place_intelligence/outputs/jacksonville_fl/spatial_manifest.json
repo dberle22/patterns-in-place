@@ -142,7 +142,7 @@
   ],
   "notes": [
     "OSM infrastructure normalized from the Jacksonville osmextract GeoPackage.",
-    "OSM source path: /Users/danberle/Documents/projects/patterns_in_place/metro-deep-dive/metro-area-explorer/place_intelligence/outputs/jacksonville_fl/raw/openstreetmap_fr_northeast-latest.gpkg",
+    "OSM source path: metro-deep-dive/metro-area-explorer/place_intelligence/outputs/jacksonville_fl/raw/openstreetmap_fr_northeast-latest.gpkg",
     "Source footprint matched the Northeast Florida provider extract; review remains scoped to Jacksonville rings at analysis time."
   ]
 }
