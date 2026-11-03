@@ -39,8 +39,6 @@ ny_state/
     <piece>/
 ```
 
-**One difference in name:** `rankings_and_analyses/<piece>` here matches `analyses_and_rankings/<piece>` in the vault. The repo name is broader because this folder also holds analyses that are not rankings.
-
 ## Inside a piece folder
 
 Create a folder when a piece gets its first notebook or query, not before. Add only the parts the piece uses.

@@ -7,7 +7,7 @@ The entry doc for Claude Code sessions on the New York series. Upstate, Downstat
 
 ## Current first task
 
-**The growth ranking data pass.** The plan is in the vault at `analyses_and_rankings/growth/Growth Ranking.md` (K.2, K.6, S6.1). Build it in [`rankings_and_analyses/growth/`](README.md#adding-a-piece).
+**The growth ranking data pass.** The plan is in the vault at `rankings_and_analyses/growth/Growth Ranking.md` (K.2, K.6, S6.1). Build it in [`rankings_and_analyses/growth/`](README.md#adding-a-piece).
 
 What comes after it is in the Article Sequence and the Next up callout in the Series Overview.
 
